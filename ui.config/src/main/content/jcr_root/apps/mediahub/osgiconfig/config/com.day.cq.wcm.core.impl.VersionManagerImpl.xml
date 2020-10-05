@@ -3,7 +3,7 @@
 	xmlns:jcr="http://www.jcp.org/jcr/1.0"
 	jcr:primaryType="sling:OsgiConfig" 
 	versionmanager.purgePaths="[/content]"
-	versionmanager.maxAgeDays="{Long}30"
+	versionmanager.maxAgeDays="{Long}7"
 	versionmanager.purgingEnabled="{Boolean}true"
 	versionmanager.createVersionOnActivation="{Boolean}true"
 	versionmanager.maxNumberVersions="{Long}0"
