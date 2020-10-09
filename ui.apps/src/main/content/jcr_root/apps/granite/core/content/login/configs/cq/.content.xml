@@ -4,4 +4,4 @@
     comment="since CQ 5.6 - overrides the default configuration of the Granite Login Screen"
     favicon="login/favicon.ico"
     order="{Long}1000"
-    title="AEM Sign In"/>
+    title="MEDIAHUB"/>
