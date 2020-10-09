@@ -3,6 +3,5 @@
     <filter root="/apps/mediahub/clientlibs"/>
     <filter root="/apps/mediahub/components"/>
     <filter root="/apps/mediahub/i18n"/>
-    <filter root="/apps/granite/core"/>
-    <filter root="/apps/granite/ui/components"/>
+    <filter root="/apps/granite" mode="merge"/>
 </workspaceFilter>

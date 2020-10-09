@@ -161,5 +161,20 @@ coral-masonry-item:hover .globalnav-homecard-title {
 }
 
 .bnp--green {
-	background-color: #007942 !important;
+	background-color: #ebebeb !important;
+}
+
+.coral3-Icon--bnp {
+    background-image: url(/content/dam/mediahub/BNPP_H_RRVB.svg);
+}
+
+.bnp-text-style {
+    vertical-align: top;
+    text-decoration: none;
+    text-align: center;
+    font-size: .875rem;
+    line-height: 2.375rem;
+    color: rgba(0,0,0,0.8);
+    cursor: pointer;
+    white-space: nowrap;
 }
