@@ -319,7 +319,7 @@ int minRailSize = 250;
 int minContentSize = 100;
 %><body class="coral--light">
 <coral-shell>
-
+    <div style="height: 5px; background-color: #00ac7b"></div>
     <coral-shell-header role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>"
                         class="coral--dark granite-shell-header bnp--green"><%
         String navigationUrl = "/mnt/overlay/granite/ui/content/shell/globalnav.html";
@@ -333,8 +333,9 @@ int minContentSize = 100;
 
         %><coral-shell-header-home <%= headerHome %>>
           	<a href="#">
-            	<img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="165" height="34" alt="BNP Paribas">
+              <img src="/content/dam/mediahub/BNPP_H_RRVB.png" width="40" height="40" alt="BNP Paribas">
             </a>
+            <coral-shell-homeanchor-label class="bnp-text-style">MediaHub MVP</coral-shell-homeanchor-label>
         </coral-shell-header-home>
 
         <coral-shell-header-actions>
