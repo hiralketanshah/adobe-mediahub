@@ -630,7 +630,7 @@ th {
 
 .coral--light,
 .coral--dark {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   font-size: .8125rem;
@@ -703,7 +703,7 @@ th {
 }
 
 .coral-Heading--1 {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 300;
   font-style: normal;
   font-size: 1.375rem;
@@ -712,7 +712,7 @@ th {
 }
 
 .coral-Heading--2 {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 300;
   font-style: normal;
   font-size: 1.25rem;
@@ -724,7 +724,7 @@ th {
 .coral-Heading--4,
 .coral-Heading--5,
 .coral-Heading--6 {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
 }
@@ -3926,7 +3926,7 @@ th {
   border-radius: .25rem;
   border-color: #d0d0d0;
   background-color: #fafafa;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   color: #323232;
@@ -4134,7 +4134,7 @@ th {
   min-width: 6.875rem;
   height: 2.375rem;
   width: 12.5rem;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   vertical-align: top;
@@ -11892,7 +11892,7 @@ th {
   border-radius: .25rem;
   border-color: #d0d0d0;
   background-color: #fafafa;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   color: #6d6d6d;
@@ -12845,7 +12845,7 @@ th {
 .coral-Form-fieldset-legend {
   display: block;
   margin: .5rem 0 .625rem 0;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   font-size: 1.125rem;
@@ -13048,7 +13048,7 @@ th {
 }
 
 .coral3-ButtonGroup-item.coral3-Button {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -13304,7 +13304,7 @@ th {
   min-width: 6.875rem;
   height: 2.375rem;
   width: 12.5rem;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   vertical-align: top;
@@ -13946,7 +13946,7 @@ th {
 }
 
 .coral3-Accordion-label {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   display: block;
@@ -14159,7 +14159,7 @@ coral-accordion-item-content {
 
 .coral--dark .coral3-Accordion--large .coral3-Accordion-header .coral3-Accordion-label,
 .coral--dark .coral3-Accordion--large .coral3-Accordion-header .coral3-Accordion-caption {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
 }
@@ -15307,7 +15307,7 @@ coral-autocomplete-item {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 300;
   font-style: normal;
 }
@@ -15845,7 +15845,7 @@ coral-card-content:empty {
 }
 
 .coral3-Card-title {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   color: #323232;
@@ -15959,7 +15959,7 @@ coral-card-content:empty {
 
 .coral3-SelectList-group:before {
   display: block;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   font-size: .625rem;
@@ -16041,7 +16041,7 @@ coral-select-item {
 .coral3-Select-button {
   position: relative;
   color: #323232;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   -webkit-font-smoothing: subpixel-antialiased;
@@ -20048,7 +20048,7 @@ coral-shell-menu {
   padding-right: .21875rem;
   line-height: .6875rem;
   text-align: center;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   font-size: .5625rem;
@@ -20581,7 +20581,7 @@ coral-shell-user-footer .coral3-Button + .coral3-Button:focus {
   padding: 0 .5rem;
   background-color: #326ec8;
   color: #fff;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
@@ -20797,7 +20797,7 @@ coral-shell-user-footer .coral3-Button + .coral3-Button:focus {
   padding: 0 .625rem;
   height: 1.125rem;
   font-size: .75rem;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 700;
   font-style: normal;
   line-height: 1.125rem;
@@ -22974,7 +22974,7 @@ form.aligned .coral-Slider.field {
   padding-right: 1.125rem;
   margin-right: .625rem;
   color: #666;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   font-size: 1rem;
@@ -23547,7 +23547,7 @@ form.aligned .coral-Slider.field {
 .endor-UserProfile-tenant {
   display: inline-block;
   margin: 0 .625rem;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   font-size: 1rem;
@@ -23616,7 +23616,7 @@ form.aligned .coral-Slider.field {
   border-top: .0625rem solid #dcdcdc;
   color: #b4b4b4;
   font-size: .8125rem;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   overflow: hidden;
@@ -23660,7 +23660,7 @@ a.endor-Footer-item:hover {
   border: 0;
   background: 0;
   color: #3287d2;
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: normal;
   font-style: normal;
   font-size: .8125rem;
@@ -23778,14 +23778,14 @@ a.endor-Footer-item:hover {
 }
 
 .endor-Account-name {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 300;
   font-style: normal;
   font-size: 1.125rem;
 }
 
 .endor-Account-caption {
-  font-family: adobe-clean,Helvetica,Arial,sans-serif;
+  font-family: bnpp-sans;
   font-weight: 300;
   font-style: normal;
   font-size: .8125rem;
@@ -23982,4 +23982,60 @@ a.endor-Footer-item:hover {
 
 .coral--dark .coral-TagList-tag-removeButton:hover {
   color: #fff;
+}
+
+@font-face {
+  font-family: 'bnpp-sans';
+  src: url('../resources/fonts/bnpp-sans.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-bold';
+  src: url('../resources/fonts/bnpp-sans-bold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-bold-italic';
+  src: url('../resources/fonts/bnpp-sans-bold-italic.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-extrabold';
+  src: url('../resources/fonts/bnpp-sans-extrabold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-extrabold-italic';
+  src: url('../resources/fonts/bnpp-sans-extrabold-italic.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-italic';
+  src: url('../resources/fonts/bnpp-sans-italic.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-light';
+  src: url('../resources/fonts/bnpp-sans-light.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'bnpp-sans-light-italic';
+  src: url('../resources/fonts/bnpp-sans-light-italic.ttf');
+  font-weight: normal;
+  font-style: normal;
 }
