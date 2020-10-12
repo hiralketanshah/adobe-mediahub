@@ -321,7 +321,7 @@ int minContentSize = 100;
 <coral-shell>
     <div style="height: 5px; background-color: #00ac7b"></div>
     <coral-shell-header role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>"
-                        class="coral--dark granite-shell-header bnp--green"><%
+                        class="granite-shell-header bnp--green"><%
         String navigationUrl = "/mnt/overlay/granite/ui/content/shell/globalnav.html";
         if (consoleId != null) {
             navigationUrl += "?consoleId=" + URLEncoder.encode(consoleId, "utf-8");
