@@ -587,7 +587,10 @@ login
     <div id="push"></div>
 </div>
 <div id="footer" role="contentinfo">
-    <div class="legal-footer"><%
+    <div style="height: 5px; background-color: #00ac7b"></div>
+    <div class="legal-footer coral--light">
+
+        <%
         // Footer: default copyright (removable)
         if (cfg.containsKey("footer/copy/text")) {
             ProductInfoProvider productInfoProvider = sling.getService(ProductInfoProvider.class);
@@ -598,27 +601,15 @@ login
             String text = cfg.get("footer/copy/text","");
             %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "{0} is the product year", year)) %></span><%
         }
-        %><ul id="usage-box"><%
-
-            // Footer: dynamic items (config/footer/items)
-            if (configs.getChild("footer/items") != null) {
-                Iterator<Resource> footerItems = configs.getChild("footer/items").listChildren();
-                while (footerItems.hasNext()) {
-                    %>
-                    <li><%
-                    String itemName = footerItems.next().getName();
-                    String href = i18n.getVar(cfg.get("footer/items/" + itemName + "/href", String.class));
-                    if (href != null) {
-                        %><a href="<%= xssAPI.getValidHref(href) %>"><%
-                    }
-                    %><%= printProperty(cfg, i18n, xssAPI, "footer/items/" + itemName + "/text", "") %><%
-                    if (href != null) {
-                        %></a><%
-                    }
-                    %></li><%
-                }
-            }
         %>
+        <span>|</span>
+        <span><a>Terms of use</a></span>
+        <span>|</span>
+        <span><a>FAQ</a></span>
+
+        <ul id="usage-box">
+          <li><a href="#"><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></a></li>
+          <li><span>The bank for a changing world<span></li>
         </ul>
     </div>
 </div><%
