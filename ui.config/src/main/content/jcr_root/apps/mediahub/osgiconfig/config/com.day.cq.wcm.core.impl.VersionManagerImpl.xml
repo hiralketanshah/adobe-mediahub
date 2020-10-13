@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+	xmlns:jcr="http://www.jcp.org/jcr/1.0"
+	jcr:primaryType="sling:OsgiConfig" 
+	versionmanager.purgePaths="[/content]"
+	versionmanager.maxAgeDays="{Long}7"
+	versionmanager.purgingEnabled="{Boolean}true"
+	versionmanager.createVersionOnActivation="{Boolean}true"
+	versionmanager.maxNumberVersions="{Long}0"
+	versionmanager.minNumberVersions="{Long}0"
+	versionmanager.ivPaths="[/]"/>

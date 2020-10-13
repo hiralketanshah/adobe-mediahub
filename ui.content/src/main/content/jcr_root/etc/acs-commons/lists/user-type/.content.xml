@@ -13,11 +13,11 @@
         <list jcr:primaryType="nt:unstructured">
             <item0
                 jcr:primaryType="nt:unstructured"
-                jcr:title="External User"
+                jcr:title="External Provider"
                 value="external"/>
             <item1
                 jcr:primaryType="nt:unstructured"
-                jcr:title="Interal User"
+                jcr:title="Internal"
                 value="internal"/>
         </list>
     </jcr:content>
