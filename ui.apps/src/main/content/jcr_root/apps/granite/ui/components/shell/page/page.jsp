@@ -224,7 +224,7 @@ String userPreferencesPath = auth.getPath() + "/" + UserPropertiesService.PREFER
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="<%= request.getContextPath() %>/libs/granite/core/content/login/favicon.ico"><%
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/apps/granite/core/content/login/favicon.ico"><%
 
     String title = cfg.get("jcr:title", String.class);
     Resource headTitleRes = resource.getChild("head/title");

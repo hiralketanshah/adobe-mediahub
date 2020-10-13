@@ -365,7 +365,7 @@ htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="<%= request.getContextPath() %>/libs/granite/core/content/login/favicon.ico"><%
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/apps/granite/core/content/login/favicon.ico"><%
 
     String origTitle = cfg.get("jcr:title", String.class);
     String baseTitle = i18n.getVar(origTitle);
