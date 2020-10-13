@@ -896,7 +896,7 @@
                     variant: "primary"
                 });
                 createVersionButton.setAttribute("trackingfeature", "aem:assets:asset:version:create");
-                createVersionButton.label.textContent = Granite.I18n.get("Create Version");
+                createVersionButton.label.textContent = Granite.I18n.get("Update");
                 duplicateDialog.footer.appendChild(createVersionButton);
                 createVersionButton.on("click", function() {
                     self._duplicateOperations.createVersion(duplicateDialog, self, duplicates);
