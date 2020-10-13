@@ -588,7 +588,7 @@ login
 </div>
 <div id="footer" role="contentinfo">
     <div style="height: 5px; background-color: #00ac7b"></div>
-    <div class="legal-footer coral--light">
+    <div class="legal-footer coral--light bnp--green">
 
         <%
         // Footer: default copyright (removable)
@@ -603,9 +603,19 @@ login
         }
         %>
         <span>|</span>
-        <span><a>Terms of use</a></span>
+        <%
+        if (cfg.containsKey("footer/terms/text")) {
+            String text = cfg.get("footer/terms/text","");
+            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "Terms of use")) %></span><%
+        }
+        %>
         <span>|</span>
-        <span><a>FAQ</a></span>
+        <%
+        if (cfg.containsKey("footer/faq/text")) {
+            String text = cfg.get("footer/faq/text","");
+            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "FAQ")) %></span><%
+        }
+        %>
 
         <ul id="usage-box">
           <li><a href="#"><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></a></li>
