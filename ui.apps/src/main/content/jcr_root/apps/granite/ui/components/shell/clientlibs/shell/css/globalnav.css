@@ -1,0 +1,176 @@
+/*************************************************************************
+* ADOBE CONFIDENTIAL
+* ___________________
+*
+* Copyright 2016 Adobe
+* All Rights Reserved.
+*
+* NOTICE: All information contained herein is, and remains
+* the property of Adobe and its suppliers, if any. The intellectual
+* and technical concepts contained herein are proprietary to Adobe
+* and its suppliers and are protected by all applicable intellectual
+* property laws, including trade secret and copyright laws.
+* Dissemination of this information or reproduction of this material
+* is strictly forbidden unless prior written permission is obtained
+* from Adobe.
+**************************************************************************/
+.globalnav-homecard {
+    height: 9.5rem; /* 152px */
+    outline: none;
+    cursor: pointer;
+}
+
+.globalnav-homecard-icon {
+    margin-top: 4.25rem; /* 68px */
+    width: 100%;
+    text-align: center;
+    color: rgba(0, 0, 0, .60); /* $coral-color-icon */
+}
+
+.globalnav-homecard-chevron {
+    position: absolute;
+    right: 4.25rem;
+    top: 4.25rem;
+    color: #707070;
+}
+
+.globalnav-homecard-title {
+    margin-top: 13px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #707070;
+}
+
+
+.globalnav-toolcard {
+    cursor: pointer;
+}
+
+.globalnav-toolcard-icon {
+    box-sizing: border-box;
+    padding-top: 80px;
+    height: 175px;
+    text-align: center;
+    color: rgba(0, 0, 0, .60);
+}
+
+
+.globalnav-collection-container coral-masonry {
+    margin: 0 auto;
+    max-width: 75.375rem; /* (columnwidth (222) + spacing(16)) * 5 + spacing(16) */
+}
+
+.globalnav-collection-container > coral-masonry coral-masonry-item {
+    outline: none;
+}
+
+coral-masonry-item:focus .globalnav-homecard-icon,
+coral-masonry-item:hover .globalnav-homecard-icon {
+    color: rgba(0, 0, 0, .80); /* $coral-color-icon-hover */
+}
+
+coral-masonry-item:focus .globalnav-homecard-chevron,
+coral-masonry-item:focus .globalnav-homecard-title,
+coral-masonry-item:hover .globalnav-homecard-chevron,
+coral-masonry-item:hover .globalnav-homecard-title {
+    color: rgb(50, 50, 50); /* $coral-color-text-heading */
+}
+
+
+.globalnav-navigator-backbutton {
+    width: 100%;
+    margin-top: 35px;
+
+    font-size: 22px;
+    font-weight: 300;
+    color: #707070;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+.globalnav-navigator-backbutton > .globalnav-navigator-backbutton-icon {
+    position: relative;
+    top: -1px;
+
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+/* @coral: centers the text due to the font size change. */
+.globalnav-navigator-backbutton coral-button-label {
+    vertical-align: baseline;
+    margin-left: 5px;
+}
+
+
+.globalnav-collection-container {
+    overflow: auto;
+    position: absolute;
+    top: 118px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+
+.globalnav-tools-navigation coral-columnview-column {
+    box-sizing: border-box; /* Make sure that the whole column width (including border) fits into the rail */
+}
+
+.globalnav-tools-navigation coral-columnview-item[active] {
+    background-color: inherit;
+    color: #323232;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+
+.globalnav-overlay {
+    height: 100%;
+    /* always override coral-shell-menu color */
+    background-color: #f5f5f5 !important; /* csslint allow: important */
+}
+
+.globalnav-overlay coral-tabview[orientation=vertical] coral-tablist {
+    border-right: 1px solid #E1E1E1;
+    width: 3.5rem; /* 56px */
+    background-color: #FAFAFA;
+}
+
+.globalnav-overlay coral-tabview[orientation=vertical] coral-tablist[size=L] coral-tab {
+    text-align: center; /* this is required to center the icon due to the width change */
+}
+
+.globalnav-overlay coral-tabview[orientation=vertical] coral-tablist[size=L] coral-tab {
+    position: relative;
+}
+
+.globalnav-overlay coral-tabview[orientation=vertical] coral-tablist[size=L] coral-tab[selected]:after {
+    content: '';
+    display: block;
+    background-color: #ebebeb;
+    height: 2.25rem;
+    width: 2.25rem;
+    border-radius: .25rem;
+    position: absolute;
+    top: .3125rem;
+    left: .5625rem;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.coral3-Icon--bnp {
+    background-image: url(/content/dam/mediahub/BNPP_H_RRVB.svg);
+}
+
+.bnp-text-style {
+    vertical-align: top;
+    text-decoration: none;
+    text-align: center;
+    font-size: .875rem;
+    line-height: 2.375rem;
+    color: rgba(0,0,0,0.8);
+    cursor: pointer;
+    white-space: nowrap;
+}

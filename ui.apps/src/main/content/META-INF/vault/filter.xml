@@ -5,4 +5,5 @@
     <filter root="/apps/mediahub/i18n"/>
     <filter root="/apps/dam" mode="merge"/>
     <filter root="/apps/granite" mode="merge"/>
+	  <filter root="/apps/clientlibs" mode="merge"/>
 </workspaceFilter>
