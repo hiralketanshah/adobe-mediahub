@@ -319,7 +319,7 @@ int minRailSize = 250;
 int minContentSize = 100;
 %><body class="coral--light">
 <coral-shell>
-    <div style="height: 5px; background-color: #00ac7b"></div>
+    <div class="green-bar"></div>
     <coral-shell-header role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>"
                         class="granite-shell-header bnp--green"><%
         String navigationUrl = "/mnt/overlay/granite/ui/content/shell/globalnav.html";

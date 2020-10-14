@@ -174,3 +174,13 @@ coral-masonry-item:hover .globalnav-homecard-title {
     cursor: pointer;
     white-space: nowrap;
 }
+
+.green-bar{
+	background-color: #00ac7b;
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	height: 5px;
+	z-index: 100000000000000;
+}
