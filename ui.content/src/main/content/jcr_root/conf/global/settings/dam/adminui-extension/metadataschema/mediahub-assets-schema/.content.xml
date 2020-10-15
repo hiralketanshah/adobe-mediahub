@@ -1,0 +1,1140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="Mediahub - Assets schema">
+    <dm_video/>
+    <image/>
+    <application/>
+    <video/>
+    <jcr:content jcr:primaryType="nt:unstructured"/>
+    <items jcr:primaryType="nt:unstructured">
+        <tabs
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/coral/foundation/tabs"
+            size="L">
+            <items jcr:primaryType="nt:unstructured">
+                <tab1
+                    granite:rel="aem-assets-metadata-form-tab"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Description"
+                    sling:resourceType="granite/ui/components/coral/foundation/container"
+                    listOrder="0">
+                    <granite:data
+                        jcr:primaryType="nt:unstructured"
+                        tabid="f84cc8d6-60ab-474e-bdf8-a0b7a434f289"/>
+                    <items jcr:primaryType="nt:unstructured">
+                        <col1
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="0">
+                            <items jcr:primaryType="nt:unstructured">
+                                <header
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="General Information"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/sectionfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="section"/>
+                                </header>
+                                <_x0031_602698277775
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Creator"
+                                    name="./jcr:createdBy"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:createdBy"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602698277775>
+                                <creation
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    displayedFormat="YYYY-MM-DD HH:mm"
+                                    fieldLabel="Created"
+                                    name="./jcr:created"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                    type="datetime">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:created"
+                                        metaType="datepicker"
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
+                                </creation>
+                                <_x0031_602698396642
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Modifier"
+                                    name="./jcr:content/jcr:lastModifiedBy"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:lastModifiedBy"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602698396642>
+                                <_x0031_602698475232
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    displayedFormat="YYYY-MM-DD HH:mm"
+                                    fieldLabel="Modification date"
+                                    name="./jcr:content/jcr:lastModified"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                    type="datetime">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:lastModified"
+                                        metaType="datepicker"
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
+                                </_x0031_602698475232>
+                                <_x0031_602700001527
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    defaultValue=" "
+                                    fieldLabel="Size"
+                                    name="./jcr:content/metadata/dam:size"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/numberfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/dam:size"
+                                        metaType="number"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602700001527>
+                                <format
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Type"
+                                    name="./jcr:content/metadata/dc:format"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/dc:format"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </format>
+                                <autotags
+                                    cq:showOnCreate="{Boolean}true"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    allowCreate="{Boolean}true"
+                                    fieldLabel="Smart Tags"
+                                    metaType="autotags"
+                                    name="./jcr:content/metadata/predictedTags"
+                                    readOnly="{Boolean}true"
+                                    resourceType="dam/gui/coral/components/admin/autotag">
+                                    <granite:rendercondition
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/autotag/autotagrendercondition"/>
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/predictedTags"/>
+                                </autotags>
+                                <reviewstatus
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Review Status"
+                                    name="./jcr:content/metadata/dam:status"
+                                    readOnly="{Boolean}true"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/dam:status"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <approved
+                                            jcr:primaryType="nt:unstructured"
+                                            selected="{Boolean}false"
+                                            text="Approved"
+                                            value="approved"/>
+                                        <rejected
+                                            jcr:primaryType="nt:unstructured"
+                                            selected="{Boolean}false"
+                                            text="Rejected"
+                                            value="rejected"/>
+                                        <changesrequested
+                                            jcr:primaryType="nt:unstructured"
+                                            selected="{Boolean}false"
+                                            text="Changes Requested"
+                                            value="changesRequested"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </reviewstatus>
+                            </items>
+                        </col1>
+                        <col2
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            _x0030_2698882794-DefaultValue="1"
+                            listOrder="1">
+                            <items jcr:primaryType="nt:unstructured">
+                                <header
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Asset"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/sectionfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="section"/>
+                                </header>
+                                <title
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Title"
+                                    name="./jcr:content/metadata/dc:title"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/dc:title"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </title>
+                                <description
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Description"
+                                    name="./jcr:content/metadata/dc:description"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/dc:description"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </description>
+                                <language
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Language"
+                                    multiple="true"
+                                    name="./jcr:content/metadata/dc:language"
+                                    ordered="true"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/dc:language"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <ar_tn
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Arabic (Tunisia)"
+                                            value="ar_tn"/>
+                                        <ar_ye
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Arabic (Yemen)"
+                                            value="ar_ye"/>
+                                        <be_by
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Belorussian (Belorussia)"
+                                            value="be_by"/>
+                                        <bg_bg
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Bulgarian (Bulgaria)"
+                                            value="bg_bg"/>
+                                        <ca_es
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Catalan (Spain)"
+                                            value="ca_es"/>
+                                        <cs_cz
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Czech (Czech Republic)"
+                                            value="cs_cz"/>
+                                        <da_dk
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Danish (Denmark)"
+                                            value="da_dk"/>
+                                        <de
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German"
+                                            value="de"/>
+                                        <de_at
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German (Austria)"
+                                            value="de_at"/>
+                                        <de_ch
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German (Switzerland)"
+                                            value="de_ch"/>
+                                        <de_de
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German (Germany)"
+                                            value="de_de"/>
+                                        <de_lu
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German (Luxembourg)"
+                                            value="de_lu"/>
+                                        <el_gr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Greek (Greece)"
+                                            value="el_gr"/>
+                                        <en
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English"
+                                            value="en"/>
+                                        <en_au
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (Australia)"
+                                            value="en_au"/>
+                                        <en_ca
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (Canada)"
+                                            value="en_ca"/>
+                                        <en_gb
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (United Kingdom)"
+                                            value="en_gb"/>
+                                        <en_ie
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (Ireland)"
+                                            value="en_ie"/>
+                                        <en_in
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (India)"
+                                            value="en_in"/>
+                                        <en_nz
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (New Zealand)"
+                                            value="en_nz"/>
+                                        <en_us
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (United States)"
+                                            value="en_us"/>
+                                        <en_za
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English (South Africa)"
+                                            value="en_za"/>
+                                        <es
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish"
+                                            value="es"/>
+                                        <es_ar
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Argentina)"
+                                            value="es_ar"/>
+                                        <es_bo
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Bolivia)"
+                                            value="es_bo"/>
+                                        <es_cl
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Chile)"
+                                            value="es_cl"/>
+                                        <es_co
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Colombia)"
+                                            value="es_co"/>
+                                        <es_cr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Costa Rica)"
+                                            value="es_cr"/>
+                                        <es_do
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Dominican Republic)"
+                                            value="es_do"/>
+                                        <es_ec
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Ecuador)"
+                                            value="es_ec"/>
+                                        <es_es
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Spain)"
+                                            value="es_es"/>
+                                        <es_gt
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Guatemala)"
+                                            value="es_gt"/>
+                                        <es_hn
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Honduras)"
+                                            value="es_hn"/>
+                                        <es_mx
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Mexico)"
+                                            value="es_mx"/>
+                                        <es_ni
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Nicaragua)"
+                                            value="es_ni"/>
+                                        <es_pa
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Panama)"
+                                            value="es_pa"/>
+                                        <es_pe
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Peru)"
+                                            value="es_pe"/>
+                                        <es_pr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Puerto Rico)"
+                                            value="es_pr"/>
+                                        <es_py
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Paraguay)"
+                                            value="es_py"/>
+                                        <es_sv
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (El Salvador)"
+                                            value="es_sv"/>
+                                        <es_uy
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Uruguay)"
+                                            value="es_uy"/>
+                                        <es_ve
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish (Venezuela)"
+                                            value="es_ve"/>
+                                        <et_ee
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Estonian (Estonia)"
+                                            value="et_ee"/>
+                                        <fi_fi
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Finnish (Finland)"
+                                            value="fi_fi"/>
+                                        <fr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French"
+                                            value="fr"/>
+                                        <fr_be
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French (Belgium)"
+                                            value="fr_be"/>
+                                        <fr_ca
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French (Canada)"
+                                            value="fr_ca"/>
+                                        <fr_ch
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French (Switzerland)"
+                                            value="fr_ch"/>
+                                        <fr_fr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French (France)"
+                                            value="fr_fr"/>
+                                        <fr_lu
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French (Luxembourg)"
+                                            value="fr_lu"/>
+                                        <hi_in
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Hindi (India)"
+                                            value="hi_in"/>
+                                        <hr_hr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Croatian (Croatia)"
+                                            value="hr_hr"/>
+                                        <hu_hu
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Hungarian (Hungary)"
+                                            value="hu_hu"/>
+                                        <is_is
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Icelandic (Iceland)"
+                                            value="is_is"/>
+                                        <it
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Italian"
+                                            value="it"/>
+                                        <it_ch
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Italian (Switzerland)"
+                                            value="it_ch"/>
+                                        <it_it
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Italian (Italy)"
+                                            value="it_it"/>
+                                        <iw_il
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Hebrew (Israel)"
+                                            value="iw_il"/>
+                                        <ja
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Japanese"
+                                            value="ja"/>
+                                        <ja_jp
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Japanese (Japan)"
+                                            value="ja_jp"/>
+                                        <ko_kr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Korean (South Korea)"
+                                            value="ko_kr"/>
+                                        <lt_lt
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Lithuanian (Lithuania)"
+                                            value="lt_lt"/>
+                                        <lv_lv
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Latvian (Latvia)"
+                                            value="lv_lv"/>
+                                        <mk_mk
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Macedonian (Macedonia)"
+                                            value="mk_mk"/>
+                                        <nl_be
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Dutch (Belgium)"
+                                            value="nl_be"/>
+                                        <nl_nl
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Dutch (Netherlands)"
+                                            value="nl_nl"/>
+                                        <no_no
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Norwegian (Bokmål) (Norway)"
+                                            value="no_no"/>
+                                        <no_no_ny
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Norwegian (Nynorsk) (Norway)"
+                                            value="no_no_ny"/>
+                                        <pl_pl
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Polish (Poland)"
+                                            value="pl_pl"/>
+                                        <pt
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Portuguese"
+                                            value="pt"/>
+                                        <pt_br
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Portuguese (Brazil)"
+                                            value="pt_br"/>
+                                        <pt_pt
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Portuguese (Portugal)"
+                                            value="pt_pt"/>
+                                        <ro_ro
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Romanian (Romania)"
+                                            value="ro_ro"/>
+                                        <ru
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Russian"
+                                            value="ru"/>
+                                        <ru_ru
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Russian (Russia)"
+                                            value="ru_ru"/>
+                                        <sh_yu
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Serbo-Croatian (Yugoslavia)"
+                                            value="sh_yu"/>
+                                        <sk_sk
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Slovak (Slovakia)"
+                                            value="sk_sk"/>
+                                        <sl_si
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Slovenian (Slovenia)"
+                                            value="sl_si"/>
+                                        <sq_al
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Albanian (Albania)"
+                                            value="sq_al"/>
+                                        <sr_yu
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Serbian (Cyrillic) (Yugoslavia)"
+                                            value="sr_yu"/>
+                                        <sv
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Swedish"
+                                            value="sv"/>
+                                        <sv_se
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Swedish (Sweden)"
+                                            value="sv_se"/>
+                                        <th_th
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Thai (Western digits) (Thailand)"
+                                            value="th_th"/>
+                                        <th_th_th
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Thai (Thai digits) (Thailand)"
+                                            value="th_th_th"/>
+                                        <tr_tr
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Turkish (Turkey)"
+                                            value="tr_tr"/>
+                                        <uk_ua
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Ukrainian (Ukraine)"
+                                            value="uk_ua"/>
+                                        <zh
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Chinese (Simplified)"
+                                            value="zh"/>
+                                        <zh_cn
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Simplified Chinese (China)"
+                                            value="zh_cn"/>
+                                        <zh_hk
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Chinese (Hong Kong)"
+                                            value="zh_hk"/>
+                                        <zh_tw
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Chinese (Taiwan)"
+                                            value="zh_tw"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </language>
+                                <_x0031_602699894196
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Notes"
+                                    name="./jcr:content/metadata/bnpp-notes"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-notes"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602699894196>
+                                <_x0031_602698805875
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Rich media home page"
+                                    name="./jcr:content/metadata/bnpp-richmediahome"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-richmediahome"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602698805875>
+                                <_x0031_602698882794
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Subtitles"
+                                    name="./jcr:content/metadata/bnpp-subtitles"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-subtitles"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_602698953047
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Yes"
+                                            value="yes"/>
+                                        <_x0031_602698956909
+                                            jcr:primaryType="nt:unstructured"
+                                            selected="{Boolean}true"
+                                            text="No"
+                                            value="no"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_602698882794>
+                                <_x0031_602699008365
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Subtitle language(s)"
+                                    name="./jcr:content/metadata/bnpp-subtitlelanguage"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-subtitlelanguage"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured"/>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_602699008365>
+                            </items>
+                        </col2>
+                        <col3
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="2">
+                            <items jcr:primaryType="nt:unstructured">
+                                <header
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    class="hide-in-bulkeditor"
+                                    fieldLabel="Technical information"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/sectionfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="section"/>
+                                </header>
+                                <source
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    class="references-referencing"
+                                    fieldLabel="Source"
+                                    relationLabel="sources"
+                                    resourceType="dam/gui/components/admin/relation"
+                                    reverseRelationLabel="derived">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="sources"/>
+                                </source>
+                                <derived
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    class="references-referencing"
+                                    fieldLabel="Derived"
+                                    relationLabel="derived"
+                                    resourceType="dam/gui/components/admin/relation"
+                                    reverseRelationLabel="source">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="derived"/>
+                                </derived>
+                                <others
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    class="references-referencing"
+                                    fieldLabel="Others"
+                                    relationLabel="others"
+                                    resourceType="dam/gui/components/admin/relation">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="others"/>
+                                </others>
+                            </items>
+                        </col3>
+                    </items>
+                </tab1>
+                <tab2
+                    granite:rel="aem-assets-metadata-form-tab"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Use"
+                    sling:resourceType="granite/ui/components/coral/foundation/container"
+                    listOrder="1">
+                    <granite:data
+                        jcr:primaryType="nt:unstructured"
+                        tabid="7c927721-1473-492f-b949-4fa2f82a32a0"/>
+                    <items jcr:primaryType="nt:unstructured">
+                        <col1
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            _x0030_2701173544-DefaultValue="1"
+                            listOrder="0">
+                            <items jcr:primaryType="nt:unstructured">
+                                <_x0031_602701003941
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Broadcast status"
+                                    multiple="true"
+                                    name="./jcr:content/metadata/bnpp-broadcast-status"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-broadcast-status"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_602701040089
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Internal"
+                                            value="internal"/>
+                                        <_x0031_602701050678
+                                            jcr:primaryType="nt:unstructured"
+                                            text="External"
+                                            value="external"/>
+                                        <_x0031_602701059557
+                                            jcr:primaryType="nt:unstructured"
+                                            text="YouTube"
+                                            value="youtube"/>
+                                        <_x0031_602701073076
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Not broadcast"
+                                            value="not-broadcast"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_602701003941>
+                                <_x0031_602701173544
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Download authorization"
+                                    name="./jcr:content/metadata/bnpp-download-auth"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-download-auth"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_602701184103
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Yes"
+                                            value="yes"/>
+                                        <_x0031_602701187587
+                                            jcr:primaryType="nt:unstructured"
+                                            selected="{Boolean}true"
+                                            text="No"
+                                            value="no"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_602701173544>
+                                <creator
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="URL DAM Archive"
+                                    name="./jcr:content/metadata/bnpp-url-dam-archive"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-url-dam-archive"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </creator>
+                                <contributor
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Internal broadcast URL"
+                                    name="./jcr:content/metadata/bnpp-internal-broadcast-url"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-internal-broadcast-url"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </contributor>
+                                <copyright
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Internal file URL"
+                                    name="./jcr:content/metadata/bnpp-internal-file-url"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-internal-file-url"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </copyright>
+                                <copyrightowner
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="External broadcast URL"
+                                    name="./jcr:content/metadata/bnpp-external-broadcast-url"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-external-broadcast-url"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </copyrightowner>
+                                <usageterms
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="External file URL"
+                                    name="./jcr:content/metadata/bnpp-external-file-url"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-external-file-url"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </usageterms>
+                                <_x0031_602701415351
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Youtube file URL"
+                                    name="./jcr:content/metadata/bnpp-youtube-url"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-youtube-url"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701415351>
+                            </items>
+                        </col1>
+                        <col2
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="1">
+                            <items jcr:primaryType="nt:unstructured">
+                                <_x0031_602701481371
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="History log"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/sectionfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="section"/>
+                                </_x0031_602701481371>
+                                <_x0031_602701593357
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Applicant"
+                                    name="./jcr:content/metadata/bnpp-applicant"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-applicant"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701593357>
+                                <_x0031_602701641275
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    displayedFormat="YYYY-MM-DD HH:mm"
+                                    fieldLabel="Date of the request"
+                                    name="./jcr:content/metadata/bnpp-date-request"
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                    type="datetime">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-date-request"
+                                        metaType="datepicker"
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701641275>
+                                <_x0031_602701716309
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Use"
+                                    name="./jcr:content/metadata/bnpp-history-use"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-history-use"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701716309>
+                                <_x0031_602701806692
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    displayedFormat="YYYY-MM-DD HH:mm"
+                                    fieldLabel="Date of use"
+                                    name="./jcr:content/metadata/bnpp-history-date-use"
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                    type="datetime">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-history-date-use"
+                                        metaType="datepicker"
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701806692>
+                                <_x0031_602701843458
+                                    cq:showOnCreate="{Boolean}true"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    cq-msm-lockable="cq:tags"
+                                    fieldLabel="Zone"
+                                    metaType="tags"
+                                    multiple="true"
+                                    name="./jcr:content/metadata/bnpp-zone"
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/geography">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-zone"
+                                        visibilityCascading="default"/>
+                                </_x0031_602701843458>
+                            </items>
+                        </col2>
+                        <col3
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="2"/>
+                        <col4
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="3"/>
+                    </items>
+                </tab2>
+                <tab3
+                    granite:rel="aem-assets-metadata-form-tab"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Legal"
+                    sling:resourceType="granite/ui/components/coral/foundation/container"
+                    listOrder="2">
+                    <granite:data jcr:primaryType="nt:unstructured"/>
+                    <items jcr:primaryType="nt:unstructured">
+                        <col1
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="0"
+                            oice-options="on">
+                            <items jcr:primaryType="nt:unstructured">
+                                <_x0031_602702321694
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Usages rights"
+                                    name="./jcr:content/metadata/bnpp-usage-rights"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-usage-rights"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_602702749452
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Free of use"
+                                            value="free-of-use"/>
+                                        <_x0031_602702757593
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Media buying - Achats médias - All numeric support"
+                                            value="media-buying-all"/>
+                                        <_x0031_602702815681
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Media buying - Cinema"
+                                            value="media-buying-cinema"/>
+                                        <_x0031_602702855011
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Media buying -Internet social media"
+                                            value="media-buying-internet"/>
+                                        <_x0031_602702890260
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Media buying - Press"
+                                            value="media-buying-press"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_602702321694>
+                                <_x0031_602702358404
+                                    cq:showOnCreate="{Boolean}true"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    cq-msm-lockable="cq:tags"
+                                    fieldLabel="Usages territories"
+                                    metaType="tags"
+                                    multiple="true"
+                                    name="./jcr:content/metadata/bnpp-usages-territories"
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/geography">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-usages-territories"
+                                        visibilityCascading="default"/>
+                                </_x0031_602702358404>
+                                <_x0031_602702613817
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    displayedFormat="YYYY-MM-DD HH:mm"
+                                    fieldLabel="Usage rights end date "
+                                    name="./jcr:content/metadata/bnpp-usage-end-date"
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                    type="datetime">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-usage-end-da"
+                                        metaType="datepicker"
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
+                                </_x0031_602702613817>
+                                <_x0031_602702619340
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    class="references-referencing"
+                                    fieldLabel="Contracts"
+                                    resourceType="dam/gui/coral/components/admin/references">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        metaType="reference"/>
+                                </_x0031_602702619340>
+                                <_x0031_602702671535
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Contracts"
+                                    name="./jcr:content/metadata/bnpp-contracts"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./metadata/bnpp-contracts"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602702671535>
+                            </items>
+                        </col1>
+                        <col2
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="1"/>
+                        <col3
+                            granite:rel="aem-assets-metadata-form-column"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            listOrder="2"/>
+                    </items>
+                </tab3>
+            </items>
+        </tabs>
+    </items>
+</jcr:root>
