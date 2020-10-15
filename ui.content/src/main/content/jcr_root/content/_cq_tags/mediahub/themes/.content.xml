@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:description=""
+    jcr:primaryType="cq:Tag"
+    jcr:title="Themes"
+    sling:resourceType="cq/tagging/components/tag">
+    <advocacy/>
+    <awards/>
+    <business/>
+    <cinema/>
+    <cross-selling/>
+    <deals/>
+    <professional_development/>
+    <diversity/>
+    <economy/>
+    <company_engagement/>
+    <entrepreneurship/>
+    <environment/>
+    <events/>
+    <customer_journeys/>
+    <sustainable_finance/>
+    <group/>
+    <history/>
+    <innovation/>
+    <philanthropy/>
+    <our_people/>
+    <people_care/>
+    <regulation/>
+    <solidarity/>
+    <strategy/>
+    <tennis/>
+    <digital_transformation/>
+    <work_differently/>
+    <logistics/>
+</jcr:root>
