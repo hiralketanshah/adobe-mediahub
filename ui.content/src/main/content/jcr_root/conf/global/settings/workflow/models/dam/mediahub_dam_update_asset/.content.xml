@@ -2,7 +2,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2020-10-14T19:25:15.217+05:30"
+        cq:lastModified="{Date}2020-10-15T14:23:31.232+05:30"
         cq:lastModifiedBy="admin"
         cq:tags="[workflow:wcm]"
         cq:template="/libs/cq/workflow/templates/model"
@@ -232,6 +232,21 @@
                     PROCESS="com.day.cq.dam.pim.impl.sourcing.upload.process.ProductAssetsUploadProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </productassetuploadprocess>
+            <autotagassetprocess
+                jcr:created="{Date}2020-10-15T13:39:52.569+05:30"
+                jcr:createdBy="admin"
+                jcr:description="This process will add smart tags to assets."
+                jcr:lastModified="{Date}2020-10-15T13:39:52.569+05:30"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Smart Tag Assets Process"
+                sling:resourceType="dam/components/workflow/autotagassetprocess">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    IGNORE_ERRORS="true"
+                    PROCESS="com.day.cq.dam.similaritysearch.internal.workflow.process.AutoTagAssetProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </autotagassetprocess>
             <damupdateassetworkflowcompletedprocess
                 jcr:description="This process will send DamEvent.Type.DAM_UPDATE_ASSET_WORKFLOW_COMPLETED event when DAM update asset workflow is completed"
                 jcr:primaryType="nt:unstructured"
