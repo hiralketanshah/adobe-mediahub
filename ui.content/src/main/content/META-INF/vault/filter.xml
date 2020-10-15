@@ -6,4 +6,5 @@
     <filter root="/content/experience-fragments/mediahub" mode="merge"/>
     <filter root="/etc/acs-commons/lists/user-type" mode="merge"/>
     <filter root="/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema" mode="merge"/>
+	<filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="merge"/>
 </workspaceFilter>
