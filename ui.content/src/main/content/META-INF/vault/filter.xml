@@ -7,4 +7,5 @@
     <filter root="/etc/acs-commons/lists/user-type" mode="merge"/>
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
+    <filter root="/conf/global/settings/workflow/launcher"/>
 </workspaceFilter>
