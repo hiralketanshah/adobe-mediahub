@@ -168,9 +168,19 @@ coral-masonry-item:hover .globalnav-homecard-title {
     vertical-align: top;
     text-decoration: none;
     text-align: center;
-    font-size: .875rem;
-    line-height: 2.375rem;
+    font-size: 18px;
+    line-height: 36px;
     color: rgba(0,0,0,0.8);
     cursor: pointer;
     white-space: nowrap;
+}
+
+.green-bar{
+	background-color: #00ac7b;
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	height: 5px;
+	z-index: 100000000000000;
 }

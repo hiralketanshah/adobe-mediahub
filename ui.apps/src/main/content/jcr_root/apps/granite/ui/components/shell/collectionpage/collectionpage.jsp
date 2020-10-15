@@ -542,7 +542,7 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
     }
 %>
 <coral-shell>
-    <div style="height: 5px; background-color: #00ac7b"></div>
+    <div class="green-bar"></div>
     <coral-shell-header class="granite-shell-header bnp--green"
         data-granite-shell-header-mode-group="<%= xssAPI.encodeForHTMLAttr(modeGroup) %>"
         role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>">
