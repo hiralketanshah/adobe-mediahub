@@ -40,6 +40,7 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Creator"
                                     name="./jcr:content/jcr:createdBy"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -54,6 +55,7 @@
                                     displayedFormat="YYYY-MM-DD HH:mm"
                                     fieldLabel="Creation date"
                                     name="./jcr:content/jcr:created"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                     type="datetime">
                                     <granite:data
@@ -64,6 +66,34 @@
                                         typeHint="Date"
                                         visibilityCascading="default"/>
                                 </_x0031_602704477834>
+                                <_x0031_602749999641
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Modifier"
+                                    name="./jcr:content/jcr:lastModifiedBy"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:lastModifiedBy"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602749999641>
+                                <_x0031_602750002262
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    fieldLabel="Modification date"
+                                    name="./jcr:content/jcr:lastModified"
+                                    readOnly="{Boolean}true"
+                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        cq-msm-lockable="./jcr:lastModified"
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602750002262>
                                 <_x0031_602704689628
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
@@ -158,7 +188,9 @@
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/dc:description"
-                                        metaType="text"/>
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
                                 </_x0031_602704871349>
                                 <_x0031_602705301582
                                     cq:showOnCreate="{Boolean}true"
@@ -169,10 +201,12 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-report"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/campaigns">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/bnpp-report"/>
+                                        cq-msm-lockable="./metadata/bnpp-report"
+                                        visibilityCascading="default"/>
                                 </_x0031_602705301582>
                                 <_x0031_602705412718
                                     cq:showOnCreate="{Boolean}true"
@@ -183,7 +217,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-identified-entities"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/sponsors">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-identified-entities"
@@ -198,11 +233,11 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-geographicalarea"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/geography">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/bnpp-geographicalarea"
-                                        visibilityCascading="default"/>
+                                        cq-msm-lockable="./metadata/bnpp-geographicalarea"/>
                                 </_x0031_602705683324>
                                 <_x0031_602705722182
                                     cq:showOnCreate="{Boolean}true"
@@ -213,7 +248,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/default"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/contacts">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/default"
@@ -228,7 +264,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-theme"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/themes">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-theme"
@@ -243,7 +280,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-keywords"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/keywords">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-keywords"
@@ -323,7 +361,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-contact"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/contacts">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-contact"
@@ -338,7 +377,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-contact-country"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/geography">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-contact-country"
@@ -353,7 +393,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-sponsor-entities"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/sponsors">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-sponsor-entities"
@@ -368,7 +409,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-type-production"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/production-types">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-type-production"
@@ -383,7 +425,8 @@
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-country-prod"
-                                    resourceType="cq/gui/components/coral/common/form/tagfield">
+                                    resourceType="cq/gui/components/coral/common/form/tagfield"
+                                    rootPath="/content/cq:tags/mediahub/geography">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-country-prod"
@@ -429,7 +472,7 @@
                                     type="datetime">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/bnpp-date-"
+                                        cq-msm-lockable="./metadata/bnpp-date-control"
                                         metaType="datepicker"
                                         requiredCascading="default"
                                         typeHint="Date"
