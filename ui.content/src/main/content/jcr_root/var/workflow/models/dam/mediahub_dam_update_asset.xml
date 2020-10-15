@@ -8,7 +8,7 @@
     title="MediaHub DAM Update Asset">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset/jcr:content"
-        cq:lastModified="{Long}1602683716439"
+        cq:lastModified="{Long}1602752015201"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"
         tags="wcm"
@@ -191,6 +191,17 @@
         </node13>
         <node14
             jcr:primaryType="cq:WorkflowNode"
+            description="This process will add smart tags to assets."
+            title="Smart Tag Assets Process"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                IGNORE_ERRORS="true"
+                PROCESS="com.day.cq.dam.similaritysearch.internal.workflow.process.AutoTagAssetProcess"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node14>
+        <node15
+            jcr:primaryType="cq:WorkflowNode"
             description="This process will send DamEvent.Type.DAM_UPDATE_ASSET_WORKFLOW_COMPLETED event when DAM update asset workflow is completed"
             title="DAM Update Asset Workflow Completed"
             type="PROCESS">
@@ -198,8 +209,8 @@
                 jcr:primaryType="nt:unstructured"
                 PROCESS="com.day.cq.dam.core.impl.process.DamUpdateAssetWorkflowCompletedProcess"
                 PROCESS_AUTO_ADVANCE="true"/>
-        </node14>
-        <node15
+        </node15>
+        <node16
             jcr:primaryType="cq:WorkflowNode"
             description="This process will send email based on an email template to current user when a transient workflow is completed"
             title="Send Transient Workflow Completed Email"
@@ -209,13 +220,13 @@
                 PROCESS="com.day.cq.dam.core.impl.process.SendTransientWorkflowCompletedEmailProcess"
                 PROCESS_AUTO_ADVANCE="true"
                 templatePath="dam/workflow/notification/email/transientworkflowcompleted/en.txt"/>
-        </node15>
-        <node16
+        </node16>
+        <node17
             jcr:primaryType="cq:WorkflowNode"
             title="End"
             type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node16>
+        </node17>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -326,8 +337,15 @@
         <node15_x0023_node16
             jcr:primaryType="cq:WorkflowTransition"
             from="node15"
+            rule=""
             to="node16">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node15_x0023_node16>
+        <node16_x0023_node17
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node16"
+            to="node17">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node16_x0023_node17>
     </transitions>
 </jcr:root>
