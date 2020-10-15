@@ -39,7 +39,7 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Creator"
-                                    name="./jcr:content/jcr:createdBy"
+                                    name="./jcr:createdBy"
                                     readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -70,7 +70,7 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Modifier"
-                                    name="./jcr:content/jcr:lastModifiedBy"
+                                    name="./jcr:lastModifiedBy"
                                     readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
