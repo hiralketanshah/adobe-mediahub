@@ -55,9 +55,10 @@
     function displayTermsAndCondition() {
         var r = confirm("Do you agree to terms and condition of BNPP ? You will be logged in only when you agree.");
         if (r != true) {
-          e.preventDefault();
+          return false;
         } else {
           isTermsAgreed = true;
+          return true;
         }
     }
 
@@ -198,7 +199,10 @@
             }
 
             if (!isTermsAgreed) {
-                displayTermsAndCondition();
+                var agreed = displayTermsAndCondition(event);
+                if(!agreed){
+                  return false;
+                }
             }
 
             var data = {
