@@ -1,6 +1,7 @@
 package com.mediahub.core.listeners;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.mediahub.core.constants.BnpConstants;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class FolderResourceListener implements EventHandler {
 
   public void handleEvent(final Event event) {
     final Map<String, Object> authInfo = Collections
-        .singletonMap(ResourceResolverFactory.SUBSERVICE, "writeService");
+        .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
     ResourceResolver resolver = null;
     try {
       resolver = resourceResolverFactory.getResourceResolver(authInfo);
@@ -52,15 +53,15 @@ public class FolderResourceListener implements EventHandler {
 
       if(contentResourse != null && StringUtils.equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), "sling:Folder")){
 
-        Resource metadata = contentResourse.getChild("metadata");
+        Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
         if(metadata == null) {
-          metadata = resolver.create(contentResourse, "metadata", null);
+          metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
           resolver.commit();
         }
 
         ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
         adpatableResource.put(JcrConstants.JCR_CREATED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_CREATED_BY,  event.getProperty("userid").toString());
+        adpatableResource.put(JcrConstants.JCR_CREATED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
       }
 
       if(resolver.hasChanges()){
