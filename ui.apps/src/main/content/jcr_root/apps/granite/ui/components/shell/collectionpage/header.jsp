@@ -36,10 +36,10 @@
     headerHome.addHref("data-globalnav-toggle-href", navigationUrl);
 
 %><coral-shell-header-home <%= headerHome %>> 
-	<a href="#">
-		<img src="/content/dam/mediahub/BNPP_H_RRVB.png" width="40" height="40" alt="BNP Paribas">
+	<a href="#" style="text-decoration: none;">
+		<img src="/content/dam/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
 	</a>
-	<coral-shell-homeanchor-label class="bnp-text-style">MediaHub MVP</coral-shell-homeanchor-label>
+	<coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP</coral-shell-homeanchor-label>
 </coral-shell-header-home>
 
 <coral-shell-header-actions>

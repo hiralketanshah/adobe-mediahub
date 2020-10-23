@@ -11960,12 +11960,12 @@ th {
 .coral3-Button--primary:not(:disabled):not(.is-disabled):focus,
 .coral3-Button--cta:not(:disabled):not(.is-disabled).is-focused,
 .coral3-Button--primary:not(:disabled):not(.is-disabled).is-focused {
-  background-color: #4178cd;
+  background-color: #00915a;
 }
 
 .coral3-Button--cta:not(:disabled):not(.is-disabled):hover,
 .coral3-Button--primary:not(:disabled):not(.is-disabled):hover {
-  background-color: #4178cd;
+  background-color: #00915a;
 }
 
 .coral3-Button--cta:not(:disabled):not(.is-disabled).is-selected,
@@ -12185,12 +12185,12 @@ th {
 .coral--dark .coral3-Button--primary:not(:disabled):not(.is-disabled):focus,
 .coral--dark .coral3-Button--cta:not(:disabled):not(.is-disabled).is-focused,
 .coral--dark .coral3-Button--primary:not(:disabled):not(.is-disabled).is-focused {
-  background-color: #4178cd;
+  background-color: #00915a;
 }
 
 .coral--dark .coral3-Button--cta:not(:disabled):not(.is-disabled):hover,
 .coral--dark .coral3-Button--primary:not(:disabled):not(.is-disabled):hover {
-  background-color: #4178cd;
+  background-color: #00915a;
 }
 
 .coral--dark .coral3-Button--cta:not(:disabled):not(.is-disabled).is-selected,
@@ -23986,56 +23986,56 @@ a.endor-Footer-item:hover {
 
 @font-face {
   font-family: 'bnpp-sans';
-  src: url('../resources/fonts/bnpp-sans.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-bold';
-  src: url('../resources/fonts/bnpp-sans-bold.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-bold-italic';
-  src: url('../resources/fonts/bnpp-sans-bold-italic.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-extrabold';
-  src: url('../resources/fonts/bnpp-sans-extrabold.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-extrabold-italic';
-  src: url('../resources/fonts/bnpp-sans-extrabold-italic.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-italic';
-  src: url('../resources/fonts/bnpp-sans-italic.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-light';
-  src: url('../resources/fonts/bnpp-sans-light.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-light-italic';
-  src: url('../resources/fonts/bnpp-sans-light-italic.ttf');
+  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
