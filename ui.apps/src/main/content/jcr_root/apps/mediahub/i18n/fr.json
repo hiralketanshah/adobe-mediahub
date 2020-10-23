@@ -1,5 +1,15 @@
 {
-  "&amp;copy; {0} Mediahub Site. All rights reserved." : "&amp;copy; {0} Mediahub Site. Tous droits réservés.",
-  "© BNP Paribas Human Resources Group - {0}." : "© BNP Paribas Resources Humaines Groupe - {0}.",
-  "Terms of use": "Conditions d'utilisation"
+
+  "&amp;copy; {0} Mediahub Site. All rights reserved.":
+    "&amp;copy; {0} Mediahub Site. Tous droits réservés.",
+
+  "© BNP Paribas Human Resources Group - {0}.":
+    "© BNP Paribas Resources Humaines Groupe - {0}.",
+
+  "Terms of use":
+    "Conditions d'utilisation",
+
+  "Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.":
+    "Cliquez sur Créer la version pour créer la version de la ressource, sur Remplacer pour remplacer la ressource ou sur Conserver les deux pour conserver les deux ressources."
+
 }
