@@ -5,7 +5,6 @@
     <filter root="/apps/mediahub/i18n"/>
     <filter root="/apps/dam" mode="merge"/>
     <filter root="/apps/granite" mode="update"/>
-	<filter root="/apps/clientlibs" mode="merge"/>
-	<filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
-	
+	  <filter root="/apps/clientlibs" mode="merge"/>
+	  <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
 </workspaceFilter>
