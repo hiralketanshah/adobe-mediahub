@@ -25,10 +25,11 @@ import org.slf4j.LoggerFactory;
 @Component(service = EventHandler.class,
     immediate = true,
     property = {
-        EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/ADDED",
+        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED,
+        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_CHANGED,
         EventConstants.EVENT_FILTER + "path=/content/dam/mediahub"
     })
-@ServiceDescription("Demo to listen on changes in the resource tree")
+@ServiceDescription("listen on changes in the resource tree")
 public class FolderResourceListener implements EventHandler {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -37,31 +38,20 @@ public class FolderResourceListener implements EventHandler {
   ResourceResolverFactory resourceResolverFactory;
 
   public void handleEvent(final Event event) {
-    final Map<String, Object> authInfo = Collections
-        .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
     ResourceResolver resolver = null;
+
     try {
       resolver = resourceResolverFactory.getResourceResolver(authInfo);
       String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
-
       Resource contentResourse;
-      if(StringUtils.endsWith(path, JcrConstants.JCR_CONTENT)){
-       contentResourse = resolver.getResource(event.getProperty(SlingConstants.PROPERTY_PATH).toString());
-      } else {
-        contentResourse = resolver.getResource(event.getProperty(SlingConstants.PROPERTY_PATH).toString()).getChild(JcrConstants.JCR_CONTENT);
+      if(StringUtils.contains(path, JcrConstants.JCR_CONTENT)){
+        path = StringUtils.replace(path, "/"+  JcrConstants.JCR_CONTENT + "/(.*)", StringUtils.EMPTY);
       }
-
-      if(contentResourse != null && StringUtils.equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), "sling:Folder")){
-
-        Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
-        if(metadata == null) {
-          metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
-          resolver.commit();
-        }
-
-        ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
-        adpatableResource.put(JcrConstants.JCR_CREATED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_CREATED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      contentResourse = resolver.getResource(path).getChild(JcrConstants.JCR_CONTENT);
+      if(contentResourse != null){
+        captureFolderChanges(event, resolver, contentResourse);
+        captureDamAssetChanges(event, resolver, contentResourse);
       }
 
       if(resolver.hasChanges()){
@@ -77,5 +67,46 @@ public class FolderResourceListener implements EventHandler {
       }
     }
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
+  }
+
+  private void captureDamAssetChanges(Event event, ResourceResolver resolver, Resource contentResourse)
+      throws PersistenceException {
+    if(StringUtils
+        .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.DAM_ASSET)){
+      contentResourse = contentResourse.getParent().getParent().getChild(JcrConstants.JCR_CONTENT);
+      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
+      if(metadata == null) {
+        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
+        resolver.commit();
+      }
+      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
+
+      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
+        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
+        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      }
+    }
+  }
+
+  private void captureFolderChanges(Event event, ResourceResolver resolver, Resource contentResourse)
+      throws PersistenceException {
+    if(StringUtils
+        .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.SLING_FOLDER)){
+      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
+      if(metadata == null) {
+        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
+        resolver.commit();
+      }
+      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
+
+      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_CHANGED)){
+        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
+        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      }
+      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
+        adpatableResource.put(JcrConstants.JCR_CREATED, new GregorianCalendar());
+        adpatableResource.put(JcrConstants.JCR_CREATED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      }
+    }
   }
 }
