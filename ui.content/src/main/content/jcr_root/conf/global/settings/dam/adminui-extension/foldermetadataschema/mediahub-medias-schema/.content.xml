@@ -86,7 +86,7 @@
                                     fieldLabel="Modification date"
                                     name="./jcr:content/metadata/jcr:lastModified"
                                     readOnly="{Boolean}true"
-                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./jcr:content/metadata/jcr:lastModified"
