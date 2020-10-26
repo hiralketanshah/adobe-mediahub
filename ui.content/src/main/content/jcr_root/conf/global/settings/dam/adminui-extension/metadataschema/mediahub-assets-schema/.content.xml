@@ -41,8 +41,10 @@
                                 <_x0031_602698277775
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
+                                    disabled="{Boolean}true"
                                     fieldLabel="Creator"
                                     name="./jcr:createdBy"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -54,9 +56,11 @@
                                 <creation
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
+                                    disabled="{Boolean}true"
                                     displayedFormat="YYYY-MM-DD HH:mm"
                                     fieldLabel="Created"
                                     name="./jcr:created"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                     type="datetime">
                                     <granite:data
@@ -70,8 +74,10 @@
                                 <_x0031_602698396642
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
+                                    disabled="{Boolean}true"
                                     fieldLabel="Modifier"
                                     name="./jcr:content/jcr:lastModifiedBy"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -83,9 +89,11 @@
                                 <_x0031_602698475232
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
+                                    disabled="{Boolean}true"
                                     displayedFormat="YYYY-MM-DD HH:mm"
                                     fieldLabel="Modification date"
                                     name="./jcr:content/jcr:lastModified"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                     type="datetime">
                                     <granite:data
@@ -100,8 +108,10 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     defaultValue=" "
+                                    disabled="{Boolean}true"
                                     fieldLabel="Size"
                                     name="./jcr:content/metadata/dam:size"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/numberfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -113,8 +123,10 @@
                                 <format
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
+                                    disabled="{Boolean}true"
                                     fieldLabel="Type"
                                     name="./jcr:content/metadata/dc:format"
+                                    readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -201,6 +213,134 @@
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
                                     <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_603372254892
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German"
+                                            value="german"/>
+                                        <_x0031_603372255437
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English"
+                                            value="english"/>
+                                        <_x0031_603372255578
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Arab"
+                                            value="arab"/>
+                                        <_x0031_603372255972
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Armenian"
+                                            value="armenian"/>
+                                        <_x0031_603372256220
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Bulgarian"
+                                            value="bulgarian"/>
+                                        <_x0031_603372256338
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Chinese"
+                                            value="chinese"/>
+                                        <_x0031_603372256476
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Korean"
+                                            value="korean"/>
+                                        <_x0031_603372256621
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Croate"
+                                            value="croate"/>
+                                        <_x0031_603372256828
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Danish"
+                                            value="danish"/>
+                                        <_x0031_603372256915
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish"
+                                            value="spanish"/>
+                                        <_x0031_603372257063
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Flemish"
+                                            value="flemish"/>
+                                        <_x0031_603372257339
+                                            jcr:primaryType="nt:unstructured"
+                                            text="French"
+                                            value="french"/>
+                                        <_x0031_603372257431
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Greek"
+                                            value="greek"/>
+                                        <_x0031_603372257533
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Hindi"
+                                            value="hindi"/>
+                                        <_x0031_603372257692
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Hungarian"
+                                            value="hungarian"/>
+                                        <_x0031_603372257919
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Italian"
+                                            value="italian"/>
+                                        <_x0031_603372258002
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Japanese"
+                                            value="japanese"/>
+                                        <_x0031_603372258139
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Luxembourgish"
+                                            value="luxembourgish"/>
+                                        <_x0031_603372258286
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Multilingual"
+                                            value="multilingual"/>
+                                        <_x0031_603372258550
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Norwegian"
+                                            value="norwegian"/>
+                                        <_x0031_603372364998
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Dutch"
+                                            value="dutch"/>
+                                        <_x0031_603372365147
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Polish"
+                                            value="polish"/>
+                                        <_x0031_603372365305
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Portuguese"
+                                            value="portuguese"/>
+                                        <_x0031_603372365451
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Romanian"
+                                            value="romanian"/>
+                                        <_x0031_603372365598
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Russian"
+                                            value="russian"/>
+                                        <_x0031_603372365881
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Slovak"
+                                            value="slovak"/>
+                                        <_x0031_603372365970
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Swedish"
+                                            value="swedish"/>
+                                        <_x0031_603372366094
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Czech"
+                                            value="czech"/>
+                                        <_x0031_603372392042
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Turkish"
+                                            value="turkish"/>
+                                        <_x0031_603372392475
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Ukrainian"
+                                            value="ukrainian"/>
+                                        <_x0031_603372392923
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Vietnamese"
+                                            value="vietnamese"/>
+                                        <_x0031_603372395938
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Wolof"
+                                            value="wolof"/>
                                         <ar_tn
                                             jcr:primaryType="nt:unstructured"
                                             text="Arabic (Tunisia)"
