@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:description="Creates a Mediahub Projects"
+    jcr:primaryType="cq:Template"
+    jcr:title="Mediahub Projects"
+    includeInCreateProject="{Boolean}true"
+    ranking="{Long}1"
+    wizard="/apps/mediahub/projects/project-wizard/wizard/steps/defaultproject.html">
+    <jcr:content
+        jcr:primaryType="nt:unstructured"
+        detailsHref="/projects/details.html"/>
+    <gadgets jcr:primaryType="nt:unstructured">
+        <team
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Team"
+            sling:resourceType="cq/gui/components/projects/admin/pod/teampod"
+            cardWeight="60"/>
+        <asset
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Assets"
+            sling:resourceType="cq/gui/components/projects/admin/pod/assetpod"
+            cardWeight="90"/>
+        <work
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Workflows"
+            sling:resourceType="cq/gui/components/projects/admin/pod/workpod"
+            cardWeight="80"/>
+        <experiences
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Experiences"
+            sling:resourceType="cq/gui/components/projects/admin/pod/channelpod"
+            cardWeight="90"/>
+        <projectinfo
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Info"
+            sling:resourceType="/apps/mediahub/projects/pod/projectinfopod"
+            cardWeight="100"
+            pagePropertiesPath="/apps/mediahub/projects/project-properties/properties.html"/>
+    </gadgets>
+    <workflows
+        jcr:primaryType="nt:unstructured"
+        tags="[]">
+        <models jcr:primaryType="nt:unstructured">
+            <sampleworkflow
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/approval_workflow/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/sample_team.html"/>
+            <launch
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_launch/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/launchrequest.html"/>
+            <landing
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_landing_page/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/landingpagerequest.html"/>
+            <email
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_email/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/emailrequest.html"/>
+        </models>
+    </workflows>
+</jcr:root>
