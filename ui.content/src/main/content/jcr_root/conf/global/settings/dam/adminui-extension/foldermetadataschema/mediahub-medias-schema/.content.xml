@@ -23,8 +23,7 @@
                             granite:rel="aem-assets-metadata-form-column"
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/container"
-                            listOrder="0"
-                            oice-options="on">
+                            listOrder="0">
                             <items jcr:primaryType="nt:unstructured">
                                 <_x0031_602704097563
                                     jcr:primaryType="nt:unstructured"
@@ -39,12 +38,12 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Creator"
-                                    name="./jcr:createdBy"
+                                    name="./jcr:content/metadata/jcr:createdBy"
                                     readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./jcr:createdBy"
+                                        cq-msm-lockable="./jcr:content/metadata/jcr:createdBy"
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
@@ -54,13 +53,13 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     displayedFormat="YYYY-MM-DD HH:mm"
                                     fieldLabel="Creation date"
-                                    name="./jcr:content/jcr:created"
+                                    name="./jcr:content/metadata/jcr:created"
                                     readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                     type="datetime">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./jcr:created"
+                                        cq-msm-lockable="./jcr:content/metadata/jcr:created"
                                         metaType="datepicker"
                                         requiredCascading="default"
                                         typeHint="Date"
@@ -70,12 +69,12 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Modifier"
-                                    name="./jcr:lastModifiedBy"
+                                    name="./jcr:content/metadata/jcr:lastModifiedBy"
                                     readOnly="{Boolean}true"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./jcr:lastModifiedBy"
+                                        cq-msm-lockable="./jcr:content/metadata/jcr:lastModifiedBy"
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
@@ -84,12 +83,12 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Modification date"
-                                    name="./jcr:content/jcr:lastModified"
+                                    name="./jcr:content/metadata/jcr:lastModified"
                                     readOnly="{Boolean}true"
-                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    resourceType="granite/ui/components/coral/foundation/form/datepicker">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./jcr:lastModified"
+                                        cq-msm-lockable="./jcr:content/metadata/jcr:lastModified"
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
@@ -168,7 +167,8 @@
                             granite:rel="aem-assets-metadata-form-column"
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/container"
-                            listOrder="1">
+                            listOrder="1"
+                            oice-options="on">
                             <items jcr:primaryType="nt:unstructured">
                                 <_x0031_602704120005
                                     jcr:primaryType="nt:unstructured"
@@ -192,6 +192,118 @@
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
                                 </_x0031_602704871349>
+                                <_x0031_603371353091
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/admin/schemafield"
+                                    emptyText="Select Option"
+                                    fieldLabel="Category"
+                                    name="./jcr:content/metadata/bnpp-category"
+                                    resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
+                                    <granite:data
+                                        jcr:primaryType="nt:unstructured"
+                                        choicesCascading="default"
+                                        cq-msm-lockable="./metadata/bnpp-category"
+                                        metaType="dropdown"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <_x0031_603371377980
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Advertising poster"
+                                            value="advertising-poster"/>
+                                        <_x0031_603371399985
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Poster (not advertising)"
+                                            value="poster"/>
+                                        <_x0031_603371405888
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Others"
+                                            value="others"/>
+                                        <_x0031_603371411034
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Illustration"
+                                            value="illustration"/>
+                                        <_x0031_603371415073
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Radio program"
+                                            value="radio-program"/>
+                                        <_x0031_603371418450
+                                            jcr:primaryType="nt:unstructured"
+                                            text="TV program (external)"
+                                            value="tv-program"/>
+                                        <_x0031_603371424471
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Fiction"
+                                            value="fiction"/>
+                                        <_x0031_603371426103
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Animated film"
+                                            value="animated-film"/>
+                                        <_x0031_603371428889
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Intervention"
+                                            value="intervention"/>
+                                        <_x0031_603371432180
+                                            jcr:primaryType="nt:unstructured"
+                                            text="COMEX Intervention"
+                                            value="comex-intervention"/>
+                                        <_x0031_603371435135
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Expert intervention"
+                                            value="expert-intervention"/>
+                                        <_x0031_603371439344
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Jingle"
+                                            value="jingle"/>
+                                        <_x0031_603371443125
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Making of"
+                                            value="making-of"/>
+                                        <_x0031_603371445981
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Photography"
+                                            value="photography"/>
+                                        <_x0031_603371449112
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Presentation"
+                                            value="presentation"/>
+                                        <_x0031_603371452148
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Internal publication"
+                                            value="internal-publication"/>
+                                        <_x0031_603371455161
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Report"
+                                            value="report"/>
+                                        <_x0031_603371458408
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Conference broadcast"
+                                            value="conference-broadcast"/>
+                                        <_x0031_603371461816
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Advertising spot"
+                                            value="adverstising-spot"/>
+                                        <_x0031_603371465380
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Training support"
+                                            value="training-support"/>
+                                        <_x0031_603371468978
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Teaser"
+                                            value="teaser"/>
+                                        <_x0031_603371472568
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Interactive Video"
+                                            value="interactive-video"/>
+                                        <_x0031_603371476562
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Web TV"
+                                            value="web-tv"/>
+                                    </items>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/folderschemaforms/formbuilder/cascadeitems"/>
+                                </_x0031_603371353091>
                                 <_x0031_602705301582
                                     cq:showOnCreate="{Boolean}true"
                                     jcr:primaryType="nt:unstructured"
@@ -205,8 +317,7 @@
                                     rootPath="/content/cq:tags/mediahub/campaigns">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/bnpp-report"
-                                        visibilityCascading="default"/>
+                                        cq-msm-lockable="./metadata/bnpp-report"/>
                                 </_x0031_602705301582>
                                 <_x0031_602705412718
                                     cq:showOnCreate="{Boolean}true"
@@ -237,7 +348,8 @@
                                     rootPath="/content/cq:tags/mediahub/geography">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/bnpp-geographicalarea"/>
+                                        cq-msm-lockable="./metadata/bnpp-geographicalarea"
+                                        visibilityCascading="default"/>
                                 </_x0031_602705683324>
                                 <_x0031_602705722182
                                     cq:showOnCreate="{Boolean}true"
@@ -247,12 +359,12 @@
                                     fieldLabel="Identified persons"
                                     metaType="tags"
                                     multiple="true"
-                                    name="./jcr:content/metadata/default"
+                                    name="./jcr:content/metadata/bnpp-identified-persons"
                                     resourceType="cq/gui/components/coral/common/form/tagfield"
                                     rootPath="/content/cq:tags/mediahub/contacts">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/default"
+                                        cq-msm-lockable="./metadata/bnpp-identified-persons"
                                         visibilityCascading="default"/>
                                 </_x0031_602705722182>
                                 <_x0031_602705758778
@@ -295,11 +407,11 @@
                                     fieldLabel="Tag"
                                     metaType="tags"
                                     multiple="true"
-                                    name="./jcr:content/metadata/default"
+                                    name="./jcr:content/metadata/bnpp-tags"
                                     resourceType="cq/gui/components/coral/common/form/tagfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
-                                        cq-msm-lockable="./metadata/default"
+                                        cq-msm-lockable="./metadata/bnpp-tags"
                                         visibilityCascading="default"/>
                                 </_x0031_602705809222>
                             </items>
