@@ -12,4 +12,5 @@
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/conf/global/settings/workflow/launcher"/>
+    <filter root="/etc/languages"/>
 </workspaceFilter>
