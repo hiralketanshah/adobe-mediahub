@@ -1,34 +1,6 @@
-- def groupSuffix=[Contributor-Medialibrary, Functionnal-Administrator, Project-Manager]
-
 - user_config:
     - userDeactivationService:
         - name:
           isMemberOf: administrators
           path: /home/users/system
           isSystemUser: "true"
-
-
-- group_config:
-    - Mediahub-Basic:
-        - name:
-          isMemberOf:
-          members:
-          path: /home/groups/u
-
-    - FOR role IN ${groupSuffix}:
-        - Mediahub-${role}:
-            - name:
-              isMemberOf: Mediahub-Basic
-              members:
-              path: /home/groups/u
-
-- ace_config:
-    - Mediahub-Basic:
-        - path: /content/dam/medialibrary
-          permission: allow
-          actions: read
-    - FOR role IN ${groupSuffix}:
-        - Mediahub-${role}:
-            - path: /content/dam/medialibrary/Mediahub-${role}
-              permission: allow
-              actions: read

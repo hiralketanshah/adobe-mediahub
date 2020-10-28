@@ -1,0 +1,27 @@
+- def groupSuffix=[Contributor-Medialibrary corporate_institutionalbankingcib/global_markets_gm , Functionnal-Administrator corporate_institutionalbankingcib/bnp_paribas_securitiesservicesbp2s, Project-Manager corporate_institutionalbankingcib/global_banking_emeagbemea]
+
+- group_config:
+    - Mediahub-Basic:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/u
+
+    - FOR role IN ${groupSuffix}:
+        - Mediahub-${split(role,' ')[0]}:
+            - name:
+              isMemberOf: Mediahub-Basic
+              members:
+              path: /home/groups/u
+
+- ace_config:
+    - Mediahub-Basic:
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions: read
+    - FOR role IN ${groupSuffix}:
+        - Mediahub-${split(role,' ')[0]}:
+            - path: /content/dam/medialibrary/${split(role,' ')[1]}
+              permission: allow
+              actions: read
+
