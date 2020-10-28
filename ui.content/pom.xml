@@ -51,6 +51,7 @@
                     <name>mediahub.ui.content</name>
                     <packageType>content</packageType>
                     <accessControlHandling>merge</accessControlHandling>
+		    <allowIndexDefinitions>true</allowIndexDefinitions>
                     <validatorsSettings>
                         <!-- disable nodetype validation as workaround until JCRVLT-463 got fixed -->
                         <jackrabbit-nodetypes>
