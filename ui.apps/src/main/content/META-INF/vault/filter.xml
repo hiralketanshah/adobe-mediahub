@@ -9,5 +9,5 @@
     <filter root="/apps/clientlibs" mode="update"/>
     <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
     <filter root="/apps/mediahub/projects"/>
-    <filter root="/apps/mediahub/acl-configuration"/>
+    <filter root="/apps/mediahub/acl-configuration" mode="update"/>
 </workspaceFilter>
