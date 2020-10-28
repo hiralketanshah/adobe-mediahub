@@ -79,6 +79,12 @@
                         useInSuggest="{Boolean}true"/>
                 </properties>
             </nt:folder>
+	    <rep:user jcr:primaryType="nt:unstructured">
+       	    	<properties jcr:primaryType="nt:unstructured">
+            		<expiry name="profile/expiry" ordered="{Boolean}true" jcr:primaryType="nt:unstructured"/>
+            		<type name="profile/type" propertyIndex="{Boolean}true" jcr:primaryType="nt:unstructured"/>
+        	</properties>
+      	    </rep:user>
         </indexRules>
     </ntFolderDamLucene>
     <acPrincipalName/>
