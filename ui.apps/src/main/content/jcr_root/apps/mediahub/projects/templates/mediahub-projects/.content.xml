@@ -46,7 +46,7 @@
         <project-publisher
             jcr:primaryType="nt:unstructured"
             jcr:title="Project Publisher"
-            roleclass="owner"
+            roleclass="editor"
             roleid="project-publisher"/>
         <project-manager
             jcr:primaryType="nt:unstructured"
@@ -61,7 +61,7 @@
         <external-contributor
             jcr:primaryType="nt:unstructured"
             jcr:title="External Contributor"
-            roleclass="owner"
+            roleclass="editor"
             roleid="external-contributor"/>
     </roles>
     <workflows
