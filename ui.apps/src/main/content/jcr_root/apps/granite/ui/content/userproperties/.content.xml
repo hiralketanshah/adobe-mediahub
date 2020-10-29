@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    sling:resourceType="granite/ui/components/endor/userproperties"
+    id="granite-user-properties">
+    <preferences jcr:primaryType="nt:unstructured">
+        <form jcr:primaryType="nt:unstructured">
+            <items jcr:primaryType="nt:unstructured">
+                <language
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                    fieldLabel="Language"
+                    name="language"
+                    translateOptions="{Boolean}false">
+                    <items jcr:primaryType="nt:unstructured">
+                        <en
+                            jcr:primaryType="nt:unstructured"
+                            text="English"
+                            text_noI18n="English"
+                            value="en"/>
+                        <de
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="Deutsch"
+                            text_noI18n="Deutsch"
+                            value="de"/>
+                        <es
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="Español"
+                            text_noI18n="Español"
+                            value="es"/>
+                        <fr
+                            jcr:primaryType="nt:unstructured"
+                            text="Français"
+                            text_noI18n="Français"
+                            value="fr"/>
+                        <it
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="Italiano"
+                            text_noI18n="Italiano"
+                            value="it"/>
+                        <pt-br
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="Português (Brasil)"
+                            text_noI18n="Português (Brasil)"
+                            value="pt-br"/>
+                        <zh-cn
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="简体中文"
+                            text_noI18n="简体中文"
+                            value="zh-cn"/>
+                        <zh-tw
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="繁體中文 (有限的支援)"
+                            text_noI18n="繁體中文 (有限的支援)"
+                            value="zh-tw"/>
+                        <ja
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="日本語"
+                            text_noI18n="日本語"
+                            value="ja"/>
+                        <ko-kr
+                            jcr:primaryType="nt:unstructured"
+                            sling:hideResource="{Boolean}true"
+                            text="한국어"
+                            text_noI18n="한국어"
+                            value="ko-kr"/>
+                    </items>
+                </language>
+                <show-stock-option
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                    fieldLabel="Stock Configuration"
+                    name="stockConfig"
+                    translateOptions="{Boolean}false">
+                    <datasource
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="cq/stock-integration/components/admin/datasources/stockconfigurations_authorized"/>
+                </show-stock-option>
+            </items>
+        </form>
+    </preferences>
+</jcr:root>
