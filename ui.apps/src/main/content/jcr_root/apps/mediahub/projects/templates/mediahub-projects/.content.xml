@@ -37,6 +37,33 @@
             cardWeight="100"
             pagePropertiesPath="/apps/mediahub/projects/project-properties/properties.html"/>
     </gadgets>
+    <roles jcr:primaryType="nt:unstructured">
+        <project-reader
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Reader"
+            roleclass="observer"
+            roleid="observer"/>
+        <project-publisher
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Publisher"
+            roleclass="owner"
+            roleid="project-publisher"/>
+        <project-manager
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Manager"
+            roleclass="owner"
+            roleid="owner"/>
+        <internal-contributor
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Internal contributor"
+            roleclass="editor"
+            roleid="editor"/>
+        <external-contributor
+            jcr:primaryType="nt:unstructured"
+            jcr:title="External Contributor"
+            roleclass="owner"
+            roleid="external-contributor"/>
+    </roles>
     <workflows
         jcr:primaryType="nt:unstructured"
         tags="[]">
