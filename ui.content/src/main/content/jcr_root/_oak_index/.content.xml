@@ -87,6 +87,16 @@
       	    </rep:user>
         </indexRules>
     </ntFolderDamLucene>
+    <mediahubUserIndex compatVersion="{Long}2" async="async" jcr:primaryType="oak:QueryIndexDefinition" type="lucene">
+    <indexRules jcr:primaryType="nt:unstructured">
+      <rep:user jcr:primaryType="nt:unstructured">
+        <properties jcr:primaryType="nt:unstructured">
+          <expiry name="profile/expiry" ordered="{Boolean}true" jcr:primaryType="nt:unstructured"/>
+          <type name="profile/type" propertyIndex="{Boolean}true" jcr:primaryType="nt:unstructured"/>
+        </properties>
+      </rep:user>
+    </indexRules>
+  </mediahubUserIndex>
     <acPrincipalName/>
     <uuid/>
     <damAssetLucene/>
