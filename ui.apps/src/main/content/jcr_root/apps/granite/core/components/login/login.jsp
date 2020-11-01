@@ -622,17 +622,15 @@ login
           <li><span>The bank for a changing world<span></li>
         </ul>
     </div>
-</div><%
+</div>
+
+<%
     String modalTitle = printProperty(cfg, i18n, xssAPI, "changePasswordSuccessTitle", i18n.get("Password Changed"));
-%><coral-dialog id="success-dialog" variant="success" closable="true">
-    <coral-dialog-header><%= modalTitle %></coral-dialog-header>
-    <coral-dialog-content>
-        <%= printProperty(cfg, i18n, xssAPI, "changePasswordSuccessText", i18n.get("Your password has been changed successfully.")) %>
-    </coral-dialog-content>
-    <coral-dialog-footer>
-        <button is="coral-button" variant="primary" coral-close><%= i18n.get("Ok") %></button>
-    </coral-dialog-footer>
-</coral-dialog>
+%>
+
+
+<p id="popup" value="false" hidden>show</p>
+
 <script type="text/javascript">
     // try to append the current hash/fragment to the redirect resource
     if (window.location.hash) {
@@ -653,4 +651,5 @@ login
 <% } %>
 <!-- QUICKSTART_HOMEPAGE - (string used for readyness detection, do not remove) -->
 </body>
+
 </html>

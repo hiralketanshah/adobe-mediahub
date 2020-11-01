@@ -19,8 +19,6 @@
 (function(document) {
     "use strict";
 
-    var isTermsAgreed;
-
     /**
      *  Flush error.
      */
@@ -46,20 +44,6 @@
             // adds the text inside the coral-Alert-message
             el.content.innerHTML = message;
         }, 150);
-    }
-
-    /**
-     * Display Terms and Condition.
-     *
-     */
-    function displayTermsAndCondition() {
-        var r = confirm("Do you agree to terms and condition of BNPP ? You will be logged in only when you agree.");
-        if (r != true) {
-          return false;
-        } else {
-          isTermsAgreed = true;
-          return true;
-        }
     }
 
     /**
@@ -196,13 +180,6 @@
                 document.getElementById("username").value = "";
                 document.getElementById("username").focus();
                 return true;
-            }
-
-            if (!isTermsAgreed) {
-                var agreed = displayTermsAndCondition(event);
-                if(!agreed){
-                  return false;
-                }
             }
 
             var data = {
