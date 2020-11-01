@@ -1,3 +1,2 @@
-popin.js
 login.js
 bg.js
