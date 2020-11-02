@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="Domestic Markets (DM)"
+    sling:resourceType="cq/gui/components/projects/admin/card/foldercard">
+    <domestic_marketsdm/>
+    <banque_de_detailenfrancebddf/>
+    <bnp_paribas_fortis/>
+    <bnl/>
+    <bgl_bnp_paribas/>
+    <arval/>
+    <bnp_paribas_leasingsolutionsls/>
+    <bnp_paribas_personalinvestorspi/>
+</jcr:root>

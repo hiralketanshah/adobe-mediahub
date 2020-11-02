@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="Masters"
+    sling:resourceType="cq/gui/components/projects/admin/card/foldercard"
+    folderLocked="{Boolean}true"
+    folderthumbnailurl="/libs/cq/core/content/projects/images/mastercard.png">
+    <rep:policy/>
+</jcr:root>
