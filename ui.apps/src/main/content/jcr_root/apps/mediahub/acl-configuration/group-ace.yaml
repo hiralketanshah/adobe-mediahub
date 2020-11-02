@@ -181,6 +181,12 @@
           actions: read
           restrictions:
               rep:glob: '/*'
+        - path: /home/users
+          permission: deny
+          actions: create,delete,acl_read,acl_edit,replicate
+          restrictions:
+              rep:glob: '/*'
+
 
     - mediahub-basic-entity-manager:
         - path: /content/cq:tags/default
@@ -191,7 +197,6 @@
           actions: read
           restrictions:
              rep:glob: '/*'
-
         - path: /libs/cq/core/content/nav/tools 
           permission: deny
           actions: read
@@ -236,13 +241,34 @@
           permission: deny
           actions: read
           restrictions:
+              rep:glob: '/general'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/workflow'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
               rep:glob: '/commerce'
+        - path: /libs/cq/core/content/nav/tools/security/oauth
+          permission: deny
+          actions: read
+        - path: /libs/cq/core/content/nav/tools/security/oauthtokens
+          permission: deny
+          actions: read
+        - path: /libs/cq/core/content/nav/tools/security/sslConfig
+          permission: deny
+          actions: read
+        - path: /libs/cq/core/content/nav/tools/security/truststore
+          permission: deny
+          actions: read
         - path: /apps/cq/core/content/nav/tools
           permission: deny
           actions: read
           restrictions:
               rep:glob: '/*'
-
 
     - mediahub-project-manager-bddf:
         - path: /content/dam/medialibrary/domestic_marketsdm/banque_de_detailenfrancebddf
