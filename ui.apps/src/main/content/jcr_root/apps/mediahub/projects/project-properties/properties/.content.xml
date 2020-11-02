@@ -101,18 +101,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                             fieldLabel="Path"
-                                            ignoreData="{Boolean}true"
                                             name="project.path"
-                                            rootPath="/content/dam/medialibrary"
-                                            value="/content/dam/medialibrary"/>
+                                            rootPath="/content/dam/medialibrary"/>
                                         <sponsor
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                             fieldLabel="Sponsor"
-                                            ignoreData="{Boolean}true"
                                             name="project.sponsor"
-                                            rootPath="/content/cq:tags/mediahub/sponsors"
-                                            value="/content/cq:tags/mediahub/sponsors"/>
+                                            rootPath="/content/cq:tags/mediahub/sponsors"/>
                                         <memberpicker
                                             jcr:primaryType="nt:unstructured"
                                             jcr:title="User"
