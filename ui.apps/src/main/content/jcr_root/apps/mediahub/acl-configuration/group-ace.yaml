@@ -1,27 +1,410 @@
 - def groupSuffix=[Contributor-Medialibrary corporate_institutionalbankingcib/global_markets_gm , Functionnal-Administrator corporate_institutionalbankingcib/bnp_paribas_securitiesservicesbp2s, Project-Manager corporate_institutionalbankingcib/global_banking_emeagbemea]
+- def groupSuffixLevel1=[catalogs, templates, medialibrary]
+- def groupSuffixLevel2=[corporate_institutionalbankingcib, domestic_marketsdm, international_financialservicesifs, group_functions, transversal_activities]
+- def groupSuffixLevel3_corporate_institutionalbankingcib=[global_markets_gm, bnp_paribas_securitiesservicesbp2s, global_banking_emeagbemea, cib_apac, cib_amerias]
+- def groupSuffixLevel3_domestic_marketsdm=[domestic_marketsdm, banque_de_detailenfrancebddf, bnp_paribas_fortis, bnl, bgl_bnp_paribas, arval, bnp_paribas_leasingsolutionsls, bnp_paribas_personalinvestorspi]
+- def groupSuffixLevel3_international_financialservicesifs=[irb, bnp_paribas_personalfinancepf, bnp_paribas_cardif, bnp_paribas_assetmanagementam, bnp_paribas_wealthmanagementwm, bnp_paribas_realestatere]
+- def groupSuffixLevel3_group_functions=[group_finance, strategy_development, group_tax_department, public_affairs, economic_research, bnp_paribas_consultingtransformation, group_it, group_strategic_sourcing, imex, compliance, risk, legal, inspection_generale, group_human_resources, company_engagement]
+- def groupSuffixLevel3_transversal_activities=[cash_management, factoring, trade_services, us_payments, one_bank]
+- def groupSuffixLevel4_company_engagement=[group_communications, csr]
+- def groupSuffixLevel5_group_communications=[corporate_reputationinformation, brand_strategy_activation, user_experience, change_makers_prospective, mecenat, partenariats_evenements, relations_exterieures, retail_banking_services, ressources]
+- def groupList=[reader, contributor, entity-manager, project-manager]
+
 
 - group_config:
-    - Mediahub-Basic:
+    - mediahub-basic:
+        - name:
+          isMemberOf: everyone
+          members:
+          path: /home/groups/mediahub
+    - mediahub-basic-contributor:
         - name:
           isMemberOf:
           members:
-          path: /home/groups/u
+          path: /home/groups/mediahub
+    - mediahub-basic-reader:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+    - mediahub-basic-entity-manager:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+    - mediahub-basic-project-manager:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+    - mediahub-project-manager-bddf:
+        - name:
+          isMemberOf: mediahub-basic
+          members:
+          path: /home/groups/mediahub
+    - FOR group IN ${groupList}:
+        - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+            - group_functions-company_engagement-${entity.name}-${group}:
+               - name: Mediahub - Group functions - Company Engagement - ${entity.title} - ${group}
+                 isMemberOf: mediahub-basic, mediahub-basic-${group} 
+                 path: /home/groups/mediahub/${group}/medialibrary/group_functions/company_engagement
 
-    - FOR role IN ${groupSuffix}:
-        - Mediahub-${split(role,' ')[0]}:
-            - name:
-              isMemberOf: Mediahub-Basic
-              members:
-              path: /home/groups/u
+    - FOR group IN ${groupList}:
+        - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+            - group_functions-company_engagement-group_communications-${entity.name}-${group}:
+               - name: Mediahub - Group functions - Company Engagement - Group Communications - ${entity.title} - ${group}
+                 isMemberOf: mediahub-basic, mediahub-basic-${group}  
+                 path: /home/groups/mediahub/${group}/medialibrary/group_functions/company_engagement/group_communications
+    - FOR group IN ${groupList}:           
+        - FOR entity IN CHILDREN OF /content/dam/medialibrary:
+            - ${entity.name}-${group}:
+               - name: Mediahub - ${entity.title} - ${group}
+                 isMemberOf: mediahub-basic, mediahub-basic-${group}  
+                 path: /home/groups/mediahub/${group}/medialibrary
+
+            - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+               - ${entity.name}-${subentity.name}-${group}:
+                   - name: Mediahub - ${entity.title} - ${subentity.title} - ${group}
+                     isMemberOf: mediahub-basic, mediahub-basic-${group}  
+                     path: /home/groups/mediahub/${group}/medialibrary/${entity.name}
+
+                   - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+                       - ${entity.name}-${subentity.name}-${subsubentity.name}-${group}:
+                            - name: Mediahub - ${entity.title} - ${subentity.title} - ${subsubentity.title} - ${group}
+                              isMemberOf: mediahub-basic, mediahub-basic-${group}  
+                              path: /home/groups/mediahub/${group}/medialibrary/${entity.name}/${subentity.name}
 
 - ace_config:
-    - Mediahub-Basic:
-        - path: /content/dam/medialibrary
+  #DEFAULT GROUP 
+    - mediahub-basic:
+        - path: /content/dam
+          permission: deny
+          actions: modify,create,delete,acl_read,acl_edit,replicate
+        - path: /content/dam
           permission: allow
           actions: read
-    - FOR role IN ${groupSuffix}:
-        - Mediahub-${split(role,' ')[0]}:
-            - path: /content/dam/medialibrary/${split(role,' ')[1]}
-              permission: allow
-              actions: read
+        - FOR path IN ${groupSuffixLevel1}:
+            - path: /content/dam
+              permission: deny
+              privileges: jcr:all
+              keepOrder: true
+              restrictions:
+                rep:glob: '/${path}'
+        - FOR path IN CHILDREN OF /content/dam/medialibrary:
+            - path: /content/dam/medialibrary/${path.name}
+              permission: deny
+              privileges: jcr:all
+            - FOR subpath IN CHILDREN OF /content/dam/medialibrary/${path.name}:
+                - path: /content/dam/medialibrary/${path.name}/${subpath.name}
+                  permission: deny
+                  privileges: jcr:all
+                - FOR subsubpath IN CHILDREN OF /content/dam/medialibrary/${path.name}/${subpath.name}:
+                    - path: /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}
+                      permission: deny
+                      privileges: jcr:all
+                    - FOR subsubsubpath IN CHILDREN OF /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}:
+                        - path: /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}/${subsubsubpath.name}
+                          permission: deny
+                          privileges: jcr:all
 
+        - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/user_experience/vst/dms/mediahub/
+          permission: allow
+          actions: read
+        - path: /conf
+          permission: allow
+          actions: read
+        - path: /etc
+          permission: allow
+          actions: read
+        - path: /var
+          permission: allow
+          actions: read
+        - path: /libs/wcm/core/content/sites
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/sites
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/experiencefragments
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/experience-fragments/content/experience-fragments
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/commerce
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/forms
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/communities
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/screens
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/screens/dcc/content/main
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/dam/gui/content/idsprint/templates
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/assets/templates
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/cq/core/content/nav/assets/catalogs
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+        - path: /libs/dam/gui/content/idsprint/catalogs
+          permission: deny
+          actions: read,modify,create,delete,acl_read,acl_edit,replicate
+
+    - mediahub-basic-contributor:
+        - path: /content/cq:tags/default
+          permission: allow
+          actions: create,modify
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+             rep:glob: '/*'
+        - path: /libs/wcm/core/content/misc
+          permission: deny
+          actions: read
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*'
+        - path: /apps/cq/core/content/nav/tools
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*'
+
+    - mediahub-basic-entity-manager:
+        - path: /content/cq:tags/default
+          permission: allow
+          actions: create,modify
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+             rep:glob: '/*'
+
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/cloudservices'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/deployment'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/resources'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/assets'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/sites'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/operations'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/cloudservices'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/communities'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/commerce'
+        - path: /apps/cq/core/content/nav/tools
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*'
+
+
+    - mediahub-project-manager-bddf:
+        - path: /content/dam/medialibrary/domestic_marketsdm/banque_de_detailenfrancebddf
+          permission: allow
+          actions: read
+
+    # GROUP READER SETUP PERMISSION
+
+    #Specific group_functions/company_engagement  
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-company_engagement-${entity.name}-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions/company_engagement
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
+     #Specific group_functions/company_engagement/group_communications 
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-company_engagement-group_communications-${entity.name}-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions/company_engagement
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
+     #Generic cases
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary:
+        - ${entity.name}-reader:
+           - path: /content/dam/medialibrary/${entity.name}
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
+        - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-${subentity.name}-reader:
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read
+               - path: /content/dam/medialibrary/${entity.name}
+                 permission: allow
+                 actions: read
+               - path: /content/dam
+                 permission: allow
+                 privileges: jcr:read
+                 restrictions:
+                   rep:glob: '/medialibrary'
+           - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-${subentity.name}-${subsubentity.name}-reader:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam/medialibrary/${entity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam
+                     permission: allow
+                     privileges: jcr:read
+                     restrictions:
+                       rep:glob: '/medialibrary'
+
+    # GROUP CONTRIBUTOR SETUP PERMISSION
+
+    #Specific group_functions/company_engagement  
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-company_engagement-${entity.name}-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
+           - path: /content/dam/medialibrary/group_functions/company_engagement
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
+    #Specific group_functions/company_engagement/group_communications 
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-company_engagement-group_communications-${entity.name}-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions/company_engagement
+             permission: allow
+             actions: read
+           - path: /content/dam/medialibrary/group_functions
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'    
+    #Generic cases
+    - FOR entity IN CHILDREN OF /content/dam/medialibrary:
+        - ${entity.name}-contributor:
+           - path: /content/dam/medialibrary/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
+        - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-${subentity.name}-contributor:
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read,modify,create,delete
+               - path: /content/dam/medialibrary/${entity.name}
+                 permission: allow
+                 actions: read
+               - path: /content/dam
+                 permission: allow
+                 privileges: jcr:read
+                 restrictions:
+                   rep:glob: '/medialibrary'
+           - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-${subentity.name}-${subsubentity.name}-contributor:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read,modify,create,delete
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam/medialibrary/${entity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam
+                     permission: allow
+                     privileges: jcr:read
+                     restrictions:
+                       rep:glob: '/medialibrary'      
