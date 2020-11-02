@@ -14,4 +14,6 @@
     <filter root="/content/projects"/>
     <filter root="/content/dam/medialibrary"/>
     <filter root="/content/dam/projects"/>
+    <filter root="/oak:index" mode="update"/>
+    <filter root="/etc/languages"/>
 </workspaceFilter>
