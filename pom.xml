@@ -278,6 +278,19 @@ Bundle-DocURL:
                         </dependency>
                     </dependencies>
                 </plugin>
+
+
+
+                <plugin>
+                    <groupId>com.day.jcr.vault</groupId>
+                    <artifactId>content-package-maven-plugin</artifactId>
+                    <configuration>
+                        <properties>
+                            <installhook.actool.class>biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook</installhook.actool.class>
+                        </properties>
+                    </configuration>
+                </plugin>
+
                 <!-- Content Package Plugin -->
                 <plugin>
                     <groupId>com.day.jcr.vault</groupId>
@@ -375,8 +388,6 @@ Bundle-DocURL:
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
-
-
             </plugins>
         </pluginManagement>
     </build>
@@ -743,6 +754,11 @@ Bundle-DocURL:
                 <artifactId>slf4j-test</artifactId>
                 <version>1.0.1</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
+                <artifactId>accesscontroltool-bundle</artifactId>
+                <version>2.6.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

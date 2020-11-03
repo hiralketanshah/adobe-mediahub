@@ -127,6 +127,30 @@
                     <failOnError>true</failOnError>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.jackrabbit</groupId>
+                <artifactId>filevault-package-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <name>netcentric</name>
+                    <group>netcentric</group>
+                    <packageType>container</packageType>
+                    <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
+
+                    <subPackages>
+                        <subPackage>
+                            <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
+                            <artifactId>accesscontroltool-package</artifactId>
+                            <filter>true</filter>
+                        </subPackage>
+                    </subPackages>
+                    <allowIndexDefinitions>true</allowIndexDefinitions>
+                    <accessControlHandling>merge_preserve</accessControlHandling>
+                </configuration>
+            </plugin>
+
+
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <executions>
@@ -232,6 +256,18 @@
             <groupId>com.adobe.cq</groupId>
             <artifactId>core.wcm.components.config</artifactId>
             <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
+            <artifactId>accesscontroltool-package</artifactId>
+            <version>2.6.2</version>
+            <type>zip</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
+                    <artifactId>accesscontroltool-bundle</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>

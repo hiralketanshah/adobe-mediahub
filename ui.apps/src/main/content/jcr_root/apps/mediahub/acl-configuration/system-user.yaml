@@ -1,0 +1,6 @@
+- user_config:
+    - userDeactivationService:
+        - name:
+          isMemberOf: administrators
+          path: /home/users/system
+          isSystemUser: "true"

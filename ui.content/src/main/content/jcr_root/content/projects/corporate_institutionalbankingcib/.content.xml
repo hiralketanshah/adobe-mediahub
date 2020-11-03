@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="Corporate &amp; Institutional Banking (CIB)"
+    sling:resourceType="cq/gui/components/projects/admin/card/foldercard">
+    <global_markets_gm/>
+    <bnp_paribas_securitiesservicesbp2s/>
+    <global_banking_emeagbemea/>
+    <cib_apac/>
+    <cib_amerias/>
+</jcr:root>
