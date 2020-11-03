@@ -79,6 +79,15 @@
                     <failOnError>true</failOnError>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.day.jcr.vault</groupId>
+                <artifactId>content-package-maven-plugin</artifactId>
+                <configuration>
+                    <properties>
+                        <installhook.actool.class>biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook</installhook.actool.class>
+                    </properties>
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.sling</groupId>
@@ -180,6 +189,11 @@
             <artifactId>org.apache.sling.scripting.sightly.runtime</artifactId>
             <version>1.2.0-1.4.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
+            <artifactId>accesscontroltool-bundle</artifactId>
         </dependency>
     </dependencies>
 </project>

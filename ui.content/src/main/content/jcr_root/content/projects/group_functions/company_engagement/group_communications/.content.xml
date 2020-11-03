@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="sling:OrderedFolder"
+    jcr:title="Group Communications"
+    sling:resourceType="cq/gui/components/projects/admin/card/foldercard">
+    <corporate_reputationinformation/>
+    <brand_strategy_activation/>
+    <user_experience/>
+    <change_makers_prospective/>
+    <mecenat/>
+    <partenariats_evenements/>
+    <relations_exterieures/>
+    <retail_banking_services/>
+    <ressources/>
+</jcr:root>
