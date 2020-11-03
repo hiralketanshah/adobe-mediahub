@@ -628,8 +628,21 @@ login
     String modalTitle = printProperty(cfg, i18n, xssAPI, "changePasswordSuccessTitle", i18n.get("Password Changed"));
 %>
 
-
+<coral-dialog id="popupDialog">
+  <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
+    <coral-dialog-content><p> <%= i18n.get("You are trying to access a restrited content, Unless you accept this message you will not be allowed to log in") %> </p> <coral-checkbox value="" id="agree">Show Terms and Conditions</coral-checkbox><div id="terms"></div> </coral-dialog-content>
+  <coral-dialog-footer><button id="acceptButton" is="coral-button" variant="primary"> <%=i18n.get("accept")%> </button><button id="cancelButton" is="coral-button" variant="primary"> <%= i18n.get("Cancel") %></button></coral-dialog-footer>
+</coral-dialog>
 <p id="popup" value="false" hidden>show</p>
+
+<script type="text/javascript">
+
+   function showDialog() {
+      var dialog = document.querySelector('#popupDialog');
+      dialog.show();
+      return dialog;
+   }
+</script>
 
 <script type="text/javascript">
     // try to append the current hash/fragment to the redirect resource

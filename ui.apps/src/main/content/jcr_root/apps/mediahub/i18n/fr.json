@@ -10,6 +10,14 @@
     "Conditions d'utilisation",
 
   "Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.":
-    "Cliquez sur Créer la version pour créer la version de la ressource, sur Remplacer pour remplacer la ressource ou sur Conserver les deux pour conserver les deux ressources."
+    "Cliquez sur Créer la version pour créer la version de la ressource, sur Remplacer pour remplacer la ressource ou sur Conserver les deux pour conserver les deux ressources.",
+
+  "BNP Paribas Terms and Conditions": "Conditions générales de BNP Paribas",
+
+  "login content":"Vous essayez d'accéder à un contenu restitué, sauf si vous acceptez ce message, vous ne serez pas autorisé à vous connecter",
+
+  "Accept": "J'accepte",
+
+  "Cancel": "Annuler"
 
 }
