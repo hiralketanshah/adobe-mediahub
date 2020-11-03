@@ -599,27 +599,27 @@ login
                 year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
             }
             String text = cfg.get("footer/copy/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "{0} is the product year", year)) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></span><%
         }
         %>
         <span>|</span>
         <%
         if (cfg.containsKey("footer/terms/text")) {
             String text = cfg.get("footer/terms/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "Terms of use")) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("Terms of use")) %></span><%
         }
         %>
         <span>|</span>
         <%
         if (cfg.containsKey("footer/faq/text")) {
             String text = cfg.get("footer/faq/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "FAQ")) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("FAQ")) %></span><%
         }
         %>
 
         <ul id="usage-box">
           <li><a href="#"><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></a></li>
-          <li><span>The bank for a changing world<span></li>
+          <li><span><%= i18n.get("The bank for a changing world")%><span></li>
         </ul>
     </div>
 </div>
