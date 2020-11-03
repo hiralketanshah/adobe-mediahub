@@ -4,16 +4,12 @@
     <filter root="/content/mediahub" mode="merge"/>
     <filter root="/content/dam/mediahub" mode="merge"/>
     <filter root="/content/experience-fragments/mediahub" mode="merge"/>
-    <filter root="/content/cq:tags/mediahub" mode="merge"/>
     <filter root="/etc/acs-commons/lists/user-type" mode="merge"/>
     <filter root="/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema" mode="update"/>
   	<filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="update"/>
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/conf/global/settings/workflow/launcher"/>
-    <filter root="/content/projects"/>
-    <filter root="/content/dam/medialibrary"/>
-    <filter root="/content/dam/projects"/>
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>
 </workspaceFilter>

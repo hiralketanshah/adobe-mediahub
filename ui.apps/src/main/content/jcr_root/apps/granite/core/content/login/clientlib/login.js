@@ -169,37 +169,25 @@
             var user = form.j_username.value;
             var pass = form.j_password.value;
 
+
             if(document.getElementById("popup").innerHTML === 'show'){
-                    var dialog = new Coral.Dialog().set({
-                            id: 'agreeTerms',
-                            header: {
-                              innerHTML:  Granite.I18n.get('BNP Paribas Terms and Conditions')
-                            },
-                            content: {
-                              innerHTML: '<p>'+ Granite.I18n.get('You are trying to access a restrited content, Unless you accept this message you will not be allowed to log in') + '<p> <coral-checkbox value="" id="agree">Show Terms and Conditions</coral-checkbox><div id="terms"></div>'
-                            },
-                            footer: {
-                              innerHTML: '<button id="acceptButton" is="coral-button" variant="primary">' + Granite.I18n.get('accept') + '</button><button id="cancelButton" is="coral-button" variant="primary">' + Granite.I18n.get('Cancel') + '</button>'
-                            },
-                            backdrop: "static"
-                          });
-                          document.body.appendChild(dialog);
-                          dialog.show();
+                          var dialog = showDialog();
 
                           dialog.on('change', '#agree', function() {
-                              if(showTerms){
-                                var alert = document.createElement('coral-alert');
-                                alert.header.innerHTML = Granite.I18n.get('Below are the terms and conditions:');
-                                alert.content.innerHTML = Granite.I18n.get('terms and conditions for log in');
-                                dialog.content.appendChild(alert);
+                              if (!document.querySelector('#agree').checked) {
+                                document.getElementById("acceptButton").disabled = true;
+                              }
+                              else {
+                                document.getElementById("acceptButton").disabled = false;
                               }
                               showTerms=false;
                           });
 
                           dialog.on('click', '#acceptButton', function() {
-                            dialog.hide();
-                            //event.startpropagation();
-                            document.getElementById("login").submit();
+                           if (document.querySelector('#agree').checked) {
+                              dialog.hide();
+                              document.getElementById("login").submit();
+                            }
 
                           });
                 		      dialog.on('click', '#cancelButton', function() {
