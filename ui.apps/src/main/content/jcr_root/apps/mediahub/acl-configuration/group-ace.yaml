@@ -72,6 +72,9 @@
 - ace_config:
   #DEFAULT GROUP 
     - mediahub-basic:
+        - path: /
+          permission: allow
+          actions: read
         - path: /content/dam
           permission: deny
           actions: modify,create,delete,acl_read,acl_edit,replicate
