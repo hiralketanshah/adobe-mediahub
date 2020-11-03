@@ -630,8 +630,8 @@ login
 
 <coral-dialog id="popupDialog">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
-  <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Show Terms and Conditions")%></coral-checkbox><div id="terms"></div> </coral-dialog-content>
-  <coral-dialog-footer><button id="acceptButton" is="coral-button" variant="primary"> <%=i18n.get("Accept")%> </button><button id="cancelButton" is="coral-button" variant="primary"> <%= i18n.get("Cancel") %></button></coral-dialog-footer>
+  <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox><div id="terms"></div> </coral-dialog-content>
+  <coral-dialog-footer><button id="acceptButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Accept")%> </button><button id="cancelButton" is="coral-button" variant="primary"> <%= i18n.get("Cancel") %></button></coral-dialog-footer>
 </coral-dialog>
 <p id="popup" value="false" hidden>show</p>
 

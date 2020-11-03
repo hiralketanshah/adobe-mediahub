@@ -174,19 +174,20 @@
                           var dialog = showDialog();
 
                           dialog.on('change', '#agree', function() {
-                              if(showTerms){
-                                var alert = document.createElement('coral-alert');
-                                alert.header.innerHTML = Granite.I18n.get('Below are the terms and conditions:');
-                                alert.content.innerHTML = Granite.I18n.get('terms and conditions for log in');
-                                dialog.content.appendChild(alert);
+                              if (!document.querySelector('#agree').checked) {
+                                document.getElementById("acceptButton").disabled = true;
+                              }
+                              else {
+                                document.getElementById("acceptButton").disabled = false;
                               }
                               showTerms=false;
                           });
 
                           dialog.on('click', '#acceptButton', function() {
-                            dialog.hide();
-                            //event.startpropagation();
-                            document.getElementById("login").submit();
+                           if (document.querySelector('#agree').checked) {
+                              dialog.hide();
+                              document.getElementById("login").submit();
+                            }
 
                           });
                 		      dialog.on('click', '#cancelButton', function() {

@@ -14,11 +14,17 @@
 
   "BNP Paribas Terms and Conditions": "BNP Paribas Terms and Conditions",
 
-  "login content":"You are trying to access a restrited content, Unless you accept this message you will not be allowed to log in",
+  "login content":"You are trying to access a restricted content, Unless you accept this message you will not be allowed to log in",
 
   "Accept": "Accept",
 
   "Cancel": "Cancel",
 
-  "Show Terms and Conditions": "Show Terms and Conditions"
+  "Agree Terms and Conditions": "Agree Terms and Conditions",
+
+  "© BNP Paribas Human Resources Group - 2020.": "© BNP Paribas Human Resources Group - 2020.",
+
+  "FAQ": "FAQ",
+
+  "Welcome to BNP Paribas": "Welcome to BNP Paribas"
 }
