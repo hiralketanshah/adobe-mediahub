@@ -29,6 +29,7 @@
     ValueMap tagsPickerProperties = new ValueMapDecorator(new HashMap<String, Object>());
     tagsPickerProperties.put("fieldLabel", cfg.get("fieldLabel","Tags"));
     tagsPickerProperties.put("disabled", cfg.get("disabled", false));
+    tagsPickerProperties.put("forceSelection", cfg.get("forceSelection", false));
     tagsPickerProperties.put("rootPath", cfg.get("rootPath", false));
     ValueMapResource valueMapResource = new ValueMapResource(resourceResolver, resource.getPath(), "granite/ui/components/coral/foundation/form/textfield", tagsPickerProperties);
 	String resourcePathBase = "dam/gui/coral/components/admin/schemaforms/formbuilder/formfieldproperties/";
@@ -55,7 +56,7 @@
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/cq:showOnCreate@TypeHint") %>" value="Boolean"/>
 
     <%
-        String[] settingsList = {"labelfields", "metadatamappertextfield", "titlefields", "rootPath"};
+        String[] settingsList = {"labelfields", "metadatamappertextfield", "titlefields", "rootPath", "forceSelection"};
         for(String settingComponent : settingsList){
             %>
             <sling:include resource="<%= resource %>" resourceType="<%= resourcePathBase + settingComponent %>"/>
