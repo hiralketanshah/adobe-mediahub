@@ -1,13 +1,4 @@
-- def groupSuffix=[Contributor-Medialibrary corporate_institutionalbankingcib/global_markets_gm , Functionnal-Administrator corporate_institutionalbankingcib/bnp_paribas_securitiesservicesbp2s, Project-Manager corporate_institutionalbankingcib/global_banking_emeagbemea]
-- def groupSuffixLevel1=[catalogs, templates, medialibrary]
-- def groupSuffixLevel2=[corporate_institutionalbankingcib, domestic_marketsdm, international_financialservicesifs, group_functions, transversal_activities]
-- def groupSuffixLevel3_corporate_institutionalbankingcib=[global_markets_gm, bnp_paribas_securitiesservicesbp2s, global_banking_emeagbemea, cib_apac, cib_amerias]
-- def groupSuffixLevel3_domestic_marketsdm=[domestic_marketsdm, banque_de_detailenfrancebddf, bnp_paribas_fortis, bnl, bgl_bnp_paribas, arval, bnp_paribas_leasingsolutionsls, bnp_paribas_personalinvestorspi]
-- def groupSuffixLevel3_international_financialservicesifs=[irb, bnp_paribas_personalfinancepf, bnp_paribas_cardif, bnp_paribas_assetmanagementam, bnp_paribas_wealthmanagementwm, bnp_paribas_realestatere]
-- def groupSuffixLevel3_group_functions=[group_finance, strategy_development, group_tax_department, public_affairs, economic_research, bnp_paribas_consultingtransformation, group_it, group_strategic_sourcing, imex, compliance, risk, legal, inspection_generale, group_human_resources, company_engagement]
-- def groupSuffixLevel3_transversal_activities=[cash_management, factoring, trade_services, us_payments, one_bank]
-- def groupSuffixLevel4_company_engagement=[group_communications, csr]
-- def groupSuffixLevel5_group_communications=[corporate_reputationinformation, brand_strategy_activation, user_experience, change_makers_prospective, mecenat, partenariats_evenements, relations_exterieures, retail_banking_services, ressources]
+- def groupSuffixLevel1=[catalogs, templates, medialibrary, cloudmanager]
 - def groupList=[reader, contributor, entity-manager, project-manager]
 
 
@@ -20,6 +11,11 @@
     - mediahub-basic-contributor:
         - name:
           isMemberOf:
+          members:
+          path: /home/groups/mediahub
+    - mediahub-administrator:
+        - name:
+          isMemberOf: administrators
           members:
           path: /home/groups/mediahub
     - mediahub-basic-reader:
@@ -358,6 +354,14 @@
 
     #Specific group_functions/company_engagement  
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read
+        - group_functions-company_engagement-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read
         - group_functions-company_engagement-${entity.name}-reader:
            - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
              permission: allow
@@ -375,6 +379,18 @@
                rep:glob: '/medialibrary'
      #Specific group_functions/company_engagement/group_communications 
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read
+        - group_functions-company_engagement-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read
+        - group_functions-company_engagement-group_communications-reader:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read
         - group_functions-company_engagement-group_communications-${entity.name}-reader:
            - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
              permission: allow
@@ -405,6 +421,10 @@
              restrictions:
                rep:glob: '/medialibrary'
         - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-reader:
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read
            - ${entity.name}-${subentity.name}-reader:
                - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
                  permission: allow
@@ -418,6 +438,14 @@
                  restrictions:
                    rep:glob: '/medialibrary'
            - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-reader:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
+               - ${entity.name}-${subentity.name}-reader:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
                - ${entity.name}-${subentity.name}-${subsubentity.name}-reader:
                    - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
                      permission: allow
@@ -438,6 +466,14 @@
 
     #Specific group_functions/company_engagement  
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
+        - group_functions-company_engagement-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
         - group_functions-company_engagement-${entity.name}-contributor:
            - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
              permission: allow
@@ -455,6 +491,14 @@
                rep:glob: '/medialibrary'
     #Specific group_functions/company_engagement/group_communications 
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
+        - group_functions-company_engagement-contributor:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             actions: read,modify,create,delete
         - group_functions-company_engagement-group_communications-${entity.name}-contributor:
            - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
              permission: allow
@@ -485,6 +529,10 @@
              restrictions:
                rep:glob: '/medialibrary'
         - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-contributor:
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read,modify,create,delete
            - ${entity.name}-${subentity.name}-contributor:
                - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
                  permission: allow
@@ -498,6 +546,14 @@
                  restrictions:
                    rep:glob: '/medialibrary'
            - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-contributor:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read,modify,create,delete
+               - ${entity.name}-${subentity.name}-contributor: 
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read,modify,create,delete
                - ${entity.name}-${subentity.name}-${subsubentity.name}-contributor:
                    - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
                      permission: allow
@@ -518,6 +574,26 @@
 
     #Specific group_functions/company_engagement  
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-entity-manager:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-entity-manager:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
         - group_functions-company_engagement-${entity.name}-entity-manager:
            - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
              permission: allow
@@ -554,6 +630,36 @@
 
     #Specific group_functions/company_engagement/group_communications 
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-entity-manager:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-entity-manager:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-group_communications-entity-manager:
+           - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
         - group_functions-company_engagement-group_communications-${entity.name}-entity-manager:
            - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
              permission: allow
@@ -614,6 +720,16 @@
              permission: allow
              privileges: jcr:all
         - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-entity-manager:
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 privileges: jcr:all
+               - path: /content/projects/${entity.name}/${subentity.name}
+                 permission: allow
+                 privileges: jcr:all
+               - path: /content/dam/projects/${entity.name}/${subentity.name}
+                 permission: allow
+                 privileges: jcr:all
            - ${entity.name}-${subentity.name}-entity-manager:
                - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
                  permission: allow
@@ -639,6 +755,26 @@
                  permission: allow
                  actions: read
            - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-entity-manager:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/dam/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+               - ${entity.name}-${subentity.name}-entity-manager:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/dam/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
                - ${entity.name}-${subentity.name}-${subsubentity.name}-entity-manager:
                    - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
                      permission: allow
@@ -677,6 +813,20 @@
 
     #Specific group_functions/company_engagement  
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
+        - group_functions-project-manager:
+           - path: /content/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-project-manager:
+           - path: /content/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/${entity.name}
+             permission: allow
+             privileges: jcr:all
         - group_functions-company_engagement-${entity.name}-project-manager:
            - path: /content/projects/group_functions/company_engagement/${entity.name}
              permission: allow
@@ -699,6 +849,27 @@
 
     #Specific group_functions/company_engagement/group_communications 
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
+        - group_functions-project-manager:
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-project-manager:
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+        - group_functions-company_engagement-group_communications-project-manager:
+           - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
+           - path: /content/dam/projects/group_functions/company_engagement/group_communications/${entity.name}
+             permission: allow
+             privileges: jcr:all
         - group_functions-company_engagement-group_communications-${entity.name}-project-manager:
            - path: /content/projects/group_functions/company_engagement/group_communications/${entity.name}
              permission: allow
@@ -734,8 +905,26 @@
            - path: /content/dam/projects/${entity.name}
              permission: allow
              privileges: jcr:all
+           - path: /content/dam/medialibrary/${entity.name}
+             permission: allow
+             actions: read
+           - path: /content/dam
+             permission: allow
+             privileges: jcr:read
+             restrictions:
+               rep:glob: '/medialibrary'
 
         - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
+           - ${entity.name}-project-manager:
+               - path: /content/projects/${entity.name}/${subentity.name}
+                 permission: allow
+                 privileges: jcr:all
+               - path: /content/dam/projects/${entity.name}/${subentity.name}
+                 permission: allow
+                 privileges: jcr:all
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read                             
            - ${entity.name}-${subentity.name}-project-manager:
                - path: /content/projects/${entity.name}/${subentity.name}
                  permission: allow
@@ -749,8 +938,39 @@
                - path: /content/dam/projects/${entity.name}
                  permission: allow
                  actions: read
+               - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read
+               - path: /content/dam/medialibrary/${entity.name}
+                 permission: allow
+                 actions: read
+               - path: /content/dam
+                 permission: allow
+                 privileges: jcr:read
+                 restrictions:
+                   rep:glob: '/medialibrary'
 
            - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
+               - ${entity.name}-project-manager:
+                   - path: /content/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/dam/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read 
+               - ${entity.name}-${subentity.name}-project-manager:
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all
+                   - path: /content/dam/projects/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     privileges: jcr:all 
                - ${entity.name}-${subentity.name}-${subsubentity.name}-project-manager:
                    - path: /content/projects/${entity.name}/${subentity.name}/${subsubentity.name}
                      permission: allow
@@ -770,5 +990,17 @@
                    - path: /content/dam/projects/${entity.name}
                      permission: allow
                      actions: read
- 
-
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam/medialibrary/${entity.name}
+                     permission: allow
+                     actions: read
+                   - path: /content/dam
+                     permission: allow
+                     privileges: jcr:read
+                     restrictions:
+                       rep:glob: '/medialibrary'
