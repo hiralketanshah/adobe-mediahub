@@ -197,7 +197,7 @@
                           });
 					                document.getElementById("popup").innerHTML = "shown";
                   }
-				    event.stopimmediatepropagation();
+				    return false;
 
             // if no user is given, avoid login request
             //GRANITE-29649 input validation for empty user/password

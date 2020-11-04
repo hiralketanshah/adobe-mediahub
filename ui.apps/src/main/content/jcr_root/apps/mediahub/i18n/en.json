@@ -1,10 +1,10 @@
 {
 
   "&amp;copy; {0} Mediahub Site. All rights reserved.":
-   "&amp;copy; {0} Mediahub Site. All rights reserved.",
+    "&amp;copy; {0} Mediahub Site. All rights reserved.",
 
   "© BNP Paribas Human Resources Group - {0}.":
-   "© BNP Paribas Human Resources Group - {0}.",
+    "© BNP Paribas Human Resources Group - {0}.",
 
   "Terms of use":
     "Terms of use",
@@ -12,21 +12,31 @@
   "Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.":
     "Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.",
 
-  "BNP Paribas Terms and Conditions": "BNP Paribas Terms and Conditions",
+  "BNP Paribas Terms and Conditions":
+    "BNP Paribas Terms and Conditions",
 
-  "login content":"You are trying to access a restricted content, Unless you accept this message you will not be allowed to log in",
+  "login content":
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit. Aliquam ultrices leo quis ipsum sodales egestas. Nam posuere leo sit amet sapien placerat pellentesque. Integer vel tempus odio. Morbi ut felis urna. Mauris mollis lorem enim, nec interdum tortor accumsan ut. Praesent pharetra maximus ligula at tempor. Donec eu ante quis orci hendrerit fringilla. Nullam porttitor egestas diam, quis pharetra elit viverra id. Proin sodales aliquet metus, ut condimentum tortor. In ultrices massa id dui sagittis pretium. Duis malesuada mi dui, eu laoreet nunc ullamcorper vel. <br><br> Phasellus ultricies finibus faucibus. Nam fringilla, felis a ultrices fringilla, turpis ante consectetur diam, non viverra leo magna ut neque. Nullam non justo sit amet leo imperdiet bibendum ut dapibus lacus. Proin tempor vitae mi quis lobortis. Nulla facilisi. Nullam sed sapien aliquet, ornare diam vel, aliquet dui. Nam eu sollicitudin neque. Praesent at nisi at sem porttitor condimentum eget in leo. Praesent in imperdiet erat. Aenean nec nunc lacinia, egestas dui sit amet, luctus mi. Pellentesque ut mollis justo. Sed quis rhoncus dolor. Vestibulum rutrum ornare dignissim. <br><br> Nulla facilisi. Nulla suscipit a purus at ultrices. Praesent tempus aliquam velit, vel pharetra lorem fringilla ut. Duis dignissim viverra nunc, a malesuada urna hendrerit non. Aliquam quis faucibus massa, eget vehicula sem. Suspendisse quis vulputate nisi, et dignissim tortor. Proin vel lorem cursus, efficitur dui vitae, venenatis metus. Nunc at nisl at elit suscipit ultrices. Nullam efficitur tristique tincidunt. Aenean quam urna, finibus ac nisl ut, commodo eleifend massa. Aenean aliquam in ligula facilisis eleifend. Etiam cursus, urna id semper porta, ex nulla efficitur nunc, vitae ullamcorper turpis nisi non justo. Mauris vestibulum nibh ac pretium volutpat. <br><br> Praesent ut fermentum libero, vel fringilla tortor. Nullam eleifend facilisis eleifend. Integer molestie convallis nibh. Nulla neque augue, blandit eu neque at, suscipit auctor erat. Vivamus id mauris vitae odio ullamcorper vulputate eget eget neque. Sed hendrerit tincidunt ipsum, sed pharetra leo dignissim sit amet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed dapibus, odio nec aliquam finibus, erat nisi maximus nisi, nec ultricies felis augue quis erat. Vestibulum mollis urna nec pulvinar tempus. Phasellus sit amet libero a diam porttitor faucibus. Praesent eleifend diam ex. Sed finibus, ligula varius rutrum condimentum, neque erat feugiat dolor, et euismod nunc nisl at ipsum. <br><br> Cras eu rhoncus dui, vitae commodo justo. In dapibus tempus sem, in rutrum tortor scelerisque vitae. Integer a odio suscipit, pellentesque lacus sit amet, condimentum eros. Phasellus lorem magna, rutrum ac libero quis, dapibus ultrices nunc. Curabitur id urna dui. Donec eu tempor nunc. Phasellus ac iaculis lorem, sed euismod turpis. Aenean hendrerit lorem sed metus suscipit, egestas congue leo fringilla. Nulla venenatis, lorem vel placerat aliquet, ex ligula commodo dui, sit amet ultrices felis est ac velit. Etiam dapibus libero a sem fermentum bibendum. Nam congue nibh metus, a convallis sem efficitur nec. Sed purus dui, iaculis ut tempor eu, sagittis sit amet diam. Sed in sagittis dolor. Phasellus semper vehicula dui. Pellentesque ac tincidunt sapien, id rhoncus est. <br><br> Mauris eget condimentum neque. Aliquam scelerisque lacus eget aliquam volutpat. Suspendisse vestibulum urna elit, id porttitor ligula molestie sed. Proin orci urna, consequat nec orci et, malesuada euismod ipsum. Donec rhoncus cursus mi, non lacinia libero posuere eu. Nulla facilisi. Vivamus ac viverra justo, sed vestibulum massa. In non augue ac dolor pellentesque porta vel pellentesque eros. Donec nibh metus, mollis quis dui quis, pretium pellentesque ante. Quisque semper dictum lacus at sollicitudin. Sed sit amet efficitur massa. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. <br><br> Donec bibendum et ex eget bibendum. Aenean vehicula, velit eu viverra pulvinar, nulla urna molestie sapien, id rhoncus velit diam sit amet felis. Etiam vel lobortis augue. Sed finibus leo quis convallis elementum. Quisque eu mi cursus nibh dignissim imperdiet. Etiam leo massa, dapibus sodales volutpat vitae, placerat sit amet libero. Etiam nec risus tincidunt, dapibus neque non, bibendum nisl. Suspendisse rhoncus augue in dapibus sagittis. Nullam commodo leo a felis interdum, dapibus commodo orci pharetra. Aliquam erat volutpat. Donec quis mauris eu leo hendrerit rutrum. Praesent a lectus convallis, consequat erat a, tempor dolor. Etiam ex turpis, pharetra in vehicula in, gravida nec arcu",
 
-  "Accept": "Accept",
+  "Accept":
+    "Accept",
 
-  "Cancel": "Cancel",
+  "Cancel":
+    "Cancel",
 
-  "Agree Terms and Conditions": "Agree Terms and Conditions",
+  "Agree Terms and Conditions":
+    "Agree Terms and Conditions",
 
-  "© BNP Paribas Human Resources Group - 2020.": "© BNP Paribas Human Resources Group - 2020.",
+  "© BNP Paribas Human Resources Group - 2020.":
+    "© BNP Paribas Human Resources Group - 2020.",
 
-  "FAQ": "FAQ",
+  "FAQ":
+    "FAQ",
 
-  "Welcome to BNP Paribas": "Welcome to BNP Paribas",
+  "Welcome to BNP Paribas":
+    "Welcome to BNP Paribas",
 
-  "The bank for a changing world": "The bank for a changing world"
+  "The bank for a changing world":
+    "The bank for a changing world"
+
 }
