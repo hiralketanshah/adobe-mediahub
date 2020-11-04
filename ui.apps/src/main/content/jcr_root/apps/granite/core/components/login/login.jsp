@@ -599,27 +599,27 @@ login
                 year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
             }
             String text = cfg.get("footer/copy/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "{0} is the product year", year)) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></span><%
         }
         %>
         <span>|</span>
         <%
         if (cfg.containsKey("footer/terms/text")) {
             String text = cfg.get("footer/terms/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "Terms of use")) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("Terms of use")) %></span><%
         }
         %>
         <span>|</span>
         <%
         if (cfg.containsKey("footer/faq/text")) {
             String text = cfg.get("footer/faq/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.getVar(text, "FAQ")) %></span><%
+            %><span><%= xssAPI.encodeForHTML(i18n.get("FAQ")) %></span><%
         }
         %>
 
         <ul id="usage-box">
           <li><a href="#"><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></a></li>
-          <li><span>The bank for a changing world<span></li>
+          <li><span><%= i18n.get("The bank for a changing world")%><span></li>
         </ul>
     </div>
 </div>
@@ -628,8 +628,21 @@ login
     String modalTitle = printProperty(cfg, i18n, xssAPI, "changePasswordSuccessTitle", i18n.get("Password Changed"));
 %>
 
-
+<coral-dialog id="popupDialog">
+  <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
+  <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox><div id="terms"></div> </coral-dialog-content>
+  <coral-dialog-footer><button id="acceptButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Accept")%> </button><button id="cancelButton" is="coral-button" variant="primary"> <%= i18n.get("Cancel") %></button></coral-dialog-footer>
+</coral-dialog>
 <p id="popup" value="false" hidden>show</p>
+
+<script type="text/javascript">
+
+   function showDialog() {
+      var dialog = document.querySelector('#popupDialog');
+      dialog.show();
+      return dialog;
+   }
+</script>
 
 <script type="text/javascript">
     // try to append the current hash/fragment to the redirect resource
