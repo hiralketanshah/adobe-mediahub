@@ -29,7 +29,7 @@
 
     HashMap<String, Object> values = new HashMap<String, Object>();
     values.put("granite:class",     "checkbox-label");
-    values.put("text",      i18n.get("Force Selection"));
+    values.put("text",      i18n.get("Closed list"));
     values.put("value",     cfg.get("forceSelection", false));
     values.put("name",      "./items/" + resource.getName() + "/forceSelection");
 
@@ -39,7 +39,7 @@
 %>
 <% Boolean defaultchecked = cfg.get("forceSelection", false); %>
 
-<coral-checkbox value="true" name="<%= xssAPI.encodeForHTMLAttr("./items/" + resource.getName() + "/forceSelection") %>" <%= defaultchecked == null || !defaultchecked ? "" : "checked"%>><%= i18n.get("Force Selection") %></coral-checkbox>
+<coral-checkbox value="true" name="<%= xssAPI.encodeForHTMLAttr("./items/" + resource.getName() + "/forceSelection") %>" <%= defaultchecked == null || !defaultchecked ? "" : "checked"%>><%= i18n.get("Closed list") %></coral-checkbox>
 
 <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + resource.getName() + "/forceSelection@Delete") %>" value="true">
 <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + resource.getName() + "/forceSelection@TypeHint") %>" value="Boolean">
