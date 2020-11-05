@@ -1,0 +1,49 @@
+/*
+ *
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2014 Adobe Systems Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe Systems Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Adobe Systems Incorporated and its
+ * suppliers and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe Systems Incorporated.
+ */
+.cq-projects-Pod .asset-image-container {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    float: left;
+    height:54px;
+    width: 25%;
+    padding:2px;
+}
+
+.cq-projects-Pod .asset-image {
+    border: 0.0625rem solid #ECECEC;
+    width: 100%;
+    height: 100%;
+}
+
+
+.cq-projects-Pod.cq-projects-Pod-assetPod .cq-projects-Pod-footer-text {
+    position: absolute;
+    right: 65px;
+    left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    top: 0;
+    line-height: 3.0rem;
+}
+
+.cq-projects-admin-assetpod-dialog {
+    max-width: 33rem;
+}
