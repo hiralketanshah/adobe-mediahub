@@ -5,6 +5,7 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.MediahubConstants;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class UserDeactivationScheduledTask implements Runnable {
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    ResourceResolverFactory resolverFactory;
 
     @ObjectClassDefinition(name="User Deactivation Task",
                            description = "User Deactivation cron-job past expiray date")
@@ -56,7 +57,7 @@ public class UserDeactivationScheduledTask implements Runnable {
         String getUserType() default MediahubConstants.EXTERNAL;
     }
 
-    private final Logger logger = LoggerFactory.getLogger(UserDeactivationScheduledTask.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private String userType;
     
@@ -68,35 +69,16 @@ public class UserDeactivationScheduledTask implements Runnable {
         try {
             resolver = resolverFactory.getServiceResourceResolver(authInfo);
             QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
-            Map<String, String> map = new HashMap<>();
-            map.put(MediahubConstants.PATH, MediahubConstants.HOME_USERS);
-            map.put(MediahubConstants.TYPE, MediahubConstants.REP_USERS);
-            map.put(MediahubConstants.FIRST_PROPERTY, MediahubConstants.PROFILE_TYPE);
-            map.put(MediahubConstants.FIRST_PROPERTY_VALUE, userType);
-
+            Map<String, String> map = getPredicateMap();
             Query query = builder.createQuery(PredicateGroup.create(map), resolver.adaptTo(Session.class));
             SearchResult result = query.getResult();
-
             final UserManager userManager= resolver.adaptTo(UserManager.class);
-
             Iterator<Resource> userResources = result.getResources();
             while(userResources.hasNext()){
                 Resource user = userResources.next();
                 String expiryDate = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EXPIRY,String.class);
-
                 if(StringUtils.isNotBlank(expiryDate)){
-
-                    SimpleDateFormat sdf = new SimpleDateFormat(MediahubConstants.YYYY_MM_DD);
-                    Date date = sdf.parse(expiryDate);
-
-                    Calendar expiry = Calendar.getInstance();
-                    expiry.setTime(date);
-
-                    Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
-                    if(authorizable instanceof  User && !((User) authorizable).isDisabled() && Calendar.getInstance().after(expiry)){
-                        logger.info(user.getPath());
-                        ((User) authorizable).disable(MediahubConstants.USER_HAS_EXPIRED);
-                    }
+                    deactivateExpiredUsers(userManager, user, expiryDate);
                 }
             }
             if(resolver.hasChanges()){
@@ -107,6 +89,40 @@ public class UserDeactivationScheduledTask implements Runnable {
             logger.info("Error while deactivating user {}", e.getMessage());
         }
 
+    }
+
+    /**
+     * deactivate user having expiry date post current date
+     *
+     * @param userManager
+     * @param user
+     * @param expiryDate
+     * @throws ParseException
+     * @throws javax.jcr.RepositoryException
+     */
+    protected void deactivateExpiredUsers(UserManager userManager, Resource user, String expiryDate)
+        throws ParseException, javax.jcr.RepositoryException {
+        SimpleDateFormat sdf = new SimpleDateFormat(MediahubConstants.YYYY_MM_DD);
+        Date date = sdf.parse(expiryDate);
+        Calendar expiry = Calendar.getInstance();
+        expiry.setTime(date);
+        Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
+        if(authorizable instanceof User && !((User) authorizable).isDisabled() && Calendar.getInstance().after(expiry)){
+            logger.info(user.getPath());
+            ((User) authorizable).disable(MediahubConstants.USER_HAS_EXPIRED);
+        }
+    }
+
+    /**
+     * @return predicate map for query to be framed
+     */
+    protected Map<String, String> getPredicateMap() {
+        Map<String, String> map = new HashMap<>();
+        map.put(MediahubConstants.PATH, MediahubConstants.HOME_USERS);
+        map.put(MediahubConstants.TYPE, MediahubConstants.REP_USERS);
+        map.put(MediahubConstants.FIRST_PROPERTY, MediahubConstants.PROFILE_TYPE);
+        map.put(MediahubConstants.FIRST_PROPERTY_VALUE, userType);
+        return map;
     }
 
     @Activate

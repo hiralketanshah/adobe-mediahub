@@ -69,7 +69,7 @@ public class FolderResourceListener implements EventHandler {
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
   }
 
-  private void captureDamAssetChanges(Event event, ResourceResolver resolver, Resource contentResourse)
+  protected void captureDamAssetChanges(Event event, ResourceResolver resolver, Resource contentResourse)
       throws PersistenceException {
     if(StringUtils
         .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.DAM_ASSET)){
@@ -88,7 +88,7 @@ public class FolderResourceListener implements EventHandler {
     }
   }
 
-  private void captureFolderChanges(Event event, ResourceResolver resolver, Resource contentResourse)
+  protected void captureFolderChanges(Event event, ResourceResolver resolver, Resource contentResourse)
       throws PersistenceException {
     if(StringUtils
         .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.SLING_FOLDER)){
