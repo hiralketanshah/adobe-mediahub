@@ -253,6 +253,30 @@
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/tabs">
                                                             <items jcr:primaryType="nt:unstructured">
+																<metatab1
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Description"
+                                                                    sling:resourceType="dam/gui/components/admin/folderpropertiesformtab1"
+                                                                    path="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema/items/tabs/items/tab1/items/col1/items"
+                                                                    resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                <metatab2
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Legal"
+                                                                    sling:resourceType="dam/gui/components/admin/folderpropertiesformtab2"
+                                                                    path="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema/items/tabs/items/tab1/items/col1/items"
+                                                                    resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                <metatab3
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Gouvernance"
+                                                                    sling:resourceType="dam/gui/components/admin/folderpropertiesformtab3"
+                                                                    path="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema/items/tabs/items/tab1/items/col1/items"
+                                                                    resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                <metatab4
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Others"
+                                                                    sling:resourceType="dam/gui/components/admin/otherfolderpropertiesformtabs"
+                                                                    path="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema/items/tabs/items/tab1/items/col1/items"
+                                                                    resourceType="granite/ui/components/coral/foundation/container"/>
                                                                 <tab1
                                                                     granite:class="aem-assets-foldershare-details-container"
                                                                     jcr:primaryType="nt:unstructured"
@@ -492,6 +516,7 @@
                                                                     granite:id="aem-assets-foldershare-folder-schema-tab"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Metadata"
+																	sling:hideResource="{Boolean}true"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
                                                                     <granite:rendercondition
                                                                         jcr:primaryType="nt:unstructured"
