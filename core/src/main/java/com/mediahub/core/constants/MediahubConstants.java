@@ -18,4 +18,7 @@ public class MediahubConstants {
   public static final String EXPIRY ="expiry";
   public static final String PROFILE ="profile";
   public static final String USER_HAS_EXPIRED ="User has Expired";
+  public static final String NT_NODE_TYPE = "nt:unstructured";
+  public static final String AEM_PROJECTS_PATH = "/content/projects";
+  public static final String REP_POLICY = "rep:policy";
 }
