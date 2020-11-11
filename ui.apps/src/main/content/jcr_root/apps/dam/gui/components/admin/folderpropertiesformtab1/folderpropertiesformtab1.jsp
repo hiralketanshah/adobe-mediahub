@@ -33,11 +33,12 @@
     }
 
     // Get the resource using resourceResolver so that the search path is applied.
-	Resource targetResource = resourceResolver.getResource(path + "/items/tabs/items/tab1" );
+	Resource targetResource = resourceResolver.getResource(path + "/items/tabs" );
 
 
 
     if (targetResource == null) {
+        out.println("Folder Metadata Not Available");
         return;
     }
 %>
