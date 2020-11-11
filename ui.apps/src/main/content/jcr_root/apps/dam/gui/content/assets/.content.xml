@@ -22,6 +22,13 @@
                             parallelUploads="{Boolean}false"
                             sizeLimit="10737418240"
                             text="Files"/>
+			<createmedias
+                            granite:class="dam-create-folder"
+                            granite:id="dam-create-folder-1"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                            icon="folderAdd"
+                            text="Medias"/>
                     </items>
                 </create>
             </secondary>
