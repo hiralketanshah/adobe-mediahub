@@ -206,6 +206,8 @@
 
                         fieldDiv.appendChild(titleLabel);
                         fieldDiv.appendChild(select);
+                        // we do not display metadata schema for folder 
+                        fieldDiv.style.cssText ="display:none";
                         return fieldDiv;
                     }());
                 }
@@ -784,6 +786,15 @@
                     dom.type = "hidden";
                     dom.name = "./jcr:primaryType";
                     dom.value = "sling:Folder";
+                    return dom;
+                }());
+
+                 // Hidden. For Media type.
+                contentForm.appendChild(function() {
+                    var dom = document.createElement("input");
+                    dom.type = "hidden";
+                    dom.name = "./jcr:content/bnpp-media";
+                    dom.value = "true";
                     return dom;
                 }());
 
