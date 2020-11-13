@@ -793,7 +793,7 @@
                 contentForm.appendChild(function() {
                     var dom = document.createElement("input");
                     dom.type = "hidden";
-                    dom.name = "./jcr:content/bnpp-media";
+                    dom.name = "./jcr:content/metadata/bnpp-media";
                     dom.value = "true";
                     return dom;
                 }());

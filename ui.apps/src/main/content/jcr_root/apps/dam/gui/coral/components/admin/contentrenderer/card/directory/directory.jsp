@@ -63,7 +63,13 @@ request.setAttribute("com.adobe.cq.assets.contentrenderer.directory.profileTitle
        <img src="<%= xssAPI.getValidHref(thumbnailUrl) %>" alt="<%=xssAPI.encodeForHTMLAttr(resourceTitle)%>">
     </coral-card-asset>
 	<coral-card-content>
+	        <%
+              if (resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
+          %>
+            <coral-card-context>Media</coral-card-context>
+          <% }  else { %>
         <coral-card-context><%= xssAPI.encodeForHTML(context) %></coral-card-context>
+          <% } %>
          <coral-card-title class="foundation-collection-item-title"><%= xssAPI.encodeForHTML(resourceTitle) %></coral-card-title>
         <%@page import="org.apache.jackrabbit.api.security.user.User" %>
         <%@page import="org.apache.jackrabbit.api.security.user.UserManager" %>
