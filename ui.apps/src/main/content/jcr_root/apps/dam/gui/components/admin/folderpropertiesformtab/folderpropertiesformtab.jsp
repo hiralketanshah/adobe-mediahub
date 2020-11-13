@@ -19,6 +19,7 @@
           import="
             com.adobe.granite.ui.components.Config,
             org.apache.sling.api.resource.Resource,
+			org.apache.commons.lang3.StringUtils,
             com.day.cq.commons.inherit.HierarchyNodeInheritanceValueMap" %><%
 
     Config cfg = cmp.getConfig();
@@ -29,13 +30,13 @@
     String path = new HierarchyNodeInheritanceValueMap(contentNode).get("folderMetadataSchema", String.class);
 
     if (path == null) {
-        return;
+       path = "/apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items";
+    } else{
+       path = StringUtils.replace(path,"/conf/global/settings/dam/adminui-extension/foldermetadataschema" ,"/apps/dam/temp");
     }
 
     // Get the resource using resourceResolver so that the search path is applied.
-	Resource targetResource = resourceResolver.getResource(path + "/items/tabs" );
-
-
+	  Resource targetResource = resourceResolver.getResource(path + "/tabs" );
 
     if (targetResource == null) {
         out.println("Folder Metadata Not Available");
