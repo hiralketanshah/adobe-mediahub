@@ -21,4 +21,11 @@ public class MediahubConstants {
   public static final String NT_NODE_TYPE = "nt:unstructured";
   public static final String AEM_PROJECTS_PATH = "/content/projects";
   public static final String REP_POLICY = "rep:policy";
+  public static final String REP_ACL = "rep:ACL";
+  public static final String CONSTANT ="content";
+  public static final String JCR_MIXINTYPES ="jcr:mixinTypes";
+  public static final String REP_ACCESSCONTROLLABLE ="rep:AccessControllable";
+  public static final String ROLE_EDITOR ="role_editor";
+  public static final String ROLE_OBSERVER ="role_observer";
+  public static final String ROLE_OWNER ="role_owner";
 }
