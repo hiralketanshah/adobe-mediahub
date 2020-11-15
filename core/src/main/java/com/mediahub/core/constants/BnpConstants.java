@@ -19,4 +19,5 @@ public class BnpConstants {
   public static final String CONF_FOLDERMETADATASCHEMA = "/conf/global/settings/dam/adminui-extension/foldermetadataschema";
   public static final String FOLDER_WIZARD_PATH = "/apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn4/items/tabs/items";
   public static final String APPS_DAM = "/apps/dam";
+  public static final String EVENT_TOPIC = "event/topic";
 }
