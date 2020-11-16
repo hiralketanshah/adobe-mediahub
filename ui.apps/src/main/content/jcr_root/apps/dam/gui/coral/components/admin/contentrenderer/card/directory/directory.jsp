@@ -66,7 +66,7 @@ request.setAttribute("com.adobe.cq.assets.contentrenderer.directory.profileTitle
 	        <%
               if (resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
           %>
-            <coral-card-context>Media</coral-card-context>
+            <coral-card-context><%= i18n.get("MEDIA") %></coral-card-context>
           <% }  else { %>
         <coral-card-context><%= xssAPI.encodeForHTML(context) %></coral-card-context>
           <% } %>
