@@ -108,7 +108,6 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     defaultValue=" "
-                                    disabled="{Boolean}true"
                                     fieldLabel="Size"
                                     name="./jcr:content/metadata/dam:size"
                                     readOnly="{Boolean}true"
@@ -123,7 +122,6 @@
                                 <format
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
-                                    disabled="{Boolean}true"
                                     fieldLabel="Type"
                                     name="./jcr:content/metadata/dc:format"
                                     readOnly="{Boolean}true"
@@ -175,6 +173,7 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Title"
                                     name="./jcr:content/metadata/dc:title"
+                                    resize="both"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
@@ -188,7 +187,8 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Description"
                                     name="./jcr:content/metadata/dc:description"
-                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    resize="both"
+                                    resourceType="granite/ui/components/coral/foundation/form/textarea">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/dc:description"
@@ -351,7 +351,8 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Notes"
                                     name="./jcr:content/metadata/bnpp-notes"
-                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    resize="both"
+                                    resourceType="granite/ui/components/coral/foundation/form/textarea">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-notes"
@@ -410,11 +411,13 @@
                                     resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/formfields/v2/metadataselect">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
+                                        cascadeVisibilityFrom="./jcr:content/metadata/bnpp-subtitles"
+                                        cascadeVisibilityValueSet="yes"
                                         choicesCascading="default"
                                         cq-msm-lockable="./metadata/bnpp-subtitlelanguage"
                                         metaType="dropdown"
                                         requiredCascading="default"
-                                        visibilityCascading="default"/>
+                                        visibilityCascading="ruleBased"/>
                                     <items jcr:primaryType="nt:unstructured">
                                         <_x0031_603372254892
                                             jcr:primaryType="nt:unstructured"
@@ -689,7 +692,7 @@
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
                                 </_x0031_602701173544>
-                                <creator
+                                <_x0031_602699894774
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="URL DAM Archive"
@@ -701,8 +704,8 @@
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
-                                </creator>
-                                <contributor
+                                </_x0031_602699894774>
+                                <_x0031_602699894998
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Internal broadcast URL"
@@ -714,8 +717,8 @@
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
-                                </contributor>
-                                <copyright
+                                </_x0031_602699894998>
+                                <_x0031_602699894123
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Internal file URL"
@@ -727,8 +730,8 @@
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
-                                </copyright>
-                                <copyrightowner
+                                </_x0031_602699894123>
+                                <_x0031_602699894155
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="External broadcast URL"
@@ -737,9 +740,11 @@
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-external-broadcast-url"
-                                        metaType="text"/>
-                                </copyrightowner>
-                                <usageterms
+                                        metaType="text"
+                                        requiredCascading="default"
+                                        visibilityCascading="default"/>
+                                </_x0031_602699894155>
+                                <_x0031_602699894214
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="External file URL"
@@ -751,7 +756,7 @@
                                         metaType="text"
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
-                                </usageterms>
+                                </_x0031_602699894214>
                                 <_x0031_602701415351
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
@@ -836,7 +841,9 @@
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-history-date-use"
                                         metaType="datepicker"
-                                        typeHint="Date"/>
+                                        requiredCascading="default"
+                                        typeHint="Date"
+                                        visibilityCascading="default"/>
                                 </_x0031_602701806692>
                                 <_x0031_602701843458
                                     cq:showOnCreate="{Boolean}true"
@@ -844,6 +851,7 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     cq-msm-lockable="cq:tags"
                                     fieldLabel="Zone"
+                                    forceSelection="{Boolean}true"
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-zone"
@@ -928,6 +936,7 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     cq-msm-lockable="cq:tags"
                                     fieldLabel="Usages territories"
+                                    forceSelection="{Boolean}true"
                                     metaType="tags"
                                     multiple="true"
                                     name="./jcr:content/metadata/bnpp-usages-territories"
@@ -969,7 +978,8 @@
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Contracts"
                                     name="./jcr:content/metadata/bnpp-contracts"
-                                    resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    resize="both"
+                                    resourceType="granite/ui/components/coral/foundation/form/textarea">
                                     <granite:data
                                         jcr:primaryType="nt:unstructured"
                                         cq-msm-lockable="./metadata/bnpp-contracts"
