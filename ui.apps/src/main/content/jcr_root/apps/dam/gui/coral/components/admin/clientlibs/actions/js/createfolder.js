@@ -710,7 +710,7 @@
                 createDialogE2 = new Coral.Dialog().set({
                     id: "createfolder_1",
                     header: {
-                        innerHTML: Granite.I18n.get("Create Medias")
+                        innerHTML: Granite.I18n.get("Create Media")
                     },
                     closable: "on"
                 });
