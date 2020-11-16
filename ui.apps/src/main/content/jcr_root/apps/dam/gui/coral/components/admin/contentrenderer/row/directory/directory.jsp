@@ -52,7 +52,7 @@ PublicationStatus publicationStatus = getPublicationStatus(request, i18n);
     <td is="coral-table-cell" value="0"></td> <!--Adding a placeholder column for encodingStatus -->
     <td is="coral-table-cell" value="type">
           <%
-              if (resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
+              if (resource != null && resource.getChild("jcr:content") != null && resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
           %>
            		<%= i18n.get("MEDIA") %>
           <% }  else { %>
