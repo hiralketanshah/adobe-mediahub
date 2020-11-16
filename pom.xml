@@ -262,33 +262,10 @@ Bundle-DocURL:
                             <cloudManagerTarget>none</cloudManagerTarget>
                         </properties>
                         <validatorsSettings>
-                            <jackrabbit-nodetypes>
-                                <options>
-                                    <!-- use the nodetypes and namespaces from the aem-nodetypes.jar provided in the plugin dependencies -->
-                                    <cnds>tccl:aem.cnd</cnds>
-                                </options>
-                            </jackrabbit-nodetypes>
                         </validatorsSettings>
                     </configuration>
                     <dependencies>
-                        <dependency>
-                            <groupId>biz.netcentric.aem</groupId>
-                            <artifactId>aem-nodetypes</artifactId>
-                            <version>6.5.5.0</version>
-                        </dependency>
                     </dependencies>
-                </plugin>
-
-
-
-                <plugin>
-                    <groupId>com.day.jcr.vault</groupId>
-                    <artifactId>content-package-maven-plugin</artifactId>
-                    <configuration>
-                        <properties>
-                            <installhook.actool.class>biz.netcentric.cq.tools.actool.installhook.AcToolInstallHook</installhook.actool.class>
-                        </properties>
-                    </configuration>
                 </plugin>
 
                 <!-- Content Package Plugin -->
@@ -754,11 +731,6 @@ Bundle-DocURL:
                 <artifactId>slf4j-test</artifactId>
                 <version>1.0.1</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
-                <artifactId>accesscontroltool-bundle</artifactId>
-                <version>2.6.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
