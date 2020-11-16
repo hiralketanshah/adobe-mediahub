@@ -242,256 +242,251 @@
                                                             sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
                                                             name="removemanualthumbnail"
                                                             value="false"/>
+                                                        <folderproperties
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="dam/gui/coral/components/admin/foldershare/folderproperties"/>
+                                                        <titlefield
+                                                            granite:class="block"
+                                                            granite:id="foldertitle"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <titlefieldHeader
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                                    level="3"
+                                                                    text="Folder Title"/>
+                                                                <titlefieldBody
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    name="title">
+                                                                    <granite:data
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        cq-msm-lockable="./jcr:title"
+                                                                        metaType="text"/>
+                                                                </titlefieldBody>
+                                                            </items>
+                                                        </titlefield>
+                                                        <orderable
+                                                            granite:id="orderable"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                            name="jcr:primaryType"
+                                                            text="Orderable"
+                                                            value="sling:OrderedFolder"/>
+                                                        <autotag
+                                                            granite:id="autotag"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                            name="autotag"
+                                                            text="Enable Smart Tags"
+                                                            value="true">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                                feature="com.adobe.dam.asset.autotag.feature.flag"/>
+                                                            <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                cq-msm-lockable="autotag"
+                                                                metaType="text"/>
+                                                        </autotag>
+                                                        <removeprivatefolderrestrictions
+                                                            granite:id="removeprivaterestrictions"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                            name="removeprivaterestrictions"
+                                                            text="Remove Private Folder Restrictions"
+                                                            value="on">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <private
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="dam/gui/coral/components/commons/renderconditions/removeprivaterendercondition"/>
+                                                                <privilege
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                    path="${requestPathInfo.suffix}"
+                                                                    privileges="[jcr:modifyAccessControl]"/>
+                                                            </granite:rendercondition>
+                                                            <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                cq-msm-lockable="rep:policy"
+                                                                metaType="text"/>
+                                                        </removeprivatefolderrestrictions>
+                                                        <makeprivatefolder
+                                                            granite:id="addprivaterestriction"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                            name="private"
+                                                            text="Make Folder Private"
+                                                            value="true">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <not
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                                                                    <private
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="dam/gui/coral/components/commons/renderconditions/removeprivaterendercondition"/>
+                                                                </not>
+                                                                <privilege
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                    path="${requestPathInfo.suffix}"
+                                                                    privileges="[jcr:modifyAccessControl]"/>
+                                                            </granite:rendercondition>
+                                                            <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                cq-msm-lockable="rep:policy"
+                                                                metaType="text"/>
+                                                        </makeprivatefolder>
+                                                        <assetcontribution
+                                                            granite:id="asset-contribution-checkbox"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                            disabled="{Boolean}true"
+                                                            name="./jcr:content/sourcing"
+                                                            text="Asset Contribution"
+                                                            value="true">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <mediaportal
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
+                                                                    type="mediaportal"/>
+                                                                <sourcing
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="dam/gui/coral/components/commons/renderconditions/issourcing"/>
+                                                            </granite:rendercondition>
+                                                        </assetcontribution>
+                                                        <jcrtype
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                            name="jcr:primaryType"/>
+                                                        <metadataschema
+                                                            granite:id="metadata-schema-name"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:hideResource="{Boolean}true"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            disabled="{Boolean}true"
+                                                            fieldLabel="Metadata Schema"
+                                                            name="metadataSchema"
+                                                            renderReadOnly="{Boolean}false">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="dam/gui/coral/components/admin/foldershare/renderconditions/hasmetadataschema"
+                                                                path="${requestPathInfo.suffix}"/>
+                                                            <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                cq-msm-lockable="./metadata/dc:metadataschema"
+                                                                metaType="text"/>
+                                                        </metadataschema>
+                                                        <operation
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                            name=":operation"
+                                                            value="dam.share.folder"/>
+                                                        <charset
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                            name="_charset_"
+                                                            value="utf-8"/>
+                                                        <contentPath
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="dam/gui/coral/components/commons/ui/shell/contentpath"
+                                                            path="${requestPathInfo.suffix}"/>
+                                                        <titleReadFrom
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                            name="titleReadFrom"
+                                                            value="contentNode"/>
+                                                        <sync-options
+                                                            granite:id="dm-s7-sync-mode-options"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Sync mode"
+                                                            name="s7-sync-mode">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <inherit
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Inherited"
+                                                                    value="inherit"/>
+                                                                <include
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Sync everything in this folder sub-tree to dynamicmedia"
+                                                                    value="include"/>
+                                                                <exclude
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Exclude everything in this folder sub-tree from dynamic media sync"
+                                                                    value="exclude"/>
+                                                            </items>
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="dam/gui/components/s7dam/selectivesync"/>
+                                                        </sync-options>
+                                                        <s7sync-status
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="dam/gui/components/s7dam/syncstatus">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="dam/gui/components/s7dam/selectivesync"/>
+                                                        </s7sync-status>
+                                                        <dmpublish-mode
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="dam/gui/components/s7dam/dmpublish/mode"
+                                                            ignore-selectivesync="{Boolean}true"
+                                                            path="${ requestPathInfo.suffix }">
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                                        </dmpublish-mode>
+                                                        <dmpublish-options
+                                                            granite:id="dm-s7-publish-mode-options"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Dynamic Media Publish mode"
+                                                            name="./jcr:content/dmpublish-mode">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <immediate
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Immediately"
+                                                                    value="immediate"/>
+                                                                <manual
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Upon Activation"
+                                                                    value="manual"/>
+                                                                <selective
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Selective Publish"
+                                                                    value="selective"/>
+                                                            </items>
+                                                            <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                                        </dmpublish-options>
                                                     </items>
                                                 </fixedColumn1>
                                                 <fixedColumn2
                                                     granite:id="detail"
                                                     jcr:primaryType="nt:unstructured"
+                                                    sling:hideResource="{Boolean}true"
                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
                                                     <items jcr:primaryType="nt:unstructured">
                                                         <tabs
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/tabs">
                                                             <items jcr:primaryType="nt:unstructured">
-                                                                <tab1
-                                                                    granite:class="aem-assets-foldershare-details-container"
-                                                                    jcr:primaryType="nt:unstructured"
-                                                                    jcr:title="Details"
-                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                                    <items jcr:primaryType="nt:unstructured">
-                                                                        <folderproperties
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="dam/gui/coral/components/admin/foldershare/folderproperties"/>
-                                                                        <titlefield
-                                                                            granite:class="block"
-                                                                            granite:id="foldertitle"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                                            <items jcr:primaryType="nt:unstructured">
-                                                                                <titlefieldHeader
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                                                    level="3"
-                                                                                    text="Folder Title"/>
-                                                                                <titlefieldBody
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                                    name="title">
-                                                                                    <granite:data
-                                                                                        jcr:primaryType="nt:unstructured"
-                                                                                        cq-msm-lockable="./jcr:title"
-                                                                                        metaType="text"/>
-                                                                                </titlefieldBody>
-                                                                            </items>
-                                                                        </titlefield>
-                                                                        <orderable
-                                                                            granite:id="orderable"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                            name="jcr:primaryType"
-                                                                            text="Orderable"
-                                                                            value="sling:OrderedFolder"/>
-                                                                        <autotag
-                                                                            granite:id="autotag"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                            name="autotag"
-                                                                            text="Enable Smart Tags"
-                                                                            value="true">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                                                                feature="com.adobe.dam.asset.autotag.feature.flag"/>
-                                                                            <granite:data
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                cq-msm-lockable="autotag"
-                                                                                metaType="text"/>
-                                                                        </autotag>
-                                                                        <removeprivatefolderrestrictions
-                                                                            granite:id="removeprivaterestrictions"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                            name="removeprivaterestrictions"
-                                                                            text="Remove Private Folder Restrictions"
-                                                                            value="on">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                                <private
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="dam/gui/coral/components/commons/renderconditions/removeprivaterendercondition"/>
-                                                                                <privilege
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
-                                                                                    path="${requestPathInfo.suffix}"
-                                                                                    privileges="[jcr:modifyAccessControl]"/>
-                                                                            </granite:rendercondition>
-                                                                            <granite:data
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                cq-msm-lockable="rep:policy"
-                                                                                metaType="text"/>
-                                                                        </removeprivatefolderrestrictions>
-                                                                        <makeprivatefolder
-                                                                            granite:id="addprivaterestriction"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                            name="private"
-                                                                            text="Make Folder Private"
-                                                                            value="true">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                                <not
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
-                                                                                    <private
-                                                                                        jcr:primaryType="nt:unstructured"
-                                                                                        sling:resourceType="dam/gui/coral/components/commons/renderconditions/removeprivaterendercondition"/>
-                                                                                </not>
-                                                                                <privilege
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
-                                                                                    path="${requestPathInfo.suffix}"
-                                                                                    privileges="[jcr:modifyAccessControl]"/>
-                                                                            </granite:rendercondition>
-                                                                            <granite:data
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                cq-msm-lockable="rep:policy"
-                                                                                metaType="text"/>
-                                                                        </makeprivatefolder>
-                                                                        <assetcontribution
-                                                                            granite:id="asset-contribution-checkbox"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                            disabled="{Boolean}true"
-                                                                            name="./jcr:content/sourcing"
-                                                                            text="Asset Contribution"
-                                                                            value="true">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                                <mediaportal
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
-                                                                                    type="mediaportal"/>
-                                                                                <sourcing
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    sling:resourceType="dam/gui/coral/components/commons/renderconditions/issourcing"/>
-                                                                            </granite:rendercondition>
-                                                                        </assetcontribution>
-                                                                        <jcrtype
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                                            name="jcr:primaryType"/>
-                                                                        <metadataschema
-                                                                            granite:id="metadata-schema-name"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                            disabled="{Boolean}true"
-                                                                            fieldLabel="Metadata Schema"
-                                                                            name="metadataSchema"
-                                                                            renderReadOnly="{Boolean}false">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="dam/gui/coral/components/admin/foldershare/renderconditions/hasmetadataschema"
-                                                                                path="${requestPathInfo.suffix}"/>
-                                                                            <granite:data
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                cq-msm-lockable="./metadata/dc:metadataschema"
-                                                                                metaType="text"/>
-                                                                        </metadataschema>
-                                                                        <operation
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                                            name=":operation"
-                                                                            value="dam.share.folder"/>
-                                                                        <charset
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                                            name="_charset_"
-                                                                            value="utf-8"/>
-                                                                        <contentPath
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="dam/gui/coral/components/commons/ui/shell/contentpath"
-                                                                            path="${requestPathInfo.suffix}"/>
-                                                                        <titleReadFrom
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                                            name="titleReadFrom"
-                                                                            value="contentNode"/>
-                                                                        <sync-options
-                                                                            granite:id="dm-s7-sync-mode-options"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                            fieldLabel="Sync mode"
-                                                                            name="s7-sync-mode">
-                                                                            <items jcr:primaryType="nt:unstructured">
-                                                                                <inherit
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Inherited"
-                                                                                    value="inherit"/>
-                                                                                <include
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Sync everything in this folder sub-tree to dynamicmedia"
-                                                                                    value="include"/>
-                                                                                <exclude
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Exclude everything in this folder sub-tree from dynamic media sync"
-                                                                                    value="exclude"/>
-                                                                            </items>
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="dam/gui/components/s7dam/selectivesync"/>
-                                                                        </sync-options>
-                                                                        <s7sync-status
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="dam/gui/components/s7dam/syncstatus">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="dam/gui/components/s7dam/selectivesync"/>
-                                                                        </s7sync-status>
-                                                                        <dmpublish-mode
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="dam/gui/components/s7dam/dmpublish/mode"
-                                                                            ignore-selectivesync="{Boolean}true"
-                                                                            path="${ requestPathInfo.suffix }">
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
-                                                                        </dmpublish-mode>
-                                                                        <dmpublish-options
-                                                                            granite:id="dm-s7-publish-mode-options"
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                            fieldLabel="Dynamic Media Publish mode"
-                                                                            name="./jcr:content/dmpublish-mode">
-                                                                            <items jcr:primaryType="nt:unstructured">
-                                                                                <immediate
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Immediately"
-                                                                                    value="immediate"/>
-                                                                                <manual
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Upon Activation"
-                                                                                    value="manual"/>
-                                                                                <selective
-                                                                                    jcr:primaryType="nt:unstructured"
-                                                                                    text="Selective Publish"
-                                                                                    value="selective"/>
-                                                                            </items>
-                                                                            <granite:rendercondition
-                                                                                jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
-                                                                        </dmpublish-options>
-                                                                    </items>
-                                                                </tab1>
                                                                 <tab1-1
                                                                     granite:class="aem-assets-foldershare-folderschema-tab"
                                                                     granite:id="aem-assets-foldershare-folder-schema-tab"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Metadata"
+                                                                    sling:hideResource="{Boolean}true"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
                                                                     <granite:rendercondition
                                                                         jcr:primaryType="nt:unstructured"
@@ -1088,6 +1083,603 @@
                                                         </tabs>
                                                     </items>
                                                 </fixedColumn2>
+                                                <fixedColumn3
+                                                    granite:id="detail"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    jcr:title="Meta Schema Details"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                    <items jcr:primaryType="nt:unstructured">
+                                                        <include
+                                                            jcr:primaryType="nt:unstructured"
+                                                            jcr:title="Meta Schema Details"
+                                                            sling:resourceType="dam/gui/components/admin/folderpropertiesformtab"
+                                                            path="/conf/global/settings/dam/adminui-extension/foldermetadataschema/hello/items/tabs"
+                                                            resourceType="granite/ui/components/coral/foundation/tabs"/>
+                                                    </items>
+                                                </fixedColumn3>
+                                                <fixedColumn4
+                                                    granite:id="detail"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:hideResource="{Boolean}true"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                    <items jcr:primaryType="nt:unstructured">
+                                                        <tabs
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/tabs">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <wtab2
+                                                                    granite:class="aem-assets-foldershare-profiles-tab"
+                                                                    granite:id="aem-assets-foldershare-metadata-profile-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Metadata Profiles"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <tabcontent
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                                                feature="com.adobe.dam.asset.processingprofile.feature.flag"/>
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <processingprofileproperties
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="dam/gui/coral/components/admin/foldershare/processingprofileproperties"
+                                                                                    class="folder-share-metadata-profile-properties">
+                                                                                    <metadataprofiledetails
+                                                                                        granite:class="align-in-column active foundation-layout-form foundation-layout-form-mode-default"
+                                                                                        granite:id="aem-assets-metadataeditor-formid"
+                                                                                        granite:rel="data-fields"
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="dam/gui/coral/components/admin/propertiesform"
+                                                                                        class="aem-assets-foldershare-selected-profile-detail"
+                                                                                        dataPath="${requestPathInfo.suffix}"
+                                                                                        foundationForm="{Boolean}false"
+                                                                                        renderAsForm="{Boolean}false"
+                                                                                        style="vertical">
+                                                                                        <granite:data
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            foundation-mode-group="aem-assets-admin-properties"/>
+                                                                                        <datasource
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="dam/gui/coral/components/admin/propertiesform/datasource"/>
+                                                                                    </metadataprofiledetails>
+                                                                                </processingprofileproperties>
+                                                                                <profileList
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    jcr:title="Profile Name"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <container
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                                <dropdown
+                                                                                                    granite:id="metadata-select-list"
+                                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                                                    name="./jcr:content/metadataProfile"
+                                                                                                    renderReadOnly="{Boolean}false">
+                                                                                                    <datasource
+                                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                                        sling:resourceType="dam/gui/components/s7dam/profiles/processingprofiles/editor/metadata/dropdowndatasource"/>
+                                                                                                    <granite:data
+                                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                                        cq-msm-lockable="./metadataProfile"
+                                                                                                        metaType="text"/>
+                                                                                                </dropdown>
+                                                                                            </items>
+                                                                                        </container>
+                                                                                    </items>
+                                                                                </profileList>
+                                                                                <profileDetail
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    jcr:title="Profile Details"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/fieldset"/>
+                                                                            </items>
+                                                                        </tabcontent>
+                                                                    </items>
+                                                                </wtab2>
+                                                                <wtab3
+                                                                    granite:class="aem-assets-foldershare-profiles-tab"
+                                                                    granite:id="aem-assets-foldershare-image-profile-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Image Profiles"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <tabcontent
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                                                feature="com.adobe.dam.asset.processingprofile.feature.flag"/>
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <profileListHeader
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                                                    level="3"
+                                                                                    text="Profile Name"/>
+                                                                                <profileList
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <dropdown
+                                                                                            granite:id="image-select-list"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                                            name="./jcr:content/imageProfile"
+                                                                                            renderReadOnly="{Boolean}false">
+                                                                                            <datasource
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                sling:resourceType="dam/gui/components/s7dam/profiles/processingprofiles/editor/image/dropdowndatasource"/>
+                                                                                            <granite:data
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                cq-msm-lockable="./imageProfile"
+                                                                                                metaType="text"/>
+                                                                                        </dropdown>
+                                                                                    </items>
+                                                                                </profileList>
+                                                                                <profileDetails
+                                                                                    granite:id="image-profile-detail"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <crop
+                                                                                            granite:class="image-profile-detail"
+                                                                                            granite:id="image-profile-crop"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                                        <usm
+                                                                                            granite:class="image-profile-detail"
+                                                                                            granite:id="image-profile-usm"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                                        <conversion
+                                                                                            granite:class="image-profile-detail"
+                                                                                            granite:id="image-profile-conversion"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/container"/>
+                                                                                    </items>
+                                                                                </profileDetails>
+                                                                            </items>
+                                                                        </tabcontent>
+                                                                    </items>
+                                                                </wtab3>
+                                                                <wtab4
+                                                                    granite:class="aem-assets-foldershare-profiles-tab"
+                                                                    granite:id="aem-assets-foldershare-video-profile-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Video Profiles"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <tabcontent
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                                                feature="com.adobe.dam.asset.processingprofile.feature.flag"/>
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <profileListHeader
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                                                    level="3"
+                                                                                    text="Profile Name"/>
+                                                                                <profileList
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <dropdown
+                                                                                            granite:id="video-select-list"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                                            name="./jcr:content/videoProfile"
+                                                                                            OOTB_videoProfile="/libs/settings/dam/dm/presets/video/Adaptive_Video_Encoding"
+                                                                                            renderReadOnly="{Boolean}false">
+                                                                                            <datasource
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                sling:resourceType="dam/gui/components/s7dam/profiles/processingprofiles/editor/video/dropdowndatasource"/>
+                                                                                            <granite:data
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                cq-msm-lockable="./videoProfile"
+                                                                                                metaType="text"/>
+                                                                                        </dropdown>
+                                                                                    </items>
+                                                                                </profileList>
+                                                                                <profileDetails
+                                                                                    granite:id="video-profile-detail"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <granite:data
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        content-url="/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard/s7dam/videoprofiledetails.html"/>
+                                                                                </profileDetails>
+                                                                            </items>
+                                                                        </tabcontent>
+                                                                    </items>
+                                                                </wtab4>
+                                                                <wtab5
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Cloud Services"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <configuration
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Configuration"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <cqConf
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="cq/cloudconfig/components/admin/configpathbrowser"
+                                                                                    emptyText="Select Configuration Path"
+                                                                                    fieldLabel="Cloud Configuration">
+                                                                                    <granite:data
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        cq-msm-lockable="./cq:conf"
+                                                                                        metaType="text"/>
+                                                                                </cqConf>
+                                                                            </items>
+                                                                        </configuration>
+                                                                        <cloudservices
+                                                                            cq:showOnCreate="{Boolean}false"
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Cloud Services"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <column
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <configurations
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="cq/cloudserviceconfigs/components/configurations">
+                                                                                            <granite:data
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                cq-msm-lockable="./cq:cloudserviceconfigs"
+                                                                                                metaType="text"/>
+                                                                                        </configurations>
+                                                                                    </items>
+                                                                                </column>
+                                                                            </items>
+                                                                        </cloudservices>
+                                                                    </items>
+                                                                </wtab5>
+                                                                <permissions-tab
+                                                                    granite:class="aem-assets-foldershare-details-container"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Permissions"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <members
+                                                                            granite:class="permission-section"
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Members"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <adduser
+                                                                                    granite:id="foldersharesettings-adduser"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <addusertext
+                                                                                            granite:class="coral-Form-fieldlabel"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/text"
+                                                                                            text="Add User or Group"/>
+                                                                                        <userpicker
+                                                                                            granite:id="foldershare-settings-userpicker"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="dam/gui/coral/components/commons/userpicker"
+                                                                                            name="assignee"
+                                                                                            showDeclaraedGroupMembersOnly="{Boolean}false"
+                                                                                            sortOn="profile/@givenName"
+                                                                                            sortOrder="ASCENDING"
+                                                                                            userGroup="everyone"/>
+                                                                                        <memberrole
+                                                                                            granite:id="member-role"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                                            name="role">
+                                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                                <editor
+                                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                                    text="Editor"
+                                                                                                    value="editor"/>
+                                                                                                <owner
+                                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                                    text="Owner"
+                                                                                                    value="owner"/>
+                                                                                                <viewer
+                                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                                    text="Viewer"
+                                                                                                    value="viewer"/>
+                                                                                            </items>
+                                                                                        </memberrole>
+                                                                                        <add
+                                                                                            granite:class="block"
+                                                                                            granite:id="add-user"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                                                                                            disabled="true"
+                                                                                            text="Add"
+                                                                                            title="Add"
+                                                                                            variant="[primary]">
+                                                                                            <data
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                href.uritemplate="/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab/items/members/items/adduser/items/userpicker.userlist.html{?query,searchById}&amp;_charset_=utf-8"/>
+                                                                                        </add>
+                                                                                    </items>
+                                                                                    <granite:rendercondition
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                        path="${requestPathInfo.suffix}"
+                                                                                        privileges="[jcr:modifyAccessControl]"/>
+                                                                                </adduser>
+                                                                                <listuser
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="dam/gui/coral/components/admin/foldershare/foldermembers">
+                                                                                    <granite:rendercondition
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                        path="${requestPathInfo.suffix}"
+                                                                                        privileges="[jcr:readAccessControl]"/>
+                                                                                </listuser>
+                                                                            </items>
+                                                                        </members>
+                                                                        <cug
+                                                                            granite:class="permission-section"
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Closed User Group"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <addcug
+                                                                                    granite:id="foldersharesettings-adduser"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                                        <addusertext
+                                                                                            granite:class="coral-Form-fieldlabel"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/text"
+                                                                                            text="Add User or Group"/>
+                                                                                        <userpicker
+                                                                                            granite:id="foldershare-settings-userpicker-cug"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="dam/gui/coral/components/commons/userpicker"
+                                                                                            name="assignee"
+                                                                                            showDeclaraedGroupMembersOnly="{Boolean}false"
+                                                                                            sortOn="profile/@givenName"
+                                                                                            sortOrder="ASCENDING"
+                                                                                            userGroup="everyone"/>
+                                                                                        <add
+                                                                                            granite:class="block"
+                                                                                            granite:id="add-cug-user"
+                                                                                            jcr:primaryType="nt:unstructured"
+                                                                                            sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                                                                                            disabled="true"
+                                                                                            text="Add"
+                                                                                            title="Add"
+                                                                                            variant="[primary]">
+                                                                                            <data
+                                                                                                jcr:primaryType="nt:unstructured"
+                                                                                                href.uritemplate="/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab/items/cug/items/addcug/items/userpicker.userlist.html{?query,searchById}&amp;_charset_=utf-8"/>
+                                                                                        </add>
+                                                                                    </items>
+                                                                                    <granite:rendercondition
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                        path="${requestPathInfo.suffix}"
+                                                                                        privileges="[jcr:modifyAccessControl]"/>
+                                                                                </addcug>
+                                                                                <cuglist
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="dam/gui/coral/components/admin/foldershare/foldercug">
+                                                                                    <granite:rendercondition
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                        path="${requestPathInfo.suffix}"
+                                                                                        privileges="[jcr:readAccessControl]"/>
+                                                                                </cuglist>
+                                                                            </items>
+                                                                        </cug>
+                                                                        <authrization
+                                                                            granite:class="permission-section"
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Authentication Requirement"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                path="${requestPathInfo.suffix}"
+                                                                                privileges="[jcr:modifyAccessControl]"/>
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <authorization-setting
+                                                                                    granite:class="authorization-filed"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                                                    fieldDescription="You might need to configure a Closed User Group."
+                                                                                    name="granite:AuthenticationRequired"
+                                                                                    text="Enable"
+                                                                                    value="{Boolean}true"/>
+                                                                                <login-path
+                                                                                    granite:class="authorization-filed"
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
+                                                                                    fieldLabel="Login Page"
+                                                                                    name="granite:loginPath"
+                                                                                    rootPath="/content"/>
+                                                                            </items>
+                                                                        </authrization>
+                                                                    </items>
+                                                                </permissions-tab>
+                                                                <livecopytab
+                                                                    granite:class="aem-assets-foldershare-msm-tab"
+                                                                    granite:id="aem-assets-foldershare-livecopy-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Live Copy"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <granite:data
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        tabid="ef367993-2a49-1bb0-f555-7265521fa578"/>
+                                                                    <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="wcm/msm/components/touch-ui/renderconditions/islivecopy"
+                                                                        path="${empty param.item ? requestPathInfo.suffix : param.item}"/>
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <writelivecopyconfig
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                                            name="msm:writeLiveCopyConfig"
+                                                                            value="true">
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="wcm/msm/components/touch-ui/renderconditions/islivecopy"
+                                                                                ignoreIfCancelled="{Boolean}true"
+                                                                                path="${empty param.item ? requestPathInfo.suffix : param.item}"/>
+                                                                        </writelivecopyconfig>
+                                                                        <suspendedNote
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/well">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <text
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/text"
+                                                                                    text="The Live Copy has been suspended. No action will be performed on a roll out."/>
+                                                                            </items>
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="wcm/msm/components/touch-ui/renderconditions/islivecopy"
+                                                                                ignoreIfNotCancelled="{Boolean}true"
+                                                                                path="${empty param.item ? requestPathInfo.suffix : param.item}"/>
+                                                                        </suspendedNote>
+                                                                        <source
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Source"
+                                                                            sling:resourceType="granite/ui/components/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <source
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/coral/touch-ui/propertiesdialog/livecopy/source"
+                                                                                    backHref=""
+                                                                                    href="/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard.html"
+                                                                                    path="${empty param.item ? requestPathInfo.suffix : param.item }"/>
+                                                                            </items>
+                                                                        </source>
+                                                                        <status
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Status"
+                                                                            sling:resourceType="granite/ui/components/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <status
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/touch-ui/propertiesdialog/livecopy/status"
+                                                                                    path="${empty param.item ? requestPathInfo.suffix : param.item}"/>
+                                                                            </items>
+                                                                        </status>
+                                                                        <configuration
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Configuration"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <deepinheritance
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/touch-ui/propertiesdialog/livecopy/deepinheritance"
+                                                                                    fieldDescription="If checked Live Copy configuration is effective on all children"
+                                                                                    name="msm:isDeep"
+                                                                                    path="${empty param.item ? requestPathInfo.suffix : param.item}"
+                                                                                    rel="cq-siteadmin-admin-properties-livecopy-isdeep"
+                                                                                    text="Live Copy Inheritance"/>
+                                                                                <inhertrolloutconfigs
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/touch-ui/propertiesdialog/livecopy/inheritrolloutconfigs"
+                                                                                    name="msm:inheritRolloutConfigs"
+                                                                                    path="${empty param.item ? requestPathInfo.suffix : param.item}"
+                                                                                    rel="cq-siteadmin-admin-properties-livecopy-inheritrolloutconfigs"
+                                                                                    renderReadOnly="{Boolean}true"
+                                                                                    target="cq-siteadmin-admin-properties-livecopy-rolloutconfigs"
+                                                                                    text="Inherit Rollout Configs from Parent"
+                                                                                    value="true"/>
+                                                                                <rolloutconfigs
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/touch-ui/propertiesdialog/livecopy/rolloutconfigs"
+                                                                                    emptyText="Choose Rollout Config"
+                                                                                    name="cq:rolloutConfigs"
+                                                                                    path="${empty param.item ? requestPathInfo.suffix : param.item}"
+                                                                                    rel="cq-siteadmin-admin-properties-livecopy-rolloutconfigs"
+                                                                                    required="true">
+                                                                                    <datasource
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="wcm/msm/components/datasources/rolloutconfig"
+                                                                                        triggers="[rollout]"/>
+                                                                                </rolloutconfigs>
+                                                                            </items>
+                                                                        </configuration>
+                                                                    </items>
+                                                                </livecopytab>
+                                                                <livecopysourcetab
+                                                                    granite:class="aem-assets-foldershare-msm-tab"
+                                                                    granite:id="aem-assets-foldershare-livecopysource-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Live Copy Source"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="dam/gui/components/admin/renderconditions/islivecopysource"
+                                                                        path="${requestPathInfo.suffix}"/>
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <writeblueprintconfig
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                                            name="msm:writeBlueprintConfig"
+                                                                            value="true"/>
+                                                                        <livecopies
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            jcr:title="Current Live Copies"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                                            <items jcr:primaryType="nt:unstructured">
+                                                                                <title
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="wcm/msm/components/coral/touch-ui/propertiesdialog/blueprint/livecopies"
+                                                                                    backHref=""
+                                                                                    href="/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard.html"
+                                                                                    path="${requestPathInfo.suffix}"/>
+                                                                            </items>
+                                                                        </livecopies>
+                                                                    </items>
+                                                                </livecopysourcetab>
+                                                                <assetcontributiontab
+                                                                    granite:class="aem-assets-contribution-tab"
+                                                                    granite:id="aem-assets-contribution-tab"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Asset Contribution"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                                    <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                        <mediaportal
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
+                                                                            type="mediaportal"/>
+                                                                        <sourcing
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/issourcing"/>
+                                                                    </granite:rendercondition>
+                                                                    <items jcr:primaryType="nt:unstructured">
+                                                                        <clientlibs
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+                                                                            categories="[cq.gui.damadmin.sourcing.foldersettings.coral]"/>
+                                                                        <sourcingform
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/include"
+                                                                            path="/mnt/overlay/dam/gui/content/commons/sourcingfolderform"/>
+                                                                    </items>
+                                                                </assetcontributiontab>
+                                                            </items>
+                                                        </tabs>
+                                                    </items>
+                                                </fixedColumn4>
                                             </items>
                                         </fixedColumns>
                                     </items>
