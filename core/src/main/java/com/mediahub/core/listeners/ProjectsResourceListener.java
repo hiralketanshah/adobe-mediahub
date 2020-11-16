@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -43,8 +45,6 @@ public class ProjectsResourceListener implements EventListener {
      * Logger
      */
     Logger log = LoggerFactory.getLogger(this.getClass());
-    private Session adminSession;
-    private ResourceResolver adminResolver;
     @Reference
     private ResourceResolverFactory resolverFactory;
     @Reference
@@ -62,13 +62,14 @@ public class ProjectsResourceListener implements EventListener {
     @Activate
     public void activate(ComponentContext context) throws Exception {
         log.info("activating Project creation Observation in ProjectsResourceListener");
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+                BnpConstants.WRITE_SERVICE);
+        ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        // getting session of System User
+        Session adminSession = adminResolver.adaptTo(Session.class);
         try {
             final String[] nodeTypes = { MediahubConstants.NT_NODE_TYPE };
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
-            // getting session of System User
-            adminSession = adminResolver.adaptTo(Session.class);
+            
             // Creating Event Listener to trigger the service on project
             // creation
             adminSession.getWorkspace().getObservationManager().addEventListener(this, // handler
@@ -82,19 +83,19 @@ public class ProjectsResourceListener implements EventListener {
             log.error("unable to register session in ProjectsResourceListener : {}", e.getMessage());
             throw new Exception(e);
         }
-    }
+        
+        	
+        }
+    
 
     /**
      * Deactivate method to close the resources
      */
     @Deactivate
     public void deactivate() {
-        if (adminSession != null) {
-            adminSession.logout();
-        }
-        if (adminResolver != null) {
-            adminResolver.close();
-        }
+    	
+        
+        
     }
 
     /*
@@ -103,8 +104,14 @@ public class ProjectsResourceListener implements EventListener {
      * @see javax.jcr.observation.EventListener#onEvent(javax.jcr.observation. EventIterator)
      */
     public void onEvent(EventIterator eventIterator) {
+    	
         try {
             log.info("System User Id is:\" + adminSession.getUserID()");
+            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+                    BnpConstants.WRITE_SERVICE);
+            ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
+            // getting session of System User
+            Session adminSession = adminResolver.adaptTo(Session.class);
             String projectPath = eventIterator.nextEvent().getPath();
             int index = projectPath.lastIndexOf("/");
             log.info("Project Created : {}", projectPath);
@@ -143,8 +150,18 @@ public class ProjectsResourceListener implements EventListener {
                 }
             }
             log.info("End of activating Project creation Observation in ProjectsResourceListener");
-        } catch (RepositoryException | PersistenceException e) {
+            if (adminResolver != null) {
+                adminResolver.close();
+            }
+            if(adminSession!=null)
+            {
+            	adminSession.logout();
+            }
+        } catch (Exception e) {
             log.error("RepositoryException while Executing events", e);
         }
+        
+        	
+        
     }
 }
