@@ -108,11 +108,12 @@ public class ProjectsResourceListener implements EventListener {
             log.info("System User Id is:\" + adminSession.getUserID()");
             final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                     BnpConstants.WRITE_SERVICE);
-            ResourceResolver adminResolver;
+            ResourceResolver adminResolver = null;
+            Session adminSession = null;
             try {
 				adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
 	            // getting session of System User
-	            Session adminSession = adminResolver.adaptTo(Session.class);
+	            adminSession = adminResolver.adaptTo(Session.class);
 	            String projectPath = eventIterator.nextEvent().getPath();
 	            int index = projectPath.lastIndexOf("/");
 	            log.info("Project Created : {}", projectPath);
@@ -156,6 +157,10 @@ public class ProjectsResourceListener implements EventListener {
 	                }
 	            }
 	            log.info("End of activating Project creation Observation in ProjectsResourceListener");
+
+        	} catch (LoginException | RepositoryException | PersistenceException e) {
+        		log.error("RepositoryException while Executing events", e);
+			}finally {
 	            if (adminResolver != null) {
 	                adminResolver.close();
 	            }
@@ -163,8 +168,6 @@ public class ProjectsResourceListener implements EventListener {
 	            {
 	            	adminSession.logout();
 	            }
-        	} catch (LoginException | RepositoryException | PersistenceException e) {
-        		log.error("RepositoryException while Executing events", e);
 			}
 
         
