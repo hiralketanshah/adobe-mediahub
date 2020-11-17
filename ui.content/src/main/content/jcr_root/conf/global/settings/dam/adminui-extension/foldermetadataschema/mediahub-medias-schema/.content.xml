@@ -124,6 +124,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Image"
                                             value="image"/>
+                                        <_x0031_602704715055
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Office Automation"
+                                            value="office-automation"/>
+                                        <_x0031_602704715066
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Rich media"
+                                            value="rich-media"/>
                                     </items>
                                     <cascadeitems
                                         jcr:primaryType="nt:unstructured"
@@ -216,46 +224,46 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Advertising poster"
                                             value="advertising-poster"/>
-                                        <_x0031_603371399985
+                                        <_x0031_603371461816
                                             jcr:primaryType="nt:unstructured"
-                                            text="Poster (not advertising)"
-                                            value="poster"/>
-                                        <_x0031_603371405888
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Others"
-                                            value="others"/>
-                                        <_x0031_603371411034
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Illustration"
-                                            value="illustration"/>
-                                        <_x0031_603371415073
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Radio program"
-                                            value="radio-program"/>
-                                        <_x0031_603371418450
-                                            jcr:primaryType="nt:unstructured"
-                                            text="TV program (external)"
-                                            value="tv-program"/>
-                                        <_x0031_603371424471
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Fiction"
-                                            value="fiction"/>
+                                            text="Advertising spot"
+                                            value="adverstising-spot"/>
                                         <_x0031_603371426103
                                             jcr:primaryType="nt:unstructured"
                                             text="Animated film"
                                             value="animated-film"/>
-                                        <_x0031_603371428889
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Intervention"
-                                            value="intervention"/>
                                         <_x0031_603371432180
                                             jcr:primaryType="nt:unstructured"
                                             text="COMEX Intervention"
                                             value="comex-intervention"/>
+                                        <_x0031_603371458408
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Conference broadcast"
+                                            value="conference-broadcast"/>
                                         <_x0031_603371435135
                                             jcr:primaryType="nt:unstructured"
                                             text="Expert intervention"
                                             value="expert-intervention"/>
+                                        <_x0031_603371424471
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Fiction"
+                                            value="fiction"/>
+                                        <_x0031_603371411034
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Illustration"
+                                            value="illustration"/>
+                                        <_x0031_603371472568
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Interactive Video"
+                                            value="interactive-video"/>
+                                        <_x0031_603371452148
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Internal publication"
+                                            value="internal-publication"/>
+                                        <_x0031_603371428889
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Intervention"
+                                            value="intervention"/>
                                         <_x0031_603371439344
                                             jcr:primaryType="nt:unstructured"
                                             text="Jingle"
@@ -264,42 +272,42 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Making of"
                                             value="making-of"/>
+                                        <_x0031_603371405888
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Others"
+                                            value="others"/>
                                         <_x0031_603371445981
                                             jcr:primaryType="nt:unstructured"
                                             text="Photography"
                                             value="photography"/>
+                                        <_x0031_603371399985
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Poster (not advertising)"
+                                            value="poster"/>
                                         <_x0031_603371449112
                                             jcr:primaryType="nt:unstructured"
                                             text="Presentation"
                                             value="presentation"/>
-                                        <_x0031_603371452148
+                                        <_x0031_603371415073
                                             jcr:primaryType="nt:unstructured"
-                                            text="Internal publication"
-                                            value="internal-publication"/>
+                                            text="Radio program"
+                                            value="radio-program"/>
                                         <_x0031_603371455161
                                             jcr:primaryType="nt:unstructured"
                                             text="Report"
                                             value="report"/>
-                                        <_x0031_603371458408
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Conference broadcast"
-                                            value="conference-broadcast"/>
-                                        <_x0031_603371461816
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Advertising spot"
-                                            value="adverstising-spot"/>
-                                        <_x0031_603371465380
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Training support"
-                                            value="training-support"/>
                                         <_x0031_603371468978
                                             jcr:primaryType="nt:unstructured"
                                             text="Teaser"
                                             value="teaser"/>
-                                        <_x0031_603371472568
+                                        <_x0031_603371465380
                                             jcr:primaryType="nt:unstructured"
-                                            text="Interactive Video"
-                                            value="interactive-video"/>
+                                            text="Training support"
+                                            value="training-support"/>
+                                        <_x0031_603371418450
+                                            jcr:primaryType="nt:unstructured"
+                                            text="TV program (external)"
+                                            value="tv-program"/>
                                         <_x0031_603371476562
                                             jcr:primaryType="nt:unstructured"
                                             text="Web TV"
