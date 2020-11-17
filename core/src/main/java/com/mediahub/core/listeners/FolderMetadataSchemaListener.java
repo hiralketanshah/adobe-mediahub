@@ -70,7 +70,7 @@ public class FolderMetadataSchemaListener implements EventHandler {
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
   }
 
-  private Resource createSchemaFolder(ResourceResolver resolver, Resource tabs,
+  protected Resource createSchemaFolder(ResourceResolver resolver, Resource tabs,
       Resource temporaryPath) throws PersistenceException {
     Resource schemaHolder;
     if (temporaryPath.getChild(tabs.getParent().getParent().getName()) == null) {
@@ -86,7 +86,7 @@ public class FolderMetadataSchemaListener implements EventHandler {
     return schemaHolder;
   }
 
-  private Resource getTemporaryResource(ResourceResolver resolver) throws PersistenceException {
+  protected Resource getTemporaryResource(ResourceResolver resolver) throws PersistenceException {
     Resource temporaryPath = resolver.getResource(BnpConstants.APPS_DAM);
     if(temporaryPath.getChild(BnpConstants.TEMP) == null){
       temporaryPath = resolver.create(temporaryPath, BnpConstants.TEMP, Collections.singletonMap(
