@@ -6,6 +6,9 @@
     includeInCreateProject="{Boolean}true"
     ranking="{Long}1"
     wizard="/apps/mediahub/projects/project-wizard/wizard/steps/defaultproject.html">
+    <jcr:content
+        jcr:primaryType="nt:unstructured"
+        detailsHref="/projects/details.html"/>
     <gadgets jcr:primaryType="nt:unstructured">
         <team
             jcr:primaryType="nt:unstructured"
@@ -17,11 +20,6 @@
             jcr:title="Assets"
             sling:resourceType="cq/gui/components/projects/admin/pod/assetpod"
             cardWeight="90"/>
-        <assets-medialibrary
-            jcr:primaryType="nt:unstructured"
-            jcr:title="Assets Medialibrary"
-            sling:resourceType="/apps/mediahub/projects/pod/assetpod"
-            cardWeight="91"/>
         <work
             jcr:primaryType="nt:unstructured"
             jcr:title="Workflows"
@@ -39,4 +37,53 @@
             cardWeight="100"
             pagePropertiesPath="/apps/mediahub/projects/project-properties/properties.html"/>
     </gadgets>
+    <roles jcr:primaryType="nt:unstructured">
+        <project-reader
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Reader"
+            roleclass="observer"
+            roleid="observer"/>
+        <project-publisher
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Publisher"
+            roleclass="editor"
+            roleid="project-publisher"/>
+        <project-manager
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Manager"
+            roleclass="owner"
+            roleid="owner"/>
+        <internal-contributor
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Internal contributor"
+            roleclass="editor"
+            roleid="editor"/>
+        <external-contributor
+            jcr:primaryType="nt:unstructured"
+            jcr:title="External Contributor"
+            roleclass="editor"
+            roleid="external-contributor"/>
+    </roles>
+    <workflows
+        jcr:primaryType="nt:unstructured"
+        tags="[]">
+        <models jcr:primaryType="nt:unstructured">
+            <sampleworkflow
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/approval_workflow/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/sample_team.html"/>
+            <launch
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_launch/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/launchrequest.html"/>
+            <landing
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_landing_page/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/landingpagerequest.html"/>
+            <email
+                jcr:primaryType="nt:unstructured"
+                modelId="/etc/workflow/models/projects/request_email/jcr:content/model"
+                wizard="/libs/cq/core/content/projects/workflowwizards/emailrequest.html"/>
+        </models>
+    </workflows>
 </jcr:root>
