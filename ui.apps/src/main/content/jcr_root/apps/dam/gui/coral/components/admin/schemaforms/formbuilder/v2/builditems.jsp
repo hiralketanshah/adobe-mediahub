@@ -79,7 +79,7 @@
                         <sling:include resource="<%= fieldTemplateResource %>"
                                        resourceType="dam/gui/coral/components/admin/folderschemaforms/formbuilder/formfields/v2/textarea" />
                       </script>
-                    </li>>
+                    </li>
 
 	                <li class="field" data-fieldtype="text" tabindex="-1" role="menuitem">
 	                    <div class="formbuilder-template-title"><coral-icon icon="text" alt="" size="M"></coral-icon><span><%= i18n.get("Multi Value Text") %></span></div>
