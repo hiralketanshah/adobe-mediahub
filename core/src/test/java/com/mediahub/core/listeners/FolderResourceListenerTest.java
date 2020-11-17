@@ -37,6 +37,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,38 +73,34 @@ class FolderResourceListenerTest {
 
     @BeforeEach
     void setup() throws LoginException {
-        //resourceResolverFactory = mock(ResourceResolverFactory.class);
-        //resolver =  mock(ResourceResolver.class);
         context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
-        //context.resourceResolver();
-
     }
 
     @Test
     void handleEvent() throws LoginException {
-        //when(resourceResolverFactory.getServiceResourceResolver(Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, Scene7Constants.S7_CONFIG_SERVICE))).thenReturn(configResolver);
-        //when(resourceResolverFactory.getResourceResolver(authInfo)).thenReturn(resolver);
-        //when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
-
-        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub"));
-
+        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
 
         fixture.resourceResolverFactory = resourceResolverFactory;
-        when(fixture.resourceResolverFactory.getResourceResolver(authInfo)).thenReturn(resolver);
+        when(fixture.resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
         when(resolver.getResource(any())).thenReturn(resource);
-        when(resource.getChild(any())).thenReturn(null);
+        when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
         fixture.handleEvent(resourceEvent);
 
-        List<LoggingEvent> events = logger.getLoggingEvents();
-        assertEquals(1, events.size());
-        LoggingEvent event = events.get(0);
-
         assertAll(
-                () -> assertEquals(Level.DEBUG, event.getLevel()),
-                () -> assertEquals(2, event.getArguments().size()),
-                () -> assertEquals("event/topic", event.getArguments().get(0)),
-                () -> assertEquals("/content/dam/mediahub", event.getArguments().get(1))
+                () -> assertEquals("event/topic", resourceEvent.getTopic()),
+                () -> assertEquals("/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content", resourceEvent.getProperty(SlingConstants.PROPERTY_PATH).toString())
         );
+    }
+
+    @Test
+    void handleEventWithLoginException() throws LoginException {
+        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
+        fixture.resourceResolverFactory = resourceResolverFactory;
+        when(fixture.resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(new LoginException());
+        fixture.handleEvent(resourceEvent);
+        Assertions.assertThrows(LoginException.class, () ->{
+            fixture.resourceResolverFactory.getServiceResourceResolver(authInfo);
+        });
     }
 
     @Test
@@ -151,4 +148,27 @@ class FolderResourceListenerTest {
             () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID))
         );
     }
+
+    @Test
+    void captureFolderResourceChanged() throws PersistenceException {
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub");
+        eventData.put(BnpConstants.USER_ID, "admin");
+        Event resourceEvent = new Event(BnpConstants.TOPIC_RESOURCE_CHANGED, eventData);
+        ValueMap map = mock(ValueMap.class);
+        ModifiableValueMap adpatableResource = mock(ModifiableValueMap.class);
+        when(resource.getParent()).thenReturn(resource);
+        when(resource.getParent().getValueMap()).thenReturn(map);
+        when(map.get(JcrConstants.JCR_PRIMARYTYPE, String.class)).thenReturn(BnpConstants.SLING_FOLDER);
+        when(resource.getChild(any())).thenReturn(resource);
+        when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
+        fixture.captureFolderChanges(resourceEvent, resolver, resource);
+
+        assertAll(
+            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_CHANGED, resourceEvent.getTopic()),
+            () -> assertEquals(3, resourceEvent.getPropertyNames().length),
+            () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID))
+        );
+    }
+
 }

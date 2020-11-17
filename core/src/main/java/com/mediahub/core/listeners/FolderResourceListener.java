@@ -42,7 +42,7 @@ public class FolderResourceListener implements EventHandler {
     ResourceResolver resolver = null;
 
     try {
-      resolver = resourceResolverFactory.getResourceResolver(authInfo);
+      resolver = resourceResolverFactory.getServiceResourceResolver(authInfo);
       String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
       Resource contentResourse;
       if(StringUtils.contains(path, JcrConstants.JCR_CONTENT)){
