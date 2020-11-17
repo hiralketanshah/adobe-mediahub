@@ -213,14 +213,6 @@
                                         requiredCascading="default"
                                         visibilityCascading="default"/>
                                     <items jcr:primaryType="nt:unstructured">
-                                        <_x0031_603372254892
-                                            jcr:primaryType="nt:unstructured"
-                                            text="German"
-                                            value="german"/>
-                                        <_x0031_603372255437
-                                            jcr:primaryType="nt:unstructured"
-                                            text="English"
-                                            value="english"/>
                                         <_x0031_603372255578
                                             jcr:primaryType="nt:unstructured"
                                             text="Arab"
@@ -237,22 +229,26 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Chinese"
                                             value="chinese"/>
-                                        <_x0031_603372256476
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Korean"
-                                            value="korean"/>
                                         <_x0031_603372256621
                                             jcr:primaryType="nt:unstructured"
                                             text="Croate"
                                             value="croate"/>
+                                        <_x0031_603372366094
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Czech"
+                                            value="czech"/>
                                         <_x0031_603372256828
                                             jcr:primaryType="nt:unstructured"
                                             text="Danish"
                                             value="danish"/>
-                                        <_x0031_603372256915
+                                        <_x0031_603372364998
                                             jcr:primaryType="nt:unstructured"
-                                            text="Spanish"
-                                            value="spanish"/>
+                                            text="Dutch"
+                                            value="dutch"/>
+                                        <_x0031_603372255437
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English"
+                                            value="english"/>
                                         <_x0031_603372257063
                                             jcr:primaryType="nt:unstructured"
                                             text="Flemish"
@@ -261,6 +257,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="French"
                                             value="french"/>
+                                        <_x0031_603372254892
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German"
+                                            value="german"/>
+                                        <_x0031_603372256476
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Korean"
+                                            value="korean"/>
                                         <_x0031_603372257431
                                             jcr:primaryType="nt:unstructured"
                                             text="Greek"
@@ -293,10 +297,6 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Norwegian"
                                             value="norwegian"/>
-                                        <_x0031_603372364998
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Dutch"
-                                            value="dutch"/>
                                         <_x0031_603372365147
                                             jcr:primaryType="nt:unstructured"
                                             text="Polish"
@@ -317,14 +317,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Slovak"
                                             value="slovak"/>
+                                        <_x0031_603372256915
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish"
+                                            value="spanish"/>
                                         <_x0031_603372365970
                                             jcr:primaryType="nt:unstructured"
                                             text="Swedish"
                                             value="swedish"/>
-                                        <_x0031_603372366094
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Czech"
-                                            value="czech"/>
                                         <_x0031_603372392042
                                             jcr:primaryType="nt:unstructured"
                                             text="Turkish"
@@ -418,15 +418,10 @@
                                         metaType="dropdown"
                                         requiredCascading="default"
                                         visibilityCascading="ruleBased"/>
+                                    <cascadeitems
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
                                     <items jcr:primaryType="nt:unstructured">
-                                        <_x0031_603372254892
-                                            jcr:primaryType="nt:unstructured"
-                                            text="German"
-                                            value="german"/>
-                                        <_x0031_603372255437
-                                            jcr:primaryType="nt:unstructured"
-                                            text="English"
-                                            value="english"/>
                                         <_x0031_603372255578
                                             jcr:primaryType="nt:unstructured"
                                             text="Arab"
@@ -443,22 +438,26 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Chinese"
                                             value="chinese"/>
-                                        <_x0031_603372256476
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Korean"
-                                            value="korean"/>
                                         <_x0031_603372256621
                                             jcr:primaryType="nt:unstructured"
                                             text="Croate"
                                             value="croate"/>
+                                        <_x0031_603372366094
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Czech"
+                                            value="czech"/>
                                         <_x0031_603372256828
                                             jcr:primaryType="nt:unstructured"
                                             text="Danish"
                                             value="danish"/>
-                                        <_x0031_603372256915
+                                        <_x0031_603372364998
                                             jcr:primaryType="nt:unstructured"
-                                            text="Spanish"
-                                            value="spanish"/>
+                                            text="Dutch"
+                                            value="dutch"/>
+                                        <_x0031_603372255437
+                                            jcr:primaryType="nt:unstructured"
+                                            text="English"
+                                            value="english"/>
                                         <_x0031_603372257063
                                             jcr:primaryType="nt:unstructured"
                                             text="Flemish"
@@ -467,6 +466,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="French"
                                             value="french"/>
+                                        <_x0031_603372254892
+                                            jcr:primaryType="nt:unstructured"
+                                            text="German"
+                                            value="german"/>
+                                        <_x0031_603372256476
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Korean"
+                                            value="korean"/>
                                         <_x0031_603372257431
                                             jcr:primaryType="nt:unstructured"
                                             text="Greek"
@@ -499,10 +506,6 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Norwegian"
                                             value="norwegian"/>
-                                        <_x0031_603372364998
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Dutch"
-                                            value="dutch"/>
                                         <_x0031_603372365147
                                             jcr:primaryType="nt:unstructured"
                                             text="Polish"
@@ -523,14 +526,14 @@
                                             jcr:primaryType="nt:unstructured"
                                             text="Slovak"
                                             value="slovak"/>
+                                        <_x0031_603372256915
+                                            jcr:primaryType="nt:unstructured"
+                                            text="Spanish"
+                                            value="spanish"/>
                                         <_x0031_603372365970
                                             jcr:primaryType="nt:unstructured"
                                             text="Swedish"
                                             value="swedish"/>
-                                        <_x0031_603372366094
-                                            jcr:primaryType="nt:unstructured"
-                                            text="Czech"
-                                            value="czech"/>
                                         <_x0031_603372392042
                                             jcr:primaryType="nt:unstructured"
                                             text="Turkish"
@@ -548,9 +551,6 @@
                                             text="Wolof"
                                             value="wolof"/>
                                     </items>
-                                    <cascadeitems
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="dam/gui/coral/components/admin/schemaforms/formbuilder/cascadeitems"/>
                                 </_x0031_602699008365>
                             </items>
                         </col2>
