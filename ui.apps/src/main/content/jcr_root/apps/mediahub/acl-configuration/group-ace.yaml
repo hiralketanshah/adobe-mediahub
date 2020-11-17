@@ -25,7 +25,7 @@
           path: /home/groups/mediahub
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: projects-administrators
+          isMemberOf: projects-administrators,user-administrators
           members:
           path: /home/groups/mediahub
     - mediahub-basic-project-manager:
@@ -38,32 +38,32 @@
             - group_functions-company_engagement-${entity.name}-${group}:
                - name: Mediahub - Group functions - Company Engagement - ${entity.title} - ${group}
                  isMemberOf: mediahub-basic, mediahub-basic-${group} 
-                 path: /home/groups/mediahub/${group}/medialibrary/group_functions/company_engagement
+                 path: /home/groups/mediahub/medialibrary/group_functions/company_engagement/${entity.title}
 
     - FOR group IN ${groupList}:
         - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement/group_communications:
             - group_functions-company_engagement-group_communications-${entity.name}-${group}:
                - name: Mediahub - Group functions - Company Engagement - Group Communications - ${entity.title} - ${group}
                  isMemberOf: mediahub-basic, mediahub-basic-${group}  
-                 path: /home/groups/mediahub/${group}/medialibrary/group_functions/company_engagement/group_communications
+                 path: /home/groups/mediahub/medialibrary/group_functions/company_engagement/group_communications/${entity.title}
     - FOR group IN ${groupList}:           
         - FOR entity IN CHILDREN OF /content/dam/medialibrary:
             - ${entity.name}-${group}:
                - name: Mediahub - ${entity.title} - ${group}
                  isMemberOf: mediahub-basic, mediahub-basic-${group}  
-                 path: /home/groups/mediahub/${group}/medialibrary
+                 path: /home/groups/mediahub/medialibrary/${entity.name}
 
             - FOR subentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}:
                - ${entity.name}-${subentity.name}-${group}:
                    - name: Mediahub - ${entity.title} - ${subentity.title} - ${group}
                      isMemberOf: mediahub-basic, mediahub-basic-${group}  
-                     path: /home/groups/mediahub/${group}/medialibrary/${entity.name}
+                     path: /home/groups/mediahub/medialibrary/${entity.name}/${subentity.name}
 
                    - FOR subsubentity IN CHILDREN OF /content/dam/medialibrary/${entity.name}/${subentity.name}:
                        - ${entity.name}-${subentity.name}-${subsubentity.name}-${group}:
                             - name: Mediahub - ${entity.title} - ${subentity.title} - ${subsubentity.title} - ${group}
                               isMemberOf: mediahub-basic, mediahub-basic-${group}  
-                              path: /home/groups/mediahub/${group}/medialibrary/${entity.name}/${subentity.name}
+                              path: /home/groups/mediahub/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
 
 - ace_config:
   #DEFAULT GROUP 
@@ -201,7 +201,24 @@
         - path: /libs/dam/gui/content/idsprint/catalogs
           permission: deny
           actions: read,modify,create,delete,acl_read,acl_edit,replicate
-
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/creator
+          permission: deny
+          actions: read
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/filesize
+          permission: deny
+          actions: read
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/description
+          permission: deny
+          actions: read
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/notes
+          permission: deny
+          actions: read
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/keywords
+          permission: deny
+          actions: read
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/tags
+          permission: deny
+          actions: read          
     - mediahub-basic-reader:
         - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
           permission: deny
@@ -269,6 +286,10 @@
               rep:glob: '/*'
 
     - mediahub-basic-entity-manager:
+        - path: /home/groups
+          permission: deny
+          privileges: jcr:read
+
         - path: /content/cq:tags/default
           permission: allow
           actions: create,modify
@@ -276,7 +297,7 @@
           permission: deny
           actions: read
           restrictions:
-             rep:glob: '/*'
+             rep:glob: '/mediahub/contributor/*'
         - path: /libs/cq/core/content/nav/tools 
           permission: deny
           actions: read
@@ -595,6 +616,9 @@
              permission: allow
              privileges: jcr:all
         - group_functions-company_engagement-${entity.name}-entity-manager:
+           - path: /home/groups/mediahub/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read
            - path: /content/dam/medialibrary/group_functions/company_engagement/${entity.name}
              permission: allow
              privileges: jcr:all
@@ -661,6 +685,9 @@
              permission: allow
              privileges: jcr:all
         - group_functions-company_engagement-group_communications-${entity.name}-entity-manager:
+           - path: /home/groups/mediahub/medialibrary/group_functions/company_engagement/${entity.name}
+             permission: allow
+             actions: read
            - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/${entity.name}
              permission: allow
              privileges: jcr:all
@@ -705,6 +732,9 @@
     #Generic cases
     - FOR entity IN CHILDREN OF /content/dam/medialibrary:
         - ${entity.name}-entity-manager:
+           - path: /home/groups/mediahub/medialibrary/${entity.name}
+             permission: allow
+             actions: read
            - path: /content/dam/medialibrary/${entity.name}
              permission: allow
              privileges: jcr:all
@@ -731,6 +761,9 @@
                  permission: allow
                  privileges: jcr:all
            - ${entity.name}-${subentity.name}-entity-manager:
+               - path: /home/groups/mediahub/medialibrary/${entity.name}/${subentity.name}
+                 permission: allow
+                 actions: read
                - path: /content/dam/medialibrary/${entity.name}/${subentity.name}
                  permission: allow
                  privileges: jcr:all
@@ -776,6 +809,9 @@
                      permission: allow
                      privileges: jcr:all
                - ${entity.name}-${subentity.name}-${subsubentity.name}-entity-manager:
+                   - path: /home/groups/mediahub/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
+                     permission: allow
+                     actions: read
                    - path: /content/dam/medialibrary/${entity.name}/${subentity.name}/${subsubentity.name}
                      permission: allow
                      privileges: jcr:all

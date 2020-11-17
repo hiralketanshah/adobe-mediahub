@@ -1,5 +1,6 @@
 package com.mediahub.core.constants;
 
+
 public class MediahubConstants {
 
   private MediahubConstants(){
@@ -18,4 +19,17 @@ public class MediahubConstants {
   public static final String EXPIRY ="expiry";
   public static final String PROFILE ="profile";
   public static final String USER_HAS_EXPIRED ="User has Expired";
+  public static final String NT_NODE_TYPE = com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
+  public static final String AEM_PROJECTS_PATH = "/content/projects";
+  public static final String REP_POLICY = "rep:policy";
+  public static final String REP_ACL = "rep:ACL";
+  public static final String CONSTANT ="content";
+  public static final String JCR_MIXINTYPES = com.day.cq.commons.jcr.JcrConstants.JCR_MIXINTYPES;
+  public static final String REP_ACCESSCONTROLLABLE ="rep:AccessControllable";
+  public static final String ROLE_EDITOR ="role_editor";
+  public static final String ROLE_OBSERVER ="role_observer";
+  public static final String ROLE_OWNER ="role_owner";
+  public static final String ROLE_PROJECTPUBLISHER ="role_project-publisher";
+  public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
+  
 }
