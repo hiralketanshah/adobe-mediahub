@@ -38,11 +38,9 @@ public class CreatePolicyNodeUtil {
             adminSession.save();
 
         } catch (NoSuchElementException nse) {
-            logger.info("An NoSuchElementException occured : {}", nse.getMessage());
+            logger.error("An NoSuchElementException occured : {}", nse.getMessage());
         } catch (RepositoryException e) {
-            logger.info("An RepositoryException occured : {}", e.getMessage());
-        } catch (Exception e) {
-            logger.info("An Exception occured : {}", e.getMessage());
+            logger.error("An RepositoryException occured : {}", e.getMessage());
         }
 
     }
