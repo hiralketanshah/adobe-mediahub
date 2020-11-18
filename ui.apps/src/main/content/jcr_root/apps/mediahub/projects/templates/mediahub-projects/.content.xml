@@ -20,6 +20,11 @@
             jcr:title="Assets"
             sling:resourceType="cq/gui/components/projects/admin/pod/assetpod"
             cardWeight="90"/>
+        <assets-medialibrary
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Assets Medialibrary"
+            sling:resourceType="/apps/mediahub/projects/pod/assetpod"
+            cardWeight="91"/>
         <work
             jcr:primaryType="nt:unstructured"
             jcr:title="Workflows"

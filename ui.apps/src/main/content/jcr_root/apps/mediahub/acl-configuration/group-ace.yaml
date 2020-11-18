@@ -33,6 +33,11 @@
           isMemberOf: projects-administrators
           members:
           path: /home/groups/mediahub
+    - mediahub-reader-medialibrary:
+        - name: Mediahub - Reader Medialibrary
+          isMemberOf: mediahub-basic
+          members:
+          path: /home/groups/mediahub
     - FOR group IN ${groupList}:
         - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
             - group_functions-company_engagement-${entity.name}-${group}:
@@ -371,7 +376,28 @@
           restrictions:
               rep:glob: '/*'
 
+
     # GROUP READER SETUP PERMISSION
+    - mediahub-reader-medialibrary:
+        - path: /content/dam/medialibrary
+          permission: allow
+          privileges: jcr:read
+        - FOR path IN CHILDREN OF /content/dam/medialibrary:
+            - path: /content/dam/medialibrary/${path.name}
+              permission: allow
+              privileges: jcr:read
+            - FOR subpath IN CHILDREN OF /content/dam/medialibrary/${path.name}:
+                - path: /content/dam/medialibrary/${path.name}/${subpath.name}
+                  permission: allow
+                  privileges: jcr:read
+                - FOR subsubpath IN CHILDREN OF /content/dam/medialibrary/${path.name}/${subpath.name}:
+                    - path: /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}
+                      permission: allow
+                      privileges: jcr:read
+                    - FOR subsubsubpath IN CHILDREN OF /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}:
+                        - path: /content/dam/medialibrary/${path.name}/${subpath.name}/${subsubpath.name}/${subsubsubpath.name}
+                          permission: allow
+                          privileges: jcr:read
 
     #Specific group_functions/company_engagement  
     - FOR entity IN CHILDREN OF /content/dam/medialibrary/group_functions/company_engagement:
