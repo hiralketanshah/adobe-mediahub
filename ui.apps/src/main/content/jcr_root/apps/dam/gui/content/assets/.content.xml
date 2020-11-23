@@ -47,7 +47,7 @@
                             multiple="{Boolean}true"
                             name="file"
                             parallelUploads="{Boolean}false"
-                            sizeLimit="2147483648"
+                            sizeLimit="10737418240"
                             text="Files"/>
                         <folderupload
                             granite:class="dam-asset-desktop-action"
