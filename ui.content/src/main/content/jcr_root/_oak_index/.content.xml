@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:oak="http://jackrabbit.apache.org/oak/ns/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
+<jcr:root xmlns:oak="http://jackrabbit.apache.org/oak/ns/1.0" xmlns:slingevent="http://sling.apache.org/jcr/event/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cm="http://www.adobe.com/aemfd/cm/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:social="http://www.adobe.com/social/1.0" xmlns:dam="http://www.day.com/dam/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
     jcr:mixinTypes="[rep:AccessControllable]"
     jcr:primaryType="nt:unstructured">
-    <socialLucene/>
+       <socialLucene/>
     <workflowDataLucene/>
     <slingeventJob/>
     <jcrLanguage/>
@@ -113,4 +113,29 @@
     <externalId/>
     <authorizableId/>
     <cqPageLucene/>
+    <cqAuditEvent
+        jcr:primaryType="oak:QueryIndexDefinition"
+        propertyNames="{Name}[cq:type,cq:time,cq:userid,cq:path]"
+        reindex="{Boolean}false"
+        reindexCount="{Long}3"
+        seed="{Long}-4340275678188321670"
+        type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <cq:AuditEvent
+                jcr:primaryType="nt:unstructured"
+                includePropertyTypes="all"
+                inherited="{Boolean}false">
+                <properties jcr:primaryType="nt:unstructured">
+                    <prop0
+                        jcr:primaryType="nt:unstructured"
+                        analyzed="{Boolean}true"
+                        isRegexp="{Boolean}true"
+                        name="^[^\\/]*$"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}false"
+                        useInExcerpt="{Boolean}true"/>
+                </properties>
+            </cq:AuditEvent>
+        </indexRules>
+    </cqAuditEvent>
 </jcr:root>
