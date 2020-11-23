@@ -32,7 +32,6 @@
                 metaType="property"
                 name="jcr:createdBy"
                 text="Creator">
-                <rep:policy/>
             </creator>
             <creationdate
                 jcr:primaryType="nt:unstructured"
@@ -71,7 +70,6 @@
                 name="jcr:content/metadata/dam:size"
                 optionPaths="[/libs/dam/options/predicates/filesize]"
                 text="File Size">
-                <rep:policy/>
             </filesize>
             <mimetype
                 jcr:primaryType="nt:unstructured"
@@ -99,7 +97,6 @@
                 metaType="property"
                 name="jcr:content/metadata/dc:description"
                 text="Description">
-                <rep:policy/>
             </description>
             <bnpp-language
                 jcr:primaryType="nt:unstructured"
@@ -119,7 +116,6 @@
                 metaType="property"
                 name="jcr:content/metadata/bnpp-notes"
                 text="Notes">
-                <rep:policy/>
             </notes>
             <_x0031_605606918593
                 jcr:primaryType="nt:unstructured"
@@ -318,7 +314,6 @@
                 listOrder="32"
                 metaType="tags"
                 name="jcr:content/metadata/bnpp-keywords">
-                <rep:policy/>
             </keywords>
             <tags
                 jcr:mixinTypes="[rep:AccessControllable]"
@@ -328,7 +323,6 @@
                 listOrder="32"
                 metaType="tags"
                 name="jcr:content/metadata/bnpp-tags">
-                <rep:policy/>
             </tags>
             <Date_x0020_of_x0020_control
                 jcr:primaryType="nt:unstructured"
