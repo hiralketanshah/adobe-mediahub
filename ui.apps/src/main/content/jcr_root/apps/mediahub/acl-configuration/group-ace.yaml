@@ -225,6 +225,9 @@
           permission: deny
           actions: read          
     - mediahub-basic-reader:
+        - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
+          permission: deny
+          actions: read
         - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
           permission: deny
           actions: read
@@ -243,6 +246,9 @@
               rep:glob: '/*'
 
     - mediahub-basic-contributor:
+        - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
+          permission: deny
+          actions: read
         - path: /content/cq:tags/default
           permission: allow
           actions: create,modify
