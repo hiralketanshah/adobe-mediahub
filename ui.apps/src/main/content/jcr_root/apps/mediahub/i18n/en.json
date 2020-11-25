@@ -39,9 +39,13 @@
   "The bank for a changing world":
     "The bank for a changing world",
 
-  "MEDIA":"MEDIA",
+  "MEDIA":
+    "MEDIA",
 
-  "BNP Paribas Password Constrain Message" :
+  "BNP Paribas Password Constrain Message":
     "Password must contain between 8 and 16 characters, with at least one numerical digit, one lowercase letter, one UPPERCASE letter, and one special character (for example : # ; + ! -)",
+
+  "http://www.adobe.com/go/marketingcloud_learn_more":
+    "http://www.adobe.com/"
 
 }
