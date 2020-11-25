@@ -28,7 +28,6 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
     private static final Logger log = LoggerFactory.getLogger(MoveAssetsProcessWorkflow.class);
 
-    public static final String MOVE_TARGET_FOLDER = "moveTargetFolder";
 
     @Reference
     private ResourceResolverFactory resolverFactory;

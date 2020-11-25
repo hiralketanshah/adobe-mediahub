@@ -15,6 +15,8 @@
     <filter root="/var/workflow/models/mediahub/mediahub---external-publish"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---move"/>
     <filter root="/var/workflow/models/mediahub/mediahub---move"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---validate-metadata"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---validate-metadata"/>
     <filter root="/conf/global/settings/workflow/launcher"/>
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>
