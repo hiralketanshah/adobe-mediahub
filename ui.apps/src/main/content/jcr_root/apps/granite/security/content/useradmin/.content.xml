@@ -109,17 +109,21 @@
                     sortable="{Boolean}true"/>
                 <loginName
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Login Name"/>
+                    jcr:title="Login Name"
+                    sortable="{Boolean}true"/>
                 <status
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Status"
-                    fixedWidth="{Boolean}true"/>
+                    fixedWidth="{Boolean}true"
+                    sortable="{Boolean}true"/>
                 <title
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Job Title"/>
+                    jcr:title="Job Title"
+                    sortable="{Boolean}true"/>
                 <published
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Published"/>
+                    jcr:title="Published"
+                    sortable="{Boolean}true"/>
             </columns>
             <datasource
                 jcr:primaryType="nt:unstructured"
