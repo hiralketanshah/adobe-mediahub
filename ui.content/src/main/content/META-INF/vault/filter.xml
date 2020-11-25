@@ -9,6 +9,12 @@
   	<filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="update"/>
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---internal-publish"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---external-publish"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---external-publish"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---move"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---move"/>
     <filter root="/conf/global/settings/workflow/launcher"/>
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>

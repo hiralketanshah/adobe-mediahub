@@ -8,7 +8,7 @@
     title="Mediahub - Internal publish">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish/jcr:content"
-        cq:lastModified="{Long}1606209558401"
+        cq:lastModified="{Long}1606311597422"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"/>
     <nodes jcr:primaryType="nt:unstructured">
@@ -20,17 +20,34 @@
         </node0>
         <node1
             jcr:primaryType="cq:WorkflowNode"
+            description="A process to activate a page or asset"
+            title="Activate Page/Asset"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node1>
+        <node2
+            jcr:primaryType="cq:WorkflowNode"
             title="End"
             type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node1>
+        </node2>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
             jcr:primaryType="cq:WorkflowTransition"
             from="node0"
+            rule=""
             to="node1">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node0_x0023_node1>
+        <node1_x0023_node2
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node1"
+            to="node2">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node1_x0023_node2>
     </transitions>
 </jcr:root>

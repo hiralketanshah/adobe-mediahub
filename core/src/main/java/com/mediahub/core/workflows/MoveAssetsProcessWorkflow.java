@@ -10,6 +10,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.commons.util.DamUtil;
+import com.mediahub.core.constants.BnpConstants;
 
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
@@ -17,11 +18,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 
-@Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=VyV Médiathèque : Déplacer asset avant publication"})
+@Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : MOVE ASSET BEFORE PUBLISH"})
 public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
     private static final Logger log = LoggerFactory.getLogger(MoveAssetsProcessWorkflow.class);
@@ -44,12 +46,11 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
         if (workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
 
-            Map<String, Object> params = new HashMap<>();
-            params.put(ResourceResolverFactory.SUBSERVICE, VyvConstants.WORKFLOW_USER);
+            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
             ResourceResolver resourceResolver = null;
             try {
-                resourceResolver = resolverFactory.getServiceResourceResolver(params);
+                resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
              //   if (resourceResolver == null)
              //       throw new WorkflowException("Resource resolver retourne null, Vérifier les permissions du system User");
 
@@ -58,11 +59,17 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                 Resource assetResource = resourceResolver.getResource(payloadPath);
                 Asset asset = DamUtil.resolveToAsset(assetResource);
                 AssetManager assetManager = resourceResolver.adaptTo(AssetManager.class);
-
-                String targetDirectory = assetResource.getChild(JcrConstants.JCR_CONTENT).adaptTo(ValueMap.class).get(MOVE_TARGET_FOLDER, String.class);
+                
+                // Get the project associated
+                // Get the target PATH
+                // Copy the folder / asset and subnodes
+                
+                
                 // Déplacer l'asset.
-                String newPayloadPath = targetDirectory + "/" + asset.getName();
+                String newPayloadPath =  "/content/dam/test/" + asset.getName();
                 assetManager.moveAsset(asset.getPath(), newPayloadPath);
+                
+                
                 // Modifier le payloadPath avec sa nouvelle valeur pour les step suivante
                 WorkflowUtils.updateWorkflowPayload(workItem, workflowSession, newPayloadPath);
 

@@ -3,14 +3,51 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:designPath="/libs/settings/wcm/designs/default"
-        cq:lastModified="{Date}2020-11-24T10:19:29.890+01:00"
-        cq:lastModifiedBy="admin"
+        cq:lastModified="{Date}2020-11-24T09:50:08.206Z"
+        cq:lastModifiedBy="arnaud-test"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:primaryType="cq:PageContent"
         jcr:title="Mediahub - External publish"
         sling:resourceType="cq/workflow/components/pages/model">
         <flow
             jcr:primaryType="nt:unstructured"
-            sling:resourceType="foundation/components/parsys"/>
+            sling:resourceType="foundation/components/parsys">
+            <dmimageprocess_copy
+                jcr:created="{Date}2015-09-28T17:50:46.962-07:00"
+                jcr:createdBy="admin"
+                jcr:description="Processes assets for use with Dynamic Media Image Services"
+                jcr:lastModified="{Date}2015-09-28T17:50:46.962-07:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Dynamic Media Process Image Assets"
+                sling:resourceType="dam/components/s7imaging/dmimageprocess">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    CONFIGS="[140:100:false,48:48:false,319:319:false]"
+                    HEIGHT="1280"
+                    MIME_TYPE="image/jpeg"
+                    PROCESS="com.adobe.cq.dam.dm.process.workflow.DMImageProcess"
+                    PROCESS_AUTO_ADVANCE="true"
+                    QUALITY="90"
+                    WIDTH="1280"/>
+            </dmimageprocess_copy>
+            <scene7upload_copy
+                jcr:created="{Date}2017-02-28T13:55:59.285-08:00"
+                jcr:createdBy="admin"
+                jcr:description="Upload assets to configured remote Scene7 service for Dynamic Media delivery"
+                jcr:lastModified="{Date}2017-02-28T13:55:59.285-08:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Scene7"
+                sling:resourceType="dam/components/scene7/scene7upload">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    advanceOnTimeout="true"
+                    EXTERNAL_PROCESS="com.day.cq.dam.scene7.impl.process.Scene7UploadProcess"
+                    period="30"
+                    PROCESS_AUTO_ADVANCE="true"
+                    timeout="3600"/>
+            </scene7upload_copy>
+        </flow>
     </jcr:content>
 </jcr:root>
