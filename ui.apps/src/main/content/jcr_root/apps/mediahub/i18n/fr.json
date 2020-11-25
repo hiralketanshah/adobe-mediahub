@@ -44,7 +44,9 @@
 
   "MEDIA":"MÉDIA",
 
-    
    "Create Media":
-    "Créate média"
+    "Créate média",
+
+  "BNP Paribas Password Constrain Message" :
+      "Le mot de passe doit contenir entre 8 et 16 caractères, dont au moins un numérique, une lettre minuscule, une lettre MAJUSCULE, et un caractère spécial (par exemple : # ; + ! -)"
 }
