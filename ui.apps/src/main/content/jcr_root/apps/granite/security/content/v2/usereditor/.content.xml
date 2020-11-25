@@ -336,8 +336,8 @@
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                                                 fieldLabel="Expiry Date"
-                                                                valueFormat="YYYY/MM/DD"
-                                                                name="./profile/expiry"/>
+                                                                name="./profile/expiry"
+                                                                valueFormat="YYYY/MM/DD"/>
                                                         </items>
                                                     </profileProps>
                                                 </items>

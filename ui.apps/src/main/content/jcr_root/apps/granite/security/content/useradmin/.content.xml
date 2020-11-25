@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:mixinTypes="[granite:InternalArea]"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="AEM Security | Users"
+    sling:resourceType="granite/ui/components/shell/collectionpage"
+    sling:vanityPath="/security/users"
+    consoleId="granite-security-users-users"
+    contentPath="/home/users"
+    currentView="${state[&quot;shell.collectionpage.layoutId&quot;].string}"
+    modeGroup="security-user-list"
+    omnisearchLocationPath="/libs/granite/omnisearch/content/metadata/user"
+    targetCollection=".security-user-list">
+    <head jcr:primaryType="nt:unstructured">
+        <clientlibs
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+            categories="[granite.security.ui.authorizable.list]"/>
+    </head>
+    <title
+        jcr:primaryType="nt:unstructured"
+        jcr:title="User Management"
+        sling:resourceType="granite/ui/components/shell/title"/>
+    <actions jcr:primaryType="nt:unstructured">
+        <secondary jcr:primaryType="nt:unstructured">
+            <create
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="foundation.link"
+                target=".security-user-list"
+                text="Create"
+                trackingElement="create user"
+                trackingFeature="aem:security:users:create"
+                variant="primary">
+                <data
+                    jcr:primaryType="nt:unstructured"
+                    href.url="/mnt/overlay/granite/security/content/v2/usereditor.html"/>
+            </create>
+        </secondary>
+        <selection jcr:primaryType="nt:unstructured">
+            <edit
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="foundation.link"
+                actionConfigName="granite/ui/shell/actions/properties"
+                activeSelectionCount="single"
+                variant="actionBar">
+                <data
+                    jcr:primaryType="nt:unstructured"
+                    href.uritemplate="/mnt/overlay/granite/security/content/v2/usereditor.html{item}"/>
+            </edit>
+            <enable
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="enable.user.action"
+                icon="lockOff"
+                text="Enable"
+                variant="actionBar"/>
+            <disable
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="disable.user.action"
+                icon="lockOn"
+                text="Disable"
+                variant="actionBar"/>
+            <delete
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="delete.authorizable.action"
+                actionConfigName="granite/ui/shell/actions/delete"
+                variant="actionBar"/>
+            <activate
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="activate.group.action"
+                icon="globe"
+                text="Activate"
+                variant="actionBar"/>
+            <deactivate
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                action="deactivate.group.action"
+                icon="globeRemove"
+                text="Deactivate"
+                variant="actionBar"/>
+        </selection>
+    </actions>
+    <views jcr:primaryType="nt:unstructured">
+        <list
+            granite:rel="security-user-list"
+            jcr:primaryType="nt:unstructured"
+            jcr:title="List View"
+            sling:resourceType="granite/ui/components/coral/foundation/table"
+            icon="viewList"
+            layoutId="list"
+            limit="{Long}40"
+            modeGroup="security-user-list"
+            selectionMode="row"
+            src="/mnt/overlay/granite/security/content/useradmin/views/list{.offset,limit}.html"
+            stateId="shell.collectionpage">
+            <columns jcr:primaryType="nt:unstructured">
+                <empty
+                    jcr:primaryType="nt:unstructured"
+                    alignment="center"
+                    fixedWidth="{Boolean}true"/>
+                <name
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Name"
+                    sortable="{Boolean}true"/>
+                <loginName
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Login Name"/>
+                <status
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Status"
+                    fixedWidth="{Boolean}true"/>
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Job Title"/>
+                <published
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Published"/>
+            </columns>
+            <datasource
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/security/components/datasource/authorizables"
+                itemResourceType="granite/security/components/userRow"
+                query="\{&quot;selector&quot;:&quot;user&quot;,&quot;sort&quot;:{&quot;property&quot;:&quot;@rep:principalName&quot;, &quot;direction&quot; : &quot;asc&quot;, &quot;ignoreCase&quot;: &quot;false&quot;}}"/>
+            <granite:data
+                jcr:primaryType="nt:unstructured"
+                type="user"/>
+        </list>
+        <card
+            granite:rel="security-user-list"
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Card View"
+            sling:resourceType="granite/ui/components/coral/foundation/masonry"
+            icon="viewCard"
+            layoutId="card"
+            limit="{Long}20"
+            modeGroup="security-user-list"
+            src="/mnt/overlay/granite/security/content/useradmin/views/card{.offset,limit}.html"
+            stateId="shell.collectionpage">
+            <datasource
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/security/components/datasource/authorizables"
+                itemResourceType="granite/security/components/userCard"
+                query="\{&quot;selector&quot;:&quot;user&quot;,&quot;sort&quot;:{&quot;property&quot;:&quot;@rep:principalName&quot;, &quot;direction&quot; : &quot;asc&quot;, &quot;ignoreCase&quot;: &quot;false&quot;}}"/>
+            <granite:data
+                jcr:primaryType="nt:unstructured"
+                type="user"/>
+        </card>
+    </views>
+    <footer
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/container">
+        <items jcr:primaryType="nt:unstructured">
+            <viewSettingsDialog
+                granite:id="view-settings-dialog"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="View Settings"
+                sling:resourceType="granite/ui/components/coral/foundation/dialog">
+                <items jcr:primaryType="nt:unstructured">
+                    <viewSettingsForm
+                        granite:id="view-settings-form"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form"
+                        autosubmitForm="{Boolean}false"
+                        style="vertical">
+                        <items jcr:primaryType="nt:unstructured">
+                            <displayServiceUsers
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/form/switch"
+                                fieldLabel="Display Service Users"
+                                name="displayServiceUsers"/>
+                        </items>
+                    </viewSettingsForm>
+                </items>
+                <footer jcr:primaryType="nt:unstructured">
+                    <cancel
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/button"
+                        text="Cancel">
+                        <parentConfig
+                            jcr:primaryType="nt:unstructured"
+                            close="{Boolean}true"/>
+                    </cancel>
+                    <ok
+                        granite:id="view-settings-button-confirm"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/button"
+                        text="Ok"
+                        variant="primary"/>
+                </footer>
+            </viewSettingsDialog>
+        </items>
+    </footer>
+</jcr:root>
