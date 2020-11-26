@@ -65,7 +65,8 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/select"
                         fieldLabel="Country/Region"
-                        name="country">
+                        name="country"
+                        required="{Boolean}true">
                         <datasource
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/security/components/datasource/countrydatasource"/>
