@@ -92,7 +92,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 				ValueFactory valueFactory = adminSession.getValueFactory();
 				
 		        if (userManager.getAuthorizable(userName) == null) {
-		            user = userManager.createUser(userName, "password");
+		            user = userManager.createUser(userName, "passwordAdmin123#");
 
 		            
 		            Value firstNameValue = valueFactory.createValue(userName, PropertyType.STRING);
@@ -169,6 +169,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			       		+ userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")[0].toString();
 			       if(isUserAlreadyExists)
 				       {
+
 						 genericEmailNotification.sendEmail(emailRecipients, bodyforExistingUser, project.getTitle(), subject);
 						 
 				       }

@@ -21,7 +21,6 @@ public class BnpConstants {
   public static final String APPS_DAM = "/apps/dam";
   public static final String EVENT_TOPIC = "event/topic";
 
-   public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
-  public static final String SENDER_EMAIL_ADDRESS = "ams-bnp-dev2@bnpparibas.com";
+  public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
   public static final String SUBJECT = "subject";
 }

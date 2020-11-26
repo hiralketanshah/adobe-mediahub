@@ -36,7 +36,6 @@ public class GenericEmailNotificationImpl implements GenericEmailNotification {
 		emailParams.put(BnpConstants.SUBJECT, subject);
 		emailParams.put("title", title);
 
-		emailParams.put(EmailServiceConstants.SENDER_EMAIL_ADDRESS, BnpConstants.SENDER_EMAIL_ADDRESS);
 
 		List<String> failureList = null;
 		failureList = emailService.sendEmail(BnpConstants.GENERIC_TEMPLATE_PATH, emailParams, recipients);
