@@ -77,10 +77,6 @@
                 jcr:primaryType="nt:unstructured"
                 modelId="/var/workflow/models/mediahub/external-user-creation"
                 wizard="/apps/mediahub/projects/wizards/external-user-creation.html"/>
-            <email
-                jcr:primaryType="nt:unstructured"
-                modelId="/etc/workflow/models/projects/request_email/jcr:content/model"
-                wizard="/libs/cq/core/content/projects/workflowwizards/emailrequest.html"/>
         </models>
     </workflows>
 </jcr:root>
