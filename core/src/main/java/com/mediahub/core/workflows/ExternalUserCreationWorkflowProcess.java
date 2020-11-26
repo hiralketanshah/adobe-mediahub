@@ -81,6 +81,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			String email = item.getWorkflow().getMetaDataMap().get("email").toString();
 			String expiryDate = item.getWorkflow().getMetaDataMap().get("expiryDate").toString();
 			String projectPath = item.getWorkflow().getMetaDataMap().get("project").toString();
+			String company = item.getWorkflow().getMetaDataMap().get("company").toString();
+			String city = item.getWorkflow().getMetaDataMap().get("city").toString();
+			String country = item.getWorkflow().getMetaDataMap().get("country").toString();
 			Boolean isUserAlreadyExists = false;
 			
 			
@@ -108,7 +111,14 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		            Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
 		            user.setProperty("./profile/expiryDate", expiryDateValue);
 		            
-				       
+		            Value companyValue = valueFactory.createValue(company, PropertyType.STRING);
+		            user.setProperty("./profile/country", companyValue);
+		            
+		            Value cityValue = valueFactory.createValue(city, PropertyType.STRING);
+		            user.setProperty("./profile/city", cityValue);
+		            
+		            Value countryValue = valueFactory.createValue(country, PropertyType.STRING);
+		            user.setProperty("./profile/country", countryValue);
 				    
 		            
 		            
@@ -160,13 +170,12 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			      rolesList.add("external-contributor");
 			      project.updateMembers(usersList, rolesList); 
 			      
-			      
 			     //notification with the expiry date modification if the user already exists and project link...username and pwd
 			       String[] emailRecipients = { email };
-			       String subject = "Mediahub - Assignment project " + projectName;
+			       String subject = "Mediahub - Assignment project :" + projectName;
 			       String bodyforNewUser = "This is your credentials to access the new project assigned :  " + project.getTitle() + "\\n" + "Login:" + userName + "\\n" + "Password :" + "password";
 			       String bodyforExistingUser = "The new Project has been assigned to you : "+ project.getTitle() +" with the expiry Date as: "
-			       		+ userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")[0].toString();
+			       		+ userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")[0].toString().substring(0,10);
 			       if(isUserAlreadyExists)
 				       {
 
