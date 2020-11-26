@@ -20,7 +20,9 @@ public class BnpConstants {
   public static final String FOLDER_WIZARD_PATH = "/apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn4/items/tabs/items";
   public static final String APPS_DAM = "/apps/dam";
   public static final String EVENT_TOPIC = "event/topic";
-
+  public static final String BASIC_GROUP = "MEDIAHUB-BASIC";
   public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
   public static final String SUBJECT = "subject";
+  public static final String PASSWORD_CONSTRAINT = "(?=.*\\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[@#%\\*\\-+=~\\[\\]{}<>\\?].*).{8,16}";
+  public static final String PASSWORD_CHARACTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789?=.*[@#%*-+=~[]{}<>?";
 }

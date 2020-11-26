@@ -28,17 +28,12 @@ public class GenericEmailNotificationImpl implements GenericEmailNotification {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public void sendEmail(String[] emailRecipients, String body, String title, String subject) {
+	public void sendEmail(String templatePath,String[] emailRecipients, Map<String, String> emailParams) {
 
 		String[] recipients = emailRecipients ;
-		Map<String, String> emailParams = new HashMap<String, String>();
-		emailParams.put("body", body);
-		emailParams.put(BnpConstants.SUBJECT, subject);
-		emailParams.put("title", title);
-
 
 		List<String> failureList = null;
-		failureList = emailService.sendEmail(BnpConstants.GENERIC_TEMPLATE_PATH, emailParams, recipients);
+		failureList = emailService.sendEmail(templatePath, emailParams, recipients);
 
 		if (failureList.isEmpty()) {
 			logger.debug("Mail sent successfully: workflow notification");

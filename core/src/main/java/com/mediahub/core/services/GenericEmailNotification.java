@@ -8,5 +8,5 @@ import java.util.Map;
  */
 public interface GenericEmailNotification {
 	
-	public void sendEmail(String[] emailRecipients, String body, String title, String subject);
+	public void sendEmail(String templatePath,String[] emailRecipients, Map<String, String> emailParams);
 }

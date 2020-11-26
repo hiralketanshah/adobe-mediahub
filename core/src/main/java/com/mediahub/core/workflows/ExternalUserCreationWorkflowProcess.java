@@ -1,9 +1,11 @@
 package com.mediahub.core.workflows;
 
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +16,10 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -76,7 +82,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			Session adminSession = resourceResolver.adaptTo(Session.class);
 			JackrabbitSession js = (JackrabbitSession) adminSession;
 			
-			String userName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
+			String firstName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
 			String lastName = item.getWorkflow().getMetaDataMap().get("lastName").toString();
 			String email = item.getWorkflow().getMetaDataMap().get("email").toString();
 			String expiryDate = item.getWorkflow().getMetaDataMap().get("expiryDate").toString();
@@ -85,20 +91,24 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			String city = item.getWorkflow().getMetaDataMap().get("city").toString();
 			String country = item.getWorkflow().getMetaDataMap().get("country").toString();
 			Boolean isUserAlreadyExists = false;
-			
+			String password = "";
 			
 			if (payloadPath != null) {
 				
 				
-				org.apache.jackrabbit.api.security.user.UserManager userManager = js.getUserManager();
-				org.apache.jackrabbit.api.security.user.User user = null;
+				UserManager userManager = js.getUserManager();
+				User user = null;
 				ValueFactory valueFactory = adminSession.getValueFactory();
 				
-		        if (userManager.getAuthorizable(userName) == null) {
-		            user = userManager.createUser(userName, "passwordAdmin123#");
+		        if (userManager.getAuthorizable(email) == null) {
+		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PASSWORD_CHARACTER);
+		              while (password.matches(BnpConstants.PASSWORD_CONSTRAINT)==false) {
+			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PASSWORD_CHARACTER);
+			       			       	
+			        }
+		            user = userManager.createUser(email, password);
 
-		            
-		            Value firstNameValue = valueFactory.createValue(userName, PropertyType.STRING);
+		            Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
 		            user.setProperty("./profile/givenName", firstNameValue);
 
 		            Value lastNameValue = valueFactory.createValue(lastName, PropertyType.STRING);
@@ -107,47 +117,46 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		            Value emailValue = valueFactory.createValue(email, PropertyType.STRING);
 		            user.setProperty("./profile/email", emailValue);
 		            
-		            
 		            Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-		            user.setProperty("./profile/expiryDate", expiryDateValue);
+		            user.setProperty("./profile/expiry", expiryDateValue);
+		            
+		            Value typeValue = valueFactory.createValue("external", PropertyType.STRING);
+		            user.setProperty("./profile/type", typeValue);
 		            
 		            Value companyValue = valueFactory.createValue(company, PropertyType.STRING);
-		            user.setProperty("./profile/country", companyValue);
+		            user.setProperty("./profile/company", companyValue);
 		            
 		            Value cityValue = valueFactory.createValue(city, PropertyType.STRING);
 		            user.setProperty("./profile/city", cityValue);
 		            
 		            Value countryValue = valueFactory.createValue(country, PropertyType.STRING);
 		            user.setProperty("./profile/country", countryValue);
-				    
-		            
-		            
+		         // Add User to Group
 
+		            Group addUserToGroup = (Group) (userManager.getAuthorizable( BnpConstants.BASIC_GROUP));
+		            addUserToGroup.addMember(user);
 
+		
 		        } else {
-		        	
 		        	isUserAlreadyExists = true;
 		            logger.info("---> User already exist..");
-		            if(userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")!=null)
+		            user=(User)userManager.getAuthorizable(email);
+		            if(user.getProperty("./profile/expiry")!=null)
 		            {
-		            String userExpiryDate = userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")[0].toString().substring(0, 10);
+		            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
 		            String newExpiryDate = expiryDate.substring(0,10);
 		            Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
 		            Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
 		            
 		            if (start.compareTo(end) < 0)
 		            {
+		                
 		            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-		            	userManager.getAuthorizable(userName).setProperty("./profile/expiryDate", expiryDateValue);
+		            	userManager.getAuthorizable(email).setProperty("./profile/expiryDate", expiryDateValue);
 		            }
 		            
 		            }
-		            else
-		            	
-		            {
-		            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-		            	userManager.getAuthorizable(userName).setProperty("./profile/expiryDate", expiryDateValue);
-		            }
+		           
 		            logger.info("---> NewExpiry Date");
 		            
 		            
@@ -166,24 +175,32 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 						}
 					}
 			       
-			      usersList.add(userName);
+			      usersList.add(email);
 			      rolesList.add("external-contributor");
 			      project.updateMembers(usersList, rolesList); 
-			      
+				
+
 			     //notification with the expiry date modification if the user already exists and project link...username and pwd
 			       String[] emailRecipients = { email };
-			       String subject = "Mediahub - Assignment project :" + projectName;
-			       String bodyforNewUser = "This is your credentials to access the new project assigned :  " + project.getTitle() + "\\n" + "Login:" + userName + "\\n" + "Password :" + "password";
-			       String bodyforExistingUser = "The new Project has been assigned to you : "+ project.getTitle() +" with the expiry Date as: "
-			       		+ userManager.getAuthorizable(userName).getProperty("./profile/expiryDate")[0].toString().substring(0,10);
+			       String subject = "Mediahub - Assignment project : " + projectName;
+			       Map<String, String> emailParams = new HashMap<String, String>();
+			       emailParams.put(BnpConstants.SUBJECT, subject);
+			       emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
+			       emailParams.put("projectitle",project.getTitle());
+			       emailParams.put("login",email);
+			       emailParams.put("password",password);
+			       emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
+			       emailParams.put("projecturl","");
+			       emailParams.put("projectowner","");
+			       emailParams.put("emailprojectowner","");
+
 			       if(isUserAlreadyExists)
 				       {
-
-						 genericEmailNotification.sendEmail(emailRecipients, bodyforExistingUser, project.getTitle(), subject);
+						 genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html",emailRecipients, emailParams);
 						 
 				       }
 			       else {
-			    	   genericEmailNotification.sendEmail(emailRecipients, bodyforNewUser, project.getTitle(), subject);
+			    	   genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html",emailRecipients, emailParams);
 			       }
 				       
 			       if (! userManager.isAutoSave()) {
