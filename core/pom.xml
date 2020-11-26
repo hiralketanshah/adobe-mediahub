@@ -224,7 +224,7 @@ Import-Package: javax.annotation;version=0.0.0,*
 		<dependency>
 		    <groupId>com.adobe.acs</groupId>
 		    <artifactId>acs-aem-commons-bundle</artifactId>
-		    <version>2.1.0</version>
+		    <version>4.10.0</version>
 		</dependency>
     </dependencies>
 </project>
