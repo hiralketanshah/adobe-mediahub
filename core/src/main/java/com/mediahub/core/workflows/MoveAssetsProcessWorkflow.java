@@ -1,26 +1,27 @@
 package com.mediahub.core.workflows;
 
 
-import com.adobe.granite.asset.api.AssetManager;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
-import com.day.cq.dam.api.Asset;
-import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
-
-import org.apache.sling.api.resource.*;
+import java.util.Collections;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : MOVE ASSET BEFORE PUBLISH"})
@@ -43,47 +44,57 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap args) throws WorkflowException {
 
-        if (workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
-
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-
-            ResourceResolver resourceResolver = null;
-            try {
-                resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
-             //   if (resourceResolver == null)
-             //       throw new WorkflowException("Resource resolver retourne null, Vérifier les permissions du system User");
-
-                String payloadPath = workItem.getWorkflowData().getPayload().toString();
-                log.info("payloadPath :" + payloadPath);
-                Resource assetResource = resourceResolver.getResource(payloadPath);
-                Asset asset = DamUtil.resolveToAsset(assetResource);
-                AssetManager assetManager = resourceResolver.adaptTo(AssetManager.class);
-                
-                // Get the project associated
-                // Get the target PATH
-                // Copy the folder / asset and subnodes
-                
-                
-                // Déplacer l'asset.
-                String newPayloadPath =  "/content/dam/test/" + asset.getName();
-                assetManager.moveAsset(asset.getPath(), newPayloadPath);
-                
-                
-                // Modifier le payloadPath avec sa nouvelle valeur pour les step suivante
-                WorkflowUtils.updateWorkflowPayload(workItem, workflowSession, newPayloadPath);
-
-                resourceResolver.commit();
-            } catch (LoginException e) {
-                throw new WorkflowException("Login exception", e);
-            } catch (PersistenceException e) {
-                throw new WorkflowException("Persistence exception", e);
-            } finally {
-                if (resourceResolver != null && resourceResolver.isLive()) {
-                    resourceResolver.close();
-                }
-            }
-        } else {
+        if(!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")){
             throw new WorkflowException("Impossible de recupérer le PayLoad");
         }
+
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        ResourceResolver resourceResolver = null;
+        Session session = null;
+        try {
+            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+            session = resourceResolver.adaptTo(Session.class);
+            String payloadPath = workItem.getWorkflowData().getPayload().toString();
+            log.info("payloadPath : {}",payloadPath);
+            Resource payload = setCorrectPayloadPath(resourceResolver, payloadPath);
+            // Get the project associated
+            // Get the target PATH
+            // Copy the folder / asset and subnodes
+            if(StringUtils.contains(payload.getPath(),"/dam/")){
+                Resource project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(),"/dam",StringUtils.EMPTY));
+                if(project != null && (project.getChild(JcrConstants.JCR_CONTENT) != null)){
+                    String projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
+                    // Due to UUID Issue using session.move instead or resolver.move
+                    Resource damPath = resourceResolver.getResource(projectDamPath);
+                    if(damPath != null && damPath.getChild(payload.getName()) == null){
+                        session.move(payload.getPath(), projectDamPath + "/" + payload.getName());
+                    }
+                    WorkflowUtils.updateWorkflowPayload(workItem, workflowSession, projectDamPath);
+                }
+            }
+            session.save();
+            resourceResolver.commit();
+        } catch (LoginException e) {
+            throw new WorkflowException("Login exception", e);
+        } catch (PersistenceException | RepositoryException e) {
+            throw new WorkflowException("Persistence exception", e);
+        } finally {
+            if (resourceResolver != null && resourceResolver.isLive()) {
+                resourceResolver.close();
+            }
+        }
+    }
+
+    private Resource setCorrectPayloadPath(ResourceResolver resourceResolver, String payloadPath) {
+        Resource payload = resourceResolver.getResource(payloadPath);
+
+        if(payload.getParent().getChild("jcr:content") != null && payload.getParent().getChild(
+            JcrConstants.JCR_CONTENT).getChild("metadata") != null){
+            String isBnppMedia = payload.getParent().getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap().get("bnpp-media", Boolean.FALSE.toString());
+            if(StringUtils.equals(isBnppMedia, Boolean.TRUE.toString())){
+                payload = payload.getParent();
+            }
+        }
+        return payload;
     }
 }
