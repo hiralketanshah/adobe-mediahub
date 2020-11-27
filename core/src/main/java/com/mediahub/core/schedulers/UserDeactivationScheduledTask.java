@@ -84,15 +84,10 @@ public class UserDeactivationScheduledTask implements Runnable {
             while(userResources.hasNext()){
                 Resource user = userResources.next();
                 String expiryDate = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EXPIRY,String.class);
+       
                 if(StringUtils.isNotBlank(expiryDate)){
                     deactivateExpiredUsers(userManager, user, expiryDate);
-                    String email = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EMAIL,String.class);
-                    String[] emailRecipients = { email };
- 			        String subject = "User Deactivated";
- 			        Map<String, String> emailParams = new HashMap<String, String>();
- 			        emailParams.put(BnpConstants.SUBJECT, subject);
- 			        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
- 			       genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html",emailRecipients, emailParams);
+                          
                 }
             }
             if(resolver.hasChanges()){
@@ -124,6 +119,13 @@ public class UserDeactivationScheduledTask implements Runnable {
         if(authorizable instanceof User && !((User) authorizable).isDisabled() && Calendar.getInstance().after(expiry)){
             logger.info(user.getPath());
             ((User) authorizable).disable(MediahubConstants.USER_HAS_EXPIRED);
+            String email = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EMAIL,String.class);
+            String[] emailRecipients = { email };
+		        String subject = "Mediahub - User Deactivated";
+		        Map<String, String> emailParams = new HashMap<String, String>();
+		        emailParams.put(BnpConstants.SUBJECT, subject);
+		        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
+		       genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html",emailRecipients, emailParams);
         }
     }
 
