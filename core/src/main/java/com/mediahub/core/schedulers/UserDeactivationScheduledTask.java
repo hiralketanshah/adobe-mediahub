@@ -121,11 +121,11 @@ public class UserDeactivationScheduledTask implements Runnable {
             ((User) authorizable).disable(MediahubConstants.USER_HAS_EXPIRED);
             String email = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EMAIL,String.class);
             String[] emailRecipients = { email };
-		        String subject = "Mediahub - User Deactivated";
-		        Map<String, String> emailParams = new HashMap<String, String>();
-		        emailParams.put(BnpConstants.SUBJECT, subject);
-		        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
-		       genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html",emailRecipients, emailParams);
+	        String subject = "Mediahub - User Deactivated";
+	        Map<String, String> emailParams = new HashMap<String, String>();
+	        emailParams.put(BnpConstants.SUBJECT, subject);
+	        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
+	        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html",emailRecipients, emailParams);
         }
     }
 
