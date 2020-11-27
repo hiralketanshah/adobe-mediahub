@@ -143,29 +143,19 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		        	isUserAlreadyExists = true;
 		            logger.info("---> User already exist..");
 		            user=(User)userManager.getAuthorizable(email);
-		            if(user.getProperty("./profile/expiry")!=null)
-		            {
-		            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
-		            String newExpiryDate = expiryDate.substring(0,10);
-		            Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
-		            Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
-		            
-		            if (start.compareTo(end) < 0)
-		            {
-			            logger.info("start.compareTo(end) < 0");
-
-		            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-		            	user.setProperty("./profile/expiry", expiryDateValue);
-		            	
-		            }else     {
-		            	 logger.info("start.compareTo(end) > 0");
-		            }
-		            
-		            }
+		            if(user.getProperty("./profile/expiry")!=null){
+			            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
+			            String newExpiryDate = expiryDate.substring(0,10);
+			            Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
+			            Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
+			            
+			            if (start.compareTo(end) < 0){
+			            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
+			            	user.setProperty("./profile/expiry", expiryDateValue);
+			            }
+			            
+		           }
 		           
-		            logger.info("---> NewExpiry Date");
-		            
-		            
 		        }
 		        
 			       Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
