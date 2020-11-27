@@ -36,6 +36,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.Externalizer;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
@@ -53,7 +54,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 	EmailService emailService;	
 	@Reference
 	GenericEmailNotification genericEmailNotification;
-
+    @Reference
+    private Externalizer externalizer;
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
@@ -150,9 +152,13 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		            
 		            if (start.compareTo(end) < 0)
 		            {
-		                
+			            logger.info("start.compareTo(end) < 0");
+
 		            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-		            	userManager.getAuthorizable(email).setProperty("./profile/expiryDate", expiryDateValue);
+		            	user.setProperty("./profile/expiry", expiryDateValue);
+		            	
+		            }else     {
+		            	 logger.info("start.compareTo(end) > 0");
 		            }
 		            
 		            }
@@ -164,13 +170,16 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		        
 			       Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
 			       Set<ProjectMember> projectMembers = project.getMembers();
-			       List<String> usersList = new ArrayList<String>();
+			      List<String> usersList = new ArrayList<String>();
 			       List<String> rolesList = new ArrayList<String>();
-			       
+			      
 			       for (ProjectMember memberObj : projectMembers) {
+			    	   logger.info("---> memberObj.getId()"+memberObj.getId());
 						usersList.add(memberObj.getId());
 						Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
 						for (ProjectMemberRole roleObj : projectRoles) {
+					    	  logger.info("---> roleObj.getId()"+roleObj.getId());
+
 							rolesList.add(roleObj.getId());
 						}
 					}
@@ -178,7 +187,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			      usersList.add(email);
 			      rolesList.add("external-contributor");
 			      project.updateMembers(usersList, rolesList); 
-				
+
 
 			     //notification with the expiry date modification if the user already exists and project link...username and pwd
 			       String[] emailRecipients = { email };
@@ -190,8 +199,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			       emailParams.put("login",email);
 			       emailParams.put("password",password);
 			       emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
-			       emailParams.put("projecturl","");
-			       emailParams.put("projectowner","");
+			       emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"/projects/details.html"+payloadPath.replace("/dam", "") ));
+			       emailParams.put("projectowner",item.getWorkflow().getInitiator());
 			       emailParams.put("emailprojectowner","");
 
 			       if(isUserAlreadyExists)
