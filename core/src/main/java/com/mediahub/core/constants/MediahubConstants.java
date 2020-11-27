@@ -49,5 +49,8 @@ public class MediahubConstants {
   public static final String YYYY_MM_DD_T_HH_MM_SS_SSSZ ="yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
   public static final String ACTIVE ="active";
   public static final String MEDIAHUB_EXPIRE_OROJECT="Mediahub : Expiring project ";  
+  public static final String EMAIL ="email";
+  public static final String FIRST_NAME ="givenName";
+  
   
 }

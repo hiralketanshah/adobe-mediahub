@@ -13,4 +13,7 @@
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>
     <filter root="/conf/global/settings/dam/search/facets/assets"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/external-user-creation"/>
+    <filter root="/var/workflow/models/mediahub/external-user-creation"/>
+    <filter root="/etc/mediahub"/>
 </workspaceFilter>

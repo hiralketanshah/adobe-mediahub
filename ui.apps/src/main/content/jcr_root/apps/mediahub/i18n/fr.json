@@ -31,20 +31,30 @@
     "© Groupe Ressources Humaines BNP Paribas - 2020.",
 
   "FAQ":
-    "FAQ",
+    "<a href=\"http://test.fr\">FAQ<\/a>",
 
   "Welcome to BNP Paribas":
     "Bienvenue chez BNP Paribas",
 
   "The bank for a changing world":
     "la banque d\u2019un monde qui change",
-    
-   "Closed list":
+
+  "Closed list":
     "Liste fermée",
 
-  "MEDIA":"MÉDIA",
+  "MEDIA":
+    "MÉDIA",
 
-    
-   "Create Media":
-    "Créate média"
+  "Create Media":
+    "Créate média",
+
+  "BNP Paribas Password Constrain Message":
+    "Le mot de passe doit contenir entre 8 et 16 caractères, dont au moins un numérique, une lettre minuscule, une lettre MAJUSCULE, et un caractère spécial (par exemple : # ; + ! -)",
+
+  "http://www.adobe.com/go/marketingcloud_learn_more":
+    "http://www.adobe.com/",
+
+  "An Adobe Experience Cloud solution: All the tools you need to solve these complex digital business challenges.":
+    "Une solution Adobe Experience Cloud : tous les outils dont vous avez besoin pour relever ces défis complexes liés aux activités de la sphère numérique."
+
 }
