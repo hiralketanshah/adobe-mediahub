@@ -39,15 +39,16 @@
                         name="lastName"
                         required="{Boolean}true"/>
                     <expirydate
+                        granite:class="date"
                         granite:rel="project-duedate"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
-                        displayedFormat="YYYY-MM-DD"
+                        displayedFormat="YYYY/MM/DD"
                         fieldLabel="Expiry Date"
                         minDate="today"
                         name="expiryDate"
                         required="{Boolean}true"
-                        type="datetime"/>
+                        type="date"/>
                     <company
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/textfield"

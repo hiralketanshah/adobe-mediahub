@@ -31,5 +31,8 @@ public class MediahubConstants {
   public static final String ROLE_OWNER ="role_owner";
   public static final String ROLE_PROJECTPUBLISHER ="role_project-publisher";
   public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
+  public static final String EMAIL ="email";
+  public static final String FIRST_NAME ="givenName";
+  
   
 }
