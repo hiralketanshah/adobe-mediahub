@@ -31,5 +31,23 @@ public class MediahubConstants {
   public static final String ROLE_OWNER ="role_owner";
   public static final String ROLE_PROJECTPUBLISHER ="role_project-publisher";
   public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
+  public static final String SLING_RESOURCETYPE ="sling:resourceType";
+  public static final String PROJECT_RESOURCE ="cq/gui/components/projects/admin/card/projectcontent";
+  public static final String JCR_CONTENT ="jcr:title";
+  public static final String PROJECT_DUEDATE ="project.dueDate";
+  public static final String PEOFILE_EMAIL ="profile/email";
+  public static final String PROFILE_GIVEN_NAME ="profile/givenName";
+  public static final String LIKE ="like";
+  public static final String FIRST_PROPERTY_OPERATION ="1_property.operation";
+  public static final String SECOND_DATERANGE_PROPERTY ="2_daterange.property";
+  public static final String SECOND_DATERANGE_LOWEROPERATION ="2_daterange.lowerOperation";
+  public static final String SECOND_DATERANGE_LOWERBOUND ="2_daterange.lowerBound";
+  public static final String SECOND_DATERANGE_UPPEROPERATION ="2_daterange.upperOperation";
+  public static final String SECOND_DATERANGE_UPPERBOUND ="2_daterange.upperBound";
+  public static final String GREATERTHAN_EQUALS =">=";
+  public static final String LESSTHAN_EQUALS ="<=";
+  public static final String YYYY_MM_DD_T_HH_MM_SS_SSSZ ="yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+  public static final String ACTIVE ="active";
+  public static final String MEDIAHUB_EXPIRE_OROJECT="Mediahub : Expiring project ";  
   
 }
