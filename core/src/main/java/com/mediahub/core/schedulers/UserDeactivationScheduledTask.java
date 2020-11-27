@@ -1,10 +1,5 @@
 package com.mediahub.core.schedulers;
 
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.SearchResult;
-import com.mediahub.core.constants.MediahubConstants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,7 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import javax.jcr.Session;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
@@ -30,6 +27,14 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.constants.MediahubConstants;
+import com.mediahub.core.services.GenericEmailNotification;
+
 /**
  * Cron Job for Deactivating external user with past expiry date.
  * Currently runs every day at mid night
@@ -40,6 +45,8 @@ public class UserDeactivationScheduledTask implements Runnable {
 
     @Reference
     ResourceResolverFactory resolverFactory;
+    @Reference
+	GenericEmailNotification genericEmailNotification;
 
     @ObjectClassDefinition(name="User Deactivation Task",
                            description = "User Deactivation cron-job past expiray date")
@@ -79,6 +86,13 @@ public class UserDeactivationScheduledTask implements Runnable {
                 String expiryDate = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EXPIRY,String.class);
                 if(StringUtils.isNotBlank(expiryDate)){
                     deactivateExpiredUsers(userManager, user, expiryDate);
+                    String email = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EMAIL,String.class);
+                    String[] emailRecipients = { email };
+ 			        String subject = "User Deactivated";
+ 			        Map<String, String> emailParams = new HashMap<String, String>();
+ 			        emailParams.put(BnpConstants.SUBJECT, subject);
+ 			        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
+ 			       genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html",emailRecipients, emailParams);
                 }
             }
             if(resolver.hasChanges()){
