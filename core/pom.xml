@@ -219,11 +219,5 @@ Import-Package: javax.annotation;version=0.0.0,*
             <version>1.4.4</version>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.adobe.acs/acs-aem-commons-bundle -->
-		<dependency>
-		  <groupId>com.adobe.acs</groupId>
-		  <artifactId>acs-aem-commons-bundle</artifactId>
-		  <version>4.10.0</version>
-		</dependency>
     </dependencies>
 </project>
