@@ -5,6 +5,7 @@
         cq:designPath="/libs/settings/wcm/designs/default"
         cq:lastModified="{Date}2020-11-25T17:49:43.961+05:30"
         cq:lastModifiedBy="admin"
+	cq:tags="[workflow:projects]"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:description="This workflow will be used to create external user"
         jcr:primaryType="cq:PageContent"
