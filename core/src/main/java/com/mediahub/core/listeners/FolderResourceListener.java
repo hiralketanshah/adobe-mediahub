@@ -45,6 +45,7 @@ public class FolderResourceListener implements EventHandler {
       resolver = resourceResolverFactory.getServiceResourceResolver(authInfo);
       String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
       Resource contentResourse;
+      
       if(StringUtils.contains(path, JcrConstants.JCR_CONTENT)){
         path = StringUtils.replace(path, "/"+  JcrConstants.JCR_CONTENT + "/(.*)", StringUtils.EMPTY);
       }
@@ -74,16 +75,18 @@ public class FolderResourceListener implements EventHandler {
     if(StringUtils
         .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.DAM_ASSET)){
       contentResourse = contentResourse.getParent().getParent().getChild(JcrConstants.JCR_CONTENT);
-      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
-      if(metadata == null) {
-        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
-        resolver.commit();
-      }
-      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
-
-      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
-        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      if( contentResourse!=null) {
+	      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
+	      if(metadata == null) {
+	        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
+	        resolver.commit();
+	      }
+	      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
+	
+	      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
+	        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
+	        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+	      }
       }
     }
   }
