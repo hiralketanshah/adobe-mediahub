@@ -10,4 +10,5 @@
     <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
     <filter root="/apps/mediahub/projects"/>
     <filter root="/apps/mediahub/acl-configuration" mode="update"/>
+    <filter root="/apps/cq/gui/components/projects/admin/card/projectcard/>
 </workspaceFilter>
