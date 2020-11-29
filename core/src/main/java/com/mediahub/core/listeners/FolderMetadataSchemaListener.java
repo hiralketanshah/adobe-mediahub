@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
     immediate = true,
     property = {
         EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/*",
-        EventConstants.EVENT_FILTER + "path=" + BnpConstants.CONF_FOLDERMETADATASCHEMA
+        EventConstants.EVENT_FILTER + "=(path=" + BnpConstants.CONF_FOLDERMETADATASCHEMA+"/*)"
     })
 @ServiceDescription("listen on changes in the resource tree")
 public class FolderMetadataSchemaListener implements EventHandler {
@@ -40,7 +40,6 @@ public class FolderMetadataSchemaListener implements EventHandler {
     Resource schemaHolder = null;
     try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
       String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
-
       if (path.startsWith(BnpConstants.CONF_FOLDERMETADATASCHEMA)) {
 
         if (path.contains("tabs/")) {

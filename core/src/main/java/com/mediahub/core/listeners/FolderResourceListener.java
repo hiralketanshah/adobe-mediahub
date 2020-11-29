@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 @Component(service = EventHandler.class,
     immediate = true,
     property = {
-        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED,
+        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED  ,
         EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_CHANGED,
-        EventConstants.EVENT_FILTER + "path=/content/dam/mediahub"
+        EventConstants.EVENT_FILTER +  "=(path=/content/dam/medialibrary/*)"
     })
 @ServiceDescription("listen on changes in the resource tree")
 public class FolderResourceListener implements EventHandler {
@@ -45,7 +45,6 @@ public class FolderResourceListener implements EventHandler {
       resolver = resourceResolverFactory.getServiceResourceResolver(authInfo);
       String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
       Resource contentResourse;
-      
       if(StringUtils.contains(path, JcrConstants.JCR_CONTENT)){
         path = StringUtils.replace(path, "/"+  JcrConstants.JCR_CONTENT + "/(.*)", StringUtils.EMPTY);
       }

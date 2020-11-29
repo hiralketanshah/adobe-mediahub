@@ -23,7 +23,6 @@ public class MediahubConstants {
   public static final String AEM_PROJECTS_PATH = "/content/projects";
   public static final String REP_POLICY = "rep:policy";
   public static final String REP_ACL = "rep:ACL";
-  public static final String CONSTANT ="content";
   public static final String JCR_MIXINTYPES = com.day.cq.commons.jcr.JcrConstants.JCR_MIXINTYPES;
   public static final String REP_ACCESSCONTROLLABLE ="rep:AccessControllable";
   public static final String ROLE_EDITOR ="role_editor";
