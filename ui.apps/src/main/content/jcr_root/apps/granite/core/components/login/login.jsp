@@ -606,14 +606,14 @@ login
         <%
         if (cfg.containsKey("footer/terms/text")) {
             String text = cfg.get("footer/terms/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.get("Terms of use")) %></span><%
+            %><span><%= i18n.get("Terms of use") %></span><%
         }
         %>
         <span>|</span>
         <%
         if (cfg.containsKey("footer/faq/text")) {
             String text = cfg.get("footer/faq/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.get("FAQ")) %></span><%
+            %><span><%= i18n.get("FAQ") %></span><%
         }
         %>
 
@@ -631,7 +631,7 @@ login
 <coral-dialog id="popupDialog">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
   <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox><div id="terms"></div> </coral-dialog-content>
-  <coral-dialog-footer><button id="acceptButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Accept")%> </button><button id="cancelButton" is="coral-button" variant="primary"> <%= i18n.get("Cancel") %></button></coral-dialog-footer>
+  <coral-dialog-footer><button id="cancelButton" is="coral-button" variant="secondary"> <%= i18n.get("Cancel") %></button><button id="acceptButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Accept")%> </button></coral-dialog-footer>
 </coral-dialog>
 <p id="popup" value="false" hidden>show</p>
 
