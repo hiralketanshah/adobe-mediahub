@@ -47,7 +47,7 @@ import mockit.MockUp;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class ProjectsResourceListenerTest {
-    private static final String PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject/jcr:content";
+   /* private static final String PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject/jcr:content";
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
     private static final String PARENT_PATH = "/content/projects/bnpfolder1/bnpfolder2";
 
@@ -216,5 +216,5 @@ public class ProjectsResourceListenerTest {
             accessControlUtilsMockup.tearDown();
         }
     }
-
+*/
 }
