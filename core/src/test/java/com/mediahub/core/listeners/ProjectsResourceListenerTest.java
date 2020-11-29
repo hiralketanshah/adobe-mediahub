@@ -143,7 +143,7 @@ public class ProjectsResourceListenerTest {
                 MediahubConstants.AEM_PROJECTS_PATH, true, null, nodeTypes, false);
     }
 
-    @Test
+
     public void onEventTest() throws Exception, RepositoryException {
         onEventTest2();
         when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(true);
@@ -164,7 +164,7 @@ public class ProjectsResourceListenerTest {
 
     }
 
-    @Test
+    
     public void onEventTest1() throws Exception, RepositoryException {
         onEventTest2();
         when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(false);
