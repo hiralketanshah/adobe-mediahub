@@ -1,6 +1,5 @@
 package com.mediahub.core.services.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.adobe.acs.commons.email.EmailService;
-import com.adobe.acs.commons.email.EmailServiceConstants;
-import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
 /**
@@ -30,10 +27,8 @@ public class GenericEmailNotificationImpl implements GenericEmailNotification {
 
 	public void sendEmail(String templatePath,String[] emailRecipients, Map<String, String> emailParams) {
 
-		String[] recipients = emailRecipients ;
-
 		List<String> failureList = null;
-		failureList = emailService.sendEmail(templatePath, emailParams, recipients);
+		failureList = emailService.sendEmail(templatePath, emailParams, emailRecipients);
 
 		if (failureList.isEmpty()) {
 			logger.debug("Mail sent successfully: workflow notification");

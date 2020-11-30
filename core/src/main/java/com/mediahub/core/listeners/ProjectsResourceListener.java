@@ -53,8 +53,6 @@ private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Reference
     private ResourceResolverFactory resolverFactory;
-	/** The admin session. */
-	private Session session;
 
 	/** The repository. */
 	@Reference

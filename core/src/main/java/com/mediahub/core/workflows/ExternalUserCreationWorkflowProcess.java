@@ -16,7 +16,6 @@ import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
 import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -103,9 +102,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 				ValueFactory valueFactory = adminSession.getValueFactory();
 				
 		        if (userManager.getAuthorizable(email) == null) {
-		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PASSWORD_CHARACTER);
-		              while (password.matches(BnpConstants.PASSWORD_CONSTRAINT)==false) {
-			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PASSWORD_CHARACTER);
+		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PWD_CHARACTER);
+		              while (password.matches(BnpConstants.PWD_CONSTRAINT)==false) {
+			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PWD_CHARACTER);
 			       			       	
 			        }
 		            user = userManager.createUser(email, password);
