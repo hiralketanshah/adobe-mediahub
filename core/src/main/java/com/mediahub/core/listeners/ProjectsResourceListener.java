@@ -71,26 +71,26 @@ private final Logger log = LoggerFactory.getLogger(getClass());
         adminSession = adminResolver.adaptTo(Session.class);
         String projectPath = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
         log.info("Path : {}", projectPath);
-      //  int index = projectPath.lastIndexOf("/");
+        int index = projectPath.lastIndexOf("/");
         if("cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
         
             Resource adminResource = adminResolver.getResource(projectPath);
             principalNameList = new LinkedList<>();
             Node projectNode = adminResource.adaptTo(Node.class);
-           
+            
             JackrabbitSession js = (JackrabbitSession) adminSession;
             PrincipalManager principalMgr = js.getPrincipalManager();
-            if(projectNode.getProperty(MediahubConstants.ROLE_EDITOR)!=null){
+            if(projectNode.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR)!=null){
 	            Principal groupEditorPrincipal = principalMgr
-	                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EDITOR).getString());
+	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EDITOR);
 	            Principal groupObserverPrincipal = principalMgr
-	                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OBSERVER).getString());
+	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OBSERVER);
 	            Principal groupOwnerPrincipal = principalMgr
-	                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OWNER).getString());
+	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OWNER);
 	            Principal groupOwnerProjectPublisher = principalMgr
-	                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER).getString());
+	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_PROJECTPUBLISHER);
 	            Principal groupExternalContribPrincipal = principalMgr
-	                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR);
 	            principalNameList.add(groupEditorPrincipal);
 	            principalNameList.add(groupObserverPrincipal);
 	            principalNameList.add(groupOwnerPrincipal);

@@ -25,11 +25,11 @@ public class MediahubConstants {
   public static final String REP_ACL = "rep:ACL";
   public static final String JCR_MIXINTYPES = com.day.cq.commons.jcr.JcrConstants.JCR_MIXINTYPES;
   public static final String REP_ACCESSCONTROLLABLE ="rep:AccessControllable";
-  public static final String ROLE_EDITOR ="role_editor";
-  public static final String ROLE_OBSERVER ="role_observer";
-  public static final String ROLE_OWNER ="role_owner";
-  public static final String ROLE_PROJECTPUBLISHER ="role_project-publisher";
-  public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
+  public static final String ROLE_EDITOR ="editor";
+  public static final String ROLE_OBSERVER ="";
+  public static final String ROLE_OWNER ="owner";
+  public static final String ROLE_PROJECTPUBLISHER ="publisher";
+  public static final String ROLE_EXTERNALCONTRIBUTEUR ="external-contributor";
   public static final String SLING_RESOURCETYPE ="sling:resourceType";
   public static final String PROJECT_RESOURCE ="cq/gui/components/projects/admin/card/projectcontent";
   public static final String JCR_CONTENT ="jcr:title";
