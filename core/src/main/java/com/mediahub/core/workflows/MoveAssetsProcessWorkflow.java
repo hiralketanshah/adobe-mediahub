@@ -62,7 +62,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             // Get the project associated
             // Get the target PATH
             // Copy the folder / asset and subnodes
-            if(StringUtils.contains(payload.getPath(),"/dam/")){
+            if(StringUtils.contains(payload.getPath(),"/dam/projects/")){
 
                 Resource project = null;
                 if(media != null){
@@ -76,9 +76,9 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     String projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
                     // Due to UUID Issue using session.move instead or resolver.move
                     Resource damPath = resourceResolver.getResource(projectDamPath);
-                    moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
+                   String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
                         damPath);
-                    WorkflowUtils.updateWorkflowPayload(workItem, workflowSession, projectDamPath);
+                    WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
                 }
             }
             session.save();
@@ -106,9 +106,10 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
      * @throws PersistenceException
      * @throws RepositoryException
      */
-    private void moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
+    private String moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
         Resource payload, Resource media, String projectDamPath, Resource damPath)
         throws PersistenceException, RepositoryException {
+    	String newPath="";
         if(damPath != null){
             if(media != null){
                 Resource desitnationMedia = damPath.getChild(media.getName());
@@ -122,13 +123,16 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                         session.getWorkspace().copy(contentResource.getPath(), desitnationMedia.getPath() + "/" + JcrConstants.JCR_CONTENT);
                     }
                 }
-                session.move(payload.getPath(), desitnationMedia.getPath() + "/" + payload.getName());
+                newPath=desitnationMedia.getPath() + "/" + payload.getName();
+                session.move(payload.getPath(), newPath);
             } else {
-                session.move(payload.getPath(), projectDamPath + "/" + payload.getName());
+            	newPath= projectDamPath + "/" + payload.getName();
+                session.move(payload.getPath(), newPath);
             }
         }
+        return newPath; 
     }
-
+ 
     /**
      * Method to find the media folder if exists
      *
