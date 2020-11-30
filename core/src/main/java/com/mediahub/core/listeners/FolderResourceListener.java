@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 @Component(service = EventHandler.class,
     immediate = true,
     property = {
-        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED,
+        EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED  ,
         EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_CHANGED,
-        EventConstants.EVENT_FILTER + "path=/content/dam/mediahub"
+        EventConstants.EVENT_FILTER +  "=(path=/content/dam/medialibrary/*)"
     })
 @ServiceDescription("listen on changes in the resource tree")
 public class FolderResourceListener implements EventHandler {
@@ -74,16 +74,18 @@ public class FolderResourceListener implements EventHandler {
     if(StringUtils
         .equals(contentResourse.getParent().getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, String.class), BnpConstants.DAM_ASSET)){
       contentResourse = contentResourse.getParent().getParent().getChild(JcrConstants.JCR_CONTENT);
-      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
-      if(metadata == null) {
-        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
-        resolver.commit();
-      }
-      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
-
-      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
-        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+      if( contentResourse!=null) {
+	      Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
+	      if(metadata == null) {
+	        metadata = resolver.create(contentResourse, BnpConstants.METADATA, null);
+	        resolver.commit();
+	      }
+	      ModifiableValueMap adpatableResource = metadata.adaptTo(ModifiableValueMap.class);
+	
+	      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
+	        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
+	        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+	      }
       }
     }
   }

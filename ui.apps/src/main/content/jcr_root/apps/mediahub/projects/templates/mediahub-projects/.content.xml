@@ -73,22 +73,10 @@
         jcr:primaryType="nt:unstructured"
         tags="[]">
         <models jcr:primaryType="nt:unstructured">
-            <sampleworkflow
+            <extrenalusercreation
                 jcr:primaryType="nt:unstructured"
-                modelId="/etc/workflow/models/projects/approval_workflow/jcr:content/model"
-                wizard="/libs/cq/core/content/projects/workflowwizards/sample_team.html"/>
-            <launch
-                jcr:primaryType="nt:unstructured"
-                modelId="/etc/workflow/models/projects/request_launch/jcr:content/model"
-                wizard="/libs/cq/core/content/projects/workflowwizards/launchrequest.html"/>
-            <landing
-                jcr:primaryType="nt:unstructured"
-                modelId="/etc/workflow/models/projects/request_landing_page/jcr:content/model"
-                wizard="/libs/cq/core/content/projects/workflowwizards/landingpagerequest.html"/>
-            <email
-                jcr:primaryType="nt:unstructured"
-                modelId="/etc/workflow/models/projects/request_email/jcr:content/model"
-                wizard="/libs/cq/core/content/projects/workflowwizards/emailrequest.html"/>
+                modelId="/var/workflow/models/mediahub/external-user-creation"
+                wizard="/apps/mediahub/projects/wizards/external-user-creation.html"/>
         </models>
     </workflows>
 </jcr:root>
