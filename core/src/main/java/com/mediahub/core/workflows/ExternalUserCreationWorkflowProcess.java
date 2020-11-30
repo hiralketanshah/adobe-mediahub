@@ -188,7 +188,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			       emailParams.put("login",email);
 			       emailParams.put("password",password);
 			       emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
-			       emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"/projects/details.html"+payloadPath.replace("/dam", "") ));
+			       emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"projects/details.html"+payloadPath.replace("/dam", "") ));
 			       emailParams.put("projectowner",item.getWorkflow().getInitiator());
 			       emailParams.put("emailprojectowner","");
 

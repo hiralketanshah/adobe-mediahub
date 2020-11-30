@@ -124,7 +124,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 Iterator<Authorizable> itr = group.getDeclaredMembers();
                 Map<String, String> emailParams = new HashMap<String, String>();
                 emailParams.put("projectitle", project.getTitle());
-                emailParams.put("projecturl",externalizer.authorLink(resolver,"/projects/details.html"+projectpath ));
+                emailParams.put("projecturl",externalizer.authorLink(resolver,"projects/details.html"+projectpath ));
   			  
                 while (itr.hasNext()) {
                     Object obj = itr.next();
