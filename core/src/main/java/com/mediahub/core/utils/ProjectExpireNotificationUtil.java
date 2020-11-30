@@ -36,6 +36,7 @@ public class ProjectExpireNotificationUtil {
         SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(MediahubConstants.YYYY_MM_DD_T_HH_MM_SS_SSSZ);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         Date onePlusMonth = cal.getTime();
         Calendar cal1 = Calendar.getInstance();
         cal1.add(Calendar.MONTH, -1);
