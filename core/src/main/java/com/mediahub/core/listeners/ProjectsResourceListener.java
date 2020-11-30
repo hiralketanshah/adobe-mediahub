@@ -102,6 +102,7 @@ private final Logger log = LoggerFactory.getLogger(getClass());
                 String parentFolderPath = adminResource.getPath();
                 Node parentFldrNode = adminResource.adaptTo(Node.class);
                 if (parentFldrNode.hasNode(MediahubConstants.REP_POLICY)) {
+                	log.info("CreatePolicyNodeUtil : {}", parentFolderPath);
                     CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
                 } else {
                     ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
@@ -109,6 +110,7 @@ private final Logger log = LoggerFactory.getLogger(getClass());
                     adminResolver.commit();
                     String parentProjectPath = adminResource.getPath();
                     Resource reResource = adminResolver.getResource(parentProjectPath);
+                	log.info("CreatePolicyNodeUtil2 : {}", parentFolderPath);
                     Node createPolicyNode = reResource.adaptTo(Node.class);
                     createPolicyNode.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL);
                     adminResolver.commit();

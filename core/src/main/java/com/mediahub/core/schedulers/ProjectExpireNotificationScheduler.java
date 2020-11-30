@@ -113,7 +113,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 Date crrentDate = ProjectExpireNotificationUtil.getCurrentDate(dateFormat);
                 int differenceInDays = (int) ((actualDueDate.getTime() - crrentDate.getTime()) / (1000 * 60 * 60 * 24));
                 logger.info("difference jour : "+differenceInDays); 
-                if(differenceInDays == 30 || differenceInDays == 0 || differenceInDays == -30) {
+                if(differenceInDays == 30 || differenceInDays == 0 || differenceInDays == -31) {
                 	logger.info("In the matrice : "); 
 	                Resource groupOwnerResource = resolver.getResource(projectpath);
                 	logger.info("Get resource"); 
