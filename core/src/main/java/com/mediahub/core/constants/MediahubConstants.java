@@ -28,6 +28,7 @@ public class MediahubConstants {
   public static final String ROLE_EDITOR ="editor";
   public static final String ROLE_OBSERVER ="";
   public static final String ROLE_OWNER ="owner";
+  public static final String PROPERTY_ROLE_OWNER="role_owner";
   public static final String ROLE_PROJECTPUBLISHER ="publisher";
   public static final String ROLE_EXTERNALCONTRIBUTEUR ="external-contributor";
   public static final String SLING_RESOURCETYPE ="sling:resourceType";
