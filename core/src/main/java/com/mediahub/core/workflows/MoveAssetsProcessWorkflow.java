@@ -132,7 +132,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         }
         return newPath; 
     }
-
+ 
     /**
      * Method to find the media folder if exists
      *
