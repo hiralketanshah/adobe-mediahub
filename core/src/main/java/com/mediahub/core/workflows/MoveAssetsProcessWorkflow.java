@@ -9,6 +9,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -56,19 +57,27 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             session = resourceResolver.adaptTo(Session.class);
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             log.info("payloadPath : {}",payloadPath);
-            Resource payload = setCorrectPayloadPath(resourceResolver, payloadPath);
+            Resource payload = resourceResolver.getResource(payloadPath);
+            Resource media = findMediaFolderPath(resourceResolver, payloadPath);
             // Get the project associated
             // Get the target PATH
             // Copy the folder / asset and subnodes
             if(StringUtils.contains(payload.getPath(),"/dam/")){
-                Resource project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(),"/dam",StringUtils.EMPTY));
+
+                Resource project = null;
+                if(media != null){
+                    project = resourceResolver.getResource(StringUtils.replace(media.getParent().getPath(),"/dam",StringUtils.EMPTY));
+                } else {
+                    project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(),"/dam",StringUtils.EMPTY));
+                }
+
+
                 if(project != null && (project.getChild(JcrConstants.JCR_CONTENT) != null)){
                     String projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
                     // Due to UUID Issue using session.move instead or resolver.move
                     Resource damPath = resourceResolver.getResource(projectDamPath);
-                    if(damPath != null && damPath.getChild(payload.getName()) == null){
-                        session.move(payload.getPath(), projectDamPath + "/" + payload.getName());
-                    }
+                    moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
+                        damPath);
                     WorkflowUtils.updateWorkflowPayload(workItem, workflowSession, projectDamPath);
                 }
             }
@@ -85,16 +94,59 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         }
     }
 
-    private Resource setCorrectPayloadPath(ResourceResolver resourceResolver, String payloadPath) {
-        Resource payload = resourceResolver.getResource(payloadPath);
-
-        if(payload.getParent().getChild("jcr:content") != null && payload.getParent().getChild(
-            JcrConstants.JCR_CONTENT).getChild("metadata") != null){
-            String isBnppMedia = payload.getParent().getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap().get("bnpp-media", Boolean.FALSE.toString());
-            if(StringUtils.equals(isBnppMedia, Boolean.TRUE.toString())){
-                payload = payload.getParent();
+    /**
+     * Method to move asset from source to destination
+     *
+     * @param resourceResolver
+     * @param session - session to copy or move node due to UUID
+     * @param payload - Payload from workflow
+     * @param media - Parent media folder resource
+     * @param projectDamPath - path of the dam to be migrated
+     * @param damPath - dam resource
+     * @throws PersistenceException
+     * @throws RepositoryException
+     */
+    private void moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
+        Resource payload, Resource media, String projectDamPath, Resource damPath)
+        throws PersistenceException, RepositoryException {
+        if(damPath != null){
+            if(media != null){
+                Resource desitnationMedia = damPath.getChild(media.getName());
+                if(desitnationMedia == null ) {
+                    Map<String, Object> folderProperties = new HashMap<>();
+                    folderProperties.put(JcrConstants.JCR_PRIMARYTYPE, media.getValueMap().get(JcrConstants.JCR_PRIMARYTYPE, BnpConstants.SLING_FOLDER));
+                    desitnationMedia = resourceResolver.create(damPath, media.getName(), folderProperties);
+                    resourceResolver.commit();
+                    Resource contentResource = media.getChild(JcrConstants.JCR_CONTENT);
+                    if(null != contentResource){
+                        session.getWorkspace().copy(contentResource.getPath(), desitnationMedia.getPath() + "/" + JcrConstants.JCR_CONTENT);
+                    }
+                }
+                session.move(payload.getPath(), desitnationMedia.getPath() + "/" + payload.getName());
+            } else {
+                session.move(payload.getPath(), projectDamPath + "/" + payload.getName());
             }
         }
-        return payload;
+    }
+
+    /**
+     * Method to find the media folder if exists
+     *
+     * @param resourceResolver - resorce resolver to get resource by path
+     * @param payloadPath - path of payload
+     * @return - media parent folder resource if exists
+     */
+    private Resource findMediaFolderPath(ResourceResolver resourceResolver, String payloadPath) {
+        Resource payload = resourceResolver.getResource(payloadPath);
+
+        if(payload.getParent().getChild(JcrConstants.JCR_CONTENT) != null && payload.getParent().getChild(
+            JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null){
+            String isBnppMedia = payload.getParent().getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap().get("bnpp-media", Boolean.FALSE.toString());
+            if(StringUtils.equals(isBnppMedia, Boolean.TRUE.toString())){
+                payload = payload.getParent();
+                return payload;
+            }
+        }
+        return null;
     }
 }
