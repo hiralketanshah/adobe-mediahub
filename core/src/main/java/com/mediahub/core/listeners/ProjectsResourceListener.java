@@ -80,44 +80,42 @@ private final Logger log = LoggerFactory.getLogger(getClass());
             
             JackrabbitSession js = (JackrabbitSession) adminSession;
             PrincipalManager principalMgr = js.getPrincipalManager();
-            if(projectNode.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR)!=null){
-	            Principal groupEditorPrincipal = principalMgr
-	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EDITOR);
-	            Principal groupObserverPrincipal = principalMgr
-	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OBSERVER);
-	            Principal groupOwnerPrincipal = principalMgr
-	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OWNER);
-	            Principal groupOwnerProjectPublisher = principalMgr
-	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_PROJECTPUBLISHER);
-	            Principal groupExternalContribPrincipal = principalMgr
-	                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR);
-	            principalNameList.add(groupEditorPrincipal);
-	            principalNameList.add(groupObserverPrincipal);
-	            principalNameList.add(groupOwnerPrincipal);
-	            principalNameList.add(groupOwnerProjectPublisher);
-	            principalNameList.add(groupExternalContribPrincipal);
-	         
-	            while (adminResource.getParent() != null
-	                    && !StringUtils.equals(	adminResource.getParent().getPath(), MediahubConstants.AEM_PROJECTS_PATH)) {
-	                adminResource = adminResource.getParent();
-	                String parentFolderPath = adminResource.getPath();
-	                Node parentFldrNode = adminResource.adaptTo(Node.class);
-	                if (parentFldrNode.hasNode(MediahubConstants.REP_POLICY)) {
-	                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
-	                } else {
-	                    ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
-	                    mvp.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE);
-	                    adminResolver.commit();
-	                    String parentProjectPath = adminResource.getPath();
-	                    Resource reResource = adminResolver.getResource(parentProjectPath);
-	                    Node createPolicyNode = reResource.adaptTo(Node.class);
-	                    createPolicyNode.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL);
-	                    adminResolver.commit();
-	                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
-	                }
-	            }
+            Principal groupEditorPrincipal = principalMgr
+                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EDITOR);
+            Principal groupObserverPrincipal = principalMgr
+                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OBSERVER);
+            Principal groupOwnerPrincipal = principalMgr
+                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OWNER);
+            Principal groupOwnerProjectPublisher = principalMgr
+                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_PROJECTPUBLISHER);
+            Principal groupExternalContribPrincipal = principalMgr
+                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR);
+            principalNameList.add(groupEditorPrincipal);
+            principalNameList.add(groupObserverPrincipal);
+            principalNameList.add(groupOwnerPrincipal);
+            principalNameList.add(groupOwnerProjectPublisher);
+            principalNameList.add(groupExternalContribPrincipal);
+         
+            while (adminResource.getParent() != null
+                    && !StringUtils.equals(	adminResource.getParent().getPath(), MediahubConstants.AEM_PROJECTS_PATH)) {
+                adminResource = adminResource.getParent();
+                String parentFolderPath = adminResource.getPath();
+                Node parentFldrNode = adminResource.adaptTo(Node.class);
+                if (parentFldrNode.hasNode(MediahubConstants.REP_POLICY)) {
+                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
+                } else {
+                    ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
+                    mvp.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE);
+                    adminResolver.commit();
+                    String parentProjectPath = adminResource.getPath();
+                    Resource reResource = adminResolver.getResource(parentProjectPath);
+                    Node createPolicyNode = reResource.adaptTo(Node.class);
+                    createPolicyNode.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL);
+                    adminResolver.commit();
+                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
+                }
             }
-            log.info("End of activating Project creation Observation in ProjectsResourceListener");
+        log.info("End of activating Project creation Observation in ProjectsResourceListener");
        }
 	} catch (LoginException | RepositoryException | PersistenceException e) {
 		log.error("RepositoryException while Executing events", e);
