@@ -102,9 +102,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 				ValueFactory valueFactory = adminSession.getValueFactory();
 				
 		        if (userManager.getAuthorizable(email) == null) {
-		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PWD_CHARACTER);
-		              while (password.matches(BnpConstants.PWD_CONSTRAINT)==false) {
-			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.PWD_CHARACTER);
+		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
+		              while (password.matches(BnpConstants.P_CONSTRAINT)==false) {
+			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
 			       			       	
 			        }
 		            user = userManager.createUser(email, password);
