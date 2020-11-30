@@ -162,18 +162,18 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                               
                             }else if(differenceInDays == -30 ) {
                             	logger.info("Notification deletion" );
-                            	 projectManager.deleteProject(project);
                             	String subject = "Mediahub - Project Deletion";
                             	emailParams.put(BnpConstants.SUBJECT, subject);
                                 genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html",emailRecipients, emailParams);
                               
                             }
-                        
-                        
                         }
                     }
                 }
-             
+                if(differenceInDays == -30 ) {
+                	logger.debug(" deletion" );
+                	 projectManager.deleteProject(project);       
+                }
             }
             if (resolver.hasChanges()) {
                 resolver.commit();
