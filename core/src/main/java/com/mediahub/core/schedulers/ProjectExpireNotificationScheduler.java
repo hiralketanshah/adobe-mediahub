@@ -99,7 +99,6 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 
                 int index = path.lastIndexOf("/");
                 String projectpath = path.substring(0, index);
-                logger.debug("Projecs Paths 2 : {}", projectpath);
                 
                 Resource adminResource = resolver.getResource(path);
                 Node jcrContentNode = adminResource.adaptTo(Node.class);
@@ -112,20 +111,15 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 Date actualDueDate = dateFormat.parse(projectactualDueDate);
                 Date crrentDate = ProjectExpireNotificationUtil.getCurrentDate(dateFormat);
                 int differenceInDays = (int) ((actualDueDate.getTime() - crrentDate.getTime()) / (1000 * 60 * 60 * 24));
-                logger.info("difference jour : "+differenceInDays); 
+                logger.debug("difference jour : "+differenceInDays); 
                 if(differenceInDays == 30 || differenceInDays == 0 || differenceInDays == -31) {
-                	logger.info("In the matrice : "); 
 	                Resource groupOwnerResource = resolver.getResource(projectpath);
-                	logger.info("Get resource"); 
 	                Node projectNode = groupOwnerResource.adaptTo(Node.class);
-	                logger.info("Get node"); 
 	                projectOwnerProperty = projectNode.getProperty(MediahubConstants.PROPERTY_ROLE_OWNER).getValue().getString();
-	                logger.info("projectOwnerProperty : "+projectOwnerProperty); 
 	                UserManager userManager = resolver.adaptTo(UserManager.class);
 	                Authorizable authorizable;
 	                authorizable = userManager.getAuthorizable(projectOwnerProperty);
 	                org.apache.jackrabbit.api.security.user.Group group = (org.apache.jackrabbit.api.security.user.Group) authorizable;
-	                logger.info("itr : "); 
 	                Iterator<Authorizable> itr = group.getDeclaredMembers();
 	                Map<String, String> emailParams = new HashMap<String, String>();
 	                emailParams.put("projectitle", project.getTitle());
@@ -153,20 +147,20 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 	                            
 	                            emailParams.put("firstname",userName);
 	                	        if (differenceInDays == 30  ) {
-	                            	logger.info("Notification deletion dans 1mois" );
+	                            	logger.debug("Notification deletion dans 1mois" );
 	                                String subject = "Mediahub - Project Expiration";
 	                                emailParams.put(BnpConstants.SUBJECT, subject);
 	                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html",emailRecipients, emailParams);
 	                                
 	                            }else if(differenceInDays == 0 ) {
-	                            	logger.info("Notification deactivation" );
+	                            	logger.debug("Notification deactivation" );
 	                                jcrContentNode.setProperty(MediahubConstants.ACTIVE, false);
 	                            	String subject = "Mediahub - Project Deactivation";
 	                            	emailParams.put(BnpConstants.SUBJECT, subject);
 	                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html",emailRecipients, emailParams);
 	                              
 	                            }else if(differenceInDays == -31 ) {
-	                            	logger.info("Notification deletion" );
+	                            	logger.debug("Notification deletion" );
 	                            	String subject = "Mediahub - Project Deletion";
 	                            	emailParams.put(BnpConstants.SUBJECT, subject);
 	                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html",emailRecipients, emailParams);
@@ -186,7 +180,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
             }
             resolver.close();
         } catch (Exception e) {
-            logger.info("Error while deactivating user {}", e.getMessage());
+            logger.error("Error while project expire notification  {}", e.getMessage());
         }
     }
 
