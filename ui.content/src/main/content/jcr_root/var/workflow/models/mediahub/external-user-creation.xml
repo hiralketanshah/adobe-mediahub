@@ -11,7 +11,7 @@
         cq:lastModified="{Long}1606306786367"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"
-	tags="projects"/>
+        tags="projects"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
