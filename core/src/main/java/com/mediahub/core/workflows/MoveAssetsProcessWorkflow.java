@@ -79,7 +79,9 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     Resource damPath = resourceResolver.getResource(projectDamPath);
                     String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
                         damPath);
-                    WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
+                    if(StringUtils.isNotBlank(newPath)){
+                        WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
+                    }
                 }
             }
 
@@ -114,7 +116,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
      * @throws PersistenceException
      * @throws RepositoryException
      */
-    private String moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
+    protected String moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
         Resource payload, Resource media, String projectDamPath, Resource damPath)
         throws PersistenceException, RepositoryException {
     	String newPath="";
