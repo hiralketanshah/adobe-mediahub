@@ -7,20 +7,9 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.day.cq.dam.api.Asset;
-import com.day.cq.dam.api.Rendition;
-import com.day.image.Layer;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
 
 /**
  * @author arthur bamy
