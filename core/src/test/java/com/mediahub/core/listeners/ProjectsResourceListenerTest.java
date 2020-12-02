@@ -10,7 +10,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
-import javax.jcr.observation.Event;
+import org.osgi.service.event.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.security.AccessControlManager;
@@ -22,6 +22,7 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
+import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 
@@ -47,7 +48,6 @@ import mockit.MockUp;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class ProjectsResourceListenerTest {
-   /* private static final String PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject/jcr:content";
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
     private static final String PARENT_PATH = "/content/projects/bnpfolder1/bnpfolder2";
 
@@ -69,62 +69,59 @@ public class ProjectsResourceListenerTest {
     private Resource parentresource;
 
     @Mock
-    Session session;
+    private Session session;
 
     @Mock
-    ComponentContext componentContext;
+    private ComponentContext componentContext;
 
     @Mock
-    Workspace workspace;
+    private Workspace workspace;
 
     @Mock
-    ObservationManager observationManager;
+    private ObservationManager observationManager;
 
     @Mock
-    Event event;
+    private Node node;
 
     @Mock
-    Node node;
+    private EventIterator eventIterator;
 
     @Mock
-    EventIterator eventIterator;
+    private JackrabbitSession jackrabbitSession;
 
     @Mock
-    JackrabbitSession jackrabbitSession;
+    private Principal principal;
 
     @Mock
-    Principal principal;
+    private Property property;
 
     @Mock
-    Property property;
+    private AccessControlManager accessControlManager;
 
     @Mock
-    AccessControlManager accessControlManager;
+    private JackrabbitAccessControlList jackrabbitAccessControlList;
 
     @Mock
-    JackrabbitAccessControlList jackrabbitAccessControlList;
-
-    @Mock
-    AccessControlUtils accessControlUtils;
+    private AccessControlUtils accessControlUtils;
 
     @Mock
     PrincipalManager principalManager;
 
     @Mock
-    AccessControlPolicy accessControlPolicy;
+    private AccessControlPolicy accessControlPolicy;
 
     @Mock
-    Privilege privilege;
+    private Privilege privilege;
 
     @Mock
-    ModifiableValueMap modifiableValueMap;
-
-    String[] nodeTypes = { MediahubConstants.NT_NODE_TYPE };
+    private ModifiableValueMap modifiableValueMap;
 
     private MockUp<AccessControlUtils> accessControlUtilsMockup;
 
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
+
+    Event event = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/projects"));
 
     @BeforeEach
     void setup() throws Exception, LoginException {
@@ -132,23 +129,27 @@ public class ProjectsResourceListenerTest {
     }
 
     @Test
-    public void activateTest() throws Exception {
-        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-        when(resolver.adaptTo(Session.class)).thenReturn(session);
-        when(session.getWorkspace()).thenReturn(workspace);
-        when(workspace.getObservationManager()).thenReturn(observationManager);
-        projectsResourceListener.activate(componentContext);
-
-        verify(observationManager).addEventListener(projectsResourceListener, Event.NODE_ADDED,
-                MediahubConstants.AEM_PROJECTS_PATH, true, null, nodeTypes, false);
-    }
-
-    @Test
     public void onEventTest() throws Exception, RepositoryException {
-        onEventTest2();
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
+        when(resolver.getResource("/content/projects")).thenReturn(resource);
+        when(resource.getResourceType()).thenReturn("cq/gui/components/projects/admin/card/projectcard");
+        when(resource.adaptTo(Node.class)).thenReturn(node);
+        when(parentresource.adaptTo(Node.class)).thenReturn(node);
+        when(jackrabbitSession.getPrincipalManager()).thenReturn(principalManager);
+        when((node.getProperty(MediahubConstants.ROLE_EDITOR))).thenReturn(property);
+        when(node.getProperty(MediahubConstants.ROLE_OBSERVER)).thenReturn(property);
+        when(node.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property);
+        when(node.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER)).thenReturn(property);
+        when(node.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR)).thenReturn(property);
+        when(property.getString()).thenReturn("projects-bnpproject-editor");
+        when(principalManager.getPrincipal("projects-bnpproject-editor")).thenReturn(principal);
+        when(resource.getParent()).thenReturn(parentresource);
+
         when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(true);
         when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
         accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
+
             @mockit.Mock
             JackrabbitAccessControlList getAccessControlList(Session session, String path) {
                 return jackrabbitAccessControlList;
@@ -158,7 +159,7 @@ public class ProjectsResourceListenerTest {
         Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
         when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
         accessControlManager.setPolicy(PARENT_PATH, accessControlPolicy);
-        projectsResourceListener.onEvent(eventIterator);
+        projectsResourceListener.handleEvent(event);
 
         verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
 
@@ -166,35 +167,10 @@ public class ProjectsResourceListenerTest {
 
     @Test
     public void onEventTest1() throws Exception, RepositoryException {
-        onEventTest2();
-        when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(false);
-        when(parentresource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
-        when(modifiableValueMap.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE))
-                .thenReturn(MediahubConstants.REP_ACCESSCONTROLLABLE);
-        when(parentresource.getPath()).thenReturn(PROJECT_PATH);
-        when(node.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL)).thenReturn(node);
-        when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
-        accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
-            @mockit.Mock
-            JackrabbitAccessControlList getAccessControlList(Session session, String path) {
-                return jackrabbitAccessControlList;
-            }
-        };
-
-        Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
-        when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
-        accessControlManager.setPolicy(PARENT_PATH, accessControlPolicy);
-        projectsResourceListener.onEvent(eventIterator);
-
-        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
-
-    }
-
-    public void onEventTest2() throws Exception, RepositoryException {
         when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
-        when(eventIterator.nextEvent()).thenReturn(event);
-        when(event.getPath()).thenReturn(PATH);
+        when(resolver.getResource("/content/projects")).thenReturn(resource);
+        when(resource.getResourceType()).thenReturn("cq/gui/components/projects/admin/card/projectcard");
         when(resolver.getResource(PROJECT_PATH)).thenReturn(resource);
         when(resource.adaptTo(Node.class)).thenReturn(node);
         when(parentresource.adaptTo(Node.class)).thenReturn(node);
@@ -207,7 +183,29 @@ public class ProjectsResourceListenerTest {
         when(property.getString()).thenReturn("projects-bnpproject-editor");
         when(principalManager.getPrincipal("projects-bnpproject-editor")).thenReturn(principal);
         when(resource.getParent()).thenReturn(parentresource);
-        when(parentresource.getName()).thenReturn("content1");
+
+        when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(false);
+        when(parentresource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
+        when(modifiableValueMap.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE))
+                .thenReturn(MediahubConstants.REP_ACCESSCONTROLLABLE);
+        when(parentresource.getPath()).thenReturn(PROJECT_PATH);
+        when(node.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL)).thenReturn(node);
+        when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
+        accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
+
+            @mockit.Mock
+            JackrabbitAccessControlList getAccessControlList(Session session, String path) {
+                return jackrabbitAccessControlList;
+            }
+        };
+
+        Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
+        when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
+        accessControlManager.setPolicy(PARENT_PATH, accessControlPolicy);
+        projectsResourceListener.handleEvent(event);
+
+        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
+
     }
 
     @AfterEach
@@ -216,5 +214,5 @@ public class ProjectsResourceListenerTest {
             accessControlUtilsMockup.tearDown();
         }
     }
-*/
+
 }
