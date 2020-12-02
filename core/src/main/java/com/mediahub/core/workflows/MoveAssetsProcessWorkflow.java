@@ -10,6 +10,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -32,7 +33,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    ResourceResolverFactory resolverFactory;
 
     /**
      * The method called by the AEM Workflow Engine to perform Workflow work.
@@ -76,13 +77,22 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     String projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
                     // Due to UUID Issue using session.move instead or resolver.move
                     Resource damPath = resourceResolver.getResource(projectDamPath);
-                   String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
+                    String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
                         damPath);
-                    WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
+                    if(StringUtils.isNotBlank(newPath)){
+                        WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
+                    }
                 }
             }
+
+
             session.save();
             resourceResolver.commit();
+
+            if(media != null && isFolderEmpty(media)) {
+                resourceResolver.delete(media);
+                resourceResolver.commit();
+            }
         } catch (LoginException e) {
             throw new WorkflowException("Login exception", e);
         } catch (PersistenceException | RepositoryException e) {
@@ -106,7 +116,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
      * @throws PersistenceException
      * @throws RepositoryException
      */
-    private String moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
+    protected String moveProjectDamAsset(ResourceResolver resourceResolver, Session session,
         Resource payload, Resource media, String projectDamPath, Resource damPath)
         throws PersistenceException, RepositoryException {
     	String newPath="";
@@ -123,16 +133,33 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                         session.getWorkspace().copy(contentResource.getPath(), desitnationMedia.getPath() + "/" + JcrConstants.JCR_CONTENT);
                     }
                 }
-                newPath=desitnationMedia.getPath() + "/" + payload.getName();
+                newPath = desitnationMedia.getPath() + "/" + payload.getName();
                 session.move(payload.getPath(), newPath);
             } else {
             	newPath= projectDamPath + "/" + payload.getName();
-                session.move(payload.getPath(), newPath);
+            	session.move(payload.getPath(), newPath);
             }
         }
         return newPath; 
     }
- 
+
+    /**
+     * Method to check if the folder is empty after the assets are moved
+     * @param media - Media Folder Resource
+     * @return
+     */
+    protected boolean isFolderEmpty(Resource media) {
+        if(media.hasChildren()){
+            Iterator<Resource> children = media.listChildren();
+            while(children.hasNext()){
+                if(!StringUtils.equals(JcrConstants.JCR_CONTENT,children.next().getName())){
+                    return Boolean.FALSE;
+                }
+            }
+        }
+        return Boolean.TRUE;
+    }
+
     /**
      * Method to find the media folder if exists
      *
@@ -140,10 +167,10 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
      * @param payloadPath - path of payload
      * @return - media parent folder resource if exists
      */
-    private Resource findMediaFolderPath(ResourceResolver resourceResolver, String payloadPath) {
+    protected Resource findMediaFolderPath(ResourceResolver resourceResolver, String payloadPath) {
         Resource payload = resourceResolver.getResource(payloadPath);
 
-        if(payload.getParent().getChild(JcrConstants.JCR_CONTENT) != null && payload.getParent().getChild(
+        if(payload != null && payload.getParent().getChild(JcrConstants.JCR_CONTENT) != null && payload.getParent().getChild(
             JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null){
             String isBnppMedia = payload.getParent().getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap().get("bnpp-media", Boolean.FALSE.toString());
             if(StringUtils.equals(isBnppMedia, Boolean.TRUE.toString())){

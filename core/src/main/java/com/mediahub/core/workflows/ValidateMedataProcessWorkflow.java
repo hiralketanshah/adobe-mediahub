@@ -38,7 +38,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
 
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    ResourceResolverFactory resolverFactory;
 
     /**
      * The method called by the AEM Workflow Engine to perform Workflow work.
