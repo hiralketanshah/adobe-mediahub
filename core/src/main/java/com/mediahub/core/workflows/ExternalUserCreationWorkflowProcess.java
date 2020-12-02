@@ -1,6 +1,7 @@
 package com.mediahub.core.workflows;
 
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,8 +81,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			String payloadPath = item.getWorkflowData().getPayload().toString();
 			String projectName =payloadPath.substring(payloadPath.lastIndexOf("/")+1, payloadPath.length());
 			logger.debug("ExternalUserCreationWorkflowProcess :: payloadPath" + payloadPath);
-			Session adminSession = resourceResolver.adaptTo(Session.class);
-			JackrabbitSession js = (JackrabbitSession) adminSession;
+
 			
 			String firstName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
 			String lastName = item.getWorkflow().getMetaDataMap().get("lastName").toString();
@@ -93,6 +93,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			String country = item.getWorkflow().getMetaDataMap().get("country").toString();
 			Boolean isUserAlreadyExists = false;
 			String password = "";
+
+			Session adminSession = resourceResolver.adaptTo(Session.class);
+			JackrabbitSession js = (JackrabbitSession) adminSession;
 			
 			if (payloadPath != null) {
 				
@@ -139,28 +142,16 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 		
 		        } else {
-		        	isUserAlreadyExists = true;
+		        		isUserAlreadyExists = true;
 		            logger.info("---> User already exist..");
-		            user=(User)userManager.getAuthorizable(email);
-		            if(user.getProperty("./profile/expiry")!=null){
-			            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
-			            String newExpiryDate = expiryDate.substring(0,10);
-			            Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
-			            Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
-			            
-			            if (start.compareTo(end) < 0){
-			            	Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-			            	user.setProperty("./profile/expiry", expiryDateValue);
-			            }
-			            
-		           }
-		           
-		        }
+								user = setExpiryDateExistingUser(email, expiryDate, userManager, valueFactory);
+
+						}
 		        
 			       Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
 			       Set<ProjectMember> projectMembers = project.getMembers();
-			      List<String> usersList = new ArrayList<String>();
-			       List<String> rolesList = new ArrayList<String>();
+			       List<String> usersList = new ArrayList<>();
+			       List<String> rolesList = new ArrayList<>();
 			      
 			       for (ProjectMember memberObj : projectMembers) {
 			    	   logger.info("---> memberObj.getId()"+memberObj.getId());
@@ -216,12 +207,41 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			if (resourceResolver != null) {
 				resourceResolver.close();
 			}
-			
-            }
+		}
 			
 
 		logger.info("ExternalUserCreationWorkflowProcess :: exceute method end");
 
 	
 }
+
+	/**
+	 * Set Expiry date for existing user
+	 *
+	 * @param email
+	 * @param expiryDate
+	 * @param userManager
+	 * @param valueFactory
+	 * @return
+	 * @throws javax.jcr.RepositoryException
+	 * @throws ParseException
+	 */
+	protected User setExpiryDateExistingUser(String email, String expiryDate, UserManager userManager,
+			ValueFactory valueFactory) throws javax.jcr.RepositoryException, ParseException {
+		User user;
+		user=(User)userManager.getAuthorizable(email);
+		if(user.getProperty("./profile/expiry")!=null){
+			String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
+			String newExpiryDate = expiryDate.substring(0,10);
+			Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
+			Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
+
+			if (start.compareTo(end) < 0){
+				Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
+				user.setProperty("./profile/expiry", expiryDateValue);
+			}
+
+	 }
+		return user;
+	}
 }
