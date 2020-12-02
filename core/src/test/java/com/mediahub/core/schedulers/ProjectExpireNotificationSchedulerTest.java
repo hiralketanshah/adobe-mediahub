@@ -214,8 +214,8 @@ public class ProjectExpireNotificationSchedulerTest {
             when(resource.adaptTo(Project.class)).thenReturn(project);
 
             when(resolver.getResource(PROJECT_PATH)).thenReturn(resource);
-            when(resource.adaptTo(Node.class)).thenReturn(node);
-            when(node.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property1);
+            when(resource.adaptTo(Node.class)).thenReturn(node1);
+            when(node1.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property1);
             when(property1.getValue()).thenReturn(value1);
             when(value1.getString()).thenReturn("projects-projectoct21-owner");
 
