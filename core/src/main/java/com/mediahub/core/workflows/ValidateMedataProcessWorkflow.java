@@ -50,7 +50,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
      */
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap args) throws WorkflowException {
-
+      
       if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
         throw new WorkflowException("Impossible de recupérer le PayLoad");
       }
@@ -97,7 +97,10 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
                   sb.append(String.join(", ", missedFolderMetaData));
                 }
                 log.error("Missing Fields : {}", sb);
+                workItem.getNode().setTitle( sb.toString());
+                workItem.getNode().setDescription(sb.toString());
                 throw new WorkflowException(String.format("Missing Metadata Fields : %s", sb.toString()));
+
               }
           } catch (LoginException e) {
               throw new WorkflowException("Login exception", e);
