@@ -81,15 +81,16 @@ private final Logger log = LoggerFactory.getLogger(getClass());
             JackrabbitSession js = (JackrabbitSession) adminSession;
             PrincipalManager principalMgr = js.getPrincipalManager();
             Principal groupEditorPrincipal = principalMgr
-                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EDITOR);
+                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EDITOR).getString());
             Principal groupObserverPrincipal = principalMgr
-                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OBSERVER);
+                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OBSERVER).getString());
             Principal groupOwnerPrincipal = principalMgr
-                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_OWNER);
+                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OWNER).getString());
             Principal groupOwnerProjectPublisher = principalMgr
-                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_PROJECTPUBLISHER);
+                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER).getString());
             Principal groupExternalContribPrincipal = principalMgr
-                    .getPrincipal("projects-"+projectPath.substring(index)+MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR);
+                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+           
             principalNameList.add(groupEditorPrincipal);
             principalNameList.add(groupObserverPrincipal);
             principalNameList.add(groupOwnerPrincipal);
