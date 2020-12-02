@@ -8,7 +8,7 @@
     title="Mediahub - External publish">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/mediahub/mediahub---external-publish/jcr:content"
-        cq:lastModified="{Long}1606311591804"
+        cq:lastModified="{Long}1606824852541"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"/>
     <nodes jcr:primaryType="nt:unstructured">
@@ -19,6 +19,24 @@
             <metaData jcr:primaryType="nt:unstructured"/>
         </node0>
         <node1
+            jcr:primaryType="cq:WorkflowNode"
+            title="Validation metadata"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.mediahub.core.workflows.ValidateMedataProcessWorkflow"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node1>
+        <node2
+            jcr:primaryType="cq:WorkflowNode"
+            title="Move asset to medialibrary"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.mediahub.core.workflows.MoveAssetsProcessWorkflow"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node2>
+        <node3
             jcr:primaryType="cq:WorkflowNode"
             description="Processes assets for use with Dynamic Media Image Services"
             title="Dynamic Media Process Image Assets"
@@ -32,8 +50,8 @@
                 PROCESS_AUTO_ADVANCE="true"
                 QUALITY="90"
                 WIDTH="1280"/>
-        </node1>
-        <node2
+        </node3>
+        <node4
             jcr:primaryType="cq:WorkflowNode"
             description="Upload assets to configured remote Scene7 service for Dynamic Media delivery"
             title="Scene7"
@@ -45,13 +63,13 @@
                 period="30"
                 PROCESS_AUTO_ADVANCE="true"
                 timeout="3600"/>
-        </node2>
-        <node3
+        </node4>
+        <node5
             jcr:primaryType="cq:WorkflowNode"
             title="End"
             type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node3>
+        </node5>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -71,8 +89,22 @@
         <node2_x0023_node3
             jcr:primaryType="cq:WorkflowTransition"
             from="node2"
+            rule=""
             to="node3">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node2_x0023_node3>
+        <node3_x0023_node4
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node3"
+            rule=""
+            to="node4">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node3_x0023_node4>
+        <node4_x0023_node5
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node4"
+            to="node5">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node4_x0023_node5>
     </transitions>
 </jcr:root>

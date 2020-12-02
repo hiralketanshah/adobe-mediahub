@@ -3,8 +3,8 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:designPath="/libs/settings/wcm/designs/default"
-        cq:lastModified="{Date}2020-11-24T09:50:08.206Z"
-        cq:lastModifiedBy="arnaud-test"
+        cq:lastModified="{Date}2020-12-01T13:14:10.132+01:00"
+        cq:lastModifiedBy="admin"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:primaryType="cq:PageContent"
         jcr:title="Mediahub - External publish"
@@ -12,6 +12,32 @@
         <flow
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
+            <process_copy_1764040
+                jcr:created="{Date}2020-11-25T14:56:30.887+01:00"
+                jcr:createdBy="admin"
+                jcr:lastModified="{Date}2020-12-01T10:31:31.623+01:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Validation metadata"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.mediahub.core.workflows.ValidateMedataProcessWorkflow"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process_copy_1764040>
+            <process_copy_copy
+                jcr:created="{Date}2020-11-25T14:19:00.460+01:00"
+                jcr:createdBy="admin"
+                jcr:lastModified="{Date}2020-12-01T10:31:10.583+01:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Move asset to medialibrary"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.mediahub.core.workflows.MoveAssetsProcessWorkflow"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process_copy_copy>
             <dmimageprocess_copy
                 jcr:created="{Date}2015-09-28T17:50:46.962-07:00"
                 jcr:createdBy="admin"
