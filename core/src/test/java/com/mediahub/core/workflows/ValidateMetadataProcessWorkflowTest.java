@@ -88,9 +88,6 @@ public class ValidateMetadataProcessWorkflowTest {
   @Mock
   Payload payload;
 
-  /*@Mock
-  ArrayList<String> missedMetaData;*/
-
   final Map<String, Object> authInfo = Collections
       .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
@@ -103,7 +100,6 @@ public class ValidateMetadataProcessWorkflowTest {
   @Test
   public void execute() throws Exception {
 
-    when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.isLive()).thenReturn(Boolean.TRUE);
