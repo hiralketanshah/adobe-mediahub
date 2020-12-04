@@ -26,6 +26,8 @@
         <coral-icon data-sly-test="${!photoPath && !systemUser}" icon="user" size="M"></coral-icon>
     </td>
     <td is="coral-table-cell" class="${user.disabled? 'disabled-user':''}">${user.name}</td>
+    <td is="coral-table-cell">${user.type}</td>
+    <td is="coral-table-cell">${user.expiry}</td>
     <td is="coral-table-cell" class="${user.disabled? 'disabled-user':''}">${user.id}</td>
     <td data-sly-test.enabled="${! user.disabled}" is="coral-table-cell" class="disabled-user">${'Enabled' @ i18n}</td>
     <td data-sly-test="${!enabled}" is="coral-table-cell">${'Disabled' @ i18n}</td>
@@ -38,8 +40,6 @@
         <span class="user">${user.lastPublishedBy}</span>
     </td>
     <td data-sly-test="${! lastPublished}" is="coral-table-cell" class="published-column">${'Not Published' @ i18n}</td>
-    <td is="coral-table-cell">${user.type}</td>
-    <td is="coral-table-cell">${user.expiry}</td>
-    <td is="coral-table-cell">${user.country}</td>
     <td is="coral-table-cell">${user.department}</td>
+    <td is="coral-table-cell">${user.country}</td>
 </tr>

@@ -107,6 +107,14 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Name"
                     sortable="{Boolean}true"/>
+                <type
+                  jcr:primaryType="nt:unstructured"
+                  jcr:title="Type"
+                  sortable="{Boolean}true"/>
+                <expiryDate
+                  jcr:primaryType="nt:unstructured"
+                  jcr:title="Expiry Date"
+                  sortable="{Boolean}true"/>
                 <loginName
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Login Name"
@@ -124,6 +132,14 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Published"
                     sortable="{Boolean}true"/>
+                <department
+                  jcr:primaryType="nt:unstructured"
+                  jcr:title="Department"
+                  sortable="{Boolean}true"/>
+                <country
+                  jcr:primaryType="nt:unstructured"
+                  jcr:title="Country"
+                  sortable="{Boolean}true"/>
             </columns>
             <datasource
                 jcr:primaryType="nt:unstructured"
