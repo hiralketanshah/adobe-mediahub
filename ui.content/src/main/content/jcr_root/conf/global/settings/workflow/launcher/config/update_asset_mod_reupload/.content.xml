@@ -5,7 +5,7 @@
     conditions="[dam:scene7FileStatus==NeedsReupload]"
     description="Update Asset - Modification / Reupload"
     disabledFeatures="[com.adobe.dam.asset.nui.feature.flag]"
-    enabled="{Boolean}true"
+    enabled="{Boolean}false"
     eventType="{Long}16"
     excludeList=""
     features="[]"

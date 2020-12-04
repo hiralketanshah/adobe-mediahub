@@ -229,15 +229,10 @@
                                                                     sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                     expression="${requestPathInfo.suffix == null}"/>
                                                             </re-password>
-                                                            <email
-                                                                granite:class="email"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Email"
-                                                                name="./profile/email"/>
                                                             <title
                                                                 granite:class="title"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Title"
                                                                 name="./profile/title"/>
@@ -253,9 +248,40 @@
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Last Name"
                                                                 name="./profile/familyName"/>
+                                                            <email
+                                                                granite:class="email"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                fieldLabel="Email"
+                                                                name="./profile/email"/>
+                                                            <type
+                                                                granite:class="Type"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                fieldLabel="Type"
+                                                                name="./profile/type">
+                                                                <datasource
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="acs-commons/components/utilities/genericlist/datasource"
+                                                                    path="/etc/acs-commons/lists/user-type"/>
+                                                            </type>
+                                                            <expiryDate
+                                                                granite:class="date"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                                                fieldLabel="Expiry Date"
+                                                                name="./profile/expiry"
+                                                                valueFormat="YYYY/MM/DD"/>
+                                                            <Department
+                                                                granite:class="job-title"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                fieldLabel="Department"
+                                                                name="./profile/department"/>
                                                             <gender
                                                                 granite:class="gender"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/select"
                                                                 fieldLabel="Gender"
                                                                 name="./profile/gender">
@@ -277,6 +303,7 @@
                                                             <phone
                                                                 granite:class="phone"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Phone Number"
                                                                 name="./profile/phoneNumber"/>
@@ -289,12 +316,14 @@
                                                             <about
                                                                 granite:class="about"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
                                                                 fieldLabel="About"
                                                                 name="./profile/aboutMe"/>
                                                             <street
                                                                 granite:class="street"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Street"
                                                                 name="./profile/street"/>
@@ -307,6 +336,7 @@
                                                             <postalCode
                                                                 granite:class="postal-code"
                                                                 jcr:primaryType="nt:unstructured"
+                                                                sling:hideResource="{Boolean}true"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Postal Code"
                                                                 name="./profile/postalCode"/>
