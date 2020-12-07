@@ -175,18 +175,43 @@
 
                           dialog.on('change', '#agree', function() {
                               if (!document.querySelector('#agree').checked) {
-                                document.getElementById("acceptButton").disabled = true;
+                                document.getElementById("nextButton").disabled = true;
                               }
                               else {
-                                document.getElementById("acceptButton").disabled = false;
+                                document.getElementById("nextButton").disabled = false;
                               }
                               showTerms=false;
                           });
 
-                          dialog.on('click', '#acceptButton', function() {
+                          dialog.on('click', '#nextButton', function() {
                            if (document.querySelector('#agree').checked) {
                               dialog.hide();
-                              document.getElementById("login").submit();
+                              var secondDialog = showSecondDialog();
+                              secondDialog.show();
+
+                              secondDialog.on('change', '#agree', function() {
+                                  if (!document.querySelector('#agree').checked) {
+                                    document.getElementById("acceptButton").disabled = true;
+                                  }
+                                  else {
+                                    document.getElementById("acceptButton").disabled = false;
+                                  }
+                                  showTerms=false;
+                              });
+
+
+                              secondDialog.on('click', '#acceptButton', function() {
+                               if (document.querySelector('#agree').checked) {
+                                  secondDialog.hide();
+                                  document.getElementById("login").submit();
+                                }
+
+                              });
+                              secondDialog.on('click', '#prevButton', function() {
+                                secondDialog.hide();
+                                dialog = showDialog();
+                              });
+
                             }
 
                           });
