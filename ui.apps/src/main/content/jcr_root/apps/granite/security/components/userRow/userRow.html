@@ -1,0 +1,45 @@
+<!--/*
+
+  ADOBE CONFIDENTIAL
+  __________________
+
+   Copyright 2016 Adobe Systems Incorporated
+   All Rights Reserved.
+
+  NOTICE:  All information contained herein is, and remains
+  the property of Adobe Systems Incorporated and its suppliers,
+  if any.  The intellectual and technical concepts contained
+  herein are proprietary to Adobe Systems Incorporated and its
+  suppliers and are protected by trade secret or copyright law.
+  Dissemination of this information or reproduction of this material
+  is strictly forbidden unless prior written permission is obtained
+  from Adobe Systems Incorporated.
+*/-->
+<tr data-sly-use.user="${'com.mediahub.core.models.UserModel'}" is="coral-table-row" class="foundation-collection-item foundation-collection-navigator authorizable-column"
+        data-foundation-collection-item-id="${user.homePath}"
+        data-granite-collection-item-id="${user.homePath}"
+        data-foundation-collection-navigator-href="${request.contextPath}/libs/granite/security/content/v2/usereditor.html${user.homePath}"
+        data-home="${user.homePath}">
+    <td is="coral-table-cell" class="${user.disabled? 'disabled-user':''}" coral-table-rowselect>
+        <img data-sly-test.photoPath="${user.photoPath}" src="${user.photoPath}.thumb.48.48.png"/>
+        <coral-icon data-sly-test.systemUser="${user.systemUser}" icon="gears" size="M"></coral-icon>
+        <coral-icon data-sly-test="${!photoPath && !systemUser}" icon="user" size="M"></coral-icon>
+    </td>
+    <td is="coral-table-cell" class="${user.disabled? 'disabled-user':''}">${user.name}</td>
+    <td is="coral-table-cell">${user.type}</td>
+    <td is="coral-table-cell">${user.expiry}</td>
+    <td is="coral-table-cell" class="${user.disabled? 'disabled-user':''}">${user.id}</td>
+    <td data-sly-test.enabled="${! user.disabled}" is="coral-table-cell" class="disabled-user">${'Enabled' @ i18n}</td>
+    <td data-sly-test="${!enabled}" is="coral-table-cell">${'Disabled' @ i18n}</td>
+    <td data-sly-test.isJobTitle="${user.jobTitle != null}" is="coral-table-cell">${user.jobTitle}</td>
+    <td data-sly-test="${! isJobTitle}" is="coral-table-cell">${'N/A' @ i18n}</td>
+    <td data-sly-test.lastPublished="${user.lastPublished}" is="coral-table-cell" class="published-column">
+        <span class="date">
+            <foundation-time value="${user.lastPublished}" format="short" type="datetime"></foundation-time> 
+        </span>
+        <span class="user">${user.lastPublishedBy}</span>
+    </td>
+    <td data-sly-test="${! lastPublished}" is="coral-table-cell" class="published-column">${'Not Published' @ i18n}</td>
+    <td is="coral-table-cell">${user.department}</td>
+    <td is="coral-table-cell">${user.country}</td>
+</tr>

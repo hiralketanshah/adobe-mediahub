@@ -8,13 +8,20 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.constants.MediahubConstants;
+import com.mediahub.core.utils.CreatePolicyNodeUtil;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -29,8 +36,8 @@ import org.slf4j.LoggerFactory;
 @Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : MOVE ASSET BEFORE PUBLISH"})
 public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
+    public static final String CONTENT_DAM_PROJECTS = "/content/dam/projects/";
     private static final Logger log = LoggerFactory.getLogger(MoveAssetsProcessWorkflow.class);
-
 
     @Reference
     ResourceResolverFactory resolverFactory;
@@ -59,22 +66,22 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             log.info("payloadPath : {}",payloadPath);
             Resource payload = resourceResolver.getResource(payloadPath);
+
+            if(payload == null){
+                return;
+            }
             Resource media = findMediaFolderPath(resourceResolver, payloadPath);
+
+            String projectDamPath = StringUtils.EMPTY;
             // Get the project associated
             // Get the target PATH
             // Copy the folder / asset and subnodes
             if(StringUtils.contains(payload.getPath(),"/dam/projects/")){
 
-                Resource project = null;
-                if(media != null){
-                    project = resourceResolver.getResource(StringUtils.replace(media.getParent().getPath(),"/dam",StringUtils.EMPTY));
-                } else {
-                    project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(),"/dam",StringUtils.EMPTY));
-                }
-
+                Resource project = getProjectResource(resourceResolver, payload, media);
 
                 if(project != null && (project.getChild(JcrConstants.JCR_CONTENT) != null)){
-                    String projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
+                    projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
                     // Due to UUID Issue using session.move instead or resolver.move
                     Resource damPath = resourceResolver.getResource(projectDamPath);
                     String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
@@ -85,6 +92,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                 }
             }
 
+            copyRepolicyNode(resourceResolver, session, payload, projectDamPath);
 
             session.save();
             resourceResolver.commit();
@@ -101,6 +109,79 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();
             }
+        }
+    }
+
+
+    /**
+     * Get Project Resource
+     *
+     * @param resourceResolver
+     * @param payload
+     * @param media
+     * @return
+     */
+    protected Resource getProjectResource(ResourceResolver resourceResolver, Resource payload,
+        Resource media) {
+        Resource project;
+        if(media != null){
+            project = resourceResolver.getResource(
+                StringUtils.replace(media.getParent().getPath(),"/dam",StringUtils.EMPTY));
+        } else {
+            project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(),"/dam",StringUtils.EMPTY));
+        }
+        return project;
+    }
+
+    /**
+     * copy rep:policy node while moving asset
+     *
+     * @param resourceResolver - Resource Resolver from Service User
+     * @param session - admin session
+     * @param payload - payload Resource
+     * @param projectDamPath - dam path
+     * @throws PersistenceException
+     * @throws RepositoryException
+     */
+    protected void copyRepolicyNode(ResourceResolver resourceResolver, Session session,
+        Resource payload, String projectDamPath)
+        throws PersistenceException, RepositoryException {
+        if(StringUtils.contains(payload.getPath(), CONTENT_DAM_PROJECTS) && StringUtils.isNotBlank(projectDamPath)){
+            String projectName = StringUtils.replace(payload.getPath(),CONTENT_DAM_PROJECTS,StringUtils.EMPTY).split("/")[0];
+            String projectPath = CONTENT_DAM_PROJECTS + projectName;
+
+            Resource destination = resourceResolver.getResource(projectDamPath);
+
+            Resource policy;
+            if(destination.getChild(MediahubConstants.REP_POLICY) != null){
+                policy = destination.getChild(MediahubConstants.REP_POLICY);
+            } else {
+                policy = resourceResolver.create(destination, MediahubConstants.REP_POLICY, Collections
+                    .singletonMap(JcrConstants.JCR_PRIMARYTYPE, MediahubConstants.REP_ACL));
+            }
+
+            resourceResolver.commit();
+            Iterator<Resource> resources = resourceResolver.getResource(projectPath + "/" + MediahubConstants.REP_POLICY).listChildren();
+
+            JackrabbitSession js = (JackrabbitSession) session;
+            PrincipalManager principalMgr = js.getPrincipalManager();
+            List<Principal> principalNameList = new LinkedList<>();
+
+            while(resources.hasNext()){
+                Resource child = resources.next();
+
+                if(StringUtils.contains(child.getName(), "allow") && StringUtils.contains(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"projects-") && policy.getChild(child.getName()) == null){
+                    Principal principal = principalMgr.getPrincipal(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,""));
+                    principalNameList.add(principal);
+                }
+            }
+
+            CreatePolicyNodeUtil
+                .creatrepPolicyeNodes(session, policy.getParent().getPath(), principalNameList);
+        }
+
+        if(resourceResolver.hasChanges()){
+            resourceResolver.commit();
         }
     }
 
