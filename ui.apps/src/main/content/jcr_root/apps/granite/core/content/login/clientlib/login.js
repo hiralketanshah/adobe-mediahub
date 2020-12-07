@@ -189,14 +189,14 @@
                               var secondDialog = showSecondDialog();
                               secondDialog.show();
 
-                              secondDialog.on('change', '#agree', function() {
-                                  if (!document.querySelector('#agree').checked) {
-                                    document.getElementById("acceptButton").disabled = true;
+                              var container = document.querySelector('#terms');
+
+                              container.addEventListener('change', function(event) {
+                                  if (event.target.value === 'agree'){
+                                      document.getElementById("acceptButton").disabled = false;
+                                  } else {
+                                      document.getElementById("acceptButton").disabled = true;
                                   }
-                                  else {
-                                    document.getElementById("acceptButton").disabled = false;
-                                  }
-                                  showTerms=false;
                               });
 
 

@@ -630,7 +630,7 @@ login
 
 <coral-dialog id="popupDialog">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
-  <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox><div id="terms"></div> </coral-dialog-content>
+  <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox> </coral-dialog-content>
   <coral-dialog-footer>
     <button id="cancelButton" is="coral-button" variant="secondary"> <%= i18n.get("Cancel") %></button>
     <button id="nextButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Next")%> </button>
@@ -639,9 +639,13 @@ login
 <coral-dialog id="agreeDialog">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
   <coral-dialog-content>
-    <p> <%= i18n.get("login content") %> </p>
-    <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox>
-    <div id="terms"></div>
+    <p> <%= i18n.get("second login content") %> </p>
+
+    <div id="terms">
+        <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="radioValueOne" labelledby="label-aligned-radiogroup-1"><%=i18n.get("secret or confidential")%></coral-radio>
+        <br>
+        <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="agree" labelledby="label-aligned-radiogroup-1"><%=i18n.get("Restricted or Public")%></coral-radio>
+    </div>
   </coral-dialog-content>
   <coral-dialog-footer>
     <button id="prevButton" is="coral-button" variant="secondary"> <%= i18n.get("Previous") %></button>
