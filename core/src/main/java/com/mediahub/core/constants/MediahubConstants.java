@@ -33,7 +33,7 @@ public class MediahubConstants {
   public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
   public static final String SLING_RESOURCETYPE ="sling:resourceType";
   public static final String PROJECT_RESOURCE ="cq/gui/components/projects/admin/card/projectcontent";
-  public static final String JCR_CONTENT ="jcr:title";
+  public static final String JCR_TITLE ="jcr:title";
   public static final String PROJECT_DUEDATE ="project.dueDate";
   public static final String PEOFILE_EMAIL ="profile/email";
   public static final String PROFILE_GIVEN_NAME ="profile/givenName";
