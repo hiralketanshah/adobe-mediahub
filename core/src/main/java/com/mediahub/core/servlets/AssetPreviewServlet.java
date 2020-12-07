@@ -72,7 +72,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("<head><title>" + titleNode.getProperty(MediahubConstants.JCR_TITLE).getString()
                         + "</title></head>");
                 out.println("<body>");
-                out.println("<img src=" + contentPath + " style=\"width:100%; height:auto;\" >");
+                out.println("<img src=" + contentPath + " style=\"width:100%; height:100%;\" >");
                 out.println("</img>");
                 out.println("</body></html>");
                 out.flush();
@@ -82,7 +82,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("<head><title>" + titleNode.getProperty(MediahubConstants.JCR_TITLE).getString()
                         + "</title></head>");
                 out.println("<body>");
-                out.println("<video  style=\"width:100%; height:auto;\" controls>");
+                out.println("<video  style=\"width:100%; height:100%;\" controls>");
                 out.println("<source src=" + contentPath + ">");
                 out.println("</video>");
                 out.println("</body></html>");
