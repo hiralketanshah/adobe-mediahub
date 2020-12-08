@@ -55,6 +55,13 @@
     "http://www.adobe.com/",
 
   "An Adobe Experience Cloud solution: All the tools you need to solve these complex digital business challenges.":
-    "Une solution Adobe Experience Cloud : tous les outils dont vous avez besoin pour relever ces défis complexes liés aux activités de la sphère numérique."
+    "Une solution Adobe Experience Cloud : tous les outils dont vous avez besoin pour relever ces défis complexes liés aux activités de la sphère numérique.",
+
+  "secret or confidential" : "secret ou confidentiel",
+
+  "Restricted or Public" : "Restreinte ou Publique",
+
+  "second login content":
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit. <br> <a href='#'> Link 1</a> <br> <a href='#'> Link 2</a>"
 
 }
