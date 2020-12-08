@@ -46,6 +46,14 @@
     "Password must contain between 8 and 16 characters, with at least one numerical digit, one lowercase letter, one UPPERCASE letter, and one special character (for example : # ; + ! -)",
 
   "http://www.adobe.com/go/marketingcloud_learn_more":
-    "http://www.adobe.com/"
+    "http://www.adobe.com/",
+
+  "secret or confidential" : "secret or confidential",
+
+  "Restricted or Public" : "Restricted or Public",
+
+  "second login content":
+  "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit.</p> <br> <a href='#'> Link 1</a> <br> <a href='#'> Link 2</a>"
+
 
 }
