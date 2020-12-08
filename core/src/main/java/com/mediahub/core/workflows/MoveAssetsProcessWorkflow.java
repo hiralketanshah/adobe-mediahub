@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
@@ -152,13 +153,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
             Resource destination = resourceResolver.getResource(projectDamPath);
 
-            Resource policy;
-            if(destination.getChild(MediahubConstants.REP_POLICY) != null){
-                policy = destination.getChild(MediahubConstants.REP_POLICY);
-            } else {
-                policy = resourceResolver.create(destination, MediahubConstants.REP_POLICY, Collections
-                    .singletonMap(JcrConstants.JCR_PRIMARYTYPE, MediahubConstants.REP_ACL));
-            }
+            Resource policy = checkRepolicyExists(resourceResolver, destination);
 
             resourceResolver.commit();
             Iterator<Resource> resources = resourceResolver.getResource(projectPath + "/" + MediahubConstants.REP_POLICY).listChildren();
@@ -169,8 +164,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
             while(resources.hasNext()){
                 Resource child = resources.next();
-
-                if(StringUtils.contains(child.getName(), "allow") && StringUtils.contains(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"projects-") && policy.getChild(child.getName()) == null){
+                if(StringUtils.contains(child.getName(), "allow") && StringUtils.startsWith(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"projects-") && StringUtils.endsWith(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"-publisher") && policy.getChild(child.getName()) == null){
                     Principal principal = principalMgr.getPrincipal(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,""));
                     principalNameList.add(principal);
                 }
@@ -183,6 +177,32 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         if(resourceResolver.hasChanges()){
             resourceResolver.commit();
         }
+    }
+
+    /**
+     * @param resourceResolver
+     * @param destination
+     * @return
+     * @throws RepositoryException
+     * @throws PersistenceException
+     */
+    protected Resource checkRepolicyExists(ResourceResolver resourceResolver, Resource destination) throws RepositoryException, PersistenceException {
+        Resource policy = null;
+        if(destination != null){
+            if(!destination.getValueMap().containsKey(JcrConstants.JCR_MIXINTYPES)){
+                Node destinationNode = destination.adaptTo(Node.class);
+                destinationNode.addMixin("rep:AccessControllable");
+                destinationNode.getSession().save();
+            }
+
+            if(destination.getChild(MediahubConstants.REP_POLICY) != null){
+                policy = destination.getChild(MediahubConstants.REP_POLICY);
+            } else {
+                policy = resourceResolver.create(destination, MediahubConstants.REP_POLICY, Collections
+                    .singletonMap(JcrConstants.JCR_PRIMARYTYPE, MediahubConstants.REP_ACL));
+            }
+        }
+        return policy;
     }
 
     /**
@@ -233,7 +253,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         if(media.hasChildren()){
             Iterator<Resource> children = media.listChildren();
             while(children.hasNext()){
-                if(!StringUtils.equals(JcrConstants.JCR_CONTENT,children.next().getName())){
+                if(!StringUtils.equals(JcrConstants.JCR_CONTENT,children.next().getName()) || !StringUtils.equals("rep:policy",children.next().getName())){
                     return Boolean.FALSE;
                 }
             }

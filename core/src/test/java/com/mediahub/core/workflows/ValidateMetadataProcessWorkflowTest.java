@@ -13,6 +13,7 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
+import com.adobe.granite.workflow.model.WorkflowNode;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
@@ -24,7 +25,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.jcr.Node;
 import javax.jcr.Session;
+import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -88,6 +91,9 @@ public class ValidateMetadataProcessWorkflowTest {
   @Mock
   Payload payload;
 
+  @Mock
+  WorkflowNode node;
+
   final Map<String, Object> authInfo = Collections
       .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
@@ -118,6 +124,8 @@ public class ValidateMetadataProcessWorkflowTest {
 
     List<String> missedMetaData = new ArrayList<>();
     missedMetaData.add(JcrConstants.JCR_TITLE);
+    when(workItem.getNode()).thenReturn(node);
+    when(map.get("bnpp-status", StringUtils.EMPTY)).thenReturn("validated");
 
     when(workflowProcessMock.checkMissingMetadata(any(), any(), any(), any(), any())).thenReturn(missedMetaData);
 
@@ -141,7 +149,6 @@ public class ValidateMetadataProcessWorkflowTest {
     when(resource.getParent()).thenReturn(resource);
     ValueMap map = mock(ValueMap.class);
     when(resource.getValueMap()).thenReturn(map);
-    when(map.get(any(),any())).thenReturn("");
 
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }

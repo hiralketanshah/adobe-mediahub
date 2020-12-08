@@ -64,7 +64,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
               log.info("payloadPath : {}", payloadPath);
               Resource resource = resourceResolver.getResource(payloadPath);
 
-              if(resource.getChild(JcrConstants.JCR_CONTENT) == null){
+              if(resource == null || resource.getChild(JcrConstants.JCR_CONTENT) == null){
                 log.error("The asset Does not has any jcr:content Node. Hence no use in validation");
                 return;
               }
@@ -75,11 +75,14 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
                 String matadataSchemaPath = folderContentResource.getValueMap().get(BnpConstants.METADATA_SCHEMA, StringUtils.EMPTY);
                 missedAssetMetaData = checkMissingMetadata(resourceResolver, missedAssetMetaData, resource, metadataResource, matadataSchemaPath);
 
+
+
                 //Validation Folder Metadata
                 if(folderContentResource.getChild(BnpConstants.METADATA) != null){
                   Resource folderMetadataResource = folderContentResource.getChild(BnpConstants.METADATA);
                   String foldermetadataSchemaPath = folderContentResource.getValueMap().get(BnpConstants.FOLDER_METADATA_SCHEMA, StringUtils.EMPTY);
                   missedFolderMetaData = checkMissingMetadata(resourceResolver, missedFolderMetaData, resource.getParent(), folderMetadataResource, foldermetadataSchemaPath);
+                  isAssetProcessed(workItem, folderMetadataResource);
                 }
               }
 
@@ -111,6 +114,22 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
           }
 
     }
+
+  /**
+   * @param workItem
+   * @param metadataResource
+   * @throws WorkflowException
+   */
+  protected void isAssetProcessed(WorkItem workItem, Resource metadataResource)
+      throws WorkflowException {
+    if (metadataResource != null){
+      if(!StringUtils.equals(metadataResource.getValueMap().get("bnpp-status", StringUtils.EMPTY), "validated")){
+        workItem.getNode().setTitle("Asset not Validated");
+        workItem.getNode().setDescription("property bnpp-status is not validated");
+        throw new WorkflowException("Asset not Validated");
+      }
+    }
+  }
 
   /**
    *
