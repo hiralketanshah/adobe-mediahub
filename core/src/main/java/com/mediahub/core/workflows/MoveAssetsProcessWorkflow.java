@@ -85,6 +85,8 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     projectDamPath = project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", StringUtils.EMPTY);
                     // Due to UUID Issue using session.move instead or resolver.move
                     Resource damPath = resourceResolver.getResource(projectDamPath);
+
+                    copyRepolicyNode(resourceResolver, session, payload, projectDamPath);
                     String newPath = moveProjectDamAsset(resourceResolver, session, payload, media, projectDamPath,
                         damPath);
                     if(StringUtils.isNotBlank(newPath)){
@@ -92,9 +94,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     }
                 }
             }
-
-            copyRepolicyNode(resourceResolver, session, payload, projectDamPath);
-
+            
             session.save();
             resourceResolver.commit();
 
@@ -148,13 +148,9 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         Resource payload, String projectDamPath)
         throws PersistenceException, RepositoryException {
         if(StringUtils.contains(payload.getPath(), CONTENT_DAM_PROJECTS) && StringUtils.isNotBlank(projectDamPath)){
-            String projectName = StringUtils.replace(payload.getPath(),CONTENT_DAM_PROJECTS,StringUtils.EMPTY).split("/")[0];
-            String projectPath = CONTENT_DAM_PROJECTS + projectName;
-
+            String projectPath = getDamProjectPath(resourceResolver, payload);
             Resource destination = resourceResolver.getResource(projectDamPath);
-
             Resource policy = checkRepolicyExists(resourceResolver, destination);
-
             resourceResolver.commit();
             Iterator<Resource> resources = resourceResolver.getResource(projectPath + "/" + MediahubConstants.REP_POLICY).listChildren();
 
@@ -170,13 +166,28 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                 }
             }
 
-            CreatePolicyNodeUtil
-                .creatrepPolicyeNodes(session, policy.getParent().getPath(), principalNameList);
+            if(policy != null &&  policy.getParent() != null){
+                CreatePolicyNodeUtil
+                    .creatrepPolicyeNodes(session, policy.getParent().getPath(), principalNameList);
+            }
         }
 
         if(resourceResolver.hasChanges()){
             resourceResolver.commit();
         }
+    }
+
+    private String getDamProjectPath(ResourceResolver resourceResolver, Resource payload) {
+        Resource payloadResource = resourceResolver.getResource(payload.getPath());
+        if(payloadResource != null){
+            while(payloadResource.getParent() != null){
+                if(payloadResource.getValueMap().containsKey("projectPath")){
+                    return payloadResource.getPath();
+                }
+                payloadResource = payloadResource.getParent();
+            }
+        }
+        return StringUtils.EMPTY;
     }
 
     /**

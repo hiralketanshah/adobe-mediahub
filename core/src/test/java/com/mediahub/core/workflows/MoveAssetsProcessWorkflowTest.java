@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
+import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -84,6 +86,12 @@ public class MoveAssetsProcessWorkflowTest {
   @Mock
   Set<String> set;
 
+  @Mock
+  Node node;
+
+  @Mock
+  JackrabbitSession js;
+
   final Map<String, Object> authInfo = Collections
       .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
@@ -129,7 +137,7 @@ public class MoveAssetsProcessWorkflowTest {
 
 
     when(workflowData.getPayload()).thenReturn(payload);
-    when(resource.getPath()).thenReturn("/dam/projects/");
+    when(resource.getPath()).thenReturn("/content/dam/projects/");
     doNothing().when(resolver).close();
 
     ValueMap map = mock(ValueMap.class);
@@ -204,6 +212,31 @@ public class MoveAssetsProcessWorkflowTest {
     when(resource.getPath()).thenReturn("");
     String path = workflowProcess.moveProjectDamAsset(resolver, session, resource, resource, "", resource);
     assertEquals(newPath, path);
+  }
+
+  @Test
+  public void getProjectResource() throws LoginException {
+    workflowProcess.resolverFactory = resolverFactory;
+    when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+    when(resolver.getResource(any())).thenReturn(resource);
+    when(resource.getParent()).thenReturn(resource);
+    when(resource.getPath()).thenReturn("/content/dam/projects/");
+    assertEquals(resource, workflowProcess.getProjectResource(resolver, resource, resource));
+  }
+
+  @Test
+  public void copyRepolicyNode() throws RepositoryException, PersistenceException {
+
+    when(resource.getPath()).thenReturn("/content/dam/projects/");
+    when(resolver.getResource(any())).thenReturn(resource);
+    when(resource.listChildren()).thenReturn(iterator);
+    ValueMap map = mock(ValueMap.class);
+    when(resource.getValueMap()).thenReturn(map);
+    when(map.containsKey(JcrConstants.JCR_MIXINTYPES)).thenReturn(true);
+    doNothing().when(node).addMixin("rep:AccessControllable");
+    when(node.getSession()).thenReturn(js);
+    doNothing().when(session).save();
+    workflowProcess.copyRepolicyNode(resolver, js, resource, "/content/dam/projects/");
   }
 
 }
