@@ -104,7 +104,7 @@ public class MoveAssetsProcessWorkflowTest {
 
   @Test
   public void executeLoginException() throws Exception {
-    workflowProcess.resolverFactory = resolverFactory;
+    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenThrow(new LoginException());
     when(resolver.isLive()).thenReturn(Boolean.TRUE);
@@ -116,7 +116,7 @@ public class MoveAssetsProcessWorkflowTest {
 
   @Test
   public void execute() throws Exception {
-    workflowProcess.resolverFactory = resolverFactory;
+    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.adaptTo(Session.class)).thenReturn(session);
@@ -164,7 +164,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void findMediaFolder() throws LoginException {
     String payloadPath = "";
-    workflowProcess.resolverFactory = resolverFactory;
+    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.getResource(any())).thenReturn(resource);
     when(resource.getParent()).thenReturn(resource);
@@ -175,7 +175,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void findMediaFolderWithBnppMedia() throws LoginException {
     String payloadPath = "";
-    workflowProcess.resolverFactory = resolverFactory;
+    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.getResource(any())).thenReturn(resource);
     when(resource.getParent()).thenReturn(resource);
@@ -192,7 +192,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void moveProjectDamAsset() throws LoginException, RepositoryException, PersistenceException {
     String newPath = "/";
-    workflowProcess.resolverFactory = resolverFactory;
+    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.create(any(), any(), any())).thenReturn(resource);
     doNothing().when(resolver).commit();

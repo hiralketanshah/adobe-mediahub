@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
 
 /**
@@ -44,7 +43,7 @@ import com.mediahub.core.utils.CreatePolicyNodeUtil;
 immediate = true,
 property = {
     EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED  ,
-    EventConstants.EVENT_FILTER +  "=(path="+MediahubConstants.AEM_PROJECTS_PATH+"/*)"
+    EventConstants.EVENT_FILTER +  "=(path="+BnpConstants.AEM_PROJECTS_PATH+"/*)"
 })
 @ServiceDescription("listen on changes in the resource tree")
 public class ProjectsResourceListener implements EventHandler {
@@ -71,7 +70,6 @@ private final Logger log = LoggerFactory.getLogger(getClass());
         adminSession = adminResolver.adaptTo(Session.class);
         String projectPath = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
         log.info("Path : {}", projectPath);
-        int index = projectPath.lastIndexOf("/");
         if("cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
         
             Resource adminResource = adminResolver.getResource(projectPath);
@@ -81,15 +79,15 @@ private final Logger log = LoggerFactory.getLogger(getClass());
             JackrabbitSession js = (JackrabbitSession) adminSession;
             PrincipalManager principalMgr = js.getPrincipalManager();
             Principal groupEditorPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EDITOR).getString());
+                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
             Principal groupObserverPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OBSERVER).getString());
+                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
             Principal groupOwnerPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_OWNER).getString());
+                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
             Principal groupOwnerProjectPublisher = principalMgr
-                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER).getString());
+                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
             Principal groupExternalContribPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
            
             principalNameList.add(groupEditorPrincipal);
             principalNameList.add(groupObserverPrincipal);
@@ -98,22 +96,22 @@ private final Logger log = LoggerFactory.getLogger(getClass());
             principalNameList.add(groupExternalContribPrincipal);
          
             while (adminResource.getParent() != null
-                    && !StringUtils.equals(	adminResource.getParent().getPath(), MediahubConstants.AEM_PROJECTS_PATH)) {
+                    && !StringUtils.equals(	adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH)) {
                 adminResource = adminResource.getParent();
                 String parentFolderPath = adminResource.getPath();
                 Node parentFldrNode = adminResource.adaptTo(Node.class);
-                if (parentFldrNode.hasNode(MediahubConstants.REP_POLICY)) {
+                if (parentFldrNode.hasNode(BnpConstants.REP_POLICY)) {
                 	log.info("CreatePolicyNodeUtil : {}", parentFolderPath);
                     CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
                 } else {
                     ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
-                    mvp.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE);
+                    mvp.put(BnpConstants.JCR_MIXINTYPES, BnpConstants.REP_ACCESSCONTROLLABLE);
                     adminResolver.commit();
                     String parentProjectPath = adminResource.getPath();
                     Resource reResource = adminResolver.getResource(parentProjectPath);
                 	log.info("CreatePolicyNodeUtil2 : {}", parentFolderPath);
                     Node createPolicyNode = reResource.adaptTo(Node.class);
-                    createPolicyNode.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL);
+                    createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
                     adminResolver.commit();
                     CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
                 }
