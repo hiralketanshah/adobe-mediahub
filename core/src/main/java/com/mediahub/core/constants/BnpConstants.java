@@ -74,4 +74,5 @@ public class BnpConstants {
   public static final String MEDIAHUB_EXPIRE_OROJECT="Mediahub : Expiring project ";  
   public static final String EMAIL ="email";
   public static final String FIRST_NAME ="givenName";
+  public static final String REP_PRINCIPAL_NAME ="rep:principalName";
 }

@@ -8,7 +8,6 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
 import java.security.Principal;
 import java.util.Collections;
@@ -156,7 +155,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             Resource policy = checkRepolicyExists(resourceResolver, destination);
 
             resourceResolver.commit();
-            Iterator<Resource> resources = resourceResolver.getResource(projectPath + "/" + MediahubConstants.REP_POLICY).listChildren();
+            Iterator<Resource> resources = resourceResolver.getResource(projectPath + "/" + BnpConstants.REP_POLICY).listChildren();
 
             JackrabbitSession js = (JackrabbitSession) session;
             PrincipalManager principalMgr = js.getPrincipalManager();
@@ -164,8 +163,8 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
             while(resources.hasNext()){
                 Resource child = resources.next();
-                if(StringUtils.contains(child.getName(), "allow") && StringUtils.startsWith(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"projects-") && StringUtils.endsWith(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"-publisher") && policy.getChild(child.getName()) == null){
-                    Principal principal = principalMgr.getPrincipal(child.getValueMap().get(MediahubConstants.REP_PRINCIPAL_NAME,""));
+                if(StringUtils.contains(child.getName(), "allow") && StringUtils.startsWith(child.getValueMap().get(BnpConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"projects-") && StringUtils.endsWith(child.getValueMap().get(BnpConstants.REP_PRINCIPAL_NAME,StringUtils.EMPTY),"-publisher") && policy.getChild(child.getName()) == null){
+                    Principal principal = principalMgr.getPrincipal(child.getValueMap().get(BnpConstants.REP_PRINCIPAL_NAME,""));
                     principalNameList.add(principal);
                 }
             }
@@ -195,11 +194,11 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                 destinationNode.getSession().save();
             }
 
-            if(destination.getChild(MediahubConstants.REP_POLICY) != null){
-                policy = destination.getChild(MediahubConstants.REP_POLICY);
+            if(destination.getChild(BnpConstants.REP_POLICY) != null){
+                policy = destination.getChild(BnpConstants.REP_POLICY);
             } else {
-                policy = resourceResolver.create(destination, MediahubConstants.REP_POLICY, Collections
-                    .singletonMap(JcrConstants.JCR_PRIMARYTYPE, MediahubConstants.REP_ACL));
+                policy = resourceResolver.create(destination, BnpConstants.REP_POLICY, Collections
+                    .singletonMap(JcrConstants.JCR_PRIMARYTYPE, BnpConstants.REP_ACL));
             }
         }
         return policy;
