@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
-import com.mediahub.core.constants.MediahubConstants;
+import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectManager;
@@ -185,16 +185,16 @@ public class ProjectExpireNotificationSchedulerTest {
     void run() throws LoginException {
         try {
             ProjectExpireNotificationScheduler.Config config = mock(ProjectExpireNotificationScheduler.Config.class);
-            when(config.getProjectPath()).thenReturn(MediahubConstants.AEM_PROJECTS_PATH);
+            when(config.getProjectPath()).thenReturn(BnpConstants.AEM_PROJECTS_PATH);
 
             Map<String, Object> map = new HashMap<>();
-            map.put(MediahubConstants.PATH, AEM_PROJECTS_PATH);
-            map.put(MediahubConstants.FIRST_PROPERTY, MediahubConstants.SLING_RESOURCETYPE);
-            map.put(MediahubConstants.FIRST_PROPERTY_OPERATION, MediahubConstants.LIKE);
-            map.put(MediahubConstants.FIRST_PROPERTY_VALUE, MediahubConstants.PROJECT_RESOURCE);
-            map.put(MediahubConstants.SECOND_DATERANGE_PROPERTY, MediahubConstants.PROJECT_DUEDATE);
-            map.put(MediahubConstants.SECOND_DATERANGE_UPPEROPERATION, MediahubConstants.LESSTHAN_EQUALS);
-            map.put(MediahubConstants.SECOND_DATERANGE_UPPERBOUND, "2020-12-26T19:29:13.454+05:30");
+            map.put(BnpConstants.PATH, AEM_PROJECTS_PATH);
+            map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.SLING_RESOURCETYPE);
+            map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
+            map.put(BnpConstants.FIRST_PROPERTY_VALUE, BnpConstants.PROJECT_RESOURCE);
+            map.put(BnpConstants.SECOND_DATERANGE_PROPERTY, BnpConstants.PROJECT_DUEDATE);
+            map.put(BnpConstants.SECOND_DATERANGE_UPPEROPERATION, BnpConstants.LESSTHAN_EQUALS);
+            map.put(BnpConstants.SECOND_DATERANGE_UPPERBOUND, "2020-12-26T19:29:13.454+05:30");
 
             when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
             when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
@@ -206,7 +206,7 @@ public class ProjectExpireNotificationSchedulerTest {
             when(hit.getPath()).thenReturn(PATH);
             when(resolver.getResource(PATH)).thenReturn(resource);
             when(resource.adaptTo(Node.class)).thenReturn(node);
-            when(node.getProperty(MediahubConstants.PROJECT_DUEDATE)).thenReturn(property);
+            when(node.getProperty(BnpConstants.PROJECT_DUEDATE)).thenReturn(property);
             when(property.getValue()).thenReturn(value);
             when(value.getString()).thenReturn(DUE_DATE);
             when(resolver.adaptTo(ProjectManager.class)).thenReturn(projectManager);
@@ -215,7 +215,7 @@ public class ProjectExpireNotificationSchedulerTest {
 
             when(resolver.getResource(PROJECT_PATH)).thenReturn(resource);
             when(resource.adaptTo(Node.class)).thenReturn(node1);
-            when(node1.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property1);
+            when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1);
             when(property1.getValue()).thenReturn(value1);
             when(value1.getString()).thenReturn("projects-projectoct21-owner");
 
@@ -231,7 +231,7 @@ public class ProjectExpireNotificationSchedulerTest {
                     "http://localhost:4502/projects/details.html/content/projects/bnpfolder1/bnpfolder2/bnpproject");
             when(user.getID()).thenReturn("emp123");
             when(userManager.getAuthorizable("emp123")).thenReturn(authorizable);
-            when(authorizable.hasProperty(MediahubConstants.PEOFILE_EMAIL)).thenReturn(true);
+            when(authorizable.hasProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(true);
 
             when(value2.getString()).thenReturn("emp123");
             when(value3.getString()).thenReturn("wmp123@gmail.com");
@@ -239,10 +239,10 @@ public class ProjectExpireNotificationSchedulerTest {
             Value[] valueArray = { value2 };
             Value[] valueArray1 = { value3 };
 
-            when(authorizable.getProperty(MediahubConstants.PEOFILE_EMAIL)).thenReturn(valueArray);
-            when(authorizable.getProperty(MediahubConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray);
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray);
+            when(authorizable.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray);
             when(value2.getString()).thenReturn("MediaUserName");
-            when(authorizable.getProperty(MediahubConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
             when(value3.getString()).thenReturn("MediaHub@gmail.com");
 
             scheduler.activate(config);

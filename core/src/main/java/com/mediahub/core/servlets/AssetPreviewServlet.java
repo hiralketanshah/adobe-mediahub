@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 
 @Component(
     service = Servlet.class,
@@ -69,7 +68,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             PrintWriter out = resp.getWriter();
             if (imageVideo != null && "image".equals(imageVideo)) {
                 out.println("<html lang=\"en\">");
-                out.println("<head><title>" + titleNode.getProperty(MediahubConstants.JCR_TITLE).getString()
+                out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
                         + "</title></head>");
                 out.println("<body>");
                 out.println("<img src=" + contentPath + " style=\"width:100%; height:100%;\" >");
@@ -79,7 +78,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             } else if (imageVideo != null && "video".equals(imageVideo)) {
 
                 out.println("<html lang=\"en\">");
-                out.println("<head><title>" + titleNode.getProperty(MediahubConstants.JCR_TITLE).getString()
+                out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
                         + "</title></head>");
                 out.println("<body>");
                 out.println("<video  style=\"width:100%; height:100%;\" controls>");

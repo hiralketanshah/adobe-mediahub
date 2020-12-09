@@ -39,7 +39,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.osgi.service.component.ComponentContext;
 
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -137,16 +136,16 @@ public class ProjectsResourceListenerTest {
         when(resource.adaptTo(Node.class)).thenReturn(node);
         when(parentresource.adaptTo(Node.class)).thenReturn(node);
         when(jackrabbitSession.getPrincipalManager()).thenReturn(principalManager);
-        when((node.getProperty(MediahubConstants.ROLE_EDITOR))).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_OBSERVER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR)).thenReturn(property);
+        when((node.getProperty(BnpConstants.ROLE_EDITOR))).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_OBSERVER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR)).thenReturn(property);
         when(property.getString()).thenReturn("projects-bnpproject-editor");
         when(principalManager.getPrincipal("projects-bnpproject-editor")).thenReturn(principal);
         when(resource.getParent()).thenReturn(parentresource);
 
-        when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(true);
+        when(node.hasNode(BnpConstants.REP_POLICY)).thenReturn(true);
         when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
         accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
 
@@ -175,21 +174,21 @@ public class ProjectsResourceListenerTest {
         when(resource.adaptTo(Node.class)).thenReturn(node);
         when(parentresource.adaptTo(Node.class)).thenReturn(node);
         when(jackrabbitSession.getPrincipalManager()).thenReturn(principalManager);
-        when((node.getProperty(MediahubConstants.ROLE_EDITOR))).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_OBSERVER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_OWNER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_PROJECTPUBLISHER)).thenReturn(property);
-        when(node.getProperty(MediahubConstants.ROLE_EXTERNALCONTRIBUTEUR)).thenReturn(property);
+        when((node.getProperty(BnpConstants.ROLE_EDITOR))).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_OBSERVER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER)).thenReturn(property);
+        when(node.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR)).thenReturn(property);
         when(property.getString()).thenReturn("projects-bnpproject-editor");
         when(principalManager.getPrincipal("projects-bnpproject-editor")).thenReturn(principal);
         when(resource.getParent()).thenReturn(parentresource);
 
-        when(node.hasNode(MediahubConstants.REP_POLICY)).thenReturn(false);
+        when(node.hasNode(BnpConstants.REP_POLICY)).thenReturn(false);
         when(parentresource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
-        when(modifiableValueMap.put(MediahubConstants.JCR_MIXINTYPES, MediahubConstants.REP_ACCESSCONTROLLABLE))
-                .thenReturn(MediahubConstants.REP_ACCESSCONTROLLABLE);
+        when(modifiableValueMap.put(BnpConstants.JCR_MIXINTYPES, BnpConstants.REP_ACCESSCONTROLLABLE))
+                .thenReturn(BnpConstants.REP_ACCESSCONTROLLABLE);
         when(parentresource.getPath()).thenReturn(PROJECT_PATH);
-        when(node.addNode(MediahubConstants.REP_POLICY, MediahubConstants.REP_ACL)).thenReturn(node);
+        when(node.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL)).thenReturn(node);
         when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
         accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
 
