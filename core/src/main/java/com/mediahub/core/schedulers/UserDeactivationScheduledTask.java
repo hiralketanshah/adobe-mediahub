@@ -32,7 +32,6 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
 /**
@@ -61,7 +60,7 @@ public class UserDeactivationScheduledTask implements Runnable {
 
         @AttributeDefinition(name = "A parameter",
                              description = "Can be configured in /system/console/configMgr")
-        String getUserType() default MediahubConstants.EXTERNAL;
+        String getUserType() default BnpConstants.EXTERNAL;
     }
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -83,7 +82,7 @@ public class UserDeactivationScheduledTask implements Runnable {
             Iterator<Resource> userResources = result.getResources();
             while(userResources.hasNext()){
                 Resource user = userResources.next();
-                String expiryDate = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EXPIRY,String.class);
+                String expiryDate = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EXPIRY,String.class);
        
                 if(StringUtils.isNotBlank(expiryDate)){
                     deactivateExpiredUsers(userManager, user, expiryDate);
@@ -111,20 +110,20 @@ public class UserDeactivationScheduledTask implements Runnable {
      */
     protected void deactivateExpiredUsers(UserManager userManager, Resource user, String expiryDate)
         throws ParseException, javax.jcr.RepositoryException {
-        SimpleDateFormat sdf = new SimpleDateFormat(MediahubConstants.YYYY_MM_DD);
+        SimpleDateFormat sdf = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
         Date date = sdf.parse(expiryDate);
         Calendar expiry = Calendar.getInstance();
         expiry.setTime(date);
         Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
         if(authorizable instanceof User && !((User) authorizable).isDisabled() && Calendar.getInstance().after(expiry)){
             logger.info(user.getPath());
-            ((User) authorizable).disable(MediahubConstants.USER_HAS_EXPIRED);
-            String email = user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.EMAIL,String.class);
+            ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
+            String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL,String.class);
             String[] emailRecipients = { email };
 	        String subject = "Mediahub - User Deactivated";
 	        Map<String, String> emailParams = new HashMap<String, String>();
 	        emailParams.put(BnpConstants.SUBJECT, subject);
-	        emailParams.put("firstname",user.getChild(MediahubConstants.PROFILE).getValueMap().get(MediahubConstants.FIRST_NAME,String.class));
+	        emailParams.put("firstname",user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.FIRST_NAME,String.class));
 	        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html",emailRecipients, emailParams);
         }
     }
@@ -134,10 +133,10 @@ public class UserDeactivationScheduledTask implements Runnable {
      */
     protected Map<String, String> getPredicateMap() {
         Map<String, String> map = new HashMap<>();
-        map.put(MediahubConstants.PATH, MediahubConstants.HOME_USERS);
-        map.put(MediahubConstants.TYPE, MediahubConstants.REP_USERS);
-        map.put(MediahubConstants.FIRST_PROPERTY, MediahubConstants.PROFILE_TYPE);
-        map.put(MediahubConstants.FIRST_PROPERTY_VALUE, userType);
+        map.put(BnpConstants.PATH, BnpConstants.HOME_USERS);
+        map.put(BnpConstants.TYPE, BnpConstants.REP_USERS);
+        map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.PROFILE_TYPE);
+        map.put(BnpConstants.FIRST_PROPERTY_VALUE, userType);
         return map;
     }
 

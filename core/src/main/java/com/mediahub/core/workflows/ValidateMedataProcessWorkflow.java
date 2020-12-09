@@ -12,7 +12,6 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -164,10 +163,10 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
 
     List<String> missedMetaData = new ArrayList<>();
     Map<String, String> map = new HashMap<>();
-    map.put(MediahubConstants.PATH, schemaPath);
-    map.put(MediahubConstants.TYPE, JcrConstants.NT_UNSTRUCTURED);
-    map.put(MediahubConstants.FIRST_PROPERTY, BnpConstants.REQUIRED_CASCADING);
-    map.put(MediahubConstants.FIRST_PROPERTY_VALUE, BnpConstants.ALWAYS);
+    map.put(BnpConstants.PATH, schemaPath);
+    map.put(BnpConstants.TYPE, JcrConstants.NT_UNSTRUCTURED);
+    map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.REQUIRED_CASCADING);
+    map.put(BnpConstants.FIRST_PROPERTY_VALUE, BnpConstants.ALWAYS);
     QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
     Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
     SearchResult result = query.getResult();

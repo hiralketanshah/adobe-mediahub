@@ -34,7 +34,6 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.constants.MediahubConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 
@@ -66,7 +65,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
         boolean scheduler_concurrent() default true;
 
         @AttributeDefinition(name = "Project Path", description = "A Path from where Project are Fetched")
-        String getProjectPath() default MediahubConstants.AEM_PROJECTS_PATH;
+        String getProjectPath() default BnpConstants.AEM_PROJECTS_PATH;
     }
 
     @Reference
@@ -102,7 +101,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 
                 Resource adminResource = resolver.getResource(path);
                 Node jcrContentNode = adminResource.adaptTo(Node.class);
-                String projectactualDueDate = jcrContentNode.getProperty(MediahubConstants.PROJECT_DUEDATE).getValue()
+                String projectactualDueDate = jcrContentNode.getProperty(BnpConstants.PROJECT_DUEDATE).getValue()
                         .getString();
                 ProjectManager projectManager = resolver.adaptTo(ProjectManager.class);
                 Project project = resolver.getResource(projectpath).adaptTo(Project.class);
@@ -115,7 +114,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 if(differenceInDays == 30 || differenceInDays == 0 || differenceInDays == -31) {
 	                Resource groupOwnerResource = resolver.getResource(projectpath);
 	                Node projectNode = groupOwnerResource.adaptTo(Node.class);
-	                projectOwnerProperty = projectNode.getProperty(MediahubConstants.PROPERTY_ROLE_OWNER).getValue().getString();
+	                projectOwnerProperty = projectNode.getProperty(BnpConstants.PROPERTY_ROLE_OWNER).getValue().getString();
 	                UserManager userManager = resolver.adaptTo(UserManager.class);
 	                Authorizable authorizable;
 	                authorizable = userManager.getAuthorizable(projectOwnerProperty);
@@ -132,14 +131,14 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 	                        String userID = user.getID();
 	                        logger.debug("userID : {} ", userID);
 	                        Authorizable userAuthorization = userManager.getAuthorizable(userID);
-	                        if (userAuthorization.hasProperty(MediahubConstants.PEOFILE_EMAIL)
-	                                && userAuthorization.getProperty(MediahubConstants.PEOFILE_EMAIL) != null
-	                                && userAuthorization.getProperty(MediahubConstants.PEOFILE_EMAIL).length > 0) {
-	                            String userName = userAuthorization.getProperty(MediahubConstants.PROFILE_GIVEN_NAME)[0]
+	                        if (userAuthorization.hasProperty(BnpConstants.PEOFILE_EMAIL)
+	                                && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL) != null
+	                                && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL).length > 0) {
+	                            String userName = userAuthorization.getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0]
 	                                    .getString();
 	                            logger.debug("User GivenName : {} ", userName);
 	
-	                            String userEmailID = userAuthorization.getProperty(MediahubConstants.PEOFILE_EMAIL)[0]
+	                            String userEmailID = userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL)[0]
 	                                    .getString();
 	
 	                            logger.debug("EMailID----- : {} ", userEmailID);
@@ -154,7 +153,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 	                                
 	                            }else if(differenceInDays == 0 ) {
 	                            	logger.debug("Notification deactivation" );
-	                                jcrContentNode.setProperty(MediahubConstants.ACTIVE, false);
+	                                jcrContentNode.setProperty(BnpConstants.ACTIVE, false);
 	                            	String subject = "Mediahub - Project Deactivation";
 	                            	emailParams.put(BnpConstants.SUBJECT, subject);
 	                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html",emailRecipients, emailParams);
