@@ -1,6 +1,6 @@
 package com.mediahub.core.servlets;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.PrintWriter;
@@ -17,15 +17,15 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import com.mediahub.core.constants.BnpConstants;
 
-@RunWith(MockitoJUnitRunner.class)
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+
+@ExtendWith(AemContextExtension.class)
 public class AssetPreviewServletTest {
 
     @InjectMocks
