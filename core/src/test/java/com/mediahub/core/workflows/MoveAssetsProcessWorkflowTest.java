@@ -142,6 +142,7 @@ public class MoveAssetsProcessWorkflowTest {
     when(workflowProcess.findMediaFolderPath(resolver,"")).thenReturn(resource);
     when(session.getWorkspace()).thenReturn(workspace);
     when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
+    workflowProcess.execute(workItem, workflowSession, metadataMap);
     assertEquals("JCR_PATH", workflowData.getPayloadType());
   }
 
@@ -164,7 +165,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void findMediaFolder() throws LoginException {
     String payloadPath = "";
-    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+    workflowProcess.resolverFactory = resolverFactory;
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.getResource(any())).thenReturn(resource);
     when(resource.getParent()).thenReturn(resource);
@@ -175,7 +176,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void findMediaFolderWithBnppMedia() throws LoginException {
     String payloadPath = "";
-    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+    workflowProcess.resolverFactory = resolverFactory;
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.getResource(any())).thenReturn(resource);
     when(resource.getParent()).thenReturn(resource);
@@ -192,7 +193,7 @@ public class MoveAssetsProcessWorkflowTest {
   @Test
   public void moveProjectDamAsset() throws LoginException, RepositoryException, PersistenceException {
     String newPath = "/";
-    when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+    workflowProcess.resolverFactory = resolverFactory;
     when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
     when(resolver.create(any(), any(), any())).thenReturn(resource);
     doNothing().when(resolver).commit();
