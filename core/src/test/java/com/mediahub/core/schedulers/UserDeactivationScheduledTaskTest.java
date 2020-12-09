@@ -6,8 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.day.cq.search.QueryBuilder;
-import com.mediahub.core.constants.MediahubConstants;
-import io.wcm.testing.mock.aem.junit5.AemContext;
+import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,8 +40,6 @@ public class UserDeactivationScheduledTaskTest {
   @Mock
   private ResourceResolver resolver;
 
-  private AemContext context;
-
   @Mock
   ResourceResolverFactory resolverFactory;
 
@@ -54,7 +51,7 @@ public class UserDeactivationScheduledTaskTest {
   @Test
   void run() throws LoginException {
     UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
-    when(config.getUserType()).thenReturn(MediahubConstants.EXTERNAL);
+    when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
     when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
     when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
     QueryBuilder queryBuilder = mock(QueryBuilder.class);
@@ -72,7 +69,7 @@ public class UserDeactivationScheduledTaskTest {
     LoggingEvent event = events.get(0);
     assertEquals(Level.DEBUG, event.getLevel());
     assertEquals(1, event.getArguments().size());
-    assertEquals(MediahubConstants.EXTERNAL, event.getArguments().get(0));
+    assertEquals(BnpConstants.EXTERNAL, event.getArguments().get(0));
     assertEquals("0 1 0 1/1 * ? *", config.scheduler_expression());
     assertEquals(Boolean.FALSE, config.scheduler_concurrent());
 
@@ -83,9 +80,9 @@ public class UserDeactivationScheduledTaskTest {
   @Test
   void getQuery(){
     Map<String,String> predicateMap = fixture.getPredicateMap();
-    assertEquals(MediahubConstants.HOME_USERS, predicateMap.get(MediahubConstants.PATH));
-    assertEquals(MediahubConstants.REP_USERS, predicateMap.get(MediahubConstants.TYPE));
-    assertEquals(MediahubConstants.PROFILE_TYPE, predicateMap.get(MediahubConstants.FIRST_PROPERTY));
+    assertEquals(BnpConstants.HOME_USERS, predicateMap.get(BnpConstants.PATH));
+    assertEquals(BnpConstants.REP_USERS, predicateMap.get(BnpConstants.TYPE));
+    assertEquals(BnpConstants.PROFILE_TYPE, predicateMap.get(BnpConstants.FIRST_PROPERTY));
   }
 
   @Test
@@ -95,7 +92,7 @@ public class UserDeactivationScheduledTaskTest {
     String expiryDate = "2019/06/09";
     fixture.deactivateExpiredUsers(userManager, user, expiryDate);
 
-    SimpleDateFormat sdf = new SimpleDateFormat(MediahubConstants.YYYY_MM_DD);
+    SimpleDateFormat sdf = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
     Date date = sdf.parse(expiryDate);
     Calendar expiry = Calendar.getInstance();
     expiry.setTime(date);
