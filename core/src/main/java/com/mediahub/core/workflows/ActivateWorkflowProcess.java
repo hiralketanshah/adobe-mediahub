@@ -49,7 +49,7 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
       resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
       String payloadPath = workItem.getWorkflowData().getPayload().toString();
       Resource payload = resourceResolver.getResource(payloadPath);
-      if(payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata") != null){
+      if(payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata") != null){
         ValueMap properties = payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
         if(properties.containsKey("bnpp-broadcast-status")){
           String[] stasus = properties.get("bnpp-broadcast-status", new String[]{});

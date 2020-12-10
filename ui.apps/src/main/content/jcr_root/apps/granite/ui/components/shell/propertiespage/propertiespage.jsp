@@ -627,7 +627,7 @@ logger.debug("Render ends");
             "model":"/var/workflow/models/mediahub/mediahub---validation",
             "model@Delete":"",
             "workflowTitle":"Internal Publish",
-            "payload": asset
+            "payload": '<%= assetId %>'
         },
         async: true,
         cache: false,
