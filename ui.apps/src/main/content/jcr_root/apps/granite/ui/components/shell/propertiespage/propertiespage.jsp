@@ -448,7 +448,20 @@ try {
                         saveAttrs1.add("is", "coral-button");
                         saveAttrs1.add("variant", "primary");
 
-                        %><button <%= saveAttrs1 %>><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
+                        String saveBtnVariant = "primary";
+
+                        AttrBuilder doneAttrs1 = new AttrBuilder(request, xssAPI);
+                        doneAttrs1.add("id", "shell-propertiespage-doneactivator");
+                        doneAttrs1.add("type", "submit");
+                        doneAttrs1.add("form", formId);
+                        doneAttrs1.add("is", "coral-button");
+                        doneAttrs1.add("variant", saveBtnVariant);
+                        doneAttrs1.addClass("granite-form-saveactivator");
+                        doneAttrs1.addHref("data-granite-form-saveactivator-href", backHref);
+                        doneAttrs1.addClass("foundation-fixedanchor");
+                        doneAttrs1.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+
+                        %><button <%= doneAttrs1 %> onclick="internalPublish()"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
 
                   %>
                 </coral-buttongroup>
@@ -600,6 +613,32 @@ try {
 }
 logger.debug("Render ends");
 %>
+
+<script type="text/javascript">
+
+   var asset = '<%= request.getParameter("item") %>';
+   function internalPublish() {
+      $.ajax({
+        type: "POST",
+        url: "/etc/workflow/instances",
+        data: {
+            "_charset_": "UTF-8",
+            "payloadType":"JCR_PATH",
+            "model":"/var/workflow/models/mediahub/mediahub---validation",
+            "model@Delete":"",
+            "workflowTitle":"Internal Publish",
+            "payload": asset
+        },
+        async: true,
+        cache: false,
+        success: function(response) {
+            if (response) {
+                var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+            }
+        }
+      });
+   }
+</script>
 </html><%!
 
 private String getPreferencesJSON(UserProperties props) throws Exception {

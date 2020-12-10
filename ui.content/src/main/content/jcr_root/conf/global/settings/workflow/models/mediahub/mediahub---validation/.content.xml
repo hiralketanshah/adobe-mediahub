@@ -3,41 +3,41 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:designPath="/libs/settings/wcm/designs/default"
-        cq:lastModified="{Date}2020-12-01T10:31:31.627+01:00"
+        cq:lastModified="{Date}2020-12-10T19:46:19.680+05:30"
         cq:lastModifiedBy="admin"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Mediahub - Internal publish"
+        jcr:title="Mediahub - Validation"
         sling:resourceType="cq/workflow/components/pages/model">
         <flow
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
-            <process_1607596356
+            <process
+                jcr:created="{Date}2020-12-10T19:44:52.229+05:30"
+                jcr:createdBy="admin"
+                jcr:lastModified="{Date}2020-12-10T19:46:19.678+05:30"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Validation metadata"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.mediahub.core.workflows.ValidateMedataProcessWorkflow"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process>
+            <process_1607596475
               jcr:created="{Date}2020-12-10T19:44:59.059+05:30"
               jcr:createdBy="admin"
               jcr:lastModified="{Date}2020-12-10T19:46:09.731+05:30"
               jcr:lastModifiedBy="admin"
               jcr:primaryType="nt:unstructured"
-              jcr:title="Move asset to medialibrary"
+              jcr:title="Activate Asset"
               sling:resourceType="cq/workflow/components/model/process">
                 <metaData
                   jcr:primaryType="nt:unstructured"
-                  PROCESS="com.mediahub.core.workflows.MoveAssetsProcessWorkflow"/>
-            </process_1607596356>
-            <activateresourceproc
-                jcr:created="{Date}2020-11-24T10:00:44.800Z"
-                jcr:createdBy="arnaud-test"
-                jcr:description="A process to activate a page or asset"
-                jcr:lastModified="{Date}2020-11-24T10:00:50.539Z"
-                jcr:lastModifiedBy="arnaud-test"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Activate Page/Asset"
-                sling:resourceType="wcm/workflow/components/workflow/activateresourceprocess">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
-                    PROCESS_AUTO_ADVANCE="true"/>
-            </activateresourceproc>
+                  PROCESS="com.mediahub.core.workflows.ActivateWorkflowProcess"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process_1607596475>
         </flow>
     </jcr:content>
 </jcr:root>
