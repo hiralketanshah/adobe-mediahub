@@ -25,6 +25,18 @@
                     PROCESS="com.mediahub.core.workflows.ValidateMedataProcessWorkflow"
                     PROCESS_AUTO_ADVANCE="true"/>
             </process>
+            <process_1607596356
+              jcr:created="{Date}2020-12-10T19:44:59.059+05:30"
+              jcr:createdBy="admin"
+              jcr:lastModified="{Date}2020-12-10T19:46:09.731+05:30"
+              jcr:lastModifiedBy="admin"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="Move asset to medialibrary"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.MoveAssetsProcessWorkflow"/>
+            </process_1607596356>
             <process_1607596475
               jcr:created="{Date}2020-12-10T19:44:59.059+05:30"
               jcr:createdBy="admin"
