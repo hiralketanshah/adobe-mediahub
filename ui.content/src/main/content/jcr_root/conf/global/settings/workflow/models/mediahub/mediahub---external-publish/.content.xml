@@ -13,11 +13,7 @@
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
             <dmimageprocess_copy
-                jcr:created="{Date}2015-09-28T17:50:46.962-07:00"
-                jcr:createdBy="admin"
                 jcr:description="Processes assets for use with Dynamic Media Image Services"
-                jcr:lastModified="{Date}2015-09-28T17:50:46.962-07:00"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 jcr:title="Dynamic Media Process Image Assets"
                 sling:resourceType="dam/components/s7imaging/dmimageprocess">
@@ -32,11 +28,7 @@
                     WIDTH="1280"/>
             </dmimageprocess_copy>
             <scene7upload_copy
-                jcr:created="{Date}2017-02-28T13:55:59.285-08:00"
-                jcr:createdBy="admin"
                 jcr:description="Upload assets to configured remote Scene7 service for Dynamic Media delivery"
-                jcr:lastModified="{Date}2017-02-28T13:55:59.285-08:00"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 jcr:title="Scene7"
                 sling:resourceType="dam/components/scene7/scene7upload">
@@ -48,6 +40,15 @@
                     PROCESS_AUTO_ADVANCE="true"
                     timeout="3600"/>
             </scene7upload_copy>
+            <process_1607596535
+              jcr:primaryType="nt:unstructured"
+              jcr:title="Scene7 Asset Metadata"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process_1607596535>
         </flow>
     </jcr:content>
 </jcr:root>

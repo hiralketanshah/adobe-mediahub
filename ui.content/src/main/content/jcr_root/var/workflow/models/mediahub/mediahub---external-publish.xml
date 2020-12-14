@@ -47,11 +47,20 @@
                 timeout="3600"/>
         </node2>
         <node3
+          jcr:primaryType="cq:WorkflowNode"
+          title="Save Scene 7 Asset"
+          type="PROCESS">
+            <metaData
+              jcr:primaryType="nt:unstructured"
+              PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
+              PROCESS_AUTO_ADVANCE="true"/>
+        </node3>
+        <node4
             jcr:primaryType="cq:WorkflowNode"
             title="End"
             type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node3>
+        </node4>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -75,5 +84,12 @@
             to="node3">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node2_x0023_node3>
+        <node3_x0023_node4
+          jcr:primaryType="cq:WorkflowTransition"
+          from="node3"
+          rule=""
+          to="node4">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node3_x0023_node4>
     </transitions>
 </jcr:root>
