@@ -322,6 +322,7 @@
                               jcr:primaryType="nt:unstructured"
                               sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                               disabled="{Boolean}true"
+                              readOnly="{Boolean}true"
                               displayedFormat="YYYY-MM-DD HH:mm"
                               fieldLabel="Expiration"
                               id="expirationDate"
@@ -355,6 +356,10 @@
                       id="adhocassetshare-allowOriginal"
                       text="Allow download of original file"
                       value="{Boolean}true"/>
+                    <expiryText
+                      jcr:primaryType="nt:unstructured"
+                      sling:resourceType="granite/ui/components/coral/foundation/text"
+                      text="The above share link will expire in 48 hrs"/>
                     <operation
                       jcr:primaryType="nt:unstructured"
                       sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
