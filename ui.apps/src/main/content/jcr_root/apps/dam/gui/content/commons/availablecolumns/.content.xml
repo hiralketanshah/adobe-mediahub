@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured">
+    <name
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Name"
+        columnGroup="media hub"
+        configurable="{Boolean}true"
+        default="{Boolean}true"
+        sortable="{Boolean}true"/>
+    <title
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Title"
+        columnGroup="media hub"
+        configurable="{Boolean}true"
+        default="{Boolean}true"
+        sortable="{Boolean}true"/>
+    <type
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Type"
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}false"/>
+    <resolution
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Resolution"
+        columnGroup="media hub"
+        configurable="{Boolean}true"
+        default="{Boolean}true"
+        sortable="{Boolean}true"
+        sortType="number"/>
+    <size
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Size"
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}true"
+        sortType="number"/>
+    <created
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Created"
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}true"
+        sortType="date"/>
+    <modified
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Modified"
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}true"
+        sortType="date"/>
+    <published
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Published"
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}true"
+        sortType="date"/>
+    <usagescore
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Usage"
+        columnGroup="media hub"
+        configurable="{Boolean}true"
+        default="{Boolean}false"
+        sortable="{Boolean}true"
+        sortType="number"/>
+    <broadcaststatus
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Broadcast Satus "
+        columnGroup="media hub"
+        default="{Boolean}true"
+        sortable="{Boolean}true"/>
+    <downloadauthorization
+        jcr:primaryType="nt:unstructured"
+        jcr:title="Download authorization"
+        columnGroup="media hub"
+        default="{Boolean}false"
+        sortable="{Boolean}true"/>
+</jcr:root>
