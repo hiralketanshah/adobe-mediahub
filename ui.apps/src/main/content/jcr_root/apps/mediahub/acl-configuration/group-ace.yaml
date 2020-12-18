@@ -73,7 +73,51 @@
 - ace_config:
   #DEFAULT GROUP 
     - mediahub-basic:
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
+          permission: deny
+          actions: read
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab3
+          permission: deny
+          actions: read
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab4
+          permission: deny
+          actions: read
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab5
+          permission: deny
+          actions: read
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab
+          permission: deny
+          actions: read
+        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
+          permission: deny
+          actions: read
+        - path: /apps/dam/temp
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*wtab*'
+        - path: /apps/dam/temp
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*permissions-tab*'
+        - path: /libs/wcm/core/content/misc
+          permission: deny
+          actions: read
+        - path: /libs/cq/core/content/nav/tools 
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*'
+        - path: /apps/cq/core/content/nav/tools
+          permission: deny
+          actions: read
+          restrictions:
+              rep:glob: '/*'
         - path: /
+          permission: allow
+          actions: read
+        - path: /home
           permission: allow
           actions: read
         - path: /content/dam
@@ -228,22 +272,6 @@
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
           actions: read
-        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
-          permission: deny
-          actions: read
-        - path: /libs/wcm/core/content/misc
-          permission: deny
-          actions: read
-        - path: /libs/cq/core/content/nav/tools 
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
-        - path: /apps/cq/core/content/nav/tools
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
 
     - mediahub-basic-contributor:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
@@ -257,50 +285,23 @@
           actions: read
           restrictions:
              rep:glob: '/*'
-        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
-          permission: deny
-          actions: read
-        - path: /libs/wcm/core/content/misc
-          permission: deny
-          actions: read
-        - path: /libs/cq/core/content/nav/tools 
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
-        - path: /apps/cq/core/content/nav/tools
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
+
     - mediahub-basic-project-manager:
         - path: /var/workflow/models
           permission: deny
           actions: read
           restrictions:
              rep:glob: '/*'
-        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
-          permission: deny
-          actions: read
-        - path: /libs/wcm/core/content/misc
-          permission: deny
-          actions: read
-        - path: /libs/cq/core/content/nav/tools 
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
-        - path: /apps/cq/core/content/nav/tools
-          permission: deny
-          actions: read
-          restrictions:
-              rep:glob: '/*'
 
     - mediahub-basic-entity-manager:
-        - path: /home/groups
+        - path: /apps/dam/temp
+          permission: allow
+          actions: read
+          restrictions:
+              rep:glob: '/*permissions-tab*'
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab
           permission: deny
-          privileges: jcr:read
-
+          actions: read
         - path: /content/cq:tags/default
           permission: allow
           actions: create,modify
@@ -309,11 +310,22 @@
           actions: read
           restrictions:
              rep:glob: '/mediahub/contributor/*'
+        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
+          permission: allow
+          actions: read
+        - path: /libs/wcm/core/content/misc
+          permission: allow
+          actions: read
         - path: /libs/cq/core/content/nav/tools 
           permission: deny
           actions: read
           restrictions:
               rep:glob: '/cloudservices'
+        - path: /libs/cq/core/content/nav/tools 
+          permission: allow
+          actions: read
+          restrictions:
+              rep:glob: '/security'
         - path: /libs/cq/core/content/nav/tools 
           permission: deny
           actions: read

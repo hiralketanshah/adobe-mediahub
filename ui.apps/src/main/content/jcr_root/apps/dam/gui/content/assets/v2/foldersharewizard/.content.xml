@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
     jcr:primaryType="cq:Page">
     <jcr:content
         jcr:primaryType="nt:unstructured"
@@ -513,6 +513,7 @@
                                                                 <tab2
                                                                     granite:class="aem-assets-foldershare-profiles-tab"
                                                                     granite:id="aem-assets-foldershare-metadata-profile-tab"
+                                                                    jcr:mixinTypes="[rep:AccessControllable]"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Metadata Profiles"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
@@ -582,10 +583,12 @@
                                                                             </items>
                                                                         </tabcontent>
                                                                     </items>
+                                                                    <rep:policy/>
                                                                 </tab2>
                                                                 <tab3
                                                                     granite:class="aem-assets-foldershare-profiles-tab"
                                                                     granite:id="aem-assets-foldershare-image-profile-tab"
+                                                                    jcr:mixinTypes="[rep:AccessControllable]"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Image Profiles"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
@@ -648,10 +651,12 @@
                                                                             </items>
                                                                         </tabcontent>
                                                                     </items>
+                                                                    <rep:policy/>
                                                                 </tab3>
                                                                 <tab4
                                                                     granite:class="aem-assets-foldershare-profiles-tab"
                                                                     granite:id="aem-assets-foldershare-video-profile-tab"
+                                                                    jcr:mixinTypes="[rep:AccessControllable]"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Video Profiles"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
@@ -701,8 +706,10 @@
                                                                             </items>
                                                                         </tabcontent>
                                                                     </items>
+                                                                    <rep:policy/>
                                                                 </tab4>
                                                                 <tab5
+                                                                    jcr:mixinTypes="[rep:AccessControllable]"
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Cloud Services"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
@@ -747,6 +754,7 @@
                                                                             </items>
                                                                         </cloudservices>
                                                                     </items>
+                                                                    <rep:policy/>
                                                                 </tab5>
                                                                 <permissions-tab
                                                                     granite:class="aem-assets-foldershare-details-container"
