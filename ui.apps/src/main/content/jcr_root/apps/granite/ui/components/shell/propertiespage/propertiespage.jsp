@@ -341,11 +341,31 @@ try {
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
-                        %><coral-actionbar-item><%
-                            AttrBuilder selectionItemAttrs1 = new AttrBuilder(request, xssAPI);
-                            selectionItemAttrs1.addClass("betty-ActionBar-item");
-                            cmp.include(item, new Tag(selectionItemAttrs1));
-                        %></coral-actionbar-item><%
+
+                        if(StringUtils.equals(item.getName(),"customadhocassetshare")) {
+                          if(StringUtils.contains(assetId, "/content/dam/projects")){
+                            %><coral-actionbar-item><%
+                                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                                selectionItemAttrs.addClass("betty-ActionBar-item");
+                                cmp.include(item, new Tag(selectionItemAttrs));
+                            %></coral-actionbar-item><%
+                          }
+                        } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
+                            if(!StringUtils.contains(assetId, "/content/dam/projects")){
+                            %><coral-actionbar-item><%
+                                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                                selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
+                                cmp.include(item, new Tag(selectionItemAttrs));
+                            %></coral-actionbar-item><%
+                          }
+                        } else { %>
+                          <coral-actionbar-item><%
+                              AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                              selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
+                              cmp.include(item, new Tag(selectionItemAttrs));
+                          %></coral-actionbar-item>
+                        <%
+                        }
                     }
                 }
             %></coral-actionbar-primary>
@@ -439,6 +459,9 @@ try {
                     %></coral-actionbar-item><%
                 }
             %>
+              <%
+              if (StringUtils.contains(assetId ,"/content/dam")) {
+              %>
               <coral-actionbar-item>
                 <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                   <%
@@ -460,6 +483,8 @@ try {
                   %>
                 </coral-buttongroup>
               </coral-actionbar-item>
+              <% } %>
+
             </coral-actionbar-secondary>
         </coral-actionbar>
         <betty-titlebar>

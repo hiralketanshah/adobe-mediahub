@@ -628,7 +628,7 @@ login
     String modalTitle = printProperty(cfg, i18n, xssAPI, "changePasswordSuccessTitle", i18n.get("Password Changed"));
 %>
 
-<coral-dialog id="popupDialog">
+<coral-dialog id="popupDialog" backdrop="static">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
   <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox> </coral-dialog-content>
   <coral-dialog-footer>
@@ -636,7 +636,7 @@ login
     <button id="nextButton" is="coral-button" variant="primary" disabled> <%=i18n.get("Next")%> </button>
   </coral-dialog-footer>
 </coral-dialog>
-<coral-dialog id="agreeDialog">
+<coral-dialog id="agreeDialog" backdrop="static">
   <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
   <coral-dialog-content>
     <p> <%= i18n.get("second login content") %> </p>
