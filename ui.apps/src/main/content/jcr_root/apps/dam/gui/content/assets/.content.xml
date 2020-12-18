@@ -196,7 +196,7 @@
                   sling:orderBefore="adhocassetshare"
                   icon="share"
                   target=".cq-damadmin-admin-childpages"
-                  text="BNP Share Link"
+                  text="Share Link"
                   variant="actionBar">
                     <granite:rendercondition
                       jcr:primaryType="nt:unstructured"
