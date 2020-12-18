@@ -439,6 +439,9 @@ try {
                     %></coral-actionbar-item><%
                 }
             %>
+              <%
+              if (StringUtils.contains(assetId ,"/content/dam")) {
+              %>
               <coral-actionbar-item>
                 <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                   <%
@@ -460,6 +463,8 @@ try {
                   %>
                 </coral-buttongroup>
               </coral-actionbar-item>
+              <% } %>
+
             </coral-actionbar-secondary>
         </coral-actionbar>
         <betty-titlebar>
