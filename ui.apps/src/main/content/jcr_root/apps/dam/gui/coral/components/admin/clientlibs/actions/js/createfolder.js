@@ -798,6 +798,15 @@
                     return dom;
                 }());
 
+                // Hidden. For Status type.
+                contentForm.appendChild(function() {
+                  var dom = document.createElement("input");
+                  dom.type = "hidden";
+                  dom.name = "./jcr:content/metadata/bnpp-status";
+                  dom.value = "draft";
+                  return dom;
+                }());
+
                 // Hidden. To create jcr:content under folder.
                 contentForm.appendChild(function() {
                     var dom = document.createElement("input");

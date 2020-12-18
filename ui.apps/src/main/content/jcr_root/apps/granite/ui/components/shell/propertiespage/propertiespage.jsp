@@ -234,6 +234,10 @@ boolean hasActiveRail = rails != null && cmp.getExpressionHelper().getBoolean(ra
 %><!DOCTYPE html>
 <html <%= htmlAttrs %>>
 <head>
+    <script type="text/javascript">
+      var data = [];
+    </script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="<%= request.getContextPath() %>/libs/granite/core/content/login/favicon.ico"><%
@@ -362,8 +366,6 @@ try {
                           %></coral-actionbar-item>
                         <%
                         }
-
-
                     }
                 }
             %></coral-actionbar-primary>
@@ -456,7 +458,34 @@ try {
                         }
                     %></coral-actionbar-item><%
                 }
-            %></coral-actionbar-secondary>
+            %>
+              <%
+              if (StringUtils.contains(assetId ,"/content/dam")) {
+              %>
+              <coral-actionbar-item>
+                <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                  <%
+                        String saveBtnVariant = "primary";
+
+                        AttrBuilder doneAttrs1 = new AttrBuilder(request, xssAPI);
+                        doneAttrs1.add("id", "shell-propertiespage-doneactivator");
+                        doneAttrs1.add("type", "submit");
+                        doneAttrs1.add("form", formId);
+                        doneAttrs1.add("is", "coral-button");
+                        doneAttrs1.add("variant", saveBtnVariant);
+                        doneAttrs1.addClass("granite-form-saveactivator");
+                        doneAttrs1.addHref("data-granite-form-saveactivator-href", backHref);
+                        doneAttrs1.addClass("foundation-fixedanchor");
+                        doneAttrs1.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+
+                        %><button <%= doneAttrs1 %> onclick="internalPublish()"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
+
+                  %>
+                </coral-buttongroup>
+              </coral-actionbar-item>
+              <% } %>
+
+            </coral-actionbar-secondary>
         </coral-actionbar>
         <betty-titlebar>
             <betty-titlebar-title><%
@@ -603,6 +632,63 @@ try {
 }
 logger.debug("Render ends");
 %>
+
+<%
+if(StringUtils.isNotEmpty(assetId)) {
+  Resource asset = resourceResolver.getResource(assetId);
+	  if (asset != null) {
+		  if(StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")){
+		    Iterator<Resource> it = asset.listChildren();
+        while(it.hasNext()) {
+          Resource child = it.next();
+          if(!StringUtils.equals(child.getName(),"jcr:content") &&  !StringUtils.equals(child.getName(),"rep:policy")){
+          %>
+            <script>
+            data.push({
+              name: 'payload',
+              value: '<%= child.getPath() %>'
+              });
+            </script>
+          <%
+          }
+        }
+		  } else{
+		  %>
+		    <script>
+        data.push({
+          name: 'payload',
+          value: '<%= assetId %>'
+          });
+        </script>
+		  <%
+		  }
+	  }
+}
+%>
+
+<script type="text/javascript">
+
+   data.push({name: '_charset_',value: 'UTF-8'});
+   data.push({name: 'payloadType',value: 'JCR_PATH'});
+   data.push({name: 'model',value: '/var/workflow/models/mediahub/mediahub---validation'});
+   data.push({name: 'model@Delete',value: ''});
+   data.push({name: 'workflowTitle',value: 'Internal Publish'});
+   var asset = '<%= request.getParameter("item") %>';
+   function internalPublish() {
+      $.ajax({
+        type: "POST",
+        url: "/etc/workflow/instances",
+        data: data,
+        async: true,
+        cache: false,
+        success: function(response) {
+            if (response) {
+                var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+            }
+        }
+      });
+   }
+</script>
 </html><%!
 
 private String getPreferencesJSON(UserProperties props) throws Exception {

@@ -12,32 +12,6 @@
         <flow
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
-            <process_copy_1764040631
-                jcr:created="{Date}2020-11-25T14:56:30.887+01:00"
-                jcr:createdBy="admin"
-                jcr:lastModified="{Date}2020-12-01T10:31:31.623+01:00"
-                jcr:lastModifiedBy="admin"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Validation metadata"
-                sling:resourceType="cq/workflow/components/model/process">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    PROCESS="com.mediahub.core.workflows.ValidateMedataProcessWorkflow"
-                    PROCESS_AUTO_ADVANCE="true"/>
-            </process_copy_1764040631>
-            <process_copy
-                jcr:created="{Date}2020-11-25T14:19:00.460+01:00"
-                jcr:createdBy="admin"
-                jcr:lastModified="{Date}2020-12-01T10:31:10.583+01:00"
-                jcr:lastModifiedBy="admin"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Move asset to medialibrary"
-                sling:resourceType="cq/workflow/components/model/process">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    PROCESS="com.mediahub.core.workflows.MoveAssetsProcessWorkflow"
-                    PROCESS_AUTO_ADVANCE="true"/>
-            </process_copy>
             <activateresourceproc
                 jcr:created="{Date}2020-11-24T10:00:44.800Z"
                 jcr:createdBy="arnaud-test"
@@ -52,6 +26,19 @@
                     PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </activateresourceproc>
+            <process_1607596499
+              jcr:created="{Date}2020-12-10T19:44:59.059+05:30"
+              jcr:createdBy="admin"
+              jcr:lastModified="{Date}2020-12-10T19:46:09.731+05:30"
+              jcr:lastModifiedBy="admin"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="Save Metadata in Moved Asset"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.SaveMetadataProcess"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process_1607596499>
         </flow>
     </jcr:content>
 </jcr:root>
