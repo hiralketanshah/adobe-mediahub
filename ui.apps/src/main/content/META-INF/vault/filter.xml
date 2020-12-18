@@ -11,5 +11,5 @@
     <filter root="/apps/mediahub/projects"/>
     <filter root="/apps/mediahub/acl-configuration" mode="update"/>
     <filter root="/apps/cq/gui" mode="update"/>
-    <filter root="/apps/settings/dam/adhocassetshare/en.txt" />
+    <filter root="/apps/settings/dam/adhocassetshare" />
 </workspaceFilter>
