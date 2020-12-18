@@ -53,7 +53,8 @@
   "Restricted or Public" : "Restricted or Public",
 
   "second login content":
-  "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit.</p> <br> <a href='#'> Link 1</a> <br> <a href='#'> Link 2</a>"
+  "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit.</p> <br> <a href='#'> Link 1</a> <br> <a href='#'> Link 2</a>",
 
+  "The above share link will expire in 48 hrs": "The above share link will expire in 48 hrs"
 
 }

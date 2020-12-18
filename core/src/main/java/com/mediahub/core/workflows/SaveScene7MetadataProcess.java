@@ -17,6 +17,7 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -53,9 +54,9 @@ public class SaveScene7MetadataProcess implements WorkflowProcess{
         ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
         String domain = modifiableValueMap.get("dam:scene7Domain", "https://s7g10.scene7.com/");
         String folder =  "is/content/" + modifiableValueMap.get("dam:scene7Folder", StringUtils.EMPTY);
-        String broadcastUrl = "/player.jsp?content=";
-        modifiableValueMap.put("bnpp-external-broadcast-url", externalizer.publishLink(resourceResolver, broadcastUrl) + domain + folder + movedAsset.getName());
-        modifiableValueMap.put("bnpp-external-file-url", domain + folder + movedAsset.getName());
+        modifiableValueMap.put("bnpp-external-broadcast-url", domain + folder +  URIUtil.encodePath(movedAsset.getName()).toString());
+        modifiableValueMap.put("bnpp-external-file-url", domain + folder + URIUtil.encodePath(movedAsset.getName()).toString());
+
         resourceResolver.commit();
       }
     } catch (LoginException | PersistenceException e) {
