@@ -16,6 +16,7 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -53,9 +54,9 @@ public class SaveMetadataProcess implements WorkflowProcess{
       if(null != movedAsset){
         Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
         ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
-        String broadcastUrl = "/player.jsp?content=" + payloadPath;
+        String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
         modifiableValueMap.put("bnpp-internal-broadcast-url",externalizer.publishLink(resourceResolver, broadcastUrl));
-        modifiableValueMap.put("bnpp-internal-file-url",externalizer.publishLink(resourceResolver, payloadPath));
+        modifiableValueMap.put("bnpp-internal-file-url",externalizer.publishLink(resourceResolver, URIUtil.encodePath(payloadPath)));
         resourceResolver.commit();
       }
 
