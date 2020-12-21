@@ -5,43 +5,75 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.GenericEmailNotification;
+
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
+
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uk.org.lidalia.slf4jext.Level;
-import uk.org.lidalia.slf4jtest.LoggingEvent;
-import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class UserDeactivationScheduledTaskTest {
 
-  private UserDeactivationScheduledTask fixture = new UserDeactivationScheduledTask();
-
-  private TestLogger logger = TestLoggerFactory.getTestLogger(fixture.getClass());
+  @InjectMocks  
+  private UserDeactivationScheduledTask fixture;
+  
+  @Mock
+  GenericEmailNotification genericEmailNotification;
 
   @Mock
   private ResourceResolver resolver;
 
   @Mock
   ResourceResolverFactory resolverFactory;
+  
+  @Mock
+  private SearchResult searchResult;
+  
+  @Mock
+  ValueMap valueMap;
+
+  @Mock
+  private Query query;
+  
+  @Mock
+  private Session session;
+  
+  @Mock
+  Resource resource;
+  
+  @Mock
+  User user;
+  
+  @Mock
+  UserManager userManager;
+  
+  Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+          BnpConstants.WRITE_SERVICE);
 
   @BeforeEach
   void setup() {
@@ -50,53 +82,44 @@ public class UserDeactivationScheduledTaskTest {
 
   @Test
   void run() throws LoginException {
+      try {
     UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
     when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
     when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
     when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
-    QueryBuilder queryBuilder = mock(QueryBuilder.class);
-
-    fixture.resolverFactory = resolverFactory;
+    QueryBuilder queryBuilder = mock(QueryBuilder.class);    
     when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
+    when(resolver.adaptTo(Session.class)).thenReturn(session);
     when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
-
-
+    when(resolver.adaptTo(Session.class)).thenReturn(session);
+    when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+    when(query.getResult()).thenReturn(searchResult);
+    when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    List<Resource> userList = new ArrayList<>();
+    userList.add(resource);
+    when(searchResult.getResources()).thenReturn(userList.iterator());
+    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+    when(resource.getValueMap()).thenReturn(valueMap);
+    when(valueMap.get(BnpConstants.EXPIRY,String.class)).thenReturn("2019/06/09");
+    when(resource.getPath()).thenReturn("/etc/home/user");
+    when(userManager.getAuthorizableByPath("/etc/home/user")).thenReturn(user);
+    when(user.isDisabled()).thenReturn(false);
+    when(valueMap.get(BnpConstants.EMAIL,String.class)).thenReturn("MediaHub@gmail.com");
+    when(valueMap.get(BnpConstants.FIRST_NAME,String.class)).thenReturn("TestUser");
+    when(resolver.hasChanges()).thenReturn(true);
     fixture.activate(config);
     fixture.run();
 
-    List<LoggingEvent> events = logger.getLoggingEvents();
-    assertEquals(2, events.size());
-    LoggingEvent event = events.get(0);
-    assertEquals(Level.DEBUG, event.getLevel());
-    assertEquals(1, event.getArguments().size());
-    assertEquals(BnpConstants.EXTERNAL, event.getArguments().get(0));
+
     assertEquals("0 1 0 1/1 * ? *", config.scheduler_expression());
     assertEquals(Boolean.FALSE, config.scheduler_concurrent());
 
 
-
-  }
-
-  @Test
-  void getQuery(){
-    Map<String,String> predicateMap = fixture.getPredicateMap();
-    assertEquals(BnpConstants.HOME_USERS, predicateMap.get(BnpConstants.PATH));
-    assertEquals(BnpConstants.REP_USERS, predicateMap.get(BnpConstants.TYPE));
-    assertEquals(BnpConstants.PROFILE_TYPE, predicateMap.get(BnpConstants.FIRST_PROPERTY));
-  }
-
-  @Test
-  void deactivateExpiredUsers() throws ParseException, RepositoryException {
-    UserManager userManager = mock(UserManager.class);
-    Resource user = mock(Resource.class);
-    String expiryDate = "2019/06/09";
-    fixture.deactivateExpiredUsers(userManager, user, expiryDate);
-
-    SimpleDateFormat sdf = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
-    Date date = sdf.parse(expiryDate);
-    Calendar expiry = Calendar.getInstance();
-    expiry.setTime(date);
-    assertEquals(true,Calendar.getInstance().after(expiry));
+    } catch (UnsupportedRepositoryOperationException e) {
+        e.printStackTrace();
+    } catch (RepositoryException e) {
+        e.printStackTrace();
+    }
   }
 
 }
