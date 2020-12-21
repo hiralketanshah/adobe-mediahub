@@ -1,9 +1,6 @@
 package com.mediahub.core.workflows;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
@@ -15,6 +12,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowNode;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
@@ -22,13 +20,14 @@ import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.jcr.Node;
+import java.util.Set;
+
 import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -43,154 +42,123 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class ValidateMetadataProcessWorkflowTest {
 
-  MetaDataMap metadataMap;
+    MetaDataMap metadataMap;
 
-  @Mock
-  WorkflowSession workflowSession;
+    @Mock
+    WorkflowSession workflowSession;
 
-  @Mock
-  WorkItem workItem;
+    @Mock
+    WorkItem workItem;
 
-  @Mock
-  WorkflowData workflowData;
+    @Mock
+    WorkflowData workflowData;
 
-  @Mock
-  ResourceResolverFactory resolverFactory;
+    @Mock
+    ResourceResolverFactory resolverFactory;
 
-  @Mock
-  ResourceResolver resolver;
+    @Mock
+    ResourceResolver resolver;
 
-  @Mock
-  Resource resource;
+    @Mock
+    Resource resource;
 
-  @InjectMocks
-  ValidateMedataProcessWorkflow workflowProcess = new ValidateMedataProcessWorkflow();
+    @InjectMocks
+    ValidateMedataProcessWorkflow workflowProcess = new ValidateMedataProcessWorkflow();
 
-  @Mock
-  ValidateMedataProcessWorkflow workflowProcessMock;
+    @Mock
+    ValidateMedataProcessWorkflow workflowProcessMock;
 
-  @Mock
-  QueryBuilder queryBuilder;
+    @Mock
+    QueryBuilder queryBuilder;
 
-  @Mock
-  Session session;
+    @Mock
+    Session session;
 
-  @Mock
-  Query query;
+    @Mock
+    Query query;
 
-  @Mock
-  SearchResult result;
+    @Mock
+    SearchResult result;
 
-  @Mock
-  Iterator<Resource> requiredFields;
+    @Mock
+    Iterator<Resource> requiredFields;
 
-  @Mock
-  Payload payload;
+    @Mock
+    Payload payload;
 
-  @Mock
-  WorkflowNode node;
+    @Mock
+    ValueMap map;
 
-  final Map<String, Object> authInfo = Collections
-      .singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+    @Mock
+    WorkflowNode node;
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    metadataMap = new SimpleMetaDataMap();
-    when(workItem.getWorkflowData()).thenReturn(workflowData);
-  }
+    @Mock
+    Set<String> keySet;
 
-  @Test
-  public void execute() throws Exception {
+    @Mock
+    private SearchResult searchResult;
 
-    when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-    when(resolver.isLive()).thenReturn(Boolean.TRUE);
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
 
-    when(workflowData.getPayload()).thenReturn(payload);
-    when(resource.getPath()).thenReturn("/dam/projects/");
-    when(resolver.getResource(any())).thenReturn(resource);
+    @BeforeEach
+    public void setUp() throws Exception {
+        metadataMap = new SimpleMetaDataMap();
+        when(workItem.getWorkflowData()).thenReturn(workflowData);
+    }
 
-    when(resource.getResourceType()).thenReturn(BnpConstants.DAM_ASSET);
-    when(resource.getParent()).thenReturn(resource);
-    when(resource.getChild(any())).thenReturn(resource);
+    @Test
+    public void execute() throws Exception {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        execute2();
+        when(map.get("bnpp-status", StringUtils.EMPTY)).thenReturn("validated");
+        when(workItem.getNode()).thenReturn(node);
+        when(resolver.isLive()).thenReturn(Boolean.TRUE);
+        Assertions.assertThrows(WorkflowException.class, () -> {
+            workflowProcess.execute(workItem, workflowSession, metadataMap);
+        });
+    }
 
-    ValueMap map = mock(ValueMap.class);
-    when(resource.getValueMap()).thenReturn(map);
-    when(map.get(any(),any())).thenReturn("");
+    @Test
+    public void execute3() throws Exception {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        execute2();
+        when(map.get("bnpp-status", StringUtils.EMPTY)).thenReturn("Not-validated");
+        when(workItem.getNode()).thenReturn(node);
+        when(resolver.isLive()).thenReturn(Boolean.TRUE);
+        Assertions.assertThrows(WorkflowException.class, () -> {
+            workflowProcess.execute(workItem, workflowSession, metadataMap);
+        });
+    }
 
-    List<String> missedMetaData = new ArrayList<>();
-    missedMetaData.add(JcrConstants.JCR_TITLE);
-    when(workItem.getNode()).thenReturn(node);
-    when(map.get("bnpp-status", StringUtils.EMPTY)).thenReturn("validated");
-
-    when(workflowProcessMock.checkMissingMetadata(any(), any(), any(), any(), any())).thenReturn(missedMetaData);
-
-    workflowProcess.execute(workItem, workflowSession, metadataMap);
-  }
-
-  @Test
-  public void executeEmptyContent() throws Exception {
-
-    when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-    when(resolver.isLive()).thenReturn(Boolean.TRUE);
-
-    when(workflowData.getPayload()).thenReturn(payload);
-    when(resource.getPath()).thenReturn("/dam/projects/");
-    when(resolver.getResource(any())).thenReturn(resource);
-    when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
-
-    when(resource.getResourceType()).thenReturn(BnpConstants.DAM_ASSET);
-    when(resource.getParent()).thenReturn(resource);
-    ValueMap map = mock(ValueMap.class);
-    when(resource.getValueMap()).thenReturn(map);
-
-    workflowProcess.execute(workItem, workflowSession, metadataMap);
-  }
-
-  @Test
-  public void executeWorkflowException() throws Exception {
-    when(workflowData.getPayloadType()).thenReturn("dummy");
-    Assertions.assertThrows(WorkflowException.class, () ->{
-      workflowProcess.execute(workItem, workflowSession, metadataMap);
-    });
-  }
-
-  @Test
-  public void executeLoginException() throws Exception {
-    workflowProcess.resolverFactory = resolverFactory;
-    when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenThrow(new LoginException());
-    when(resolver.isLive()).thenReturn(Boolean.TRUE);
-    doNothing().when(resolver).close();
-    Assertions.assertThrows(WorkflowException.class, () ->{
-      workflowProcess.execute(workItem, workflowSession, metadataMap);
-    });
-  }
-
-  @Test
-  public void checkMissingMetadata() throws LoginException {
-    workflowProcess.resolverFactory = resolverFactory;
-    when(workflowProcess.resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-    List<String> missedMetaData = new ArrayList<>();
-    when(resource.getChild(any())).thenReturn(resource);
-
-    ValueMap map = mock(ValueMap.class);
-    when(resource.getValueMap()).thenReturn(map);
-    when(map.get(any(),any())).thenReturn("");
-
-    when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
-    when(resolver.adaptTo(Session.class)).thenReturn(session);
-    when(queryBuilder.createQuery(any(),any())).thenReturn(query);
-    when(query.getResult()).thenReturn(result);
-    when(result.getResources()).thenReturn(requiredFields);
-
-    assertEquals(missedMetaData,workflowProcess.checkMissingMetadata(resolver, missedMetaData, resource, resource, "/"));
-  }
+    public void execute2() {
+        when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+        when(workflowData.getPayload()).thenReturn(payload);
+        when(payload.toString()).thenReturn("/dam/projects/");
+        when(resolver.getResource("/dam/projects/")).thenReturn(resource);
+        when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(resource);
+        when(resource.getResourceType()).thenReturn(BnpConstants.DAM_ASSET);
+        when(resource.getParent()).thenReturn(resource);
+        when(resource.getChild(BnpConstants.METADATA)).thenReturn(resource);
+        when(resource.getValueMap()).thenReturn(map);
+        when(map.get(BnpConstants.METADATA_SCHEMA, StringUtils.EMPTY)).thenReturn("MediaHubSchema");
+        when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+        when(resolver.adaptTo(Session.class)).thenReturn(session);
+        when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+        when(query.getResult()).thenReturn(searchResult);
+        List<Resource> userList = new ArrayList<>();
+        userList.add(resource);
+        when(searchResult.getResources()).thenReturn(userList.iterator());
+        when(map.get("cq-msm-lockable", StringUtils.EMPTY)).thenReturn("/dam/projects/./metadata/");
+        keySet = new HashSet<>();
+        keySet.add("/media/worflow/");
+        when(map.keySet()).thenReturn(keySet);
+        when(map.get(BnpConstants.FOLDER_METADATA_SCHEMA, StringUtils.EMPTY)).thenReturn("FolderMediaHubSchema");
+        when(workItem.getNode()).thenReturn(node);
+    }
 
 }

@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +55,6 @@ public class ProjectExpireNotificationSchedulerTest {
 
     private static final String PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject/jcr:content";
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
-    private static final String DUE_DATE = "2020-10-10T17:33:00.000+05:30";
     private static final String AEM_PROJECTS_PATH = "/content/projects";
 
     @InjectMocks
@@ -182,39 +182,20 @@ public class ProjectExpireNotificationSchedulerTest {
     }
 
     @Test
-    void run() throws LoginException {
+    void TestRun1() throws LoginException {
         try {
             ProjectExpireNotificationScheduler.Config config = mock(ProjectExpireNotificationScheduler.Config.class);
             when(config.getProjectPath()).thenReturn(BnpConstants.AEM_PROJECTS_PATH);
-
-            Map<String, Object> map = new HashMap<>();
-            map.put(BnpConstants.PATH, AEM_PROJECTS_PATH);
-            map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.SLING_RESOURCETYPE);
-            map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
-            map.put(BnpConstants.FIRST_PROPERTY_VALUE, BnpConstants.PROJECT_RESOURCE);
-            map.put(BnpConstants.SECOND_DATERANGE_PROPERTY, BnpConstants.PROJECT_DUEDATE);
-            map.put(BnpConstants.SECOND_DATERANGE_UPPEROPERATION, BnpConstants.LESSTHAN_EQUALS);
-            map.put(BnpConstants.SECOND_DATERANGE_UPPERBOUND, "2020-12-26T19:29:13.454+05:30");
-
-            when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
-            when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
-            when(resolver.adaptTo(Session.class)).thenReturn(session);
-            when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
-            when(query.getResult()).thenReturn(searchResult);
-            listHit.add(hit);
-            when(searchResult.getHits()).thenReturn(listHit);
-            when(hit.getPath()).thenReturn(PATH);
-            when(resolver.getResource(PATH)).thenReturn(resource);
-            when(resource.adaptTo(Node.class)).thenReturn(node);
-            when(node.getProperty(BnpConstants.PROJECT_DUEDATE)).thenReturn(property);
-            when(property.getValue()).thenReturn(value);
-            when(value.getString()).thenReturn(DUE_DATE);
+            TestRun4();
+            Calendar cal = Calendar.getInstance();
+            Date onePlusMonth = cal.getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = dateFormat.format(onePlusMonth);
+            when(value.getString()).thenReturn(strDate);
             when(resolver.adaptTo(ProjectManager.class)).thenReturn(projectManager);
-            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource);
-            when(resource.adaptTo(Project.class)).thenReturn(project);
-
-            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource);
-            when(resource.adaptTo(Node.class)).thenReturn(node1);
+            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource1);
+            when(resource1.adaptTo(Project.class)).thenReturn(project);
+            when(resource1.adaptTo(Node.class)).thenReturn(node1);
             when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1);
             when(property1.getValue()).thenReturn(value1);
             when(value1.getString()).thenReturn("projects-projectoct21-owner");
@@ -244,6 +225,7 @@ public class ProjectExpireNotificationSchedulerTest {
             when(value2.getString()).thenReturn("MediaUserName");
             when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
             when(value3.getString()).thenReturn("MediaHub@gmail.com");
+            when(resolver.hasChanges()).thenReturn(true);
 
             scheduler.activate(config);
             scheduler.run();
@@ -251,9 +233,156 @@ public class ProjectExpireNotificationSchedulerTest {
             assertEquals(null, externalizer.authorLink(any(ResourceResolver.class), any(String.class)));
 
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void TestRun2() throws LoginException {
+        try {
+            ProjectExpireNotificationScheduler.Config config = mock(ProjectExpireNotificationScheduler.Config.class);
+            when(config.getProjectPath()).thenReturn(BnpConstants.AEM_PROJECTS_PATH);
+            TestRun4();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 30);
+            Date onePlusMonth = cal.getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = dateFormat.format(onePlusMonth);
+            when(value.getString()).thenReturn(strDate);
+            when(resolver.adaptTo(ProjectManager.class)).thenReturn(projectManager);
+            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource1);
+            when(resource1.adaptTo(Project.class)).thenReturn(project);
+            when(resource1.adaptTo(Node.class)).thenReturn(node1);
+            when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1);
+            when(property1.getValue()).thenReturn(value1);
+            when(value1.getString()).thenReturn("projects-projectoct21-owner");
+
+            when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+            when(userManager.getAuthorizable("projects-projectoct21-owner")).thenReturn(group);
+
+            List<Authorizable> userList = new ArrayList<>();
+            userList.add(user);
+            when(group.getDeclaredMembers()).thenReturn(userList.iterator());
+
+            when(project.getTitle()).thenReturn("bnpproject");
+            when(externalizer.authorLink(any(ResourceResolver.class), any(String.class))).thenReturn(
+                    "http://localhost:4502/projects/details.html/content/projects/bnpfolder1/bnpfolder2/bnpproject");
+            when(user.getID()).thenReturn("emp123");
+            when(userManager.getAuthorizable("emp123")).thenReturn(authorizable);
+            when(authorizable.hasProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(true);
+
+            when(value2.getString()).thenReturn("emp123");
+            when(value3.getString()).thenReturn("wmp123@gmail.com");
+
+            Value[] valueArray = { value2 };
+            Value[] valueArray1 = { value3 };
+
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray);
+            when(authorizable.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray);
+            when(value2.getString()).thenReturn("MediaUserName");
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
+            when(value3.getString()).thenReturn("MediaHub@gmail.com");
+            when(resolver.hasChanges()).thenReturn(true);
+
+            scheduler.activate(config);
+            scheduler.run();
+
+            assertEquals(null, externalizer.authorLink(any(ResourceResolver.class), any(String.class)));
+
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void TestRun3() throws LoginException {
+        try {
+            ProjectExpireNotificationScheduler.Config config = mock(ProjectExpireNotificationScheduler.Config.class);
+            when(config.getProjectPath()).thenReturn(BnpConstants.AEM_PROJECTS_PATH);
+            TestRun4();
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -31);
+            Date onePlusMonth = cal.getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = dateFormat.format(onePlusMonth);
+            when(value.getString()).thenReturn(strDate);
+            when(resolver.adaptTo(ProjectManager.class)).thenReturn(projectManager);
+            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource1);
+            when(resource1.adaptTo(Project.class)).thenReturn(project);
+            when(resource1.adaptTo(Node.class)).thenReturn(node1);
+            when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1);
+            when(property1.getValue()).thenReturn(value1);
+            when(value1.getString()).thenReturn("projects-projectoct21-owner");
+
+            when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+            when(userManager.getAuthorizable("projects-projectoct21-owner")).thenReturn(group);
+
+            List<Authorizable> userList = new ArrayList<>();
+            userList.add(user);
+            when(group.getDeclaredMembers()).thenReturn(userList.iterator());
+
+            when(project.getTitle()).thenReturn("bnpproject");
+            when(externalizer.authorLink(any(ResourceResolver.class), any(String.class))).thenReturn(
+                    "http://localhost:4502/projects/details.html/content/projects/bnpfolder1/bnpfolder2/bnpproject");
+            when(user.getID()).thenReturn("emp123");
+            when(userManager.getAuthorizable("emp123")).thenReturn(authorizable);
+            when(authorizable.hasProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(true);
+
+            when(value2.getString()).thenReturn("emp123");
+            when(value3.getString()).thenReturn("wmp123@gmail.com");
+
+            Value[] valueArray = { value2 };
+            Value[] valueArray1 = { value3 };
+
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray);
+            when(authorizable.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray);
+            when(value2.getString()).thenReturn("MediaUserName");
+            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
+            when(value3.getString()).thenReturn("MediaHub@gmail.com");
+            when(resolver.hasChanges()).thenReturn(true);
+
+            scheduler.activate(config);
+            scheduler.run();
+
+            assertEquals(null, externalizer.authorLink(any(ResourceResolver.class), any(String.class)));
+
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void TestRun4() {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put(BnpConstants.PATH, AEM_PROJECTS_PATH);
+            map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.SLING_RESOURCETYPE);
+            map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
+            map.put(BnpConstants.FIRST_PROPERTY_VALUE, BnpConstants.PROJECT_RESOURCE);
+            map.put(BnpConstants.SECOND_DATERANGE_PROPERTY, BnpConstants.PROJECT_DUEDATE);
+            map.put(BnpConstants.SECOND_DATERANGE_UPPEROPERATION, BnpConstants.LESSTHAN_EQUALS);
+            map.put(BnpConstants.SECOND_DATERANGE_UPPERBOUND, "2020-12-26T19:29:13.454+05:30");
+
+            when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
+
+            when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+            when(resolver.adaptTo(Session.class)).thenReturn(session);
+            when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+            when(query.getResult()).thenReturn(searchResult);
+            listHit.add(hit);
+            when(searchResult.getHits()).thenReturn(listHit);
+            when(hit.getPath()).thenReturn(PATH);
+            when(resolver.getResource(PATH)).thenReturn(resource);
+            when(resource.adaptTo(Node.class)).thenReturn(node);
+            when(node.getProperty(BnpConstants.PROJECT_DUEDATE)).thenReturn(property);
+            when(property.getValue()).thenReturn(value);
+        } catch (LoginException e) {
+
+            e.printStackTrace();
+        } catch (RepositoryException e) {
+
+            e.printStackTrace();
+        }
+
     }
 
 }
