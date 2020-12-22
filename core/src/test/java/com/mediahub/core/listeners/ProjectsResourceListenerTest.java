@@ -48,7 +48,6 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProjectsResourceListenerTest {
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
     private static final String PARENT_PATH = "/content/projects/bnpfolder1/bnpfolder2";
