@@ -762,7 +762,13 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                     %><sling:include resource="<%= header %>" /><%
                 }
             %></div>
+
+            <%
+            if(StringUtils.contains(assetId, "/content/dam/projects") || StringUtils.contains(assetId, "/content/projects")){ %>
+            <div class="foundation-layout-panel-bodywrapper" style="background-color:#DEE9F3;">
+            <%} else { %>
             <div class="foundation-layout-panel-bodywrapper">
+            <% } %>
                 <div class="foundation-layout-panel-body"><%
                     if (hasRails) {
                         AttrBuilder railAttrs = new AttrBuilder(request, xssAPI);
