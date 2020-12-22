@@ -38,12 +38,18 @@
                         fieldLabel="Last Name"
                         name="lastName"
                         required="{Boolean}true"/>
+                    <expiryDateTypeHint
+                      jcr:primaryType="nt:unstructured"
+                      sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                      name="expiryDate@TypeHint"
+                      value="String"/>
                     <expirydate
                         granite:class="date"
                         granite:rel="project-duedate"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                         displayedFormat="YYYY/MM/DD"
+                        valueFormat="YYYY/MM/DD"
                         fieldLabel="Expiry Date"
                         minDate="today"
                         name="expiryDate"
