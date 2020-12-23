@@ -1,23 +1,27 @@
 package com.mediahub.core.listeners;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.Map;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.mediahub.core.constants.BnpConstants;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
-import org.osgi.service.event.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.Privilege;
-
-import static org.mockito.Mockito.when;
+import mockit.MockUp;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
@@ -25,25 +29,23 @@ import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
-
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.observation.ResourceChange;
+import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.osgi.service.component.ComponentContext;
-
-import com.mediahub.core.constants.BnpConstants;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import static org.mockito.Mockito.verify;
-import mockit.MockUp;
+import org.osgi.service.event.Event;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class ProjectsResourceListenerTest {
@@ -124,6 +126,7 @@ public class ProjectsResourceListenerTest {
 
     @BeforeEach
     void setup() throws Exception, LoginException {
+        MockitoAnnotations.initMocks(this);
         context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
     }
 
@@ -158,8 +161,12 @@ public class ProjectsResourceListenerTest {
         Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
         when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
         accessControlManager.setPolicy(PARENT_PATH, accessControlPolicy);
-        projectsResourceListener.handleEvent(event);
 
+        List<ResourceChange> changedResources = new ArrayList<>();
+        ResourceChange change = new ResourceChange(ChangeType.ADDED, "/content/projects", true);
+        changedResources.add(change);
+
+        projectsResourceListener.onChange(changedResources);
         verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
 
     }
@@ -201,8 +208,12 @@ public class ProjectsResourceListenerTest {
         Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
         when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
         accessControlManager.setPolicy(PARENT_PATH, accessControlPolicy);
-        projectsResourceListener.handleEvent(event);
 
+        List<ResourceChange> changedResources = new ArrayList<>();
+        ResourceChange change = new ResourceChange(ChangeType.ADDED, "/content/projects", true);
+        changedResources.add(change);
+
+        projectsResourceListener.onChange(changedResources);
         verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
 
     }

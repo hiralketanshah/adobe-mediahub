@@ -5,8 +5,8 @@
     <filter root="/content/dam/mediahub" mode="merge"/>
     <filter root="/content/experience-fragments/mediahub" mode="merge"/>
     <filter root="/etc/acs-commons/lists/user-type" mode="merge"/>
- <filter root="/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema" mode="update"/>
-  	<filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="update"/>
+   <!--  <filter root="/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema" mode="update"/>
+  	<filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="update"/> -->
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish"/>
@@ -17,7 +17,7 @@
     <filter root="/conf/global/settings/workflow/launcher"/>
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>
-    <filter root="/conf/global/settings/dam/search/facets/assets"/> 
+   <!-- <filter root="/conf/global/settings/dam/search/facets/assets"/>  --> 
     <filter root="/conf/global/settings/workflow/models/mediahub/external-user-creation"/>
     <filter root="/var/workflow/models/mediahub/external-user-creation"/>
     <filter root="/var/workflow/models/mediahub/mediahub---validation" mode="update"/>

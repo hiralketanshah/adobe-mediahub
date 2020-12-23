@@ -20,6 +20,8 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.observation.ResourceChange;
+import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -39,14 +41,18 @@ import com.mediahub.core.utils.CreatePolicyNodeUtil;
  *         Listener class to provide read permissions to the parent project folders until projects.
  *
  */
-@Component(service = EventHandler.class,
-immediate = true,
-property = {
-    EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED  ,
-    EventConstants.EVENT_FILTER +  "=(path="+BnpConstants.AEM_PROJECTS_PATH+"/*)"
-})
+
+@Component(service = {
+	    ResourceChangeListener.class},
+	    immediate = true,
+	    property = {
+	        ResourceChangeListener.CHANGES + "=ADDED",
+	        ResourceChangeListener.PATHS + "=glob:/content/projects/**"// for handling custom invalidation for AF, AFF
+	    }
+	)
+
 @ServiceDescription("listen on changes in the resource tree")
-public class ProjectsResourceListener implements EventHandler {
+public class ProjectsResourceListener implements ResourceChangeListener {
 
 private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -60,73 +66,72 @@ private final Logger log = LoggerFactory.getLogger(getClass());
     private ConfigurationAdmin configAdmin;
     List<Principal> principalNameList;
 
-  public void handleEvent(final Event event) {
-    log.info("Begining of activating Project creation Observation in ProjectsResourceListener");
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-            BnpConstants.WRITE_SERVICE);
-    Session adminSession = null;
-    try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-        // getting session of System User
-        adminSession = adminResolver.adaptTo(Session.class);
-        String projectPath = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
-        log.info("Path : {}", projectPath);
-        if("cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
-        
-            Resource adminResource = adminResolver.getResource(projectPath);
-            principalNameList = new LinkedList<>();
-            Node projectNode = adminResource.adaptTo(Node.class);
-            
-            JackrabbitSession js = (JackrabbitSession) adminSession;
-            PrincipalManager principalMgr = js.getPrincipalManager();
-            Principal groupEditorPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
-            Principal groupObserverPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
-            Principal groupOwnerPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
-            Principal groupOwnerProjectPublisher = principalMgr
-                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
-            Principal groupExternalContribPrincipal = principalMgr
-                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
-           
-            principalNameList.add(groupEditorPrincipal);
-            principalNameList.add(groupObserverPrincipal);
-            principalNameList.add(groupOwnerPrincipal);
-            principalNameList.add(groupOwnerProjectPublisher);
-            principalNameList.add(groupExternalContribPrincipal);
-         
-            while (adminResource.getParent() != null
-                    && !StringUtils.equals(	adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH)) {
-                adminResource = adminResource.getParent();
-                String parentFolderPath = adminResource.getPath();
-                Node parentFldrNode = adminResource.adaptTo(Node.class);
-                if (parentFldrNode.hasNode(BnpConstants.REP_POLICY)) {
-                	log.info("CreatePolicyNodeUtil : {}", parentFolderPath);
-                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
-                } else {
-                    ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
-                    mvp.put(BnpConstants.JCR_MIXINTYPES, BnpConstants.REP_ACCESSCONTROLLABLE);
-                    adminResolver.commit();
-                    String parentProjectPath = adminResource.getPath();
-                    Resource reResource = adminResolver.getResource(parentProjectPath);
-                	log.info("CreatePolicyNodeUtil2 : {}", parentFolderPath);
-                    Node createPolicyNode = reResource.adaptTo(Node.class);
-                    createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
-                    adminResolver.commit();
-                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
-                }
-            }
-        log.info("End of activating Project creation Observation in ProjectsResourceListener");
-       }
-	} catch (LoginException | RepositoryException | PersistenceException e) {
-		log.error("RepositoryException while Executing events", e);
-	}finally {
-        if(adminSession!=null)
-        {
-        	adminSession.logout();
-        }
-	}
 
-        
-    }
+@Override
+public void onChange(List<ResourceChange> arg0) {
+	  final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+	            BnpConstants.WRITE_SERVICE);
+	    Session adminSession = null;
+	    try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
+	    	
+	        // getting session of System User
+	        adminSession = adminResolver.adaptTo(Session.class);
+	        for(ResourceChange my : arg0) {
+    	
+		        String projectPath = my.getPath();
+		        if("cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
+		            Resource adminResource = adminResolver.getResource(projectPath);
+		            principalNameList = new LinkedList<>();
+		            Node projectNode = adminResource.adaptTo(Node.class);
+		            
+		            JackrabbitSession js = (JackrabbitSession) adminSession;
+		            PrincipalManager principalMgr = js.getPrincipalManager();
+		            Principal groupEditorPrincipal = principalMgr
+		                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
+		            Principal groupObserverPrincipal = principalMgr
+		                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
+		            Principal groupOwnerPrincipal = principalMgr
+		                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
+		            Principal groupOwnerProjectPublisher = principalMgr
+		                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
+		            Principal groupExternalContribPrincipal = principalMgr
+		                    .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+		            principalNameList.add(groupEditorPrincipal);
+		            principalNameList.add(groupObserverPrincipal);
+		            principalNameList.add(groupOwnerPrincipal);
+		            principalNameList.add(groupOwnerProjectPublisher);
+		            principalNameList.add(groupExternalContribPrincipal);
+		         
+		            while (adminResource.getParent() != null
+		                    && !StringUtils.equals(	adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH)) {
+		                adminResource = adminResource.getParent();
+		                String parentFolderPath = adminResource.getPath();
+		                Node parentFldrNode = adminResource.adaptTo(Node.class);
+		                if (parentFldrNode.hasNode(BnpConstants.REP_POLICY)) {
+		                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
+		                } else {
+
+		                    ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
+		                    mvp.put(BnpConstants.JCR_MIXINTYPES, BnpConstants.REP_ACCESSCONTROLLABLE);
+		                    adminResolver.commit();
+		                    String parentProjectPath = adminResource.getPath();
+		                    Resource reResource = adminResolver.getResource(parentProjectPath);
+		                    Node createPolicyNode = reResource.adaptTo(Node.class);
+		                    createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
+		                    adminResolver.commit();
+		                    CreatePolicyNodeUtil.creatrepPolicyeNodes(adminSession, parentFolderPath, principalNameList);
+		                }
+		            }
+		       }
+	        }
+	    } catch (LoginException | RepositoryException | PersistenceException e) {
+			log.error("RepositoryException while Executing events", e);
+		}finally {
+	        if(adminSession!=null)
+	        {
+	        	adminSession.logout();
+	        }
+		}
+	
+}
 }
