@@ -52,7 +52,7 @@ public class BnpConstants {
   public static final String ROLE_OBSERVER ="role_observer";
   public static final String ROLE_OWNER ="role_owner";
   public static final String PROPERTY_ROLE_OWNER="role_owner";
-  public static final String ROLE_PROJECTPUBLISHER ="role_publisher";
+  public static final String ROLE_PROJECTPUBLISHER ="role_project-publisher";
   public static final String ROLE_EXTERNALCONTRIBUTEUR ="role_external-contributor";
   public static final String SLING_RESOURCETYPE ="sling:resourceType";
   public static final String PROJECT_RESOURCE ="cq/gui/components/projects/admin/card/projectcontent";
