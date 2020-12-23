@@ -44,6 +44,7 @@
                   com.adobe.granite.ui.components.FilteringResourceWrapper,
                   com.adobe.granite.ui.components.Tag,
                   com.adobe.granite.ui.components.rendercondition.RenderCondition,
+                  org.apache.jackrabbit.api.security.user.Group,
                   com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition" %><%--###
 PropertiesPage
 ==============
@@ -459,8 +460,28 @@ try {
                     %></coral-actionbar-item><%
                 }
             %>
+
               <%
-              if (StringUtils.contains(assetId ,"/content/dam")) {
+                boolean isEntityManager = false;
+                try {
+                    if(null != auth){
+                      Iterator<Group> groups = auth.memberOf();
+                        while(groups.hasNext()){
+                            Group group = groups.next();
+                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager")){
+                                isEntityManager = true;
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Unable to check group the user belongs to", e);
+                }
+              %>
+
+
+              <%
+              if (StringUtils.contains(assetId ,"/content/dam") && isEntityManager) {
               %>
               <coral-actionbar-item>
                 <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
