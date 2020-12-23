@@ -434,7 +434,7 @@ login
         <%-- this holds all the background divs that are dynamically loaded --%>
         <div id="bg_default" class="background"></div>
     </div>
-    <div id="tag"></div><%
+    <%
         // make sure the redirect path is valid and prefixed with the context path
         String redirect = request.getParameter("resource");
         if (redirect == null || !AuthUtil.isRedirectValid(request, redirect)) {
@@ -452,8 +452,8 @@ login
                 <h1 class="coral-Heading coral-Heading--1"><%= printProperty(cfg, i18n, xssAPI, "box/title", i18n.get("Welcome to BNP Paribas")) %></h1>
             </div>
             <p>
-                <%= printProperty(cfg, i18n, xssAPI, "box/text", i18n.get("All the tools you need to solve these complex digital business challenges.")) %>
-                <a class="coral-Link" id="learnmore" href="<%= xssAPI.getValidHref(i18n.getVar(cfg.get("box/learnMore/href", "#"))) %>" x-cq-linkchecker="skip"><%= printProperty(cfg, i18n, xssAPI, "box/learnMore/text", i18n.get("Learn More")) %></a>
+                <%= i18n.get("An Adobe Experience Cloud solution: All the tools you need to solve these complex digital business challenges.")%>
+
             </p>
         </div>
 
@@ -548,7 +548,7 @@ login
                         String newPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/newPasswordPlaceholder", i18n.get("New password"));
                         String confirmPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/confirmPasswordPlaceholder", i18n.get("Confirm new password"));
                     %>
-                    <p id="sign-in-title"><%= isLogin ? loginTitle : changeTitle %></p>
+                   
                     <div class="coral-Form-fieldwrapper">
                         <input is="coral-textfield" aria-label="<%= userPlaceholder %>" class="coral-Form-field" id="username" name="j_username" type="text" autofocus="autofocus" pattern=".*" placeholder="<%= userPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
                     </div>
@@ -602,24 +602,17 @@ login
             %><span><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></span><%
         }
         %>
-        <span>|</span>
+   
         <%
         if (cfg.containsKey("footer/terms/text")) {
             String text = cfg.get("footer/terms/text","");
-            %><span><%= i18n.get("Terms of use") %></span><%
+            %><span><%= i18n.get("Footer Menu") %></span><%
         }
         %>
-        <span>|</span>
-        <%
-        if (cfg.containsKey("footer/faq/text")) {
-            String text = cfg.get("footer/faq/text","");
-            %><span><%= i18n.get("FAQ") %></span><%
-        }
-        %>
-
+     
         <ul id="usage-box">
-          <li><a href="#"><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></a></li>
-          <li><span><%= i18n.get("The bank for a changing world")%><span></li>
+          <li><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></li>
+            <li><span><%= i18n.get("The bank for a changing world")%><span></li>
         </ul>
     </div>
 </div>
