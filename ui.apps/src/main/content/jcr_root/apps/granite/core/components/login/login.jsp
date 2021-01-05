@@ -590,30 +590,37 @@ login
     <div style="height: 5px; background-color: #00ac7b"></div>
     <div class="legal-footer coral--light bnp--green">
 
-        <%
-        // Footer: default copyright (removable)
-        if (cfg.containsKey("footer/copy/text")) {
-            ProductInfoProvider productInfoProvider = sling.getService(ProductInfoProvider.class);
-            String year = productInfoProvider == null ? null : productInfoProvider.getProductInfo().getYear();
-            if (year == null) {
-                year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-            }
-            String text = cfg.get("footer/copy/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></span><%
-        }
-        %>
-   
-        <%
-        if (cfg.containsKey("footer/terms/text")) {
-            String text = cfg.get("footer/terms/text","");
-            %><span><%= i18n.get("Footer Menu") %></span><%
-        }
-        %>
-     
-        <ul id="usage-box">
-          <li><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></li>
-            <li><span><%= i18n.get("The bank for a changing world")%><span></li>
-        </ul>
+
+
+        <div>
+          <%
+          // Footer: default copyright (removable)
+          if (cfg.containsKey("footer/copy/text")) {
+              ProductInfoProvider productInfoProvider = sling.getService(ProductInfoProvider.class);
+              String year = productInfoProvider == null ? null : productInfoProvider.getProductInfo().getYear();
+              if (year == null) {
+                  year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+              }
+              String text = cfg.get("footer/copy/text","");
+              %><span><a href="#"><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></a></span><%
+          }
+          %>
+
+          <%
+          if (cfg.containsKey("footer/terms/text")) {
+              String text = cfg.get("footer/terms/text","");
+              %><span><a href="#"><%= i18n.get("Footer Menu") %></a></span><%
+          }
+          %>
+        </div>
+
+        <div>
+          <ul id="usage-box">
+            <li><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></li>
+              <li><span><%= i18n.get("The bank for a changing world")%></span></li>
+          </ul>
+        </div>
+
     </div>
 </div>
 
