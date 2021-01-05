@@ -184,3 +184,9 @@ coral-masonry-item:hover .globalnav-homecard-title {
 	height: 5px;
 	z-index: 100000000000000;
 }
+
+coral-shell-header-content coral-shell-menubar-item:hover,
+coral-shell-header-content coral-shell-homeanchor-label:hover{
+  background-color: #00915a;
+  color: #fff;
+}
