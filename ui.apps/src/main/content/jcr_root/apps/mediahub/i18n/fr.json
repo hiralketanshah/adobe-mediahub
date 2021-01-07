@@ -64,6 +64,8 @@
   "second login content":
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum tortor quis magna faucibus, scelerisque pulvinar velit suscipit. <br> <a href='#'> Link 1</a> <br> <a href='#'> Link 2</a>",
 
-  "The above share link will expire in 48 hrs": "Le lien de partage ci-dessus expirera dans 48 heures"
+  "The above share link will expire in 48 hrs": "Le lien de partage ci-dessus expirera dans 48 heures",
+
+  "Footer Menu" : "<span><a href='#'>© BNP Paribas Human Resources Group - 2020.</a></span><span>|</span><span><a href='#'>Terms of use</a></span><span>|</span><span><a href='#'>FAQ</a></span>"
 
 }
