@@ -8,20 +8,27 @@
  
     Resource assetResource = resource;
     String downloadauthorisation = "";
- 
+    String broadcaststatus = "";
     if(assetResource.getResourceType().equals(ASSET_RES_TYPE)){
         ValueMap vm = assetResource.getChild("jcr:content/metadata").getValueMap();
  
         downloadauthorisation = (String)vm.get("bnpp-download-auth", "");
+        String[] statuses = (String[])vm.get("bnpp-broadcast-status");
+
+          if(statuses != null){
+            for(String value : statuses){
+              broadcaststatus += value + " ";
+            }
+          }
     }
- 
+
 %>
 <td is="coral-table-cell" value="<%= downloadauthorisation %>">
     <%= downloadauthorisation %>
 </td>
  
-<td is="coral-table-cell" value="<%= downloadauthorisation %>">
-    <%= downloadauthorisation %>
+<td is="coral-table-cell" value="<%= broadcaststatus %>">
+    <%= broadcaststatus %>
 </td>
 
 
