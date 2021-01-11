@@ -34,6 +34,7 @@
                  java.util.Set,
                  java.util.HashSet,
                  javax.jcr.RepositoryException,
+                 org.apache.sling.settings.SlingSettingsService,
                  com.adobe.granite.ui.components.ExpressionHelper" %>
 <%@ page import="java.util.Arrays" %>
 <%
@@ -54,6 +55,16 @@
     isWorkflowAdmin = isWorkflowAdministrator(resourceResolver, log);
 
     ViewConfigurationProvider viewConfigurationProvider = sling.getService(ViewConfigurationProvider.class);
+
+
+    String runmode = " ";
+    Set<String> runmodes = sling.getService(SlingSettingsService.class).getRunModes();
+    if(runmodes.contains("dev")){
+      runmode = " dev";
+    } else if(runmodes.contains("stage")){
+      runmode = " stage";
+    }
+
     ViewConfiguration viewConfiguration = viewConfigurationProvider.getViewConfiguration(resourceResolver);
     URL customHelpUrl = viewConfiguration.getCustomHelpUrl();
     if (viewConfiguration != null) {
@@ -84,7 +95,7 @@
 		<img src="/content/dam/medialibrary/group_functions/company_engagement/group_communications/user_experience/vst/dms/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
 	 </a>
 
-    <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP</coral-shell-homeanchor-label>
+    <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP<%= runmode %></coral-shell-homeanchor-label>
 </coral-shell-header-home>
 
 <coral-shell-header-actions>
