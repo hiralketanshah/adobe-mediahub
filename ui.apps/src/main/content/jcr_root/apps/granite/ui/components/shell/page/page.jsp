@@ -24,6 +24,7 @@
                   java.util.Iterator,
                   java.util.List,
                   java.util.Map,
+                  java.util.Set,
                   java.util.stream.Collectors,
                   org.apache.sling.api.SlingHttpServletRequest,
                   org.apache.commons.collections4.IteratorUtils,
@@ -41,6 +42,7 @@
                   com.adobe.granite.ui.components.ExpressionHelper,
                   com.adobe.granite.ui.components.ExpressionResolver,
                   com.adobe.granite.ui.components.FilteringResourceWrapper,
+                  org.apache.sling.settings.SlingSettingsService,
                   com.adobe.granite.ui.components.Tag" %><%--###
 Page
 ====
@@ -331,11 +333,19 @@ int minContentSize = 100;
         headerHome.addClass("globalnav-toggle");
         headerHome.addHref("data-globalnav-toggle-href", navigationUrl);
 
+        String runmode = " ";
+        Set<String> runmodes = sling.getService(SlingSettingsService.class).getRunModes();
+        if( runmodes.contains("dev")){
+          runmode = " dev";
+        } else if(runmodes.contains("stage")){
+          runmode = " stage";
+        }
+
         %><coral-shell-header-home <%= headerHome %>>
           	<a href="#" style="text-decoration: none;">
               <img src="/content/dam/medialibrary/group_functions/company_engagement/group_communications/user_experience/vst/dms/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
             </a>
-            <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP</coral-shell-homeanchor-label>
+            <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP<%= runmode %></coral-shell-homeanchor-label>
         </coral-shell-header-home>
 
         <coral-shell-header-actions>
