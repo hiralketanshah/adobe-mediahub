@@ -24086,6 +24086,15 @@ coral-shell-header-home > a > img {
 
 /* Header content */
 
+coral-shell-header-content {
+  height: auto;
+  margin-top: -2px;
+}
+
+coral-shell-header-content .bnp-text-style {
+  line-height: 41px;
+}
+
 coral-shell-header-content > a {
   display: inline-block;
 }
@@ -24096,6 +24105,7 @@ coral-shell-header-content > a {
 
 coral-button-label {
   display: inline-block;
+  line-height: 1;
 }
 
 coral-button-label > a {
