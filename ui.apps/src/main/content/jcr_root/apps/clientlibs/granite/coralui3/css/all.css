@@ -12137,11 +12137,14 @@ th {
 .coral3-Button--minimal:not(:disabled):not(.is-disabled):focus,
 .coral3-Button--minimal:not(:disabled):not(.is-disabled).is-focused {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #326ec8;
-  box-shadow: 0 0 .1875rem #326ec8;
-  border: .0625rem solid #326ec8;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  border: .0625rem solid #00ac7b; /*#326ec8;*/
   background-color: transparent;
-  color: #326ec8;
+  color: #00ac7b; /*#326ec8;*/
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral3-Button--minimal:not(:disabled):not(.is-disabled):active {
