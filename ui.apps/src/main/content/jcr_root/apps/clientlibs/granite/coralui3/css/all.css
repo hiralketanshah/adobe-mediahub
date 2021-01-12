@@ -24112,3 +24112,12 @@ coral-button-label > a {
   display: inline-block;
   line-height: 2;
 }
+
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal,
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a,
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style {
+  color: #fff;
+}
