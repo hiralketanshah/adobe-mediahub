@@ -3952,11 +3952,14 @@ th {
 
 .coral-Button:not(:disabled):not(.is-disabled):focus {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #326ec8;
-  box-shadow: 0 0 .1875rem #326ec8;
-  border: .0625rem solid #326ec8;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  border: .0625rem solid #00ac7b; /*#326ec8;*/
   background-color: #fff;
   text-decoration: none;
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral-Button:not(:disabled):not(.is-disabled):hover {
@@ -4543,10 +4546,13 @@ th {
 
 .coral--dark .coral-Button:not(:disabled):not(.is-disabled):focus {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #87beff;
-  box-shadow: 0 0 .1875rem #87beff;
-  border: .0625rem solid #87beff;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#87beff;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#87beff;*/
+  border: .0625rem solid #00ac7b; /*#87beff;*/
   background-color: #505050;
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral--dark .coral-Button:not(:disabled):not(.is-disabled):hover {
