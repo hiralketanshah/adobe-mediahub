@@ -590,30 +590,24 @@ login
     <div style="height: 5px; background-color: #00ac7b"></div>
     <div class="legal-footer coral--light bnp--green">
 
-        <%
-        // Footer: default copyright (removable)
-        if (cfg.containsKey("footer/copy/text")) {
-            ProductInfoProvider productInfoProvider = sling.getService(ProductInfoProvider.class);
-            String year = productInfoProvider == null ? null : productInfoProvider.getProductInfo().getYear();
-            if (year == null) {
-                year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-            }
-            String text = cfg.get("footer/copy/text","");
-            %><span><%= xssAPI.encodeForHTML(i18n.get("© BNP Paribas Human Resources Group - 2020.")) %></span><%
-        }
-        %>
-   
-        <%
-        if (cfg.containsKey("footer/terms/text")) {
-            String text = cfg.get("footer/terms/text","");
-            %><span><%= i18n.get("Footer Menu") %></span><%
-        }
-        %>
-     
-        <ul id="usage-box">
-          <li><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></li>
-            <li><span><%= i18n.get("The bank for a changing world")%><span></li>
-        </ul>
+
+
+        <div>
+          <%
+          if (cfg.containsKey("footer/terms/text")) {
+              String text = cfg.get("footer/terms/text","");
+              %><%= i18n.get("Footer Menu") %><%
+          }
+          %>
+        </div>
+
+        <div>
+          <ul id="usage-box">
+            <li><img src="https://cdn-group.bnpparibas.com/bundles/app/img/logo-bnp.svg" width="150" height="30" alt="BNP Paribas"></li>
+              <li><span><%= i18n.get("The bank for a changing world")%></span></li>
+          </ul>
+        </div>
+
     </div>
 </div>
 
@@ -622,7 +616,7 @@ login
 %>
 
 <coral-dialog id="popupDialog" backdrop="static">
-  <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
+  <coral-dialog-header><%= i18n.get("login popin title 1") %></coral-dialog-header>
   <coral-dialog-content><p> <%= i18n.get("login content") %> </p> <coral-checkbox value="" id="agree"> <%=i18n.get("Agree Terms and Conditions")%></coral-checkbox> </coral-dialog-content>
   <coral-dialog-footer>
     <button id="cancelButton" is="coral-button" variant="secondary"> <%= i18n.get("Cancel") %></button>
@@ -630,7 +624,7 @@ login
   </coral-dialog-footer>
 </coral-dialog>
 <coral-dialog id="agreeDialog" backdrop="static">
-  <coral-dialog-header><%= i18n.get("BNP Paribas Terms and Conditions") %></coral-dialog-header>
+  <coral-dialog-header><%= i18n.get("login popin title 2") %></coral-dialog-header>
   <coral-dialog-content>
     <p> <%= i18n.get("second login content") %> </p>
 
