@@ -24047,12 +24047,52 @@ a.endor-Footer-item:hover {
 
 /* Header */
 
-coral-shell-header-home > a,
-coral-shell-header-content > a,
+/*
+.coral3-Shell-header = 52px
+.green-bar = 5px
+padding = 8px
+*/
+
+coral-shell-header-home {
+  display: inline-block;
+  height: auto;
+  margin-top: 5px;
+}
+
+coral-shell-header-home > a {
+  display: inline-block;
+  margin-right: 4px;
+}
+
+coral-shell-header-home > a > img {
+  height: 31px;
+  max-height: 100%;
+  max-width: 100%;
+  vertical-align: bottom;
+  width: auto;
+}
+
+.bnp-text-style {
+  line-height: 30px;
+  vertical-align: bottom;
+}
+
+
+/* Header content */
+
+coral-shell-header-content > a {
+  display: inline-block;
+}
+
+.coral3-Shell-menubar {
+  display: inline-block;
+}
+
 coral-button-label {
   display: inline-block;
 }
 
-coral-shell-header-home > a > img {
-  vertical-align: bottom;
+coral-button-label > a {
+  display: inline-block;
+  line-height: 2;
 }
