@@ -3952,11 +3952,14 @@ th {
 
 .coral-Button:not(:disabled):not(.is-disabled):focus {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #326ec8;
-  box-shadow: 0 0 .1875rem #326ec8;
-  border: .0625rem solid #326ec8;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  border: .0625rem solid #00ac7b; /*#326ec8;*/
   background-color: #fff;
   text-decoration: none;
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral-Button:not(:disabled):not(.is-disabled):hover {
@@ -4543,10 +4546,13 @@ th {
 
 .coral--dark .coral-Button:not(:disabled):not(.is-disabled):focus {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #87beff;
-  box-shadow: 0 0 .1875rem #87beff;
-  border: .0625rem solid #87beff;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#87beff;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#87beff;*/
+  border: .0625rem solid #00ac7b; /*#87beff;*/
   background-color: #505050;
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral--dark .coral-Button:not(:disabled):not(.is-disabled):hover {
@@ -12131,11 +12137,14 @@ th {
 .coral3-Button--minimal:not(:disabled):not(.is-disabled):focus,
 .coral3-Button--minimal:not(:disabled):not(.is-disabled).is-focused {
   outline: none;
-  -webkit-box-shadow: 0 0 .1875rem #326ec8;
-  box-shadow: 0 0 .1875rem #326ec8;
-  border: .0625rem solid #326ec8;
+  -webkit-box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  box-shadow: 0 0 .1875rem #00ac7b; /*#326ec8;*/
+  border: .0625rem solid #00ac7b; /*#326ec8;*/
   background-color: transparent;
-  color: #326ec8;
+  color: #00ac7b; /*#326ec8;*/
+
+  border: none;
+  box-shadow: none;
 }
 
 .coral3-Button--minimal:not(:disabled):not(.is-disabled):active {
@@ -24080,6 +24089,15 @@ coral-shell-header-home > a > img {
 
 /* Header content */
 
+coral-shell-header-content {
+  height: auto;
+  margin-top: -2px;
+}
+
+coral-shell-header-content .bnp-text-style {
+  line-height: 41px;
+}
+
 coral-shell-header-content > a {
   display: inline-block;
 }
@@ -24090,9 +24108,19 @@ coral-shell-header-content > a {
 
 coral-button-label {
   display: inline-block;
+  line-height: 1;
 }
 
 coral-button-label > a {
   display: inline-block;
   line-height: 2;
+}
+
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal,
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a,
+coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style,
+coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style {
+  color: #fff;
 }
