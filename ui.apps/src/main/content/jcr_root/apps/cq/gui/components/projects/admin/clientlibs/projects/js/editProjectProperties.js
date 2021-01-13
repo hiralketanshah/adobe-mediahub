@@ -118,12 +118,14 @@
 
 })(Granite.$);
 
-
 (function ($, $document) {
     "use strict";
        $document.on("foundation-contentloaded", function() {
        var d = new Date();
-	   document.querySelectorAll('coral-datepicker[name="project.dueDate"]')[0].setAttribute("max", (d.getFullYear()+1) + "-" + (d.getMonth() +1)+ "-" + d.getDate());
+       var datePicker = document.querySelectorAll('coral-datepicker[name="project.dueDate"]')[0];
+           if (datePicker != undefined) {
+                datePicker.setAttribute("max", (d.getFullYear()+1) + "-" + (d.getMonth() +1)+ "-" + d.getDate());
+           }
        });
 
 })($, $(document));
