@@ -136,3 +136,5 @@ node/
 # Tests
 coverage/
 reports/
+/bnp-mediahub.sublime-workspace
+/bnp-mediahub.sublime-project

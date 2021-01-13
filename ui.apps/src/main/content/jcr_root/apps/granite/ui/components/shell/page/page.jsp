@@ -363,7 +363,7 @@ int minContentSize = 100;
             <coral-shell-menubar>
               <coral-shell-menubar-item>
                 <a href="/assets.html/content/dam/medialibrary">
-                  <coral-shell-homeanchor-label class="bnp-text-style"> Media Library </coral-shell-homeanchor-label>
+                  <coral-shell-homeanchor-label class="bnp-text-style"> Medialibrary </coral-shell-homeanchor-label>
                 </a>
               </coral-shell-menubar-item>
               <coral-shell-menubar-item>
