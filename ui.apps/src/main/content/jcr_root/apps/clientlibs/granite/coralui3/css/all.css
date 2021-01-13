@@ -24043,3 +24043,16 @@ a.endor-Footer-item:hover {
 .bnp--green {
 	background-color: #fff !important;
 }
+
+
+/* Header */
+
+coral-shell-header-home > a,
+coral-shell-header-content > a,
+coral-button-label {
+  display: inline-block;
+}
+
+coral-shell-header-home > a > img {
+  vertical-align: bottom;
+}
