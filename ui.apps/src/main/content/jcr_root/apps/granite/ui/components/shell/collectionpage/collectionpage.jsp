@@ -935,7 +935,7 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
                         }
 
                         if(StringUtils.equals(item.getName(),"customadhocassetshare")) {
-                          if(StringUtils.contains(assetId, "/content/dam/projects")){
+                          if(StringUtils.contains(assetId, "/content/dam/collections")){
                             %><coral-actionbar-item><%
                                 AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                                 selectionItemAttrs.addClass("betty-ActionBar-item");
@@ -943,7 +943,7 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
                             %></coral-actionbar-item><%
                           }
                         } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
-                            if(!StringUtils.contains(assetId, "/content/dam/projects")){
+                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary")){
                             %><coral-actionbar-item><%
                                 AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                                 selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
