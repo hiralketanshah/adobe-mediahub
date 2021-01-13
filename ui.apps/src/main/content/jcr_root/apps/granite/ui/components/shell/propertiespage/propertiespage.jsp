@@ -468,7 +468,7 @@ try {
                       Iterator<Group> groups = auth.memberOf();
                         while(groups.hasNext()){
                             Group group = groups.next();
-                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager")){
+                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(group.getID(), "administrator") || StringUtils.contains(group.getID(), "project-publisher")){
                                 isEntityManager = true;
                                 break;
                             }
