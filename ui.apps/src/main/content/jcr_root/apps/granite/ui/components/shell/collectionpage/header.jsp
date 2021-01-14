@@ -64,12 +64,12 @@
 
 <coral-shell-header-content>
     <coral-shell-menubar>
-      <coral-shell-menubar-item>
+      <coral-shell-menubar-item class="bnpmedialibrary">
         <a href="/assets.html/content/dam/medialibrary">
           <coral-shell-homeanchor-label class="bnp-text-style"> Medialibrary </coral-shell-homeanchor-label>
         </a>
       </coral-shell-menubar-item>
-      <coral-shell-menubar-item>
+      <coral-shell-menubar-item class="bnpprojects">
         <a href="/projects.html/content/projects">
           <coral-shell-homeanchor-label class="bnp-text-style"> Projects </coral-shell-homeanchor-label>
         </a>
@@ -84,7 +84,7 @@
           <coral-shell-homeanchor-label class="bnp-text-style"> Adobe Stock </coral-shell-homeanchor-label>
         </a>
       </coral-shell-menubar-item>
-      <coral-shell-menubar-item>
+      <coral-shell-menubar-item class="bnpcollections">
         <a href="/mnt/overlay/dam/gui/content/collections.html/content/dam/collections">
           <coral-shell-homeanchor-label class="bnp-text-style"> Collections </coral-shell-homeanchor-label>
         </a>
