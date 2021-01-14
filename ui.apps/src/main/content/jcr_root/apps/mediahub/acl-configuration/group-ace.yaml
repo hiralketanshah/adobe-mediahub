@@ -150,7 +150,12 @@
         - path: /libs/cq/core/content/projects/templates/retail-product-photoshoot
           permission: deny
           actions: read
-          
+        - path: /libs/granite/ui/content/shell/header/actions/solutions
+          permission: deny
+          actions: read
+        - path: /libs/granite/ui/content/userproperties/preferences/form/items/show-desktop-links
+          permission: deny
+          actions: read
         - FOR path IN ${groupSuffixLevel1}:
             - path: /content/dam
               permission: deny
