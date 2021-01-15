@@ -4,9 +4,9 @@ PassEnv DISP_ID
 
 <VirtualHost *:80>
 	ServerName	"author"
-	ServerAlias	${AUTHOR_DEFAULT_HOSTNAME}
+	ServerAlias	author-bnp-paribas-stg2.adobecqms.net
 	# Use a special doc root that doesn't overlap publish doc roots or it wont fetch from author each time and authors wont see their changes
-	DocumentRoot	author-bnp-paribas-stg2.adobecqms.net
+	DocumentRoot ${AUTHOR_DOCROOT}
 	# Add header breadcrumbs for help in troubleshooting
 	<IfModule mod_headers.c>
 			Header always add X-Dispatcher ${DISP_ID}
