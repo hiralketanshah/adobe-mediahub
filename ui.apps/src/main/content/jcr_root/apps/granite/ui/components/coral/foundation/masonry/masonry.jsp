@@ -544,3 +544,17 @@ private String handleURITemplate(String template, String absTemplate, HttpServle
     return null;
 }
 %>
+
+
+<script>
+  var backbutton = document.getElementById("backToProject");
+  if(backbutton != null){
+    <%
+    if(!StringUtils.contains(path, "/content/dam/projects/") ){
+    %>
+      backbutton.hidden = true;
+    <%} else {%>
+      backbutton.hidden = false;
+    <%}%>
+  }
+</script>

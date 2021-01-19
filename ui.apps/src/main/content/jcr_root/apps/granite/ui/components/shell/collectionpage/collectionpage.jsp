@@ -694,12 +694,12 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
 
                    <%
                    if(StringUtils.contains(assetId, "/content/dam/projects")){
-                     Resource asset = resourceResolver.getResource(assetId);
+                      Resource asset = resourceResolver.getResource(assetId);
                       if(asset != null &&  asset.getValueMap().containsKey("projectPath") ){
                       String projectPath = asset.getValueMap().get("projectPath", String[].class)[0];
                    %>
                       <a href="/projects/details.html<%= projectPath %>">
-                        <button is="coral-button" variant="quiet" icon="chevronLeft" iconsize="S">
+                        <button id="backToProject" is="coral-button" variant="quiet" icon="chevronLeft" iconsize="S">
                           <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
                         </button>
                       </a>
