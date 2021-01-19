@@ -699,7 +699,7 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                       String projectPath = asset.getValueMap().get("projectPath", String[].class)[0];
                    %>
                       <a href="/projects/details.html<%= projectPath %>">
-                        <button id="backToProject" is="coral-button" variant="quiet" icon="chevronLeft" iconsize="S">
+                        <button id="backToProject" is="coral-button" style="background-color: #6d6d6d; color: white;" iconsize="S">
                           <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
                         </button>
                       </a>
