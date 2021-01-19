@@ -423,8 +423,8 @@ String layoutJson = new JSONStringer()
         .key("trackingElement").value(cfg.get("trackingElement", String.class))
     .endObject()
     .toString();
-
-
+%>
+<%
 if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){ 
     %>
 <script>
@@ -467,6 +467,10 @@ if(StringUtils.contains(path, "/content/dam/collections") ){
 </script>
 <%
 }
+%>
+
+
+<%
 attrs.add("layout", cfg.get("layout", "fixed-spread"));
 attrs.add("ariaGrid", cfg.get("ariaGrid", "off"));
 attrs.add("columnwidth", "" + ex.get(cfg.get("columnWidth", "242"), Long.class));

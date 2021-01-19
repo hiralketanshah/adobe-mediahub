@@ -458,6 +458,51 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
     }
 %>
 
+<%
+if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){
+    %>
+<script>
+
+     $(".bnpprojects").css('background','#3db789');
+     $(".foundation-layout-panel-bodywrapper").css('background','#DEE9F3');
+</script>
+<%
+}else{
+    %>
+<script>
+     $(".bnpprojects").css('background','');
+     $(".foundation-layout-panel-bodywrapper").css('background','');
+</script>
+<%
+}
+if(StringUtils.contains(path, "/content/dam/medialibrary") ){
+    %>
+<script>
+     $(".bnpmedialibrary").css('background','#3db789');
+</script>
+<%
+}else{
+    %>
+<script>
+     $(".bnpmedialibrary").css('background','');
+</script>
+<%
+}
+if(StringUtils.contains(path, "/content/dam/collections") ){
+    %>
+<script>
+     $(".bnpcollections").css('background','#3db789');
+</script>
+<%
+}else{
+    %>
+<script>
+     $(".bnpcollections").css('background','');
+</script>
+<%
+}
+%>
+
 <script>
   var backbutton = document.getElementById("backToProject");
   if(backbutton != null){
