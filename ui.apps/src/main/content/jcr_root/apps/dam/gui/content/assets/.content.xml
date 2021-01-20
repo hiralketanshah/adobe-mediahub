@@ -48,7 +48,7 @@
                             name="file"
                             parallelUploads="{Boolean}false"
                             sizeLimit="10737418240"
-                            text="Files"/>
+                            text="Assets"/>
                         <folderupload
                             granite:class="dam-asset-desktop-action"
                             jcr:primaryType="nt:unstructured"
