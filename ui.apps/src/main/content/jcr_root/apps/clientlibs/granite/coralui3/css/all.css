@@ -24065,7 +24065,7 @@ padding = 8px
 coral-shell-header-home {
   display: inline-block;
   height: auto;
-  margin-right: 5px;
+  margin-right: .9375rem;
   margin-top: 5px;
 }
 
@@ -24091,6 +24091,7 @@ coral-shell-header-home > a > img {
 /* Header content */
 
 coral-shell-header-content {
+  display: none;
   height: auto;
   margin-top: -2px;
 }
@@ -24124,4 +24125,32 @@ coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--mi
 coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style,
 coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style {
   color: #fff;
+}
+
+
+/* Resizing */
+
+@media (min-width: 768px) {
+  .coral3-Shell-header {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  coral-shell-header-home {
+    margin-right: 0;
+    text-align: left;
+    width: 25%;
+  }
+
+  coral-shell-header-actions {
+    margin-left: 0;
+    text-align: right;
+    width: 25%;
+  }
+
+  coral-shell-header-content {
+    display: inline-block;
+    text-align: center;
+    width: 50%;
+  }
 }
