@@ -281,3 +281,33 @@ html, body {
   background-repeat: no-repeat;
   background-color: transparent;
 }
+
+
+/* Footer */
+
+.legal-footer {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.legal-footer > div:first-child {
+  text-align: right;
+}
+
+.legal-footer > div:last-child {
+  flex: 1 0 auto;
+}
+
+
+@media all and (max-width: 634px) {
+  .legal-footer {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+
+  .legal-footer > div {
+    text-align: left;
+  }
+}
