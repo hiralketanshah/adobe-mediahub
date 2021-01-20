@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
     property = {
         EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_ADDED  ,
         EventConstants.EVENT_TOPIC + "=" + BnpConstants.TOPIC_RESOURCE_CHANGED,
-        EventConstants.EVENT_FILTER +  "=(path=/content/dam/medialibrary/*)"
+        EventConstants.EVENT_FILTER +  "=(|(path=/content/dam/medialibrary/*)(path=/content/dam/projects/*))"
     })
 @ServiceDescription("listen on changes in the resource tree")
 public class FolderResourceListener implements EventHandler {
