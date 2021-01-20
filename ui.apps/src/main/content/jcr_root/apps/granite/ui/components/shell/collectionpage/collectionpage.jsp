@@ -690,7 +690,24 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                                 %><sling:include resource="<%= item %>" /><%
                             }
                         }
-                    %></betty-titlebar-primary>
+                    %>
+
+                   <%
+                   if(StringUtils.contains(assetId, "/content/dam/projects")){
+                      Resource asset = resourceResolver.getResource(assetId);
+                      if(asset != null &&  asset.getValueMap().containsKey("projectPath") ){
+                      String projectPath = asset.getValueMap().get("projectPath", String[].class)[0];
+                   %>
+                      <a id="backLink" href="/projects/details.html<%= projectPath %>">
+                        <button id="backToProject" is="coral-button" style="background-color: #6d6d6d; color: white;" iconsize="S">
+                          <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
+                        </button>
+                      </a>
+                   <%}}%>
+
+
+
+                    </betty-titlebar-primary>
                     <betty-titlebar-secondary><%
                         AttrBuilder selectAllAttrs = new AttrBuilder(request, xssAPI);
                         selectAllAttrs.addClass("foundation-collection-selectall");
