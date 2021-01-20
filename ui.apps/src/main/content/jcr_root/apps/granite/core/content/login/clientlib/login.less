@@ -281,3 +281,21 @@ html, body {
   background-repeat: no-repeat;
   background-color: transparent;
 }
+
+
+/* Footer */
+
+.legal-footer {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+
+@media all and (max-width: 634px) {
+  .legal-footer {
+    align-items: flex-start;
+    flex-direction: column-reverse;
+  }
+}
