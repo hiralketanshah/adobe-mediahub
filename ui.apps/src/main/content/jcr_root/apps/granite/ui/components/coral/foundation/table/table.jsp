@@ -657,6 +657,14 @@ if(StringUtils.contains(path, "/content/dam/collections") ){
       backbutton.hidden = true;
     <%} else {%>
       backbutton.hidden = false;
+    <%
+      Resource asset = resourceResolver.getResource(path);
+      if(asset != null &&  asset.getValueMap().containsKey("projectPath") ){
+            String updatedPath = asset.getValueMap().get("projectPath", String[].class)[0];
+      %>
+        document.getElementById("backLink").href="/projects/details.html<%=updatedPath%>";
+      <%}
+    %>
     <%}%>
   }
 </script>
