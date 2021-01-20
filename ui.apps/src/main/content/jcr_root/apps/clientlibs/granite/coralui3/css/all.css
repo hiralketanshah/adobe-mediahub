@@ -24163,7 +24163,13 @@ coral-shell-header-content coral-shell-homeanchor-label:hover {
 
 /* UI */
 
+.coral3-Select-button::before {
+  clear: both;
+  content: '';
+  display: table;
+}
+
 .coral3-Select-label {
   float: left;
-  margin-top: 2px;
+  margin-top: 1px;
 }
