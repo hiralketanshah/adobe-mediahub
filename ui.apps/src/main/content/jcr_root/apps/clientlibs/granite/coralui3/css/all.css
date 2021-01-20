@@ -24111,6 +24111,7 @@ coral-shell-header-content > a {
 coral-button-label {
   display: inline-block;
   line-height: 1;
+  vertical-align: bottom;
 }
 
 coral-button-label > a {
