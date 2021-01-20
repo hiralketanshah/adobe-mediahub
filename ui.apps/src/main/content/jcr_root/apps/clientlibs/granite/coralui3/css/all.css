@@ -24091,6 +24091,7 @@ coral-shell-header-home > a > img {
 /* Header content */
 
 coral-shell-header-content {
+  display: none;
   height: auto;
   margin-top: -2px;
 }
@@ -24148,6 +24149,7 @@ coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--mi
   }
 
   coral-shell-header-content {
+    display: inline-block;
     text-align: center;
     width: 50%;
   }
