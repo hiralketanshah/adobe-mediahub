@@ -24065,6 +24065,7 @@ padding = 8px
 coral-shell-header-home {
   display: inline-block;
   height: auto;
+  margin-right: 5px;
   margin-top: 5px;
 }
 
