@@ -24127,6 +24127,11 @@ coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--mi
   color: #fff;
 }
 
+coral-shell-header-content coral-shell-menubar-item:hover,
+coral-shell-header-content coral-shell-homeanchor-label:hover {
+  background-color: #3DB789 !important;
+}
+
 
 /* Resizing */
 
