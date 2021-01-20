@@ -24125,3 +24125,30 @@ coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minima
 coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style {
   color: #fff;
 }
+
+
+/* Resizing */
+
+@media (min-width: 768px) {
+  .coral3-Shell-header {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  coral-shell-header-home {
+    margin-right: 0;
+    text-align: left;
+    width: 25%;
+  }
+
+  coral-shell-header-actions {
+    margin-left: 0;
+    text-align: right;
+    width: 25%;
+  }
+
+  coral-shell-header-content {
+    text-align: center;
+    width: 50%;
+  }
+}
