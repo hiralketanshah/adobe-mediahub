@@ -423,50 +423,55 @@ String layoutJson = new JSONStringer()
         .key("trackingElement").value(cfg.get("trackingElement", String.class))
     .endObject()
     .toString();
-
-
+%>
+<%
 if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){ 
     %>
 <script>
-
-     $(".bnpprojects").css('background','#3db789');
-     $(".foundation-layout-panel-bodywrapper").css('background','#DEE9F3');
-</script>
-<%
-}else{
-    %>
-<script>
-     $(".bnpprojects").css('background','');
-     $(".foundation-layout-panel-bodywrapper").css('background','');
+     $(".foundation-layout-panel-bodywrapper").css('background-color','#DEE9F3');
+     $(".bnpprojects").css('background-color','#00915a');
+     $(".bnpprojects").css('color','#FFFFFF');
 </script>
 <%
 }
-if(StringUtils.contains(path, "/content/dam/medialibrary") ){ 
+else if(StringUtils.contains(path, "/content/dam/medialibrary") ){ 
     %>
 <script>
-     $(".bnpmedialibrary").css('background','#3db789');
+     $(".bnpmedialibrary").css('background-color','#00915a');
+     $(".bnpmedialibrary").css('color','#FFFFFF');
+     $(".foundation-layout-panel-bodywrapper").css('background-color','#bfe4d6');
 </script>
 <%
 }else{
     %>
 <script>
-     $(".bnpmedialibrary").css('background','');
+     $(".bnpmedialibrary").css('background-color','');
+     $(".bnpmedialibrary").css('color','');
+     $(".bnpprojects").css('background-color','');
+     $(".bnpprojects").css('color','');
+ 	 $(".foundation-layout-panel-bodywrapper").css('background-color','');
 </script>
 <%
 }
 if(StringUtils.contains(path, "/content/dam/collections") ){ 
     %>
 <script>
-     $(".bnpcollections").css('background','#3db789');
+     $(".bnpcollections").css('background-color','#00915a');
+     $(".bnpcollections").css('color','#FFFFFF');
 </script>
 <%
 }else{
     %>
 <script>
-     $(".bnpcollections").css('background','');
+     $(".bnpcollections").css('background-color','');
+     $(".bnpcollections").css('color','#000000');
 </script>
 <%
 }
+%>
+
+
+<%
 attrs.add("layout", cfg.get("layout", "fixed-spread"));
 attrs.add("ariaGrid", cfg.get("ariaGrid", "off"));
 attrs.add("columnwidth", "" + ex.get(cfg.get("columnWidth", "242"), Long.class));
@@ -544,3 +549,25 @@ private String handleURITemplate(String template, String absTemplate, HttpServle
     return null;
 }
 %>
+
+
+<script>
+  var backbutton = document.getElementById("backToProject");
+  if(backbutton != null){
+    <%
+    if(!StringUtils.contains(path, "/content/dam/projects/") ){
+    %>
+      backbutton.hidden = true;
+    <%} else {%>
+      backbutton.hidden = false;
+    <%
+      Resource asset = resourceResolver.getResource(path);
+      if(asset != null &&  asset.getValueMap().containsKey("projectPath") ){
+            String updatedPath = asset.getValueMap().get("projectPath", String[].class)[0];
+      %>
+        document.getElementById("backLink").href="/projects/details.html<%=updatedPath%>";
+      <%}
+    %>
+    <%}%>
+  }
+</script>
