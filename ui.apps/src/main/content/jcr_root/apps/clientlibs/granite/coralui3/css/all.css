@@ -24111,6 +24111,7 @@ coral-shell-header-content > a {
 coral-button-label {
   display: inline-block;
   line-height: 1;
+  vertical-align: bottom;
 }
 
 coral-button-label > a {
@@ -24124,7 +24125,7 @@ coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minima
 coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a,
 coral-shell-header-content coral-shell-menubar-item:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style,
 coral-shell-header-content coral-shell-homeanchor-label:hover .coral3-Button--minimal coral-button-label > a .bnp-text-style {
-  color: #fff;
+  color: #fff !important;
 }
 
 coral-shell-header-content coral-shell-menubar-item:hover,
@@ -24158,4 +24159,18 @@ coral-shell-header-content coral-shell-homeanchor-label:hover {
     text-align: center;
     width: 50%;
   }
+}
+
+
+/* UI */
+
+.coral3-Select-button::before {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.coral3-Select-label {
+  float: left;
+  margin-top: 1px;
 }
