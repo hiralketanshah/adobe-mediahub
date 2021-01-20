@@ -24159,3 +24159,11 @@ coral-shell-header-content coral-shell-homeanchor-label:hover {
     width: 50%;
   }
 }
+
+
+/* UI */
+
+.coral3-Select-label {
+  float: left;
+  margin-top: 2px;
+}
