@@ -429,7 +429,7 @@ if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(p
     %>
 <script>
 
-     $(".bnpprojects").css('background','#3db789');
+     $(".bnpprojects").css('background','#00915A');
      $(".foundation-layout-panel-bodywrapper").css('background','#DEE9F3');
 </script>
 <%
@@ -444,7 +444,7 @@ if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(p
 if(StringUtils.contains(path, "/content/dam/medialibrary") ){ 
     %>
 <script>
-     $(".bnpmedialibrary").css('background','#3db789');
+     $(".bnpmedialibrary").css('background','#00915A');
 </script>
 <%
 }else{
@@ -457,7 +457,7 @@ if(StringUtils.contains(path, "/content/dam/medialibrary") ){
 if(StringUtils.contains(path, "/content/dam/collections") ){ 
     %>
 <script>
-     $(".bnpcollections").css('background','#3db789');
+     $(".bnpcollections").css('background','#00915A');
 </script>
 <%
 }else{
