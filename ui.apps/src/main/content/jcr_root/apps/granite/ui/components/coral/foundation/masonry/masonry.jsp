@@ -424,6 +424,7 @@ String layoutJson = new JSONStringer()
     .endObject()
     .toString();
 %>
+
 <%
 if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){ 
     %>
