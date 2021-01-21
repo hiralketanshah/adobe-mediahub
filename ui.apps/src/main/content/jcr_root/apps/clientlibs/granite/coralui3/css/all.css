@@ -24108,6 +24108,14 @@ coral-shell-header-content > a {
   display: inline-block;
 }
 
+.coral3-Shell-menubar-item {
+  pointer-events: none;
+}
+
+.coral3-Shell-menubar coral-button-label {
+  vertical-align: baseline;
+}
+
 coral-button-label {
   display: inline-block;
   line-height: 1;
