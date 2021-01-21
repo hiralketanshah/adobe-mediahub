@@ -10,11 +10,22 @@
         jcr:primaryType="nt:unstructured"
         detailsHref="/projects/details.html"/>
     <gadgets jcr:primaryType="nt:unstructured">
+        <projectinfo
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Project Info"
+            sling:resourceType="/apps/mediahub/projects/pod/projectinfopod"
+            cardWeight="100"
+            pagePropertiesPath="/apps/mediahub/projects/project-properties/properties.html"/>
         <team
             jcr:primaryType="nt:unstructured"
             jcr:title="Team"
             sling:resourceType="cq/gui/components/projects/admin/pod/teampod"
             cardWeight="60"/>
+        <work
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Workflows"
+            sling:resourceType="cq/gui/components/projects/admin/pod/workpod"
+            cardWeight="80"/>
         <asset
             jcr:primaryType="nt:unstructured"
             jcr:title="Assets"
@@ -25,22 +36,6 @@
             jcr:title="Assets Medialibrary"
             sling:resourceType="/apps/mediahub/projects/pod/assetpod"
             cardWeight="91"/>
-        <work
-            jcr:primaryType="nt:unstructured"
-            jcr:title="Workflows"
-            sling:resourceType="cq/gui/components/projects/admin/pod/workpod"
-            cardWeight="80"/>
-        <experiences
-            jcr:primaryType="nt:unstructured"
-            jcr:title="Experiences"
-            sling:resourceType="cq/gui/components/projects/admin/pod/channelpod"
-            cardWeight="90"/>
-        <projectinfo
-            jcr:primaryType="nt:unstructured"
-            jcr:title="Project Info"
-            sling:resourceType="/apps/mediahub/projects/pod/projectinfopod"
-            cardWeight="100"
-            pagePropertiesPath="/apps/mediahub/projects/project-properties/properties.html"/>
     </gadgets>
     <roles jcr:primaryType="nt:unstructured">
         <project-reader

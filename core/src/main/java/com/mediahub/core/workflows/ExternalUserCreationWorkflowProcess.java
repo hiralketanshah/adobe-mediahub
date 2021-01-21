@@ -138,8 +138,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		         // Add User to Group
 
 		            Group addUserToGroup = (Group) (userManager.getAuthorizable( BnpConstants.BASIC_GROUP));
-		            addUserToGroup.addMember(user);
-
+		            if(null != addUserToGroup){
+									addUserToGroup.addMember(user);
+								}
 		
 		        } else {
 		        		isUserAlreadyExists = true;
@@ -233,8 +234,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		if(user.getProperty("./profile/expiry")!=null){
 			String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
 			String newExpiryDate = expiryDate.substring(0,10);
-			Date start = new SimpleDateFormat("yyyy-MM-dd").parse(userExpiryDate);
-			Date end = new SimpleDateFormat("yyyy-MM-dd").parse(newExpiryDate);
+			Date start = new SimpleDateFormat("yyyy/MM/dd").parse(userExpiryDate);
+			Date end = new SimpleDateFormat("yyyy/MM/dd").parse(newExpiryDate);
 
 			if (start.compareTo(end) < 0){
 				Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
