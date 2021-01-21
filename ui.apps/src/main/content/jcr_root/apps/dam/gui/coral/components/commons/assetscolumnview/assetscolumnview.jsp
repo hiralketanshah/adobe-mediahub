@@ -463,7 +463,6 @@ if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(p
     %>
 <script>
 
-     $(".foundation-layout-panel-bodywrapper").css('background-color','#DEE9F3');
      $(".bnpprojects").css('background-color','#00915a');
      $(".bnpprojects").css('color','#FFFFFF');
 </script>
@@ -500,7 +499,7 @@ if(StringUtils.contains(path, "/content/dam/collections") ){
     %>
 <script>
      $(".bnpcollections").css('background-color','');
-     $(".bnpcollections").css('color','#000000');
+     $(".bnpcollections").css('color','');
 </script>
 <%
 }
