@@ -949,7 +949,7 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
                         }
 
                         if(StringUtils.equals(item.getName(),"customadhocassetshare")) {
-                          if(StringUtils.contains(assetId, "/content/dam/collections")){
+                          if(StringUtils.contains(assetId, "/content/dam/projects")){
                             %><coral-actionbar-item><%
                                 AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                                 selectionItemAttrs.addClass("betty-ActionBar-item");
