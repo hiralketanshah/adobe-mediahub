@@ -207,12 +207,12 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(userManager.getAuthorizable("test@gmail.com")).thenReturn(user);
         Value firstValue = new Value() {
             public String toString() {
-                return "2020-10-11";
+                return "2020/10/11";
             }
 
             @Override
             public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
-                return "2020-10-11";
+                return "2020/10/11";
             }
 
             @Override
@@ -257,11 +257,11 @@ public class ExternalUserCreationWorkflowProcessTest {
         };
         Value[] strings = new Value[] { firstValue };
         when(user.getProperty("./profile/expiry")).thenReturn(strings);
-        when(value.toString()).thenReturn("2020-10-11");
+        when(value.toString()).thenReturn("2020/10/11");
 
-        User testUser = workflowProcess.setExpiryDateExistingUser("test@gmail.com", "2020-10-11", userManager,
+        User testUser = workflowProcess.setExpiryDateExistingUser("test@gmail.com", "2020/10/11", userManager,
                 valueFactory);
-        assertEquals("2020-10-11", testUser.getProperty("./profile/expiry")[0].toString());
+        assertEquals("2020/10/11", testUser.getProperty("./profile/expiry")[0].toString());
     }
 
 }
