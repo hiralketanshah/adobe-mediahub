@@ -24054,6 +24054,14 @@ a.endor-Footer-item:hover {
 }
 
 
+/* default */
+
+img {
+  /*max-width: 100%;*/
+  /*vertical-align: bottom;*/
+}
+
+
 /* Header */
 
 /*
@@ -24106,6 +24114,15 @@ coral-shell-header-content > a {
 
 .coral3-Shell-menubar {
   display: inline-block;
+}
+
+.coral3-Shell-menubar-item {
+  outline: none;
+  user-select: none;
+}
+
+.coral3-Shell-menubar coral-button-label {
+  vertical-align: baseline;
 }
 
 coral-button-label {
