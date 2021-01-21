@@ -137,9 +137,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		            user.setProperty("./profile/country", countryValue);
 		         // Add User to Group
 
-		            Group addUserToGroup = (Group) (userManager.getAuthorizable( BnpConstants.BASIC_GROUP))
-
-                if(null != addUserToGroup){
+		            Group addUserToGroup = (Group) (userManager.getAuthorizable( BnpConstants.BASIC_GROUP));
+		            if(null != addUserToGroup){
 									addUserToGroup.addMember(user);
 								}
 		
