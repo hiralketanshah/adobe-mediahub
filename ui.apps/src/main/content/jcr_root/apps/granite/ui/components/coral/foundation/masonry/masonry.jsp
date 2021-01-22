@@ -20,6 +20,7 @@
                   java.util.Iterator,
                   org.apache.commons.lang3.StringUtils,
                   org.apache.sling.commons.json.io.JSONStringer,
+                  java.util.Comparator,
                   org.slf4j.Logger,
                   org.slf4j.LoggerFactory,
                   com.adobe.granite.ui.components.AttrBuilder,
@@ -392,8 +393,13 @@ if (size != null) {
     ArrayList<Resource> list = new ArrayList<Resource>();
 
     while (items.hasNext() && list.size() < totalSize) {
-        list.add(items.next());
+        Resource item = items.next();
+        list.add(item);
     }
+
+    list.sort(Comparator.comparing(Resource::getName, (v1, v2) -> {
+        return v1.compareToIgnoreCase(v2);
+    }));
 
     hasMore = items.hasNext();
     items = list.iterator();
@@ -426,7 +432,7 @@ String layoutJson = new JSONStringer()
 %>
 
 <%
-if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){ 
+if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){
     %>
 <script>
      $(".bnpprojects").css('background-color','#00915a');
@@ -434,7 +440,7 @@ if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(p
 </script>
 <%
 }
-else if(StringUtils.contains(path, "/content/dam/medialibrary") ){ 
+else if(StringUtils.contains(path, "/content/dam/medialibrary") ){
     %>
 <script>
      $(".bnpmedialibrary").css('background-color','#00915a');
@@ -453,7 +459,7 @@ else if(StringUtils.contains(path, "/content/dam/medialibrary") ){
 </script>
 <%
 }
-if(StringUtils.contains(path, "/content/dam/collections") ){ 
+if(StringUtils.contains(path, "/content/dam/collections") ){
     %>
 <script>
      $(".bnpcollections").css('background-color','#00915a');

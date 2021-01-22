@@ -6,6 +6,7 @@
     <filter root="/apps/dam" mode="update"/>
     <filter root="/apps/granite" mode="update"/>
     <filter root="/apps/cq/inbox" mode="update"/>
+    <filter root="/apps/cq/tagging" mode="update"/>
     <filter root="/apps/clientlibs" mode="update"/>
     <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
     <filter root="/apps/mediahub/projects"/>
