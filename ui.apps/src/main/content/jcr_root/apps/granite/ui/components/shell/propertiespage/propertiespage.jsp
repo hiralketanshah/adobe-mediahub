@@ -468,8 +468,17 @@ try {
                       Iterator<Group> groups = auth.memberOf();
                         while(groups.hasNext()){
                             Group group = groups.next();
-                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(group.getID(), "administrator") || StringUtils.contains(group.getID(), "project-publisher")){
-                                isEntityManager = true;
+                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators")){
+                                if(StringUtils.isNotEmpty(assetId)) {
+                                  Resource assetResource = resourceResolver.getResource(assetId);
+                                   if (assetResource != null && assetResource.getChild("jcr:content") != null) {
+                                  		  if(assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
+                                  		    isEntityManager = true;
+                                  		  } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
+                                          isEntityManager = true;
+                                  		  }
+                                   }
+                                }
                                 break;
                             }
                         }
