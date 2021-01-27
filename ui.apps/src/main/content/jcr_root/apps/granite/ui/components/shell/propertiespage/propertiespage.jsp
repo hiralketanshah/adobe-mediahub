@@ -463,6 +463,7 @@ try {
 
               <%
                 boolean isEntityManager = false;
+                boolean isValidated = false;
                 try {
                     if(null != auth){
                       Iterator<Group> groups = auth.memberOf();
@@ -476,6 +477,14 @@ try {
                                   		    isEntityManager = true;
                                   		  } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
                                           isEntityManager = true;
+
+                                          if(assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
+                                            if(StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-status","false").toString(), "validated")){
+                                              isValidated = true;
+                                            }
+                                          } else {
+                                            isValidated = true;
+                                          }
                                   		  }
                                    }
                                 }
@@ -508,7 +517,7 @@ try {
                         doneAttrs1.addClass("foundation-fixedanchor");
                         doneAttrs1.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
 
-                        %><button <%= doneAttrs1 %> onclick="internalPublish()"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
+                        %><button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
 
                   %>
                 </coral-buttongroup>
@@ -704,19 +713,40 @@ if(StringUtils.isNotEmpty(assetId)) {
    data.push({name: 'model@Delete',value: ''});
    data.push({name: 'workflowTitle',value: 'Internal Publish'});
    var asset = '<%= request.getParameter("item") %>';
-   function internalPublish() {
-      $.ajax({
-        type: "POST",
-        url: "/etc/workflow/instances",
-        data: data,
-        async: true,
-        cache: false,
-        success: function(response) {
-            if (response) {
-                var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
-            }
-        }
-      });
+   function internalPublish(isValidated, event) {
+
+      if(isValidated){
+        $.ajax({
+          type: "POST",
+          url: "/etc/workflow/instances",
+          data: data,
+          async: true,
+          cache: false,
+          success: function(response) {
+              if (response) {
+                  var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+              }
+          }
+        });
+      } else {
+        event.preventDefault();
+        var alertdialog = new Coral.Dialog().set({
+          id: "demoDialog",
+          header: {
+            innerHTML: "Required Metadata fields"
+          },
+          content: {
+            innerHTML: "The Required Metadata fields are not authored"
+          },
+          footer: {
+            innerHTML: "<button is=\"coral-button\" variant=\"primary\" coral-close=\"\">Ok</button>"
+          },
+          backdrop: "static"
+        });
+        document.body.appendChild(alertdialog);
+        alertdialog.show();
+        event.stopPropagation();
+      }
    }
 </script>
 </html><%!
