@@ -19,6 +19,9 @@
           import="org.slf4j.LoggerFactory,
                   org.slf4j.Logger,
                   java.util.Arrays,
+                  java.util.ArrayList,
+                  java.util.HashMap,
+                  java.util.Map,
                   java.util.Collection,
                   java.util.Iterator,
                   java.util.stream.Collectors,
@@ -45,6 +48,15 @@
                   com.adobe.granite.ui.components.Tag,
                   com.adobe.granite.ui.components.rendercondition.RenderCondition,
                   org.apache.jackrabbit.api.security.user.Group,
+                  com.day.cq.dam.commons.util.DamUtil,
+                  javax.jcr.Session,
+                  java.util.List,
+                  org.apache.sling.api.resource.ResourceResolver,
+                  com.day.cq.search.Query,
+                  com.day.cq.search.QueryBuilder,
+                  com.day.cq.search.result.SearchResult,
+                  com.day.cq.search.PredicateGroup,
+                  com.day.cq.dam.api.Asset,
                   com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition" %><%--###
 PropertiesPage
 ==============
@@ -464,6 +476,7 @@ try {
               <%
                 boolean isEntityManager = false;
                 boolean isValidated = false;
+
                 try {
                     if(null != auth){
                       Iterator<Group> groups = auth.memberOf();
@@ -474,7 +487,39 @@ try {
                                   Resource assetResource = resourceResolver.getResource(assetId);
                                    if (assetResource != null && assetResource.getChild("jcr:content") != null) {
                                   		  if(assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
-                                  		    isEntityManager = true;
+                                          isEntityManager = true;
+                                          boolean fieldMissed = false;
+
+
+                                          String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
+                                          List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, assetSchema);
+                                          if(assetResource.hasChildren()){
+                                              Iterator<Resource> children =  assetResource.listChildren();
+                                              while(children.hasNext()){
+                                                  Resource child = children.next();
+                                                  if(DamUtil.isAsset( child )){
+                                                      Asset asset = child.adaptTo(Asset.class);
+                                                      if(child.getChild("jcr:content").getChild("metadata") != null){
+
+                                                         Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
+                                                         for (String field : requiredFields) {
+
+                                                             if(!metadata.containsKey(field)){
+                                                                 fieldMissed = true;
+                                                                 break;
+                                                             }
+                                                         }
+                                                      }
+                                                  }
+                                                  if(fieldMissed){
+                                                    break;
+                                                  }
+                                              }
+                                          }
+
+                                          if(!fieldMissed){
+                                            isValidated = true;
+                                          }
                                   		  } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
                                           isEntityManager = true;
 
@@ -714,7 +759,6 @@ if(StringUtils.isNotEmpty(assetId)) {
    data.push({name: 'workflowTitle',value: 'Internal Publish'});
    var asset = '<%= request.getParameter("item") %>';
    function internalPublish(isValidated, event) {
-
       if(isValidated){
         $.ajax({
           type: "POST",
@@ -733,7 +777,7 @@ if(StringUtils.isNotEmpty(assetId)) {
         var alertdialog = new Coral.Dialog().set({
           id: "demoDialog",
           header: {
-            innerHTML: "Required Metadata fields"
+            innerHTML: "Missing Required fields"
           },
           content: {
             innerHTML: "The Required Metadata fields are not authored"
@@ -789,6 +833,27 @@ private String getSavedRail(SlingHttpServletRequest request, String key) {
     } catch (UnsupportedEncodingException impossible) {
         throw new RuntimeException(impossible);
     }
+}
+
+protected List<String> getRequiredMetadataFields(ResourceResolver resourceResolver, String schemaPath) {
+    List<String> missedMetaData = new ArrayList<>();
+    Map<String, String> map = new HashMap<>();
+    map.put("path", schemaPath);
+    map.put("type", "nt:unstructured");
+    map.put("1_property", "requiredCascading");
+    map.put("1_property.value", "always");
+    QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
+    Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
+    SearchResult result = query.getResult();
+    Iterator<Resource> requiredFields = result.getResources();
+    while(requiredFields.hasNext()){
+      Resource field = requiredFields.next();
+      String metaField = StringUtils.replace(field.getValueMap().get("cq-msm-lockable", StringUtils.EMPTY),"./metadata/","");
+      if(StringUtils.isNotBlank(metaField)){
+        missedMetaData.add(metaField);
+      }
+    }
+    return missedMetaData;
 }
 
 /**
