@@ -364,7 +364,7 @@ try {
                             %></coral-actionbar-item><%
                           }
                         } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
-                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary")){
+                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")){
                             %><coral-actionbar-item><%
                                 AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                                 selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
