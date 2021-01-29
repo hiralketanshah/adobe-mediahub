@@ -74,6 +74,10 @@
 
   "bnp customer care" : "Contactez-nous",
 
-  "Back to project" : "Retour au projet"
+  "Back to project" : "Retour au projet",
+
+  "Missing Required fields" : "Champs obligatoires manquants",
+
+  "The Required Metadata fields are not authored" : "Les champs de métadonnées obligatoires ne sont pas créés"
 
 }
