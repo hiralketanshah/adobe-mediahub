@@ -19,6 +19,9 @@
           import="org.slf4j.LoggerFactory,
                   org.slf4j.Logger,
                   java.util.Arrays,
+                  java.util.ArrayList,
+                  java.util.HashMap,
+                  java.util.Map,
                   java.util.Collection,
                   java.util.Iterator,
                   java.util.stream.Collectors,
@@ -45,6 +48,15 @@
                   com.adobe.granite.ui.components.Tag,
                   com.adobe.granite.ui.components.rendercondition.RenderCondition,
                   org.apache.jackrabbit.api.security.user.Group,
+                  com.day.cq.dam.commons.util.DamUtil,
+                  javax.jcr.Session,
+                  java.util.List,
+                  org.apache.sling.api.resource.ResourceResolver,
+                  com.day.cq.search.Query,
+                  com.day.cq.search.QueryBuilder,
+                  com.day.cq.search.result.SearchResult,
+                  com.day.cq.search.PredicateGroup,
+                  com.day.cq.dam.api.Asset,
                   com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition" %><%--###
 PropertiesPage
 ==============
@@ -352,7 +364,7 @@ try {
                             %></coral-actionbar-item><%
                           }
                         } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
-                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary")){
+                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")){
                             %><coral-actionbar-item><%
                                 AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                                 selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
@@ -463,6 +475,9 @@ try {
 
               <%
                 boolean isEntityManager = false;
+                boolean isValidated = false;
+                boolean isFolderMetadataMissing = false;
+
                 try {
                     if(null != auth){
                       Iterator<Group> groups = auth.memberOf();
@@ -471,11 +486,85 @@ try {
                             if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators")){
                                 if(StringUtils.isNotEmpty(assetId)) {
                                   Resource assetResource = resourceResolver.getResource(assetId);
+                                  boolean fieldMissed = false;
+
+
                                    if (assetResource != null && assetResource.getChild("jcr:content") != null) {
                                   		  if(assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
-                                  		    isEntityManager = true;
+                                          isEntityManager = true;
+
+
+                                          if( !StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-status","false").toString(), "validated") ){
+                                            isFolderMetadataMissing = true;
+                                          }
+
+                                          if(!isFolderMetadataMissing){
+                                            String folderMetadataSchema = DamUtil.getInheritedProperty("folderMetadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema");
+                                            List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, folderMetadataSchema);
+                                            ValueMap folderMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
+                                            for (String field : requiredFields) {
+                                                 if(!folderMetadata.containsKey(field)) {
+                                                     isFolderMetadataMissing = true;
+                                                     break;
+                                                 }
+                                            }
+                                          }
+
+                                          if(!isFolderMetadataMissing){
+                                            String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
+                                            List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, assetSchema);
+                                            if(assetResource.hasChildren()){
+                                                Iterator<Resource> children =  assetResource.listChildren();
+                                                while(children.hasNext()){
+                                                    Resource child = children.next();
+                                                    if(DamUtil.isAsset( child )){
+                                                        Asset asset = child.adaptTo(Asset.class);
+                                                        if(child.getChild("jcr:content").getChild("metadata") != null){
+
+                                                           Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
+                                                           for (String field : requiredFields) {
+
+                                                               if(!metadata.containsKey(field)){
+                                                                   fieldMissed = true;
+                                                                   break;
+                                                               }
+                                                           }
+                                                        }
+                                                    }
+                                                    if(fieldMissed){
+                                                      break;
+                                                    }
+                                                }
+                                            }
+
+                                            if(!fieldMissed){
+                                              isValidated = true;
+                                            }
+                                          }
+
+
+
                                   		  } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
                                           isEntityManager = true;
+
+                                          if(assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
+                                            ValueMap metadata = assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap();
+                                            if(StringUtils.equals(metadata.get("bnpp-status","false").toString(), "validated")){
+
+                                              String folderSchema = DamUtil.getInheritedProperty("folderMetadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema");
+                                              List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, folderSchema);
+                                              for (String field : requiredFields) {
+                                                   if(!metadata.containsKey(field)){
+                                                       fieldMissed = true;
+                                                       isFolderMetadataMissing = true;
+                                                       break;
+                                                   }
+                                              }
+                                              if(!fieldMissed){
+                                                isValidated = true;
+                                              }
+                                            }
+                                          }
                                   		  }
                                    }
                                 }
@@ -508,7 +597,7 @@ try {
                         doneAttrs1.addClass("foundation-fixedanchor");
                         doneAttrs1.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
 
-                        %><button <%= doneAttrs1 %> onclick="internalPublish()"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
+                        %><button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button><%
 
                   %>
                 </coral-buttongroup>
@@ -704,19 +793,45 @@ if(StringUtils.isNotEmpty(assetId)) {
    data.push({name: 'model@Delete',value: ''});
    data.push({name: 'workflowTitle',value: 'Internal Publish'});
    var asset = '<%= request.getParameter("item") %>';
-   function internalPublish() {
-      $.ajax({
-        type: "POST",
-        url: "/etc/workflow/instances",
-        data: data,
-        async: true,
-        cache: false,
-        success: function(response) {
-            if (response) {
-                var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
-            }
+   function internalPublish(isValidated, event, isFolderMetadataMissing) {
+      if(isValidated){
+        $.ajax({
+          type: "POST",
+          url: "/etc/workflow/instances",
+          data: data,
+          async: true,
+          cache: false,
+          success: function(response) {
+              if (response) {
+                  var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+              }
+          }
+        });
+      } else {
+        event.preventDefault();
+        var alertdialog = new Coral.Dialog().set({
+          id: "demoDialog",
+          header: {
+            innerHTML: '<%= i18n.get("Asset is Missing Required fields") %>'
+          },
+          content: {
+            innerHTML: '<%= i18n.get("The Required Metadata fields are not authored in Asset") %>'
+          },
+          footer: {
+            innerHTML: "<button is=\"coral-button\" variant=\"primary\" coral-close=\"\">Ok</button>"
+          },
+          backdrop: "static"
+        });
+
+        if(isFolderMetadataMissing){
+          alertdialog.header.innerHTML = "Folder Metadata Missing"
+          alertdialog.content.innerHTML = "Folder Metadata Missing"
         }
-      });
+
+        document.body.appendChild(alertdialog);
+        alertdialog.show();
+        event.stopPropagation();
+      }
    }
 </script>
 </html><%!
@@ -759,6 +874,27 @@ private String getSavedRail(SlingHttpServletRequest request, String key) {
     } catch (UnsupportedEncodingException impossible) {
         throw new RuntimeException(impossible);
     }
+}
+
+protected List<String> getRequiredMetadataFields(ResourceResolver resourceResolver, String schemaPath) {
+    List<String> missedMetaData = new ArrayList<>();
+    Map<String, String> map = new HashMap<>();
+    map.put("path", schemaPath);
+    map.put("type", "nt:unstructured");
+    map.put("1_property", "requiredCascading");
+    map.put("1_property.value", "always");
+    QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
+    Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
+    SearchResult result = query.getResult();
+    Iterator<Resource> requiredFields = result.getResources();
+    while(requiredFields.hasNext()){
+      Resource field = requiredFields.next();
+      String metaField = StringUtils.replace(field.getValueMap().get("cq-msm-lockable", StringUtils.EMPTY),"./metadata/","");
+      if(StringUtils.isNotBlank(metaField)){
+        missedMetaData.add(metaField);
+      }
+    }
+    return missedMetaData;
 }
 
 /**
