@@ -66,7 +66,11 @@
 
   "bnp customer care" : "Customer Care",
 
-  "Back to project" : "Back to project"
+  "Back to project" : "Back to project",
+
+  "Missing Required fields" : "Missing Required fields",
+
+  "The Required Metadata fields are not authored" : "The Required Metadata fields are not authored"
 
 
 }
