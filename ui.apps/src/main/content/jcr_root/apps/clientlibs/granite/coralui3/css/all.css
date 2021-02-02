@@ -15959,7 +15959,7 @@ coral-card-content:empty {
 
 .coral3-SelectList.is-focused .coral3-SelectList-item:not(:disabled).is-selected {
   color: #fff;
-  background-color: #326ec8;
+  background-color: #00915a;
 }
 
 .coral3-SelectList-group {
@@ -16005,7 +16005,7 @@ coral-card-content:empty {
 
 .coral--dark .coral3-SelectList.is-focused .coral3-SelectList-item:not(:disabled).is-selected {
   color: #fff;
-  background-color: #326ec8;
+  background-color: #00915a;
 }
 
 .coral--dark .coral3-SelectList-group:before {
