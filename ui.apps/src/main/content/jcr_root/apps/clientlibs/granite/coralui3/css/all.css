@@ -650,7 +650,7 @@ th {
 /* link.styl */
 
 .coral-Link {
-  color: #326ec8;
+  color: #00915A;
   text-decoration: none;
 }
 
@@ -14420,7 +14420,8 @@ coral-dialog {
 
 .coral3-Dialog--help .coral3-Dialog-typeIcon,
 .coral3-Dialog--info .coral3-Dialog-typeIcon {
-  color: #78afff;
+  /*color: #78afff;*/
+  color: #00915A;
 }
 
 .coral3-Dialog--fullscreen .coral3-Dialog-wrapper {
@@ -14517,7 +14518,7 @@ coral-dialog {
 .coral--dark.coral3-Dialog--help .coral3-Dialog-header:after,
 .coral--dark .coral3-Dialog--info .coral3-Dialog-header:after,
 .coral--dark.coral3-Dialog--info .coral3-Dialog-header:after {
-  background-color: #87beff;
+  background-color: #00915A;
 }
 
 .coral--dark .coral3-Dialog--fullscreen .coral3-Dialog-header,
@@ -24207,3 +24208,4 @@ a {
 
 /* Notes */
 /* #326ec8 could be replaced by #00915A */
+/* #87beff could be replaced by #00915A (or lighter) */
