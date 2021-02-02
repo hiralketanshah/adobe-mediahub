@@ -13274,7 +13274,7 @@ th {
 }
 
 .coral3-Radio-input:checked + .coral3-Radio-checkmark:before {
-  background-color: #326ec8;
+  background-color: #00915A;
 }
 
 .coral3-Radio-input:disabled:checked + .coral3-Radio-checkmark:before {
