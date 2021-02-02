@@ -432,52 +432,6 @@ String layoutJson = new JSONStringer()
 %>
 
 <%
-if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){
-    %>
-<script>
-     $(".bnpprojects").css('background-color','#00915a');
-     $(".bnpprojects").css('color','#FFFFFF');
-</script>
-<%
-}
-else if(StringUtils.contains(path, "/content/dam/medialibrary") ){
-    %>
-<script>
-     $(".bnpmedialibrary").css('background-color','#00915a');
-     $(".bnpmedialibrary").css('color','#FFFFFF');
-     $(".foundation-layout-panel-bodywrapper").css('background-color','#bfe4d6');
-</script>
-<%
-}else{
-    %>
-<script>
-     $(".bnpmedialibrary").css('background-color','');
-     $(".bnpmedialibrary").css('color','');
-     $(".bnpprojects").css('background-color','');
-     $(".bnpprojects").css('color','');
- 	 $(".foundation-layout-panel-bodywrapper").css('background-color','');
-</script>
-<%
-}
-if(StringUtils.contains(path, "/content/dam/collections") ){
-    %>
-<script>
-     $(".bnpcollections").css('background-color','#00915a');
-     $(".bnpcollections").css('color','#FFFFFF');
-</script>
-<%
-}else{
-    %>
-<script>
-     $(".bnpcollections").css('background-color','');
-     $(".bnpcollections").css('color','');
-</script>
-<%
-}
-%>
-
-
-<%
 attrs.add("layout", cfg.get("layout", "fixed-spread"));
 attrs.add("ariaGrid", cfg.get("ariaGrid", "off"));
 attrs.add("columnwidth", "" + ex.get(cfg.get("columnWidth", "242"), Long.class));
@@ -576,4 +530,50 @@ private String handleURITemplate(String template, String absTemplate, HttpServle
     %>
     <%}%>
   }
+</script>
+
+<script>
+<%
+if(StringUtils.contains(path, "/content/dam/projects") || StringUtils.contains(path, "/content/projects")){
+    %>
+
+     $(".bnpprojects").css('background-color','#00915a');
+     $(".bnpprojects").css('color','#FFFFFF');
+
+<%
+}
+else if(StringUtils.contains(path, "/content/dam/medialibrary") ){
+    %>
+
+     $(".bnpmedialibrary").css('background-color','#00915a');
+     $(".bnpmedialibrary").css('color','#FFFFFF');
+     $(".foundation-layout-panel-bodywrapper").css('background-color','#bfe4d6');
+
+<%
+}else{
+    %>
+
+     $(".bnpmedialibrary").css('background-color','');
+     $(".bnpmedialibrary").css('color','');
+     $(".bnpprojects").css('background-color','');
+     $(".bnpprojects").css('color','');
+ 	 $(".foundation-layout-panel-bodywrapper").css('background-color','');
+<%
+}
+if(StringUtils.contains(path, "/content/dam/collections") ){
+    %>
+
+     $(".bnpcollections").css('background-color','#00915a');
+     $(".bnpcollections").css('color','#FFFFFF');
+
+<%
+}else{
+    %>
+
+     $(".bnpcollections").css('background-color','');
+     $(".bnpcollections").css('color','');
+
+<%
+}
+%>
 </script>
