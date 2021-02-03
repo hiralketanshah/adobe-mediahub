@@ -650,7 +650,7 @@ th {
 /* link.styl */
 
 .coral-Link {
-  color: #326ec8;
+  color: #00915A;
   text-decoration: none;
 }
 
@@ -13179,7 +13179,8 @@ th {
 }
 
 .coral3-Checkbox-input:checked + .coral3-Checkbox-checkmark:before {
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjExNTJweCIgaGVpZ2h0PSIxMTUycHgiIHZpZXdCb3g9IjAgMCAxMTUyIDExNTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDExNTIgMTE1MiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxwYXRoIGQ9Ik0yNzUuOSw4NjYuOUwxMC41LDYwMS41QzMuNSw1OTQuNCwwLDU4NS4yLDAsNTc2czMuNS0xOC40LDEwLjUtMjUuNWwxMDUuMS0xMDUuMWMxNC4xLTE0LjEsMzYuOS0xNC4xLDUwLjksMGwyNjUuNCwyNjUuNAoJbDU1Ny4yLTU1Ny4yYzctNywxNi4xLTkuNywyNS4zLTkuN2M5LjctMC4xLDE5LjQsMywyNi42LDEwLjdsMTAxLjIsMTA5YzYuNSw3LDkuOSwxNS40LDkuOSwyNC4yYzAsOS4yLTMuOCwxOC43LTEwLjgsMjUuNwoJTDU4Ny45LDg2Ni45TDQ1Ny40LDk5Ny41Yy03LDctMTYuMiwxMC41LTI1LjMsMTAuNXMtMTguNS0zLjUtMjUuNi0xMC41TDI3NS45LDg2Ni45eiIgZmlsbD0iIzMyNmVjOCIvPgo8L3N2Zz4=');
+  /*background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjExNTJweCIgaGVpZ2h0PSIxMTUycHgiIHZpZXdCb3g9IjAgMCAxMTUyIDExNTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDExNTIgMTE1MiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxwYXRoIGQ9Ik0yNzUuOSw4NjYuOUwxMC41LDYwMS41QzMuNSw1OTQuNCwwLDU4NS4yLDAsNTc2czMuNS0xOC40LDEwLjUtMjUuNWwxMDUuMS0xMDUuMWMxNC4xLTE0LjEsMzYuOS0xNC4xLDUwLjksMGwyNjUuNCwyNjUuNAoJbDU1Ny4yLTU1Ny4yYzctNywxNi4xLTkuNywyNS4zLTkuN2M5LjctMC4xLDE5LjQsMywyNi42LDEwLjdsMTAxLjIsMTA5YzYuNSw3LDkuOSwxNS40LDkuOSwyNC4yYzAsOS4yLTMuOCwxOC43LTEwLjgsMjUuNwoJTDU4Ny45LDg2Ni45TDQ1Ny40LDk5Ny41Yy03LDctMTYuMiwxMC41LTI1LjMsMTAuNXMtMTguNS0zLjUtMjUuNi0xMC41TDI3NS45LDg2Ni45eiIgZmlsbD0iIzMyNmVjOCIvPgo8L3N2Zz4=');*/
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjExNTJweCIgaGVpZ2h0PSIxMTUycHgiIHZpZXdCb3g9IjAgMCAxMTUyIDExNTIiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDExNTIgMTE1MiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxwYXRoIGQ9Ik0yNzUuOSw4NjYuOUwxMC41LDYwMS41QzMuNSw1OTQuNCwwLDU4NS4yLDAsNTc2czMuNS0xOC40LDEwLjUtMjUuNWwxMDUuMS0xMDUuMWMxNC4xLTE0LjEsMzYuOS0xNC4xLDUwLjksMGwyNjUuNCwyNjUuNAoJbDU1Ny4yLTU1Ny4yYzctNywxNi4xLTkuNywyNS4zLTkuN2M5LjctMC4xLDE5LjQsMywyNi42LDEwLjdsMTAxLjIsMTA5YzYuNSw3LDkuOSwxNS40LDkuOSwyNC4yYzAsOS4yLTMuOCwxOC43LTEwLjgsMjUuNwoJTDU4Ny45LDg2Ni45TDQ1Ny40LDk5Ny41Yy03LDctMTYuMiwxMC41LTI1LjMsMTAuNXMtMTguNS0zLjUtMjUuNi0xMC41TDI3NS45LDg2Ni45eiIgZmlsbD0iIzAwOTE1QSIvPgo8L3N2Zz4=')
 }
 
 .coral3-Checkbox-input:indeterminate + .coral3-Checkbox-checkmark:before {
@@ -13273,7 +13274,7 @@ th {
 }
 
 .coral3-Radio-input:checked + .coral3-Radio-checkmark:before {
-  background-color: #326ec8;
+  background-color: #00915A;
 }
 
 .coral3-Radio-input:disabled:checked + .coral3-Radio-checkmark:before {
@@ -14419,7 +14420,8 @@ coral-dialog {
 
 .coral3-Dialog--help .coral3-Dialog-typeIcon,
 .coral3-Dialog--info .coral3-Dialog-typeIcon {
-  color: #78afff;
+  /*color: #78afff;*/
+  color: #00915A;
 }
 
 .coral3-Dialog--fullscreen .coral3-Dialog-wrapper {
@@ -14516,7 +14518,7 @@ coral-dialog {
 .coral--dark.coral3-Dialog--help .coral3-Dialog-header:after,
 .coral--dark .coral3-Dialog--info .coral3-Dialog-header:after,
 .coral--dark.coral3-Dialog--info .coral3-Dialog-header:after {
-  background-color: #87beff;
+  background-color: #00915A;
 }
 
 .coral--dark .coral3-Dialog--fullscreen .coral3-Dialog-header,
@@ -15959,7 +15961,7 @@ coral-card-content:empty {
 
 .coral3-SelectList.is-focused .coral3-SelectList-item:not(:disabled).is-selected {
   color: #fff;
-  background-color: #326ec8;
+  background-color: #00915a;
 }
 
 .coral3-SelectList-group {
@@ -16005,7 +16007,7 @@ coral-card-content:empty {
 
 .coral--dark .coral3-SelectList.is-focused .coral3-SelectList-item:not(:disabled).is-selected {
   color: #fff;
-  background-color: #326ec8;
+  background-color: #00915a;
 }
 
 .coral--dark .coral3-SelectList-group:before {
@@ -24095,6 +24097,10 @@ coral-shell-header-home > a > img {
   vertical-align: bottom;
 }
 
+coral-shell-header-home .bnp-text-style {
+  line-height: 1.8;
+}
+
 
 /* Header content */
 
@@ -24191,3 +24197,15 @@ coral-shell-header-content coral-shell-homeanchor-label:hover {
   float: left;
   margin-top: 1px;
 }
+
+
+/* Colours */
+
+a {
+  color: #00915A;
+}
+
+
+/* Notes */
+/* #326ec8 could be replaced by #00915A */
+/* #87beff could be replaced by #00915A (or lighter) */
