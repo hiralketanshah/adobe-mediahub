@@ -397,10 +397,6 @@ if (size != null) {
         list.add(item);
     }
 
-    list.sort(Comparator.comparing(Resource::getName, (v1, v2) -> {
-        return v1.compareToIgnoreCase(v2);
-    }));
-
     hasMore = items.hasNext();
     items = list.iterator();
 }
