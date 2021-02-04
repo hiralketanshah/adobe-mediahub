@@ -343,7 +343,7 @@ int minContentSize = 100;
 
         %><coral-shell-header-home <%= headerHome %>>
           	<a href="#" style="text-decoration: none;">
-              <img src="/content/dam/medialibrary/group_functions/company_engagement/group_communications/user_experience/vst/dms/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
+              <img src="/content/dam/technique/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
             </a>
             <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP<%= runmode %></coral-shell-homeanchor-label>
         </coral-shell-header-home>
