@@ -20,7 +20,6 @@
                   java.util.Iterator,
                   org.apache.commons.lang3.StringUtils,
                   org.apache.sling.commons.json.io.JSONStringer,
-                  java.util.Comparator,
                   org.slf4j.Logger,
                   org.slf4j.LoggerFactory,
                   com.adobe.granite.ui.components.AttrBuilder,
@@ -393,8 +392,7 @@ if (size != null) {
     ArrayList<Resource> list = new ArrayList<Resource>();
 
     while (items.hasNext() && list.size() < totalSize) {
-        Resource item = items.next();
-        list.add(item);
+        list.add(items.next());
     }
 
     hasMore = items.hasNext();
