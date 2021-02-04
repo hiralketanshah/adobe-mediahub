@@ -205,9 +205,14 @@
                           permission: deny
                           privileges: jcr:all
 
-        - path: /content/dam/medialibrary/group_functions/company_engagement/group_communications/user_experience/vst/dms/mediahub/
+        - path: /content/dam/technique/mediahub
+          permission: deny
+          actions: read
+        - path: /content/dam/technique/mediahub
           permission: allow
           actions: read
+          restrictions:
+                rep:glob: '/*'
         - path: /conf
           permission: allow
           actions: read
