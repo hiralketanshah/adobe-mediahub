@@ -8,7 +8,7 @@
         cq:template="/conf/mediahub/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="Player"
-        sling:redirect="true"
+        sling:redirect="false"
         sling:resourceType="mediahub/components/page"
         sling:vanityPath="/player.jsp">
         <root
