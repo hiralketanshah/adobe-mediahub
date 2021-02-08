@@ -80,6 +80,11 @@
 
         %>
     </label>
+    <label for="requirement">
+      <span class="rules-label"><%= i18n.get("Requirement") %></span>
+        <% String requiredField = "v2/requiredfields"; %>
+        <sling:include resource="<%= resource %>" resourceType="<%= resourcePathBase + requiredField %>"/>
+    </label>
     <label for="visibililty">    
         <span class="rules-label"><%= i18n.get("Visibility") %></span>
         <% String visibilityField = "visibilityfields"; %>
