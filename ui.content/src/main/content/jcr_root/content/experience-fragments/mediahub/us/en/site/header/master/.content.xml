@@ -8,6 +8,8 @@
         cq:xfVariantType="web"
         jcr:primaryType="cq:PageContent"
         jcr:title="Header"
+        jcr:lastModified="{Date}2014-07-08T18:32:21.880+05:30"
+        jcr:lastModifiedBy="admin"
         sling:resourceType="mediahub/components/xfpage">
         <root
             jcr:primaryType="nt:unstructured"
