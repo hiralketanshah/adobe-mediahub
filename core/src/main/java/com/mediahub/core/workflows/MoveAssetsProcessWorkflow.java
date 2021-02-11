@@ -92,14 +92,15 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                         WorkflowUtils.updateWorkflowPayload(workItem, workflowSession,newPath);
                     }
                 }
-            }
-            
-            session.save();
-            resourceResolver.commit();
 
-            if(media != null && isFolderEmpty(media)) {
-                resourceResolver.delete(media);
+
+                session.save();
                 resourceResolver.commit();
+
+                if(media != null && isFolderEmpty(media)) {
+                    resourceResolver.delete(media);
+                    resourceResolver.commit();
+                }
             }
         } catch (LoginException e) {
             throw new WorkflowException("Login exception", e);

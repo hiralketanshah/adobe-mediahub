@@ -1,16 +1,15 @@
 package com.mediahub.core.servlets;
 
+import com.mediahub.core.constants.BnpConstants;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
-
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -19,13 +18,12 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.mediahub.core.constants.BnpConstants;
 
 @Component(
     service = Servlet.class,
@@ -71,7 +69,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
                         + "</title></head>");
                 out.println("<body>");
-                out.println("<img src=" + contentPath + " style=\"width:100%; height:100%;\" >");
+                out.println("<img src=" + URIUtil.encodePath(contentPath) + " style=\"width:100%; height:100%;\" >");
                 out.println("</img>");
                 out.println("</body></html>");
                 out.flush();
