@@ -478,6 +478,7 @@ try {
                 boolean isValidated = false;
                 boolean isFolderMetadataMissing = false;
                 boolean isAsset = false;
+                boolean isMediaValidated = false;
 
                 try {
                     if(null != auth){
@@ -540,6 +541,7 @@ try {
                                                 isValidated = true;
                                               }
                                             } else {
+                                              isMediaValidated = true;
                                               isFolderMetadataMissing = true;
                                             }
                                           }
@@ -580,13 +582,14 @@ try {
                         doneAttrs1.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
                         doneAttrs1.add("isValidated", isValidated);
                         doneAttrs1.add("isFolderMetadataMissing", isFolderMetadataMissing);
+                        doneAttrs1.add("isMediaValidated", isMediaValidated);
 
                         %>
 
                         <%
                         if(isAsset){
                         %>
-                          <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                          <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>, <%=isMediaValidated%>)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
                         <% } else { %>
                           <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
                         <%}
@@ -785,7 +788,7 @@ if(StringUtils.isNotEmpty(assetId)) {
    data.push({name: 'model@Delete',value: ''});
    data.push({name: 'workflowTitle',value: 'Internal Publish'});
    var asset = '<%= request.getParameter("item") %>';
-   function internalPublish(isValidated, event, isFolderMetadataMissing) {
+   function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
       if(isValidated || isValidated === 'true'){
         $.ajax({
           type: "POST",
@@ -816,8 +819,14 @@ if(StringUtils.isNotEmpty(assetId)) {
         });
 
         if(isFolderMetadataMissing || isFolderMetadataMissing === "true"){
-          alertdialog.header.innerHTML = "Folder Metadata Missing"
-          alertdialog.content.innerHTML = "Folder Metadata Missing"
+
+          if (isMediaValidated) {
+            alertdialog.header.innerHTML = "Media Folder is not validated"
+            alertdialog.content.innerHTML = "Media Folder is not validated"
+          } else {
+            alertdialog.header.innerHTML = "Folder Metadata Missing"
+            alertdialog.content.innerHTML = "Folder Metadata Missing"
+          }
         }
 
         document.body.appendChild(alertdialog);

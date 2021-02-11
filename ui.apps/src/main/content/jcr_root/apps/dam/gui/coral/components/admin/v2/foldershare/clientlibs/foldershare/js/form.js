@@ -162,7 +162,7 @@
 
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
         if(saveMediaMetadataChanges(e)){
-          internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"));
+          internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
         }
         return false;
     });
