@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 @ServiceDescription("listen on changes in the resource tree")
 public class FolderMetadataSchemaListener implements EventHandler {
 
+  public static final String TABS_ITEMS = "/tabs/items";
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Reference
@@ -50,21 +51,38 @@ public class FolderMetadataSchemaListener implements EventHandler {
 
         schemaHolder = createSchemaFolder(resolver, tabs, temporaryPath);
 
-        resolver.copy(tabs.getPath(), schemaHolder.getPath());
-        resolver.commit();
+        if(schemaHolder.getChild("tabs") != null) {
+          Iterator<Resource> scheamTabs = tabs.getChild("items").listChildren();
+          while(scheamTabs.hasNext()){
+            Resource sourceTab = scheamTabs.next();
+            if(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS) != null &&
+                resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()) != null ){
+              resolver.delete(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()));
+              resolver.commit();
+            }
+            resolver.copy(sourceTab.getPath(), schemaHolder.getPath() + TABS_ITEMS);
+          }
+          resolver.commit();
+        } else {
+          resolver.copy(tabs.getPath(), schemaHolder.getPath());
+          resolver.commit();
+        }
 
         Resource wizard = resolver.getResource(BnpConstants.FOLDER_WIZARD_PATH);
         Iterator<Resource> items = wizard.listChildren();
         while (items.hasNext()) {
           Resource item = items.next();
-          resolver.copy(item.getPath(), schemaHolder.getChild(BnpConstants.TABS).getChild(BnpConstants.ITEMS).getPath());
+          if(schemaHolder.getChild(BnpConstants.TABS).getChild(BnpConstants.ITEMS).getChild(item.getName()) == null){
+            resolver.copy(item.getPath(), schemaHolder.getChild(BnpConstants.TABS).getChild(BnpConstants.ITEMS).getPath());
+          }
+
         }
         resolver.commit();
       }
     } catch (LoginException e) {
-      logger.error("Error while fetching resource resolver from serviceuser {}", e.getMessage());
+      logger.error("Error while fetching resource resolver from serviceuser", e);
     } catch (PersistenceException e) {
-      logger.error("Error while Saving resource resolver {}", e.getMessage());
+      logger.error("Error while Saving resource resolver", e);
     }
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
   }
@@ -76,10 +94,7 @@ public class FolderMetadataSchemaListener implements EventHandler {
       schemaHolder = resolver
           .create(temporaryPath, tabs.getParent().getParent().getName(), new HashMap<>());
     } else {
-      resolver.delete(temporaryPath.getChild(tabs.getParent().getParent().getName()));
-      resolver.commit();
-      schemaHolder = resolver
-          .create(temporaryPath, tabs.getParent().getParent().getName(), new HashMap<>());
+      schemaHolder = temporaryPath.getChild(tabs.getParent().getParent().getName());
     }
     resolver.commit();
     return schemaHolder;
