@@ -132,9 +132,9 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Published"
                     sortable="{Boolean}true"/>
-                <department
+                <company
                   jcr:primaryType="nt:unstructured"
-                  jcr:title="Department"
+                  jcr:title="Company"
                   sortable="{Boolean}true"/>
                 <country
                   jcr:primaryType="nt:unstructured"
