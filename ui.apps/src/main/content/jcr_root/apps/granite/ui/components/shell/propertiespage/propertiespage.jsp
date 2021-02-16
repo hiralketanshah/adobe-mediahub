@@ -475,6 +475,7 @@ try {
 
               <%
                 boolean isEntityManager = false;
+                boolean isContributor = false;
                 boolean isValidated = false;
                 boolean isFolderMetadataMissing = false;
                 boolean isAsset = false;
@@ -485,13 +486,16 @@ try {
                       Iterator<Group> groups = auth.memberOf();
                         while(groups.hasNext()){
                             Group group = groups.next();
-                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators")){
+                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators")|| StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
                                 if(StringUtils.isNotEmpty(assetId)) {
                                   Resource assetResource = resourceResolver.getResource(assetId);
                                   boolean fieldMissed = false;
                                    if (assetResource != null && assetResource.getChild("jcr:content") != null) {
                                   		  if(assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
                                           isEntityManager = true;
+                                          if(StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
+                                           isContributor = true;
+                                          }
                                           String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
                                           List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, assetSchema);
                                           if(assetResource.hasChildren()){
@@ -522,6 +526,9 @@ try {
                                           }
                                   		  } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
                                           isEntityManager = true;
+                                          if(StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
+                                           isContributor = true;
+                                          }
                                           isAsset = true;
 
                                           if(assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
@@ -559,7 +566,7 @@ try {
 
 
               <%
-              if (StringUtils.contains(assetId ,"/content/dam") && isEntityManager) {
+              if (StringUtils.contains(assetId ,"/content/dam") && (isEntityManager || isContributor)) {
               %>
               <coral-actionbar-item>
                 <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
@@ -585,12 +592,13 @@ try {
                         doneAttrs1.add("isMediaValidated", isMediaValidated);
 
                         %>
-
-                        <%
-                        if(isAsset){
+ 						<%
+                            if(!StringUtils.contains(assetId ,"/content/dam/projects") && isAsset){
                         %>
                           <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>, <%=isMediaValidated%>)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
-                        <% } else { %>
+                    	<% } else if (StringUtils.contains(assetId ,"/content/dam/projects") && (isAsset || isContributor)) { %>
+
+                        <%} else { %>
                           <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
                         <%}
 
