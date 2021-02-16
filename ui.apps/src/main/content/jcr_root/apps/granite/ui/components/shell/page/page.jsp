@@ -336,9 +336,9 @@ int minContentSize = 100;
         String runmode = " ";
         Set<String> runmodes = sling.getService(SlingSettingsService.class).getRunModes();
         if( runmodes.contains("dev")){
-          runmode = " dev";
+          runmode = " Dev";
         } else if(runmodes.contains("stage")){
-          runmode = " stage";
+          runmode = " Stage";
         }
 
         %><coral-shell-header-home <%= headerHome %>>

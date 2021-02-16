@@ -216,10 +216,10 @@ public class AuthorizableModelImpl implements AuthorizableModel {
   }
 
   @Override
-  public String getDepartment(){
+  public String getCompany(){
     String expiry = StringUtils.EMPTY;
     if(resource.getChild("profile") != null){
-      expiry = resource.getChild("profile").getValueMap().get("department", StringUtils.EMPTY);
+      expiry = resource.getChild("profile").getValueMap().get("company", StringUtils.EMPTY);
     }
     return expiry;
   }

@@ -23,13 +23,14 @@
     }
 
 %>
-<td is="coral-table-cell" value="<%= downloadauthorisation %>">
-    <%= downloadauthorisation %>
-</td>
  
 <td is="coral-table-cell" value="<%= broadcaststatus %>">
     <%= broadcaststatus %>
 </td>
+<td is="coral-table-cell" value="<%= downloadauthorisation %>">
+    <%= downloadauthorisation %>
+</td>
+
 
 
 <cq:include script = "/libs/dam/gui/coral/components/admin/contentrenderer/row/common/reorder.jsp"/>
