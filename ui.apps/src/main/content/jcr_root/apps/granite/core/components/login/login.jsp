@@ -427,6 +427,18 @@ login
     <%-- Load the clientlib(s). Extension libraries should use the  'granite.core.login.extension' category. --%>
     <ui:includeClientLib js="jquery,typekit,granite.core.login,granite.core.login.extension"/>
     <ui:includeClientLib css="granite.core.login.extension"/>
+    <style>
+        #popupDialog .coral3-Dialog-content{
+            height: 75vh !important;
+            overflow:scroll !important;
+        }
+        .legal-footer a{
+            text-decoration: none !important;
+        }
+        .legal-footer a:hover{
+            text-decoration: underline !important;
+        }
+    </style>
 </head>
 <body class="coral--light">
 <div id="wrap" role="main">

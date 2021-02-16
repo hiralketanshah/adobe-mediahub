@@ -247,12 +247,12 @@ public class AuthorizableModelImplTest {
     }
 
     @Test
-    public void testGetDepartment() throws Exception {
+    public void testGetCompany() throws Exception {
         when(resource.getChild("profile")).thenReturn(resource);
         when(resource.getValueMap()).thenReturn(valueMap);
-        when(valueMap.get("department", StringUtils.EMPTY)).thenReturn("Management");
-        authorizableModelImpl.getDepartment();
-        assertEquals("Management", valueMap.get("department", StringUtils.EMPTY));
+        when(valueMap.get("company", StringUtils.EMPTY)).thenReturn("Management");
+        authorizableModelImpl.getCompany();
+        assertEquals("Management", valueMap.get("company", StringUtils.EMPTY));
     }
 
     @AfterEach

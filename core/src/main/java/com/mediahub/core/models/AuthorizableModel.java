@@ -76,5 +76,5 @@ public interface AuthorizableModel {
 
   String getCountry();
 
-  String getDepartment();
+  String getCompany();
 }
