@@ -84,8 +84,16 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("</video>");
                 out.println("</body></html>");
                 out.flush();
-            }
-        } catch (PathNotFoundException e) {
+            }else{
+                out.println("<html lang=\"en\">");
+                out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
+                        + "</title></head>");
+                out.println("<body>");
+                out.println("This extension is not support by the player");
+                out.println("</body></html>");
+                out.flush();
+        } 
+        }catch (PathNotFoundException e) {
 
             logger.debug("Excetion occured when No Path found  $$$$$$ ------ : {} ", e.getMessage());
         } catch (RepositoryException e) {
