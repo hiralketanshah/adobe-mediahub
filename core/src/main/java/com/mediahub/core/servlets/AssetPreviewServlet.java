@@ -1,15 +1,6 @@
 package com.mediahub.core.servlets;
 
 import com.mediahub.core.constants.BnpConstants;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Map;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -25,10 +16,20 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Map;
+
 @Component(
-    service = Servlet.class,
-    property = { "sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.resourceTypes=" + "cq/Page",
-            "sling.servlet.extensions=" + "jsp" })
+        service = Servlet.class,
+        property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/player",
+                "sling.servlet.extensions=" + "jsp"})
 @ServiceDescription("Asset Preview Servlet ")
 public class AssetPreviewServlet extends SlingSafeMethodsServlet {
 
@@ -46,9 +47,10 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                     BnpConstants.WRITE_SERVICE);
             ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
-            Resource resource = req.getResource();
-            Node titleNode = getJcrContentNode(resource);
+
             String contentPath = req.getParameter("content");
+
+            String title = contentPath.split("/")[contentPath.split("/").length - 1];
 
             Resource metaDataResource = adminResolver.getResource(contentPath);
             Node jcrContentNode = getJcrContentNode(metaDataResource);
@@ -66,7 +68,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             PrintWriter out = resp.getWriter();
             if (imageVideo != null && "image".equals(imageVideo)) {
                 out.println("<html lang=\"en\">");
-                out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
+                out.println("<head><title>" + title
                         + "</title></head>");
                 out.println("<body>");
                 out.println("<img src=" + URIUtil.encodePath(contentPath) + " style=\"width:100%; height:100%;\" >");
@@ -76,7 +78,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             } else if (imageVideo != null && "video".equals(imageVideo)) {
 
                 out.println("<html lang=\"en\">");
-                out.println("<head><title>" + titleNode.getProperty(BnpConstants.JCR_TITLE).getString()
+                out.println("<head><title>" + title
                         + "</title></head>");
                 out.println("<body>");
                 out.println("<video  style=\"width:100%; height:100%;\" controls>");
