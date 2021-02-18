@@ -24098,7 +24098,15 @@ coral-shell-header-home > a > img {
 }
 
 coral-shell-header-home .bnp-text-style {
-  line-height: 1.8;
+  line-height: 1.9;
+  position: absolute;
+  left: 165px;
+}
+
+.coral3-Shell-menubar{
+  background-color: white;
+  position: relative;
+  z-index: 9999;
 }
 
 
