@@ -15952,7 +15952,7 @@ coral-card-content:empty {
 }
 
 .coral3-SelectList-item:not([disabled]).is-highlighted {
-  background-color: rgba(50,110,200,0.15);
+  background-color: #bfe4d6;
 }
 
 .coral3-SelectList-item:not([disabled]).is-selected {
@@ -16359,23 +16359,23 @@ coral-tooltip {
 }
 
 .coral3-Tooltip--info {
-  background-color: #87beff;
+  background-color: #bfe4d6;
 }
 
 .coral3-Tooltip--info.coral3-Tooltip--arrowDown:after {
-  border-bottom-color: #87beff;
+  border-bottom-color: #bfe4d6;
 }
 
 .coral3-Tooltip--info.coral3-Tooltip--arrowUp:after {
-  border-top-color: #87beff;
+  border-top-color: #bfe4d6;
 }
 
 .coral3-Tooltip--info.coral3-Tooltip--arrowRight:after {
-  border-right-color: #87beff;
+  border-right-color: #bfe4d6;
 }
 
 .coral3-Tooltip--info.coral3-Tooltip--arrowLeft:after {
-  border-left-color: #87beff;
+  border-left-color: #bfe4d6;
 }
 
 .coral3-Tooltip--error {
