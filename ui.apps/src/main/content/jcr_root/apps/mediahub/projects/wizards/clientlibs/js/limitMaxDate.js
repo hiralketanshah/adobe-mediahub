@@ -1,5 +1,4 @@
 (function (Granite, $) {
-    "use strict";
     var ui = $(window).adaptTo("foundation-ui");
     $(document).on("change", "coral-datepicker#externalUserDatepicker", function (e) {
         var calendar = e.target;
