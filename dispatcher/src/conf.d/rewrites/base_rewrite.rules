@@ -32,6 +32,3 @@ RewriteRule .* - [F]
 
 # Block wp-login
 RewriteRule ^.*wp-login - [F,NC,L]
-
-#Rewrite Player URL
-RewriteRule ^/player.jsp$ /bin/mediahub/player.jsp [NC,PT]
