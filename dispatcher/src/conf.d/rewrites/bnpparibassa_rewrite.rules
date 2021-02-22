@@ -1,3 +1,6 @@
+#Rewrite Player URL
+RewriteRule ^/player.jsp$ /bin/mediahub/player.jsp [NC,PT,L]
+
 # rewrite for root redirect
 RewriteRule ^/?$ /content/${CONTENT_FOLDER_NAME}/us/en.html [PT,L]
 
