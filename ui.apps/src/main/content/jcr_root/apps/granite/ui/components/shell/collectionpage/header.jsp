@@ -25,6 +25,8 @@
     Config cfg = cmp.getConfig();
     ExpressionHelper ex = cmp.getExpressionHelper();
 
+    String path = ex.getString(cfg.get("path", String.class));
+
     String consoleId = StringUtils.trimToNull(ex.getString(cfg.get("consoleId", String.class)));
     String navigationId = consoleId;
 
@@ -40,9 +42,9 @@
     String runmode = " ";
     Set<String> runmodes = sling.getService(SlingSettingsService.class).getRunModes();
     if( runmodes.contains("dev")){
-      runmode = " dev";
+      runmode = " Dev";
     } else if(runmodes.contains("stage")){
-      runmode = " stage";
+      runmode = " Stage";
     }
 %><coral-shell-header-home <%= headerHome %>> 
 	<a href="#" style="text-decoration: none;">
@@ -62,7 +64,7 @@
     %></coral-shell-menubar>
 </coral-shell-header-actions>
 
-<coral-shell-header-content>
+<coral-shell-header-content id="mediahub-menu">
     <coral-shell-menubar>
       <coral-shell-menubar-item class="bnpmedialibrary">
         <a href="/assets.html/content/dam/medialibrary">
@@ -91,3 +93,24 @@
       </coral-shell-menubar-item>
     </coral-shell-menubar>
 </coral-shell-header-content>
+
+<script>
+
+
+    $("#mediahub-menu coral-shell-homeanchor-label").css('background-color','');
+    $("#mediahub-menu coral-shell-homeanchor-label").css('color','');
+
+    if(window.location.href.includes('/content/dam/medialibrary')) {
+        $(".bnpmedialibrary").css('background-color', '#00915a');
+        $(".bnpmedialibrary").css('color', '#FFFFFF');
+        $(".foundation-layout-panel-bodywrapper").css('background-color', '#bfe4d6');
+    }else if(window.location.href.includes('/content/dam/collections')) {
+        $(".bnpcollections").css('background-color','#00915a');
+        $(".bnpcollections").css('color','#FFFFFF');
+    }else if(window.location.href.includes('/content/dam/projects') || window.location.href.includes('/content/projects')) {
+        $(".bnpprojects").css('background-color','#00915a');
+        $(".bnpprojects").css('color','#FFFFFF');
+    }
+
+
+</script>

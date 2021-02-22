@@ -1,6 +1,7 @@
-(function (window, document, Granite, $, undefined) {
+(function (window, document, Granite, $) {
     $(document).off("click", '.project-members-add-user');
     $(document).on("click", '.project-members-add-user', function (ev) {
+        var ui = $(window).adaptTo("foundation-ui");
         var userId = $(".collection-settings-userpicker-id").data("autocomplete").getValue();
         if (userId) {
             var options = {
@@ -8,7 +9,6 @@
                 type: "GET",
                 success: function (data, textStatus, jqXHR) {
                     data.allowEdit = false;
-
                     var $member = $("#member-role");
                     if ($member.length > 0) {
                         var member = $member[0];
@@ -17,7 +17,7 @@
                             data.role = member.selectedItem.innerText;
 
                             if (data.type === 'external' && data.roleId !== 'external-contributor') {
-                                alert('External Users cannot be assigned to another project dd');
+                                ui.alert(Granite.I18n.get("Error"), Granite.I18n.get('External Users cannot be assigned to another project role'), 'error');
                             } else {
                                 // add new member to the table
                                 CQ.Projects.addTeamMember($(".team-table tbody"), data, false);
