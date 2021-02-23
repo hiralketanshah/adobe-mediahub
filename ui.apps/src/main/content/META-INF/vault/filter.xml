@@ -4,6 +4,7 @@
     <filter root="/apps/mediahub/components"/>
    <!-- <filter root="/apps/mediahub/i18n"/>-->
     <filter root="/apps/dam" mode="update"/>
+    <filter root="/apps/granite/security/content/useradmin" mode="replace"/>
     <filter root="/apps/granite" mode="update"/>
     <filter root="/apps/cq/inbox" mode="update"/>
     <filter root="/apps/cq/tagging" mode="update"/>
