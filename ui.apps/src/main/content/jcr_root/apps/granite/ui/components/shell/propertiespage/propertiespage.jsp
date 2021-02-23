@@ -479,7 +479,7 @@ try {
                 boolean isValidated = false;
                 boolean isFolderMetadataMissing = false;
                 boolean isAsset = false;
-                boolean isMediaValidated = false;
+                String isMediaValidated = "false";
 
                 try {
                     if(null != auth){
@@ -498,7 +498,15 @@ try {
                                           }
                                           String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
                                           List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, assetSchema);
-                                          if(assetResource.hasChildren()){
+
+                                          Iterator<Asset> mediaAssets =  DamUtil.getAssets(assetResource);
+
+                                          if(!mediaAssets.hasNext()){
+                                              isValidated = false;
+                                              isMediaValidated = "emptyMedia";
+                                          }
+
+                                          if(!StringUtils.equals(isMediaValidated, "emptyMedia") && assetResource.hasChildren()){
                                               Iterator<Resource> children =  assetResource.listChildren();
                                               while(children.hasNext()){
                                                   Resource child = children.next();
@@ -548,7 +556,7 @@ try {
                                                 isValidated = true;
                                               }
                                             } else {
-                                              isMediaValidated = true;
+                                              isMediaValidated = "true";
                                               isFolderMetadataMissing = true;
                                             }
                                           }
@@ -828,9 +836,12 @@ if(StringUtils.isNotEmpty(assetId)) {
 
         if(isFolderMetadataMissing || isFolderMetadataMissing === "true"){
 
-          if (isMediaValidated) {
+          if (isMediaValidated === "true") {
             alertdialog.header.innerHTML = "Media Folder is not validated"
             alertdialog.content.innerHTML = "Media Folder is not validated"
+          } else if(isMediaValidated === "emptyMedia"){
+            alertdialog.header.innerHTML = "Cannot publish an empty media"
+            alertdialog.content.innerHTML = "Cannot publish an empty media"
           } else {
             alertdialog.header.innerHTML = "Folder Metadata Missing"
             alertdialog.content.innerHTML = "Folder Metadata Missing"

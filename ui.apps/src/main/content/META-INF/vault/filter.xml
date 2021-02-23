@@ -2,15 +2,17 @@
 <workspaceFilter version="1.0">
     <filter root="/apps/mediahub/clientlibs"/>
     <filter root="/apps/mediahub/components"/>
-   <!-- <filter root="/apps/mediahub/i18n"/>-->
-    <filter root="/apps/dam" mode="update"/>
-    <filter root="/apps/granite" mode="update"/>
-    <filter root="/apps/cq/inbox" mode="update"/>
-    <filter root="/apps/cq/tagging" mode="update"/>
-    <filter root="/apps/clientlibs" mode="update"/>
+    <!-- <filter root="/apps/mediahub/i18n"/>-->
+    <filter root="/apps/dam/gui"/>
+    <filter root="/apps/granite/core"/>
+    <filter root="/apps/granite/security"/>
+    <filter root="/apps/granite/ui"/>
+    <filter root="/apps/cq/inbox"/>
+    <filter root="/apps/cq/tagging"/>
+    <filter root="/apps/cq/gui"/>
+    <filter root="/apps/clientlibs/granite"/>
     <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
     <filter root="/apps/mediahub/projects"/>
-    <filter root="/apps/mediahub/acl-configuration" mode="update"/>
-    <filter root="/apps/cq/gui" mode="update"/>
-    <filter root="/apps/settings/dam" />
+    <filter root="/apps/mediahub/acl-configuration"/>
+    <filter root="/apps/settings/dam"/>
 </workspaceFilter>

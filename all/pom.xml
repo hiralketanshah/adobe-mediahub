@@ -128,7 +128,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.jackrabbit</groupId>
                 <artifactId>filevault-package-maven-plugin</artifactId>
                 <extensions>true</extensions>
@@ -148,7 +148,7 @@
                     <allowIndexDefinitions>true</allowIndexDefinitions>
                     <accessControlHandling>merge_preserve</accessControlHandling>
                 </configuration>
-            </plugin>
+            </plugin>-->
 
 
             <plugin>
@@ -257,7 +257,7 @@
             <artifactId>core.wcm.components.config</artifactId>
             <type>zip</type>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>biz.netcentric.cq.tools.accesscontroltool</groupId>
             <artifactId>accesscontroltool-package</artifactId>
             <version>2.6.2</version>
@@ -268,6 +268,6 @@
                     <artifactId>accesscontroltool-bundle</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>
