@@ -116,6 +116,13 @@
 
     function saveMediaMetadataChanges(e) {
 
+            if (document.getElementById("shell-propertiespage-save-publish").getAttribute("ismediavalidated") === "emptyMedia") {
+                showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("Cannot publish an empty media."),
+                    '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
+                return false;
+            }
+
             if(!validateBnppStatus()){
                 showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
                     Granite.I18n.get("BNPP Status is not Validated."),
