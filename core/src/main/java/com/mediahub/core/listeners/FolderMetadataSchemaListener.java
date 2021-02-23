@@ -13,8 +13,6 @@ import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,8 +28,6 @@ import java.util.Map;
 public class FolderMetadataSchemaListener implements EventHandler {
 
   public static final String TABS_ITEMS = "/tabs/items";
-  public static final String SCHEMA_TABS_ITEMS_WTAB_2 = "/apps/dam/temp/mediahub-medias-schema/tabs/items/wtab2";
-  public static final String WTAB_2 = "wtab2";
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Reference
@@ -49,8 +45,25 @@ public class FolderMetadataSchemaListener implements EventHandler {
         }
         Resource tabs = resolver.getResource(path);
         Resource temporaryPath = getTemporaryResource(resolver);
+
         schemaHolder = createSchemaFolder(resolver, tabs, temporaryPath);
-        copyDynamicAssetSchema(schemaHolder, resolver, tabs);
+
+        if(schemaHolder.getChild("tabs") != null) {
+          Iterator<Resource> scheamTabs = tabs.getChild("items").listChildren();
+          while(scheamTabs.hasNext()){
+            Resource sourceTab = scheamTabs.next();
+            if(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS) != null &&
+                resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()) != null ){
+              resolver.delete(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()));
+              resolver.commit();
+            }
+            resolver.copy(sourceTab.getPath(), schemaHolder.getPath() + TABS_ITEMS);
+          }
+          resolver.commit();
+        } else {
+          resolver.copy(tabs.getPath(), schemaHolder.getPath());
+          resolver.commit();
+        }
 
         Resource wizard = resolver.getResource(BnpConstants.FOLDER_WIZARD_PATH);
         Iterator<Resource> items = wizard.listChildren();
@@ -67,36 +80,8 @@ public class FolderMetadataSchemaListener implements EventHandler {
       logger.error("Error while fetching resource resolver from serviceuser", e);
     } catch (PersistenceException e) {
       logger.error("Error while Saving resource resolver", e);
-    } catch (RepositoryException e) {
-      logger.error("Error while ordering tab resource", e);
     }
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
-  }
-
-  private void copyDynamicAssetSchema(Resource schemaHolder, ResourceResolver resolver,
-      Resource tabs) throws PersistenceException, RepositoryException {
-    if(schemaHolder.getChild("tabs") != null) {
-      Iterator<Resource> scheamTabs = tabs.getChild("items").listChildren();
-      while(scheamTabs.hasNext()){
-        Resource sourceTab = scheamTabs.next();
-        if(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS) != null &&
-            resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()) != null ){
-          resolver.delete(resolver.getResource(schemaHolder.getPath() + TABS_ITEMS).getChild(sourceTab.getName()));
-          resolver.commit();
-        }
-
-        Resource tab = resolver.copy(sourceTab.getPath(), schemaHolder.getPath() + TABS_ITEMS);
-        resolver.commit();
-        if(resolver.getResource(SCHEMA_TABS_ITEMS_WTAB_2) != null){
-          tab.adaptTo(Node.class).getParent().orderBefore(tab.getName(), WTAB_2);
-        }
-
-      }
-      resolver.commit();
-    } else {
-      resolver.copy(tabs.getPath(), schemaHolder.getPath());
-      resolver.commit();
-    }
   }
 
   protected Resource createSchemaFolder(ResourceResolver resolver, Resource tabs,
