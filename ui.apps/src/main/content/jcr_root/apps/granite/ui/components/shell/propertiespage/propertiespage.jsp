@@ -814,6 +814,21 @@ if(StringUtils.isNotEmpty(assetId)) {
           cache: false,
           success: function(response) {
               if (response) {
+
+                  var success = new Coral.Dialog().set({
+                    id: "successDialog",
+                    size: "L",
+                    variant: "success",
+                    header: {
+                      innerHTML: "The Asset has been triggered to Publish"
+                    },
+                    content: {
+                      innerHTML: "Properties are saved and The Asset has been triggered to Publish"
+                    }
+                  });
+
+                  document.body.appendChild(success);
+                  success.show();
                   var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
               }
           }
