@@ -559,6 +559,9 @@ try {
                                               isMediaValidated = "true";
                                               isFolderMetadataMissing = true;
                                             }
+                                          } else {
+                                            isMediaValidated = "notinsidemedia";
+                                            isFolderMetadataMissing = true;
                                           }
                                   		  }
                                    }
@@ -598,13 +601,12 @@ try {
                         doneAttrs1.add("isValidated", isValidated);
                         doneAttrs1.add("isFolderMetadataMissing", isFolderMetadataMissing);
                         doneAttrs1.add("isMediaValidated", isMediaValidated);
-
                         %>
- 						<%
-                            if(!StringUtils.contains(assetId ,"/content/dam/projects") && isAsset){
+                        <%
+                            if(StringUtils.contains(assetId ,"/content/dam/projects") && isAsset){
                         %>
-                          <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>, <%=isMediaValidated%>)"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
-                    	<% } else if (StringUtils.contains(assetId ,"/content/dam/projects") && (isAsset || isContributor)) { %>
+                          <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>, '<%=isMediaValidated%>')"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                    	  <% } else if (StringUtils.contains(assetId ,"/content/dam/medialibrary") && (isAsset || isContributor)) { %>
 
                         <%} else { %>
                           <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
@@ -814,6 +816,21 @@ if(StringUtils.isNotEmpty(assetId)) {
           cache: false,
           success: function(response) {
               if (response) {
+
+                  var success = new Coral.Dialog().set({
+                    id: "successDialog",
+                    size: "L",
+                    variant: "success",
+                    header: {
+                      innerHTML: "The Asset has been triggered to Publish"
+                    },
+                    content: {
+                      innerHTML: "Properties are saved and The Asset has been triggered to Publish"
+                    }
+                  });
+
+                  document.body.appendChild(success);
+                  success.show();
                   var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
               }
           }
@@ -842,6 +859,9 @@ if(StringUtils.isNotEmpty(assetId)) {
           } else if(isMediaValidated === "emptyMedia"){
             alertdialog.header.innerHTML = "Cannot publish an empty media"
             alertdialog.content.innerHTML = "Cannot publish an empty media"
+          } else if(isMediaValidated === "notinsidemedia"){
+            alertdialog.header.innerHTML = "Asset must be in a media to be published"
+            alertdialog.content.innerHTML = "Asset must be in a media to be published"
           } else {
             alertdialog.header.innerHTML = "Folder Metadata Missing"
             alertdialog.content.innerHTML = "Folder Metadata Missing"

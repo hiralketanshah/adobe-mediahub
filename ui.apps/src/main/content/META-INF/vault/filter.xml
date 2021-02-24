@@ -3,15 +3,16 @@
     <filter root="/apps/mediahub/clientlibs"/>
     <filter root="/apps/mediahub/components"/>
     <!-- <filter root="/apps/mediahub/i18n"/>-->
-    <filter root="/apps/dam/gui"/>
-    <filter root="/apps/granite/core"/>
-    <filter root="/apps/granite/security"/>
-    <filter root="/apps/granite/ui"/>
-    <filter root="/apps/cq/inbox"/>
-    <filter root="/apps/cq/tagging"/>
-    <filter root="/apps/cq/gui"/>
-    <filter root="/apps/clientlibs/granite"/>
-    <filter root="/apps/dam/gui/coral/components/admin/schemaforms/formbuilder"/>
+    <filter root="/apps/granite"/>
+    <filter root="/apps/cq">
+        <exclude pattern="/apps/cq/core"/>
+    </filter>
+    <filter root="/apps/clientlibs">
+        <exclude pattern="/apps/clientlibs/social"/>
+    </filter>
+    <filter root="/apps/dam">
+        <exclude pattern="/apps/dam/config"/>
+    </filter>
     <filter root="/apps/mediahub/projects"/>
     <filter root="/apps/mediahub/acl-configuration"/>
     <filter root="/apps/settings/dam"/>
