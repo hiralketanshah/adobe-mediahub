@@ -1,7 +1,8 @@
 (function($, $document) {
     var FILE_SIZE_NAME = "./jcr:content/metadata/dam:size",
-        initialized = false;
- 
+    FORMATTED_ASSET_SIZE = "./jcr:content/metadata/asset:size",
+    initialized = false;
+
     $document.on("foundation-contentloaded", init);
  
     function init(){
@@ -16,12 +17,17 @@
 
     function convertFileSize(){
         var $damSize = document.getElementsByName(FILE_SIZE_NAME);
+        var $formattedAssetSize = document.getElementsByName(FORMATTED_ASSET_SIZE);
         if(_.isEmpty($damSize) || $damSize.length < 0){
             return;
         }
+
+        if(_.isEmpty($formattedAssetSize) || $formattedAssetSize.length < 0){
+            return;
+        }
         var sizeInBytes = $damSize[0].getAttribute("value");
-        $damSize[0].value = (!sizeInBytes ?  "Unavailable" : formatBytes(parseInt(sizeInBytes), 2));
-        $damSize[0].setAttribute("value", !sizeInBytes ?  "Unavailable" : formatBytes(parseInt(sizeInBytes), 2));
+        $formattedAssetSize[0].value = (!sizeInBytes ?  "Unavailable" : formatBytes(parseInt(sizeInBytes), 2));
+        $formattedAssetSize[0].setAttribute("value", !sizeInBytes ?  "Unavailable" : formatBytes(parseInt(sizeInBytes), 2));
     }
  
     function formatBytes(bytes, decimals) {
