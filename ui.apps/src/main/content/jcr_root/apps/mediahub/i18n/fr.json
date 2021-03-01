@@ -78,6 +78,10 @@
 
   "Missing Required fields" : "Champs obligatoires manquants",
 
-  "The Required Metadata fields are not authored" : "Les champs de métadonnées obligatoires ne sont pas créés"
+  "The Required Metadata fields are not authored" : "Les champs de métadonnées obligatoires ne sont pas créés",
+
+  "Asset must be inside a media" : "élément doit se trouver dans un média",
+
+  "Asset must be in a media to be published" : "élément doit être dans un média pour être publié"
 
 }
