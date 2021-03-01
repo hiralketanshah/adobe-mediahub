@@ -12,6 +12,7 @@
     </filter>
     <filter root="/apps/dam">
         <exclude pattern="/apps/dam/config"/>
+        <exclude pattern="/apps/dam/temp"/>
     </filter>
     <filter root="/apps/mediahub/projects"/>
     <filter root="/apps/mediahub/acl-configuration"/>
