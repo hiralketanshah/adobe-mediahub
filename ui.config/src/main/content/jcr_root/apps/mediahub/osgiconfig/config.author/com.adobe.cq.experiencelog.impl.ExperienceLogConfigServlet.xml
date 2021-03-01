@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+  xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="sling:OsgiConfig"
+  trackingScript="//assets.adobedtm.com/98fab992275ef6366cc65f57f86b1e895a66c912/satelliteLib-0b150149f6d6c4efde46c497357c181b39c43b0a.js"
+  enabled="{Boolean}false"
+  disabledForGroups="[]"/>
