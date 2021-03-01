@@ -703,6 +703,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="URL DAM Archive"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-url-dam-archive"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -716,6 +718,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Internal broadcast URL"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-internal-broadcast-url"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -729,6 +733,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Internal file URL"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-internal-file-url"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -742,6 +748,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="External broadcast URL"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-external-broadcast-url"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -755,6 +763,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="External file URL"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-external-file-url"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
@@ -768,6 +778,8 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
                                     fieldLabel="Youtube file URL"
+                                    disabled="{Boolean}true"
+                                    readOnly="{Boolean}true"
                                     name="./jcr:content/metadata/bnpp-youtube-url"
                                     resourceType="granite/ui/components/coral/foundation/form/textfield">
                                     <granite:data
