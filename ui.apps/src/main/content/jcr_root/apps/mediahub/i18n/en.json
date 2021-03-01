@@ -70,7 +70,9 @@
 
   "Missing Required fields" : "Missing Required fields",
 
-  "The Required Metadata fields are not authored" : "The Required Metadata fields are not authored"
+  "The Required Metadata fields are not authored" : "The Required Metadata fields are not authored",
 
+  "Asset must be inside a media" : "Asset must be inside a media",
 
+  "Asset must be in a media to be published" : "Asset must be in a media to be published"
 }

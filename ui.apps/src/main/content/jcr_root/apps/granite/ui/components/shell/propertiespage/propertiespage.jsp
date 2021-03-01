@@ -854,17 +854,17 @@ if(StringUtils.isNotEmpty(assetId)) {
         if(isFolderMetadataMissing || isFolderMetadataMissing === "true"){
 
           if (isMediaValidated === "true") {
-            alertdialog.header.innerHTML = "Media Folder is not validated"
-            alertdialog.content.innerHTML = "Media Folder is not validated"
+            alertdialog.header.innerHTML = '<%= i18n.get("Media Folder is not validated") %>'
+            alertdialog.content.innerHTML = '<%= i18n.get("Media Folder is not validated") %>'
           } else if(isMediaValidated === "emptyMedia"){
-            alertdialog.header.innerHTML = "Cannot publish an empty media"
-            alertdialog.content.innerHTML = "Cannot publish an empty media"
+            alertdialog.header.innerHTML = '<%= i18n.get("Cannot publish an empty media") %>'
+            alertdialog.content.innerHTML = '<%= i18n.get("Cannot publish an empty media") %>'
           } else if(isMediaValidated === "notinsidemedia"){
-            alertdialog.header.innerHTML = "Asset must be in a media to be published"
-            alertdialog.content.innerHTML = "Asset must be in a media to be published"
+            alertdialog.header.innerHTML = '<%= i18n.get("Asset must be inside a media") %>'
+            alertdialog.content.innerHTML = '<%= i18n.get("Asset must be in a media to be published") %>'
           } else {
-            alertdialog.header.innerHTML = "Folder Metadata Missing"
-            alertdialog.content.innerHTML = "Folder Metadata Missing"
+            alertdialog.header.innerHTML = '<%= i18n.get("Folder Metadata Missing") %>'
+            alertdialog.content.innerHTML = '<%= i18n.get("Folder Metadata Missing") %>'
           }
         }
 
