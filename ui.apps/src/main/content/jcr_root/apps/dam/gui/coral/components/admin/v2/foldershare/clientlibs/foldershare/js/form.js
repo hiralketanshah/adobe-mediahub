@@ -150,7 +150,7 @@
             var hintFields = createHintFields(false, false);
             $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
                 // submit the form after cug policy is applied to folder
-                $.DAM.FolderShare.submit(wizard, hintFields);
+                $.DAM.FolderShare.submitMedia(wizard, hintFields);
             });
 
             if ($("#collection-modifieddate").length) {
