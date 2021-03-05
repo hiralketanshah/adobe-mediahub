@@ -10,8 +10,6 @@
 
     function disableStatus(){
         var $status = document.getElementsByName(BNP_STATUS);
-        alert(window.location.href);
-        alert($status);
         if(_.isEmpty($status) || $status.length < 0){
             return;
         }
