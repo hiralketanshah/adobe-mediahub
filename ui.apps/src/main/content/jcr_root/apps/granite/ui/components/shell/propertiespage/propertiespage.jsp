@@ -814,24 +814,20 @@ if(StringUtils.isNotEmpty(assetId)) {
           cache: false,
           success: function(response) {
               if (response) {
-
-                  var success = new Coral.Dialog().set({
-                    id: "successDialog",
-                    size: "L",
-                    variant: "success",
-                    header: {
-                      innerHTML: "The Asset has been triggered to Publish"
-                    },
-                    content: {
-                      innerHTML: "Properties are saved and The Asset has been triggered to Publish"
-                    }
-                  });
-
-                  document.body.appendChild(success);
-                  success.show();
                   var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
               }
           }
+        }).done(function(html) {
+            var ui = $(window).adaptTo("foundation-ui");
+            successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+            ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                text: Granite.I18n.get("OK"),
+                primary: true,
+                handler: function() {
+                    location.href =
+                            $(".foundation-backanchor").attr("href");
+                }
+            }]);
         });
       } else {
         event.preventDefault();
