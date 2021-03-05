@@ -428,7 +428,7 @@ try {
                             String saveBtnVariant = "primary";
 
                             AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
-                            doneAttrs.add("id", "shell-propertiespage-doneactivator");
+                            doneAttrs.add("id", "shell-propertiespage-mediaactivator");
                             doneAttrs.add("type", "submit");
                             doneAttrs.add("form", formId);
                             doneAttrs.add("is", "coral-button");
@@ -585,11 +585,8 @@ try {
                         String saveBtnVariant = "primary";
 
                         AttrBuilder doneAttrs1 = new AttrBuilder(request, xssAPI);
-                        if(isAsset){
-                          doneAttrs1.add("id", "shell-propertiespage-doneactivator");
-                        } else {
-                          doneAttrs1.add("id", "shell-propertiespage-save-publish");
-                        }
+
+                        doneAttrs1.add("id", "shell-propertiespage-save-publish");
                         doneAttrs1.add("type", "submit");
                         doneAttrs1.add("form", formId);
                         doneAttrs1.add("is", "coral-button");
@@ -605,7 +602,7 @@ try {
                         <%
                             if(StringUtils.contains(assetId ,"/content/dam/projects") && isAsset){
                         %>
-                          <button <%= doneAttrs1 %> onclick="internalPublish(<%=isValidated%>, event, <%=isFolderMetadataMissing%>, '<%=isMediaValidated%>')"><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                          <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
                     	  <% } else if (StringUtils.contains(assetId ,"/content/dam/medialibrary") && (isAsset || isContributor)) { %>
 
                         <%} else { %>
@@ -807,7 +804,8 @@ if(StringUtils.isNotEmpty(assetId)) {
    data.push({name: 'workflowTitle',value: 'Internal Publish'});
    var asset = '<%= request.getParameter("item") %>';
    function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
-      if(isValidated || isValidated === 'true'){
+
+      if(isValidated && isValidated === 'true'){
         $.ajax({
           type: "POST",
           url: "/etc/workflow/instances",

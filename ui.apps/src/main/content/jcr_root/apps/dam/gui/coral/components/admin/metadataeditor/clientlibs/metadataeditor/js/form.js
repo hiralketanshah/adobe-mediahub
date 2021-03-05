@@ -151,6 +151,40 @@
         }
     }
 
+    function saveMediaMetadataChanges(e) {
+            var selectedArticles = $(selectionItemRel).length;
+
+            var assetsAreValid = validateAssets();
+            if (assetsAreValid === true) {
+                // Assets is present
+                var cur = $(e.currentTarget);
+                var beforesubmit = $.Event("beforesubmit", {
+                    originalEvent: e
+                });
+
+                cur.trigger(beforesubmit);
+                if (beforesubmit.isDefaultPrevented()) {
+                    return false;
+                }
+
+                if ($("#collection-modifieddate").length) {
+                    $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+                }
+
+                createNewTags($("form.data-fields.active")).done(function() {
+                    var form = $("form.data-fields.active");
+                    handleResponse(form, submitForm(form));
+                }).fail(function(response) {
+                    showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                        Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
+                });
+            } else {
+                // assets is not present
+                showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("Some assets are either removed or not accessible. Please refresh assets and try again."), ""); // eslint-disable-line max-len
+            }
+        }
+
 
     $(document).on("click", "#shell-propertiespage-saveactivator, #shell-propertiespage-doneactivator", function(e) {
         if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
@@ -167,6 +201,41 @@
         }
         return false;
     });
+
+    $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
+            if (e.currentTarget.id === "shell-propertiespage-save-publish") {
+                simpleSave = false;
+            } else {
+                simpleSave = true;
+            }
+            var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+            if (appendModeEnabled === undefined) {
+                appendModeEnabled = true;
+            }
+            if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+                saveMetadataChanges(e);
+            }
+            internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+            return false;
+        });
+
+    $(document).on("click", "#shell-propertiespage-mediaactivator", function(e) {
+        if (e.currentTarget.id === "shell-propertiespage-mediaactivator") {
+            simpleSave = false;
+        } else {
+            simpleSave = true;
+        }
+        var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+        if (appendModeEnabled === undefined) {
+            appendModeEnabled = true;
+        }
+        if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+            saveMediaMetadataChanges(e);
+        }
+        return false;
+    });
+
+
 
     $(document).on("click", "#soft-submit-popover .aem-assets-metadataeditor-bulk-submit", function(e) {
         saveMetadataChanges(e);
