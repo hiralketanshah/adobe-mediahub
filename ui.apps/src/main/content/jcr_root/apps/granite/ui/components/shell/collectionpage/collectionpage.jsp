@@ -695,7 +695,14 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                    <%
                    if(StringUtils.contains(assetId, "/content/dam/projects")){
                       Resource asset = resourceResolver.getResource(assetId);
-                      if(asset != null &&  asset.getValueMap().containsKey("projectPath") ){
+                      boolean isProject=false;
+                      while(!asset.getPath().equals("/content/dam/projects") && !isProject){
+                          if(asset.getValueMap().containsKey("projectPath")){
+                              isProject=true;
+                          }else{
+                              asset=asset.getParent();
+                          }
+                      }
                       String projectPath = asset.getValueMap().get("projectPath", String[].class)[0];
                    %>
                       <a id="backLink" href="/projects/details.html<%= projectPath %>">
@@ -703,7 +710,9 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                           <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
                         </button>
                       </a>
-                   <%}}%>
+                   <%}
+
+                   %>
 
 
 
