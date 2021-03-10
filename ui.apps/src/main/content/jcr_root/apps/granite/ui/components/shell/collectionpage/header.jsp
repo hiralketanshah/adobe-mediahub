@@ -112,5 +112,33 @@
         $(".bnpprojects").css('color','#FFFFFF');
     }
 
+    $(".foundation-layout-panel-content").ready(function(){
+        if(window.location.href.includes('/content/dam/medialibrary')) {
+            $(".foundation-layout-panel-bodywrapper").css('background-color', '#bfe4d6');
+        }else{
+            $(".foundation-layout-panel-bodywrapper").css('background-color', '');
+        }
+
+
+        var observerHeader = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type == "attributes") {
+                    if(window.location.href.includes('/content/dam/medialibrary')) {
+                        $(".foundation-layout-panel-bodywrapper").css('background-color', '#bfe4d6');
+                    }else{
+                        $(".foundation-layout-panel-bodywrapper").css('background-color', '');
+                    }
+
+                }
+            });
+        });
+
+        observerHeader.observe(document.querySelector('coral-shell-header'), {
+            attributes: true //configure it to listen to attribute changes
+        });
+
+
+    });
+
 
 </script>

@@ -198,7 +198,8 @@
                     jcr:primaryType="nt:unstructured"
                     IGNORE_ERRORS="true"
                     PROCESS="com.day.cq.dam.similaritysearch.internal.workflow.process.AutoTagAssetProcess"
-                    PROCESS_AUTO_ADVANCE="true"/>
+                    PROCESS_AUTO_ADVANCE="true"
+                    IGNORE_SMART_TAG_FLAG="true"/>
             </autotagassetprocess>
             <damupdateassetworkflowcompletedprocess
                 jcr:description="This process will send DamEvent.Type.DAM_UPDATE_ASSET_WORKFLOW_COMPLETED event when DAM update asset workflow is completed"
