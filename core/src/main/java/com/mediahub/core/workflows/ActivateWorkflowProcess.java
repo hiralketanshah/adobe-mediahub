@@ -66,6 +66,12 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
             WorkflowModel wfModel = workflowSession.getModel(workflowName);
             WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
             workflowSession.startWorkflow(wfModel, wfData);
+
+            if(payload != null && payload.getParent() != null){
+              WorkflowData parentWorkflowData = workflowSession.newWorkflowData("JCR_PATH",payload.getParent().getPath());
+              workflowSession.startWorkflow(wfModel, parentWorkflowData);
+            }
+
           }
         }
       }
