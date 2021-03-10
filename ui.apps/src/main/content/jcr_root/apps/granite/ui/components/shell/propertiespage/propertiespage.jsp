@@ -603,8 +603,8 @@ try {
                             if(StringUtils.contains(assetId ,"/content/dam/projects") && !isAsset){
                         %>
                           <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
-                    	  <% } else if (StringUtils.contains(assetId ,"/content/dam/medialibrary") &&  isContributor) { %>
-                          <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                    	  <% } else if (StringUtils.contains(assetId ,"/content/dam/medialibrary")) { %>
+                          <button  <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
                         <%} 
 
                   %>
