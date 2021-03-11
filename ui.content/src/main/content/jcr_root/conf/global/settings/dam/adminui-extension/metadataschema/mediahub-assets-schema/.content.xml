@@ -663,6 +663,7 @@
                                             value="youtube"/>
                                         <_x0031_602701073076
                                             jcr:primaryType="nt:unstructured"
+                                            selected="true"
                                             text="Not broadcast"
                                             value="not-broadcast"/>
                                     </items>

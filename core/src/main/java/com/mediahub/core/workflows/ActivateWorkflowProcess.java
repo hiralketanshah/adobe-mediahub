@@ -12,6 +12,7 @@ import com.mediahub.core.constants.BnpConstants;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -54,22 +55,32 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
         if(properties.containsKey("bnpp-broadcast-status")){
           String[] stasus = properties.get("bnpp-broadcast-status", new String[]{});
 
-          if(Arrays.asList(stasus).contains("external")) {
-            String workflowName = "/var/workflow/models/mediahub/mediahub---external-publish";
-            WorkflowModel wfModel = workflowSession.getModel(workflowName);
-            WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
-            workflowSession.startWorkflow(wfModel, wfData);
-          }
+          if(Arrays.asList(stasus).contains("not-broadcast")){
+            if(properties.containsKey("bnpp-internal-broadcast-url") && StringUtils.isNotBlank(properties.get("bnpp-broadcast-status",
+                StringUtils.EMPTY))){
+              String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
+            }
+          } else {
 
-          if(Arrays.asList(stasus).contains("internal") ){
-            String workflowName = "/var/workflow/models/mediahub/mediahub---internal-publish";
-            WorkflowModel wfModel = workflowSession.getModel(workflowName);
-            WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
-            workflowSession.startWorkflow(wfModel, wfData);
+            if(Arrays.asList(stasus).contains("external")) {
+              String workflowName = "/var/workflow/models/mediahub/mediahub---external-publish";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
+            }
 
-            if(payload != null && payload.getParent() != null){
-              WorkflowData parentWorkflowData = workflowSession.newWorkflowData("JCR_PATH",payload.getParent().getPath());
-              workflowSession.startWorkflow(wfModel, parentWorkflowData);
+            if(Arrays.asList(stasus).contains("internal") ){
+              String workflowName = "/var/workflow/models/mediahub/mediahub---internal-publish";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
+              if(payload.getParent() != null){
+                WorkflowData parentWorkflowData = workflowSession.newWorkflowData("JCR_PATH",payload.getParent().getPath());
+                workflowSession.startWorkflow(wfModel, parentWorkflowData);
+              }
             }
 
           }
