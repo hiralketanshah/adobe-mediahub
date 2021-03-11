@@ -53,45 +53,56 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             String title = contentPath.split("/")[contentPath.split("/").length - 1];
 
             Resource metaDataResource = adminResolver.getResource(contentPath);
-            Node jcrContentNode = getJcrContentNode(metaDataResource);
-            Node metaDataNode = jcrContentNode.getNode("metadata");
-
-            String mimeType = metaDataNode.getProperty("dc:format").getString();
-            int index = mimeType.lastIndexOf("/");
-            String imageVideo = null;
-            imageVideo = mimeType.substring(0, index);
-            logger.debug("Type of asset MIMETYPE  $$$$$$ ------ : {} ", imageVideo);
-
-            resp.setContentType("text/html");
-            resp.setCharacterEncoding("UTF-8");
-
             PrintWriter out = resp.getWriter();
-            if (imageVideo != null && "image".equals(imageVideo)) {
-                out.println("<html lang=\"en\">");
-                out.println("<head><title>" + title
-                        + "</title></head>");
-                out.println("<body>");
-                out.println("<img src=" + URIUtil.encodePath(contentPath) + " style=\"width:100%; height:100%;\" >");
-                out.println("</img>");
-                out.println("</body></html>");
-                out.flush();
-            } else if (imageVideo != null && "video".equals(imageVideo)) {
+            if (metaDataResource != null) {
+                Node jcrContentNode = getJcrContentNode(metaDataResource);
+                Node metaDataNode = jcrContentNode.getNode("metadata");
 
-                out.println("<html lang=\"en\">");
-                out.println("<head><title>" + title
-                        + "</title></head>");
-                out.println("<body>");
-                out.println("<video  style=\"width:100%; height:100%;\" controls>");
-                out.println("<source src=" + contentPath + ">");
-                out.println("</video>");
-                out.println("</body></html>");
-                out.flush();
+                String mimeType = metaDataNode.getProperty("dc:format").getString();
+                int index = mimeType.lastIndexOf("/");
+                String imageVideo = null;
+                imageVideo = mimeType.substring(0, index);
+                logger.debug("Type of asset MIMETYPE  $$$$$$ ------ : {} ", imageVideo);
+
+                resp.setContentType("text/html");
+                resp.setCharacterEncoding("UTF-8");
+
+
+                if (imageVideo != null && "image".equals(imageVideo)) {
+                    out.println("<html lang=\"en\">");
+                    out.println("<head><title>" + title
+                            + "</title></head>");
+                    out.println("<body>");
+                    out.println("<img src=\"" + URIUtil.encodePath(contentPath) + "\" style=\"width:100%; height:100%;\" >");
+                    out.println("</img>");
+                    out.println("</body></html>");
+                    out.flush();
+                } else if (imageVideo != null && "video".equals(imageVideo)) {
+
+                    out.println("<html lang=\"en\">");
+                    out.println("<head><title>" + title
+                            + "</title></head>");
+                    out.println("<body>");
+                    out.println("<video  style=\"width:100%; height:100%;\" >");
+                    out.println("<source src=\"" + contentPath + "\">");
+                    out.println("</video>");
+                    out.println("</body></html>");
+                    out.flush();
+                } else {
+                    out.println("<html lang=\"en\">");
+                    out.println("<head><title>" + title
+                            + "</title></head>");
+                    out.println("<body>");
+                    out.println("This extension is not support by the player");
+                    out.println("</body></html>");
+                    out.flush();
+                }
             } else {
                 out.println("<html lang=\"en\">");
                 out.println("<head><title>" + title
                         + "</title></head>");
                 out.println("<body>");
-                out.println("This extension is not support by the player");
+                out.println("File not found");
                 out.println("</body></html>");
                 out.flush();
             }
