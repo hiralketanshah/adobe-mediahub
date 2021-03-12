@@ -56,13 +56,23 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
           String[] stasus = properties.get("bnpp-broadcast-status", new String[]{});
 
           if(Arrays.asList(stasus).contains("not-broadcast")){
-            if(properties.containsKey("bnpp-internal-broadcast-url") && StringUtils.isNotBlank(properties.get("bnpp-broadcast-status",
+
+            if(properties.containsKey("dam:scene7Name") && StringUtils.isNotBlank(properties.get("dam:scene7Name",
+                StringUtils.EMPTY))){
+              String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
+            }
+
+            if(properties.containsKey("bnpp-internal-broadcast-url") && StringUtils.isNotBlank(properties.get("bnpp-internal-broadcast-url",
                 StringUtils.EMPTY))){
               String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
               WorkflowModel wfModel = workflowSession.getModel(workflowName);
               WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
               workflowSession.startWorkflow(wfModel, wfData);
             }
+
           } else {
 
             if(Arrays.asList(stasus).contains("external")) {
