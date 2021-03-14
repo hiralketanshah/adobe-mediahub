@@ -74,7 +74,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
       if(LOG.isInfoEnabled()){
         log.info("end point url {} ", externalizer.authorLink(resourceResolver,payloadPath));
       }
-      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver,payloadPath), "deactivate");
+      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver, payloadPath), payloadPath, "deactivate");
       HttpClientBuilder builder = httpClientBuilderFactory.newBuilder();
       RequestConfig requestConfig = RequestConfig.custom()
           .setConnectTimeout(scene7DeactivationService.getConnectionTimeOut())

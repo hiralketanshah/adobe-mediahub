@@ -30,9 +30,9 @@ public interface Scene7DeactivationService {
    * @param action - Can either be activate or deactivate
    * @return PostRequest Object
    */
-  default public HttpPost createGetRequestForMigration(String path, String action)
+  default public HttpPost createGetRequestForMigration(String endpoint, String path, String action)
       throws UnsupportedEncodingException {
-    HttpPost post = new HttpPost(path+ ".dmpublish.json");
+    HttpPost post = new HttpPost(endpoint + ".dmpublish.json");
     String encoding = Base64.getEncoder().encodeToString((getDeactivationUser()).getBytes(Charset.defaultCharset()));
     post.setHeader("User-Agent", "PostmanRuntime/7.26.8");
     post.setHeader("Accept", "*/*");
