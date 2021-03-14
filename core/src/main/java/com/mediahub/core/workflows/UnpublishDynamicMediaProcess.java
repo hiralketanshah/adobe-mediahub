@@ -1,24 +1,36 @@
 package com.mediahub.core.workflows;
 
+import static org.apache.tika.parser.ner.NamedEntityParser.LOG;
+
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
-import com.day.cq.dam.scene7.api.S7Config;
-import com.day.cq.dam.scene7.api.S7ConfigResolver;
-import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.Scene7DeactivationService;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.osgi.services.HttpClientBuilderFactory;
+import org.apache.http.util.EntityUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Abuthahir Ibrahim
@@ -28,11 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : Dynamic Media Deactivation"})
 public class UnpublishDynamicMediaProcess implements WorkflowProcess{
 
-  @Reference
-  S7ConfigResolver s7ConfigResolver;
-
-  @Reference
-  Scene7Service scene7Service;
+  private static final Logger log = LoggerFactory.getLogger(UnpublishDynamicMediaProcess.class);
 
   @Reference
   ResourceResolverFactory resolverFactory;
@@ -40,13 +48,17 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
   @Reference
   Externalizer externalizer;
 
+  @Reference
+  HttpClientBuilderFactory httpClientBuilderFactory;
+
+  @Reference
+  Scene7DeactivationService scene7DeactivationService;
 
   @Override
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
       throws WorkflowException {
 
     ResourceResolver resourceResolver = null;
-
     try {
       final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
           BnpConstants.WRITE_SERVICE);
@@ -55,15 +67,36 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
 
       Resource damResource = resourceResolver.getResource(payloadPath);
 
-      if(null != damResource){
-        S7Config s7Config = s7ConfigResolver.getS7ConfigForResource(damResource);
+      if(null == damResource){
+        return;
+      }
 
-        if(s7Config == null){
-          throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
-        }
-        String status = scene7Service.deleteAsset(payloadPath, s7Config);
-        if(StringUtils.equals(status, "failure")){
-          throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
+      if(LOG.isInfoEnabled()){
+        log.info("end point url {} ", externalizer.authorLink(resourceResolver,payloadPath));
+      }
+      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver,payloadPath), "deactivate");
+      HttpClientBuilder builder = httpClientBuilderFactory.newBuilder();
+      RequestConfig requestConfig = RequestConfig.custom()
+          .setConnectTimeout(scene7DeactivationService.getConnectionTimeOut())
+          .setSocketTimeout(scene7DeactivationService.getSocketTimeOut())
+          .build();
+      builder.setDefaultRequestConfig(requestConfig);
+      String responseString = StringUtils.EMPTY;
+      try(CloseableHttpClient httpClient = builder.build()){
+        HttpResponse response =  httpClient.execute(post);
+        if(response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+          responseString = EntityUtils.toString(response.getEntity());
+
+          JSONObject responseJson = new JSONObject(responseString);
+          String status = responseJson.getString(payloadPath);
+          if(StringUtils.equals("deactivate",status)){
+            log.info("The Asset {} has been successfully Unpublised from scene 7", payloadPath);
+          } else {
+            throw new WorkflowException("Not able to deactivate the Asset from Dynamic Media. The status of asset is : " +  status);
+          }
+
+        }else {
+          throw new IOException("Call to url failed" + EntityUtils.toString(response.getEntity()));
         }
       }
 
