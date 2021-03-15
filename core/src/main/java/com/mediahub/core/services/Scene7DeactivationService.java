@@ -17,8 +17,6 @@ public interface Scene7DeactivationService {
 
   int getSocketTimeOut();
 
-  String getScene7Endpoint();
-
   String getDomainName();
 
   String getDeactivationUser();

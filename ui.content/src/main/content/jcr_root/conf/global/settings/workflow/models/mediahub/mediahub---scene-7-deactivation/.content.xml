@@ -23,6 +23,7 @@
                 <metaData
                     jcr:primaryType="nt:unstructured"
                     PROCESS="com.mediahub.core.workflows.UnpublishDynamicMediaProcess"
+                    PROCESS_ARGS="deactivate"
                     PROCESS_AUTO_ADVANCE="true"/>
             </process>
         </flow>

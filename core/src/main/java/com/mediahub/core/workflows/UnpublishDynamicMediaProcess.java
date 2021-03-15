@@ -23,6 +23,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.osgi.services.HttpClientBuilderFactory;
 import org.apache.http.util.EntityUtils;
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -74,7 +75,13 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
       if(LOG.isInfoEnabled()){
         log.info("end point url {} ", externalizer.authorLink(resourceResolver,payloadPath));
       }
-      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver, payloadPath), payloadPath, "deactivate");
+
+      String action = "deactivate";
+      if(metaDataMap.containsKey("PROCESS_ARGS")){
+        action = metaDataMap.get("PROCESS_ARGS", String.class);
+      }
+
+      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver, payloadPath), payloadPath, action);
       HttpClientBuilder builder = httpClientBuilderFactory.newBuilder();
       RequestConfig requestConfig = RequestConfig.custom()
           .setConnectTimeout(scene7DeactivationService.getConnectionTimeOut())
@@ -91,6 +98,10 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
           String status = responseJson.getString(payloadPath);
           if(StringUtils.equals("deactivate",status)){
             log.info("The Asset {} has been successfully Unpublised from scene 7", payloadPath);
+            ModifiableValueMap modifiableValueMap = damResource.adaptTo(ModifiableValueMap.class);
+            modifiableValueMap.put("bnpp-external-broadcast-url", null);
+            modifiableValueMap.remove("bnpp-external-file-url", null);
+            resourceResolver.commit();
           } else {
             throw new WorkflowException("Not able to deactivate the Asset from Dynamic Media. The status of asset is : " +  status);
           }

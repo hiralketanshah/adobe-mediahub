@@ -15,8 +15,6 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
 
   private int socketTimeOut;
 
-  private String scene7Endpoint;
-
   private String domainName;
 
   private String deactivationUser;
@@ -29,11 +27,6 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
   @Override
   public int getSocketTimeOut() {
     return socketTimeOut;
-  }
-
-  @Override
-  public String getScene7Endpoint() {
-    return scene7Endpoint;
   }
 
   @Override
@@ -50,7 +43,6 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
   protected void activate(final Scene7DeactivationServiceConfig config) {
     connectionTimeOut = config.getConnectionTimeOut();
     socketTimeOut = config.getSocketTimeOut();
-    scene7Endpoint = config.getScene7Endpoint();
     domainName = config.getDomainName();
     deactivationUser = config.getDeactivationUser();
   }
@@ -67,10 +59,6 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
   @AttributeDefinition(name = "Socket Timeout in Milli Seconds",
       description = "Socket Timeout in Milli Seconds for Scene 7 Deactivation")
   int getSocketTimeOut() default 5000;
-
-  @AttributeDefinition(name = "Scene 7 Deactivation End Point",
-      description = "Scene 7 Deactivation End Point ")
-  String getScene7Endpoint() default "/content/dam/medialibrary/mmeeddiiaa/cover1.dmpublish.json";
 
   @AttributeDefinition(name = "Domain Name",
       description = "Domain Name")
