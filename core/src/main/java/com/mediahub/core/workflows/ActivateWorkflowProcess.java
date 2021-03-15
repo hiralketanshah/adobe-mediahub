@@ -57,7 +57,7 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
 
           if(Arrays.asList(stasus).contains("not-broadcast")){
 
-            if(properties.containsKey("dam:scene7Name") && StringUtils.isNotBlank(properties.get("dam:scene7Name",
+            if(properties.containsKey("dam:scene7ID") && StringUtils.isNotBlank(properties.get("dam:scene7ID",
                 StringUtils.EMPTY))){
               String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
               WorkflowModel wfModel = workflowSession.getModel(workflowName);

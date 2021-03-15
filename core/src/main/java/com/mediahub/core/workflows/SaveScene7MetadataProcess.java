@@ -8,6 +8,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.Scene7DeactivationService;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -31,10 +32,6 @@ public class SaveScene7MetadataProcess implements WorkflowProcess{
 
   @Reference
   ResourceResolverFactory resolverFactory;
-
-  @Reference
-  Externalizer externalizer;
-
 
   @Override
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)

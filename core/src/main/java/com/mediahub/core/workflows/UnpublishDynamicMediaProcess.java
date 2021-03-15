@@ -2,16 +2,23 @@ package com.mediahub.core.workflows;
 
 import static org.apache.tika.parser.ner.NamedEntityParser.LOG;
 
+import com.adobe.forms.foundation.service.util.AssetUtils;
+import com.adobe.granite.asset.api.AssetManager;
+import com.adobe.granite.asset.api.AssetMetadata;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
+import com.day.cq.dam.scene7.api.S7Config;
+import com.day.cq.dam.scene7.api.S7ConfigResolver;
+import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -44,13 +51,10 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
   private static final Logger log = LoggerFactory.getLogger(UnpublishDynamicMediaProcess.class);
 
   @Reference
+  Scene7Service scene7Service;
+
+  @Reference
   ResourceResolverFactory resolverFactory;
-
-  @Reference
-  Externalizer externalizer;
-
-  @Reference
-  HttpClientBuilderFactory httpClientBuilderFactory;
 
   @Reference
   Scene7DeactivationService scene7DeactivationService;
@@ -65,55 +69,22 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
           BnpConstants.WRITE_SERVICE);
       resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
       String payloadPath = workItem.getWorkflowData().getPayload().toString();
-
       Resource damResource = resourceResolver.getResource(payloadPath);
-
-      if(null == damResource){
-        return;
-      }
-
-      if(LOG.isInfoEnabled()){
-        log.info("end point url {} ", externalizer.authorLink(resourceResolver,payloadPath));
-      }
-
-      String action = "deactivate";
-      if(metaDataMap.containsKey("PROCESS_ARGS")){
-        action = metaDataMap.get("PROCESS_ARGS", String.class);
-      }
-
-      HttpPost post = scene7DeactivationService.createGetRequestForMigration(externalizer.authorLink(resourceResolver, payloadPath), payloadPath, action);
-      HttpClientBuilder builder = httpClientBuilderFactory.newBuilder();
-      RequestConfig requestConfig = RequestConfig.custom()
-          .setConnectTimeout(scene7DeactivationService.getConnectionTimeOut())
-          .setSocketTimeout(scene7DeactivationService.getSocketTimeOut())
-          .build();
-      builder.setDefaultRequestConfig(requestConfig);
-      String responseString = StringUtils.EMPTY;
-      try(CloseableHttpClient httpClient = builder.build()){
-        HttpResponse response =  httpClient.execute(post);
-        if(response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
-          responseString = EntityUtils.toString(response.getEntity());
-
-          JSONObject responseJson = new JSONObject(responseString);
-          String status = responseJson.getString(payloadPath);
-          if(StringUtils.equals("deactivate",status)){
-            log.info("The Asset {} has been successfully Unpublised from scene 7", payloadPath);
-            ModifiableValueMap modifiableValueMap = damResource.adaptTo(ModifiableValueMap.class);
-            modifiableValueMap.put("bnpp-external-broadcast-url", null);
-            modifiableValueMap.remove("bnpp-external-file-url", null);
-            resourceResolver.commit();
-          } else {
-            throw new WorkflowException("Not able to deactivate the Asset from Dynamic Media. The status of asset is : " +  status);
-          }
-
-        }else {
-          throw new IOException("Call to url failed" + EntityUtils.toString(response.getEntity()));
+      if(null != damResource){
+        S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
+        if(s7Config == null){
+          throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
+        }
+        String status = scene7Service.deleteAsset(damResource.getChild("jcr:content").getChild("metadata").getValueMap().get("dam:scene7ID", StringUtils.EMPTY), s7Config);
+        if(StringUtils.equals(status, "failure")){
+          throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
         }
       }
 
     } catch (LoginException e) {
       throw new WorkflowException("Login exception", e);
     } catch (Exception e) {
+      log.error("Exception while deleting asset in scene 7", e);
       throw new WorkflowException("Exception while deleting asset in scene 7", e);
     } finally {
       if (resourceResolver != null && resourceResolver.isLive()) {
