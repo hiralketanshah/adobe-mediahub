@@ -100,34 +100,6 @@
                                         typeHint="Date"
                                         visibilityCascading="default"/>
                                 </_x0031_602698475232>
-                                <_x0031_602700001527
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="dam/gui/components/admin/schemafield"
-                                  defaultValue=" "
-                                  disabled="{Boolean}true"
-                                  name="./jcr:content/metadata/dam:size"
-                                  readOnly="{Boolean}true"
-                                  granite:hidden="{Boolean}true"
-                                  resourceType="granite/ui/components/coral/foundation/form/numberfield">
-                                    <granite:data
-                                      jcr:primaryType="nt:unstructured"
-                                      cq-msm-lockable="./metadata/dam:size"
-                                      metaType="number"
-                                      requiredCascading="default"
-                                      visibilityCascading="default"/>
-                                </_x0031_602700001527>
-                                <_x0031_612855040000
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="dam/gui/components/admin/schemafield"
-                                  disabled="{Boolean}true"
-                                  fieldLabel="Size"
-                                  name="./jcr:content/metadata/asset:size"
-                                  readOnly="{Boolean}true"
-                                  resourceType="granite/ui/components/coral/foundation/form/textfield">
-                                    <granite:data
-                                      jcr:primaryType="nt:unstructured"
-                                      metaType="text"/>
-                                </_x0031_612855040000>
                                 <format
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="dam/gui/components/admin/schemafield"
@@ -612,6 +584,34 @@
                                         jcr:primaryType="nt:unstructured"
                                         metaType="others"/>
                                 </others>
+                                <_x0031_602700001527
+                                  jcr:primaryType="nt:unstructured"
+                                  sling:resourceType="dam/gui/components/admin/schemafield"
+                                  defaultValue=" "
+                                  disabled="{Boolean}true"
+                                  name="./jcr:content/metadata/dam:size"
+                                  readOnly="{Boolean}true"
+                                  granite:hidden="{Boolean}true"
+                                  resourceType="granite/ui/components/coral/foundation/form/numberfield">
+                                    <granite:data
+                                      jcr:primaryType="nt:unstructured"
+                                      cq-msm-lockable="./metadata/dam:size"
+                                      metaType="number"
+                                      requiredCascading="default"
+                                      visibilityCascading="default"/>
+                                </_x0031_602700001527>
+                                <_x0031_612855040000
+                                  jcr:primaryType="nt:unstructured"
+                                  sling:resourceType="dam/gui/components/admin/schemafield"
+                                  disabled="{Boolean}true"
+                                  fieldLabel="Size"
+                                  name="./jcr:content/metadata/asset:size"
+                                  readOnly="{Boolean}true"
+                                  resourceType="granite/ui/components/coral/foundation/form/textfield">
+                                    <granite:data
+                                      jcr:primaryType="nt:unstructured"
+                                      metaType="text"/>
+                                </_x0031_612855040000>
                             </items>
                         </col3>
                     </items>
