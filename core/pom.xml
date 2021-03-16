@@ -43,7 +43,7 @@
                         </goals>
                         <configuration>
                             <bnd><![CDATA[
-Import-Package: javax.annotation;version=0.0.0,com.day.cq.dam.scene7.api;version=12.15.0,*
+Import-Package: javax.annotation;version=0.0.0,com.day.cq.dam.scene7.api;version="[12.14,13)",*
                                 ]]></bnd>
                         </configuration>
                     </execution>
