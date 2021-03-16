@@ -8,6 +8,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.Scene7DeactivationService;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
@@ -32,10 +33,6 @@ public class SaveScene7MetadataProcess implements WorkflowProcess{
   @Reference
   ResourceResolverFactory resolverFactory;
 
-  @Reference
-  Externalizer externalizer;
-
-
   @Override
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
       throws WorkflowException {
@@ -53,9 +50,9 @@ public class SaveScene7MetadataProcess implements WorkflowProcess{
         Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
         ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
         String domain = modifiableValueMap.get("dam:scene7Domain", "https://s7g10.scene7.com/");
-        String folder =  "is/content/" + modifiableValueMap.get("dam:scene7Folder", StringUtils.EMPTY);
-        modifiableValueMap.put("bnpp-external-broadcast-url", domain + folder +  URIUtil.encodePath(movedAsset.getName()).toString());
-        modifiableValueMap.put("bnpp-external-file-url", domain + folder + URIUtil.encodePath(movedAsset.getName()).toString());
+        String file =  "is/image/" + modifiableValueMap.get("dam:scene7File", StringUtils.EMPTY);
+        modifiableValueMap.put("bnpp-external-broadcast-url", domain + URIUtil.encodePath(file));
+        modifiableValueMap.put("bnpp-external-file-url", domain + URIUtil.encodePath(file));
 
         resourceResolver.commit();
       }

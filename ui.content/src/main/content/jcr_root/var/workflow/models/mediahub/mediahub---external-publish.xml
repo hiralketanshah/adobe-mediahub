@@ -56,11 +56,21 @@
               PROCESS_AUTO_ADVANCE="true"/>
         </node3>
         <node4
-            jcr:primaryType="cq:WorkflowNode"
-            title="End"
-            type="END">
-            <metaData jcr:primaryType="nt:unstructured"/>
+          jcr:primaryType="cq:WorkflowNode"
+          title="Dynamic Media activation"
+          type="PROCESS">
+            <metaData
+              jcr:primaryType="nt:unstructured"
+              PROCESS="com.mediahub.core.workflows.UnpublishDynamicMediaProcess"
+              PROCESS_ARGS="activate"
+              PROCESS_AUTO_ADVANCE="true"/>
         </node4>
+        <node5
+          jcr:primaryType="cq:WorkflowNode"
+          title="End"
+          type="END">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node5>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
