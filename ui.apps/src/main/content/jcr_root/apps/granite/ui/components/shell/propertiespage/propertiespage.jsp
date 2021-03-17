@@ -14,50 +14,42 @@
   is strictly forbidden unless prior written permission is obtained
   from Adobe.
 --%><%
-%><%@ include file="/libs/granite/ui/global.jsp" %><%
-%><%@ page session="false"
-           import="org.slf4j.LoggerFactory,
-                  org.slf4j.Logger,
-                  java.util.Arrays,
-                  java.util.ArrayList,
-                  java.util.HashMap,
-                  java.util.Map,
-                  java.util.Collection,
-                  java.util.Iterator,
-                  java.util.stream.Collectors,
-                  java.net.URLDecoder,
-                  java.io.UnsupportedEncodingException,
-                  org.apache.commons.lang3.StringUtils,
-                  org.apache.jackrabbit.api.security.user.Authorizable,
-                  org.apache.sling.api.SlingHttpServletRequest,
-                  org.apache.sling.api.request.RequestDispatcherOptions,
-                  org.apache.sling.api.resource.Resource,
-                  org.apache.sling.commons.json.JSONObject,
-                  org.apache.sling.commons.json.io.JSONStringer,
-                  org.apache.sling.resourcemerger.api.ResourceMergerService,
-                  org.apache.sling.scripting.jsp.util.JspSlingHttpServletResponseWrapper,
-                  com.adobe.granite.i18n.LocaleUtil,
-                  com.adobe.granite.security.user.UserProperties,
-                  com.adobe.granite.security.user.UserPropertiesManager,
-                  com.adobe.granite.security.user.UserPropertiesService,
-                  com.adobe.granite.ui.components.AttrBuilder,
-                  com.adobe.granite.ui.components.Config,
-                  com.adobe.granite.ui.components.ExpressionHelper,
-                  com.adobe.granite.ui.components.ExpressionResolver,
-                  com.adobe.granite.ui.components.FilteringResourceWrapper,
-                  com.adobe.granite.ui.components.Tag,
-                  com.adobe.granite.ui.components.rendercondition.RenderCondition,
-                  org.apache.jackrabbit.api.security.user.Group,
-                  com.day.cq.dam.commons.util.DamUtil,
-                  javax.jcr.Session,
-                  java.util.List,
-                  org.apache.sling.api.resource.ResourceResolver,
-                  com.day.cq.search.Query,
-                  com.day.cq.search.QueryBuilder,
-                  com.day.cq.search.result.SearchResult,
-                  com.day.cq.search.PredicateGroup,
-                  com.day.cq.dam.api.Asset,
-                  com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition" %><%--###
+%>
+<%@ include file="/libs/granite/ui/global.jsp" %>
+<%
+%>
+<%@ page session="false"
+         import="com.adobe.granite.i18n.LocaleUtil,
+                 com.adobe.granite.security.user.UserProperties,
+                 com.adobe.granite.security.user.UserPropertiesManager,
+                 com.adobe.granite.security.user.UserPropertiesService,
+                 com.adobe.granite.ui.components.*,
+                 com.adobe.granite.ui.components.rendercondition.RenderCondition,
+                 com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition,
+                 com.day.cq.dam.api.Asset,
+                 com.day.cq.dam.commons.util.DamUtil,
+                 com.day.cq.search.PredicateGroup,
+                 com.day.cq.search.Query,
+                 com.day.cq.search.QueryBuilder,
+                 com.day.cq.search.result.SearchResult,
+                 org.apache.commons.lang3.StringUtils,
+                 org.apache.jackrabbit.api.security.user.Authorizable,
+                 org.apache.jackrabbit.api.security.user.Group,
+                 org.apache.sling.api.SlingHttpServletRequest,
+                 org.apache.sling.api.request.RequestDispatcherOptions,
+                 org.apache.sling.api.resource.Resource,
+                 org.apache.sling.api.resource.ResourceResolver,
+                 org.apache.sling.commons.json.JSONObject,
+                 org.apache.sling.commons.json.io.JSONStringer,
+                 org.apache.sling.resourcemerger.api.ResourceMergerService,
+                 org.apache.sling.scripting.jsp.util.JspSlingHttpServletResponseWrapper,
+                 org.slf4j.Logger,
+                 org.slf4j.LoggerFactory,
+                 javax.jcr.Session,
+                 java.io.UnsupportedEncodingException,
+                 java.net.URLDecoder,
+                 java.util.*,
+                 java.util.stream.Collectors" %><%--###
 PropertiesPage
 ==============
 
@@ -197,7 +189,8 @@ PropertiesPage
           + panel2
             - sling:resourceType = "granite/ui/components/coral/foundation/panel/railpanel"
             - jcr:title = "Panel 2"
-###--%><%
+###--%>
+<%
 
     final Logger logger = LoggerFactory.getLogger("libs.granite.ui.components.shell.propertiespage");
     logger.debug("Render starts");
@@ -220,7 +213,7 @@ PropertiesPage
 
     Resource redirector = resource.getChild("redirector");
     if (redirector != null) {
-%><sling:include resource="<%= redirector %>" /><%
+%><sling:include resource="<%= redirector %>"/><%
 
         if (response.isCommitted()) {
             return;
@@ -253,20 +246,22 @@ PropertiesPage
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="<%= request.getContextPath() %>/libs/granite/core/content/login/favicon.ico"><%
-    Resource headTitleRes = resource.getChild("head/title");
-    String origTitle = cfg.get("jcr:title", String.class);
-    String title = i18n.getVar(origTitle);
-    if (headTitleRes == null) {
-        if (title != null) {
-%><title><%= xssAPI.encodeForHTML(title) %></title><%
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/libs/granite/core/content/login/favicon.ico">
+    <%
+        Resource headTitleRes = resource.getChild("head/title");
+        String origTitle = cfg.get("jcr:title", String.class);
+        String title = i18n.getVar(origTitle);
+        if (headTitleRes == null) {
+            if (title != null) {
+    %><title><%= xssAPI.encodeForHTML(title) %>
+</title><%
         }
     }
 
     Resource globalHead = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalhead");
     if (globalHead != null) {
-        for (Iterator<Resource> it = globalHead.listChildren(); it.hasNext();) {
-%><sling:include resource="<%= it.next() %>" /><%
+        for (Iterator<Resource> it = globalHead.listChildren(); it.hasNext(); ) {
+%><sling:include resource="<%= it.next() %>"/><%
         }
     }
 
@@ -280,41 +275,46 @@ PropertiesPage
     userPrefAttrs.add("content", getPreferencesJSON(userPreferences));
     userPrefAttrs.addHref("data-foundation-preference-action", userPreferencesPath);
 
-%><meta <%= userPrefAttrs %>>
+%>
+    <meta <%= userPrefAttrs %>>
     <%-- <meta name="user.preferences.winmode"> is deprecated, use foundation-preference instead --%>
-    <meta name="user.preferences.winmode" content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "winMode", "multi")) %>"><%
+    <meta name="user.preferences.winmode"
+          content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "winMode", "multi")) %>">
+    <%
 
-    String[] pageHierarchy = getPageHierarchy(consoleId);
+        String[] pageHierarchy = getPageHierarchy(consoleId);
 
-    if (pageHierarchy == null) {
-        pageHierarchy = getPageHierarchyByTitle(!StringUtils.isBlank(origTitle) ? origTitle : resource.getPath());
-    }
+        if (pageHierarchy == null) {
+            pageHierarchy = getPageHierarchyByTitle(!StringUtils.isBlank(origTitle) ? origTitle : resource.getPath());
+        }
 
-    String assetId = StringUtils.isNotEmpty(request.getParameter("item"))
-            ? request.getParameter("item")
-            : slingRequest.getRequestPathInfo().getSuffix();
+        String assetId = StringUtils.isNotEmpty(request.getParameter("item"))
+                ? request.getParameter("item")
+                : slingRequest.getRequestPathInfo().getSuffix();
 
-    JSONObject trackingPage = new JSONObject();
-    trackingPage.put("type", "properties");
-    trackingPage.put("hierarchy", pageHierarchy[0]);
-    trackingPage.put("name", pageHierarchy[1]);
-    if (StringUtils.isNotEmpty(assetId)) {
-        trackingPage.put("assetId", assetId);
-    }
+        JSONObject trackingPage = new JSONObject();
+        trackingPage.put("type", "properties");
+        trackingPage.put("hierarchy", pageHierarchy[0]);
+        trackingPage.put("name", pageHierarchy[1]);
+        if (StringUtils.isNotEmpty(assetId)) {
+            trackingPage.put("assetId", assetId);
+        }
 
 
-%><meta name="foundation.tracking.page" content="<%= xssAPI.encodeForHTMLAttr(trackingPage.toString()) %>"><%
+    %>
+    <meta name="foundation.tracking.page" content="<%= xssAPI.encodeForHTMLAttr(trackingPage.toString()) %>">
+    <%
 
-    if (cfg.get("coral2", false)) {
-%><ui:includeClientLib categories="coralui2,granite.ui.coral.foundation,granite.ui.coral.foundation.addon.coral2" /><%
+        if (cfg.get("coral2", false)) {
+    %><ui:includeClientLib categories="coralui2,granite.ui.coral.foundation,granite.ui.coral.foundation.addon.coral2"/><%
 } else {
-%><ui:includeClientLib categories="coralui3,granite.ui.coral.foundation" /><%
+%><ui:includeClientLib categories="coralui3,granite.ui.coral.foundation"/><%
     }
 
     Resource head = resource.getChild("head");
     if (head != null) {
-        for (Iterator<Resource> it = head.listChildren(); it.hasNext();) {
-%><sling:include resource="<%= it.next() %>" /><%
+        for (Iterator<Resource> it = head.listChildren(); it.hasNext(); ) {
+%><sling:include resource="<%= it.next() %>"/><%
         }
     }
     logger.debug("<head> rendered");
@@ -335,11 +335,12 @@ PropertiesPage
         railAlwaysActive = railsConfig.get("alwaysActive", false);
     }
     try {
-%><body class="coral--light foundation-layout-util-maximized-alt">
+%>
+<body class="coral--light foundation-layout-util-maximized-alt">
 <%
     Resource skipNavigationLinksRes = resource.getChild("skipnavigationlinks");
     if (skipNavigationLinksRes != null) {
-%><sling:include resource="<%= skipNavigationLinksRes %>" /><%
+%><sling:include resource="<%= skipNavigationLinksRes %>"/><%
     }
 %>
 <div class="foundation-layout-panel">
@@ -348,30 +349,34 @@ PropertiesPage
             <coral-actionbar-primary><%
                 Resource actions = resource.getChild("actions");
                 if (actions != null) {
-                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext();) {
+                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext(); ) {
                         Resource item = it.next();
 
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
 
-                        if(StringUtils.equals(item.getName(),"customadhocassetshare")) {
-                            if(StringUtils.contains(assetId, "/content/dam/collections")){
-            %><coral-actionbar-item><%
-                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                selectionItemAttrs.addClass("betty-ActionBar-item");
-                cmp.include(item, new Tag(selectionItemAttrs));
-            %></coral-actionbar-item><%
-                }
-            } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
-                if(!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")){
-            %><coral-actionbar-item><%
-                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
-                cmp.include(item, new Tag(selectionItemAttrs));
-            %></coral-actionbar-item><%
-                }
-            } else { %>
+                        if (StringUtils.equals(item.getName(), "customadhocassetshare")) {
+                            if (StringUtils.contains(assetId, "/content/dam/collections")) {
+            %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item");
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                    }
+                } else if (StringUtils.equals(item.getName(), "adhocassetshare")) {
+                    if (!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")) {
+                %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                    }
+                } else { %>
                 <coral-actionbar-item><%
                     AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
                     selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
@@ -407,71 +412,84 @@ PropertiesPage
                     cancelText = i18n.get("Close");
                 }
 
-            %><coral-actionbar-item>
-                <a <%= backAttrs %>><%= xssAPI.encodeForHTML(cancelText) %></a>
-            </coral-actionbar-item><%
-
-                if (showEdit) {
-            %><coral-actionbar-item><%
-                if (cfg.get("simpleSave", true)) {
-                    AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
-                    saveAttrs.add("id", "shell-propertiespage-saveactivator");
-                    saveAttrs.addClass("betty-ActionBar-item");
-                    saveAttrs.add("type", "submit");
-                    saveAttrs.add("form", formId);
-                    saveAttrs.add("data-foundation-command", "ctrl+s");
-                    saveAttrs.add("is", "coral-button");
-                    saveAttrs.add("variant", "primary");
-
-            %><button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %></button><%
-            } else {
-                String saveBtnVariant = "primary";
-
-                AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
-                doneAttrs.add("id", "shell-propertiespage-mediaactivator");
-                doneAttrs.add("type", "submit");
-                doneAttrs.add("form", formId);
-                doneAttrs.add("is", "coral-button");
-                doneAttrs.add("variant", saveBtnVariant);
-                doneAttrs.addClass("granite-form-saveactivator");
-                doneAttrs.addHref("data-granite-form-saveactivator-href", backHref);
-                doneAttrs.addClass("foundation-fixedanchor");
-                doneAttrs.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
-
-                AttrBuilder saveChevronAttrs = new AttrBuilder(request, xssAPI);
-                saveChevronAttrs.addClass("granite-ActionGroup-icon");
-                saveChevronAttrs.add("is", "coral-button");
-                saveChevronAttrs.add("icon", "chevronDown");
-                saveChevronAttrs.add("variant", saveBtnVariant);
-                saveChevronAttrs.add("iconsize", "xs");
-                saveChevronAttrs.add("aria-label", i18n.get("More actions"));
-                saveChevronAttrs.add("aria-haspopup", true);
-
-                AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
-                saveAttrs.add("id", "shell-propertiespage-saveactivator");
-                saveAttrs.addClass("granite-ActionGroup-item");
-                saveAttrs.add("type", "submit");
-                saveAttrs.add("form", formId);
-                saveAttrs.add("is", "coral-buttonlist-item");
-                saveAttrs.add("data-foundation-command", "ctrl+s");
-                saveAttrs.addClass("granite-form-saveactivator");
-                saveAttrs.add("role", "menuitem");
-
-            %><coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
-                <button <%= doneAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save & Close")) %></button>
-                <button <%= saveChevronAttrs %>></button>
-                <coral-popover role="presentation" placement="center" alignMy="right top" alignAt="right bottom" target="_prev">
-                    <coral-popover-content>
-                        <coral-buttonlist role="menu" class="granite-ActionGroup-list">
-                            <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %></button>
-                        </coral-buttonlist>
-                    </coral-popover-content>
-                </coral-popover>
-            </coral-buttongroup><%
-                }
-            %></coral-actionbar-item><%
-                }
             %>
+                <coral-actionbar-item>
+                    <a <%= backAttrs %>><%= xssAPI.encodeForHTML(cancelText) %>
+                    </a>
+                </coral-actionbar-item>
+                <%
+
+                    if (showEdit) {
+                %>
+                <coral-actionbar-item><%
+                    if (cfg.get("simpleSave", true)) {
+                        AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
+                        saveAttrs.add("id", "shell-propertiespage-saveactivator");
+                        saveAttrs.addClass("betty-ActionBar-item");
+                        saveAttrs.add("type", "submit");
+                        saveAttrs.add("form", formId);
+                        saveAttrs.add("data-foundation-command", "ctrl+s");
+                        saveAttrs.add("is", "coral-button");
+                        saveAttrs.add("variant", "primary");
+
+                %>
+                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %>
+                    </button>
+                    <%
+                    } else {
+                        String saveBtnVariant = "primary";
+
+                        AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
+                        doneAttrs.add("id", "shell-propertiespage-mediaactivator");
+                        doneAttrs.add("type", "submit");
+                        doneAttrs.add("form", formId);
+                        doneAttrs.add("is", "coral-button");
+                        doneAttrs.add("variant", saveBtnVariant);
+                        doneAttrs.addClass("granite-form-saveactivator");
+                        doneAttrs.addHref("data-granite-form-saveactivator-href", backHref);
+                        doneAttrs.addClass("foundation-fixedanchor");
+                        doneAttrs.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+
+                        AttrBuilder saveChevronAttrs = new AttrBuilder(request, xssAPI);
+                        saveChevronAttrs.addClass("granite-ActionGroup-icon");
+                        saveChevronAttrs.add("is", "coral-button");
+                        saveChevronAttrs.add("icon", "chevronDown");
+                        saveChevronAttrs.add("variant", saveBtnVariant);
+                        saveChevronAttrs.add("iconsize", "xs");
+                        saveChevronAttrs.add("aria-label", i18n.get("More actions"));
+                        saveChevronAttrs.add("aria-haspopup", true);
+
+                        AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
+                        saveAttrs.add("id", "shell-propertiespage-saveactivator");
+                        saveAttrs.addClass("granite-ActionGroup-item");
+                        saveAttrs.add("type", "submit");
+                        saveAttrs.add("form", formId);
+                        saveAttrs.add("is", "coral-buttonlist-item");
+                        saveAttrs.add("data-foundation-command", "ctrl+s");
+                        saveAttrs.addClass("granite-form-saveactivator");
+                        saveAttrs.add("role", "menuitem");
+
+                    %>
+                    <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                        <button <%= doneAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save & Close")) %>
+                        </button>
+                        <button <%= saveChevronAttrs %>></button>
+                        <coral-popover role="presentation" placement="center" alignMy="right top" alignAt="right bottom"
+                                       target="_prev">
+                            <coral-popover-content>
+                                <coral-buttonlist role="menu" class="granite-ActionGroup-list">
+                                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %>
+                                    </button>
+                                </coral-buttonlist>
+                            </coral-popover-content>
+                        </coral-popover>
+                    </coral-buttongroup>
+                    <%
+                        }
+                    %></coral-actionbar-item>
+                <%
+                    }
+                %>
 
                 <%
                     boolean isEntityManager = false;
@@ -481,78 +499,97 @@ PropertiesPage
                     boolean isAsset = false;
                     String isMediaValidated = "false";
 
+                    boolean isProjectPublisher = false;
+                    boolean isProjectInternal = false;
+                    boolean isProjectExternal = false;
+
                     try {
-                        if(null != auth){
+                        if (null != auth) {
+                            Iterator<Group> projectGroups = auth.memberOf();
+                            while (projectGroups.hasNext()) {
+                                Group group = projectGroups.next();
+                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-publisher")) {
+                                    isProjectPublisher = true;
+                                }
+                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-internal-contributor")) {
+                                    isProjectInternal = true;
+                                }
+                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-external-contributor")) {
+                                    isProjectExternal = true;
+                                }
+                            }
+
+
                             Iterator<Group> groups = auth.memberOf();
-                            while(groups.hasNext()){
+                            while (groups.hasNext()) {
                                 Group group = groups.next();
-                                if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators")|| StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
-                                    if(StringUtils.isNotEmpty(assetId)) {
+                                if (StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
+                                    if (StringUtils.isNotEmpty(assetId)) {
                                         Resource assetResource = resourceResolver.getResource(assetId);
                                         boolean fieldMissed = false;
                                         if (assetResource != null && assetResource.getChild("jcr:content") != null) {
-                                            if(assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
+                                            if (assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
                                                 isEntityManager = true;
-                                                if(StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
+                                                if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
                                                     isContributor = true;
                                                 }
                                                 String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
-                                                List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, assetSchema);
+                                                List<String> requiredFields = getRequiredMetadataFields(resourceResolver, assetSchema);
 
-                                                Iterator<Asset> mediaAssets =  DamUtil.getAssets(assetResource);
+                                                Iterator<Asset> mediaAssets = DamUtil.getAssets(assetResource);
 
-                                                if(!mediaAssets.hasNext()){
+                                                if (!mediaAssets.hasNext()) {
                                                     isValidated = false;
                                                     isMediaValidated = "emptyMedia";
                                                 }
 
-                                                if(!StringUtils.equals(isMediaValidated, "emptyMedia") && assetResource.hasChildren()){
-                                                    Iterator<Resource> children =  assetResource.listChildren();
-                                                    while(children.hasNext()){
+                                                if (!StringUtils.equals(isMediaValidated, "emptyMedia") && assetResource.hasChildren()) {
+                                                    Iterator<Resource> children = assetResource.listChildren();
+                                                    while (children.hasNext()) {
                                                         Resource child = children.next();
-                                                        if(DamUtil.isAsset( child )){
+                                                        if (DamUtil.isAsset(child)) {
                                                             Asset asset = child.adaptTo(Asset.class);
-                                                            if(child.getChild("jcr:content").getChild("metadata") != null){
+                                                            if (child.getChild("jcr:content").getChild("metadata") != null) {
 
                                                                 Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
                                                                 for (String field : requiredFields) {
 
-                                                                    if(!metadata.containsKey(field)){
+                                                                    if (!metadata.containsKey(field)) {
                                                                         fieldMissed = true;
                                                                         break;
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                        if(fieldMissed){
+                                                        if (fieldMissed) {
                                                             break;
                                                         }
                                                     }
                                                 }
-                                                if(!fieldMissed){
+                                                if (!fieldMissed) {
                                                     isValidated = true;
                                                 }
-                                            } else if( StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType","false").toString(), "dam:Asset") ){
+                                            } else if (StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType", "false").toString(), "dam:Asset")) {
                                                 isEntityManager = true;
-                                                if(StringUtils.equals(group.getID(), "mediahub-basic-contributor")){
+                                                if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
                                                     isContributor = true;
                                                 }
                                                 isAsset = true;
 
-                                                if(assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media","false").toString(), "true")){
+                                                if (assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
                                                     ValueMap metadata = assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap();
-                                                    if(StringUtils.equals(metadata.get("bnpp-status","false").toString(), "validated")){
+                                                    if (StringUtils.equals(metadata.get("bnpp-status", "false").toString(), "validated")) {
 
                                                         String folderSchema = DamUtil.getInheritedProperty("folderMetadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema");
-                                                        List<String> requiredFields =  getRequiredMetadataFields(resourceResolver, folderSchema);
+                                                        List<String> requiredFields = getRequiredMetadataFields(resourceResolver, folderSchema);
                                                         for (String field : requiredFields) {
-                                                            if(!metadata.containsKey(field)){
+                                                            if (!metadata.containsKey(field)) {
                                                                 fieldMissed = true;
                                                                 isFolderMetadataMissing = true;
                                                                 break;
                                                             }
                                                         }
-                                                        if(!fieldMissed){
+                                                        if (!fieldMissed) {
                                                             isValidated = true;
                                                         }
                                                     } else {
@@ -577,7 +614,7 @@ PropertiesPage
 
 
                 <%
-                    if (StringUtils.contains(assetId ,"/content/dam") && showEdit) {
+                    if (StringUtils.contains(assetId, "/content/dam") && showEdit) {
                 %>
                 <coral-actionbar-item>
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
@@ -600,12 +637,15 @@ PropertiesPage
                             doneAttrs1.add("isMediaValidated", isMediaValidated);
                         %>
                         <%
-                            if(StringUtils.contains(assetId ,"/content/dam/projects") && !isAsset){
+                            if (StringUtils.contains(assetId, "/content/dam/projects") && !isAsset && !isProjectInternal && !isProjectExternal) {
                         %>
-                        <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
-                        <% } else if (StringUtils.contains(assetId ,"/content/dam/medialibrary")) { %>
-                        <button  <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
-                        <%}
+                        <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
+                        </button>
+                        <% } else if (StringUtils.contains(assetId, "/content/dam/medialibrary")) { %>
+                        <button  <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
+                        </button>
+                        <%
+                            }
 
                         %>
                     </coral-buttongroup>
@@ -618,81 +658,91 @@ PropertiesPage
             <betty-titlebar-title><%
                 Resource titleRes = resource.getChild("title");
                 if (titleRes != null) {
-            %><span class="granite-title" role="heading" aria-level="1"><sling:include resource="<%= titleRes %>" /></span><%
+            %><span class="granite-title" role="heading" aria-level="1"><sling:include
+                    resource="<%= titleRes %>"/></span><%
             } else {
             %><span class="granite-title" role="heading" aria-level="1"><%= xssAPI.encodeForHTML(title) %></span><%
                 }
             %></betty-titlebar-title>
             <betty-titlebar-primary><%
                 if (rails != null) {
-            %><coral-cyclebutton
-                    class="granite-toggleable-control"
-                    icon="railLeft"
-                    displaymode="icontext"
-                    data-granite-toggleable-control-savekey="<%= xssAPI.encodeForHTMLAttr(railSaveKey) %>">
+            %>
+                <coral-cyclebutton
+                        class="granite-toggleable-control"
+                        icon="railLeft"
+                        displaymode="icontext"
+                        data-granite-toggleable-control-savekey="<%= xssAPI.encodeForHTMLAttr(railSaveKey) %>">
+                    <%
+                        if (!railAlwaysActive) {
+                            AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                            itemAttrs.add("data-granite-toggleable-control-target", "#shell-propertiespage-rail");
+                            itemAttrs.add("data-granite-toggleable-control-action", "hide");
+                            itemAttrs.add("displaymode", "icon");
+                            itemAttrs.add("data-foundation-command", "`");
+                            itemAttrs.add("data-granite-toggleable-control-name", "content-only");
+
+
+                            String text;
+                            if (formId != null) {
+                                text = i18n.get("Properties");
+                            } else {
+                                text = i18n.get("Content Only");
+                            }
+                    %>
+                    <coral-cyclebutton-item <%= itemAttrs %>><%= text %>
+                    </coral-cyclebutton-item>
+                    <%
+                        }
+
+                        // we map all rail items to the numbers in the keyboard using control + {index}
+                        int railItemIndex = 1;
+                        for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); railItemIndex++) {
+                            Resource item = it.next();
+                            if (cmp.getRenderCondition(item, true).check()) {
+                                Config itemCfg = new Config(item);
+
+                                String href = ex.getString(itemCfg.get("href", String.class));
+
+                                AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                                itemAttrs.add("icon", itemCfg.get("icon", String.class));
+
+                                // we stop once we reach 9 since all available numbers have been used
+                                if (railItemIndex < 10) {
+                                    itemAttrs.add("data-foundation-command", "alt+" + railItemIndex);
+                                }
+
+                                if (href != null) {
+                                    itemAttrs.add("data-granite-toggleable-control-action", "navigate");
+                                    itemAttrs.addHref("data-granite-toggleable-control-href", href);
+                                } else {
+                                    String railPanelTarget = ".shell-propertiespage-rail-panel[data-shell-propertiespage-rail-panel='" + item.getName() + "']";
+
+                                    itemAttrs.add("data-granite-toggleable-control-action", "show");
+                                    itemAttrs.add("data-granite-toggleable-control-target", railPanelTarget);
+                                }
+                                itemAttrs.add("data-granite-toggleable-control-name", item.getName());
+                                if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
+                                    itemAttrs.addSelected(true);
+                                    savedRailTargetFound = true;
+                                }
+
+                    %>
+                    <coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %>
+                    </coral-cyclebutton-item>
+                    <%
+                            }
+                        }
+                    %></coral-cyclebutton>
                 <%
-                    if (!railAlwaysActive) {
-                        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                        itemAttrs.add("data-granite-toggleable-control-target", "#shell-propertiespage-rail");
-                        itemAttrs.add("data-granite-toggleable-control-action", "hide");
-                        itemAttrs.add("displaymode", "icon");
-                        itemAttrs.add("data-foundation-command", "`");
-                        itemAttrs.add("data-granite-toggleable-control-name", "content-only");
-
-
-                        String text;
-                        if (formId != null) {
-                            text = i18n.get("Properties");
-                        } else {
-                            text = i18n.get("Content Only");
-                        }
-                %><coral-cyclebutton-item <%= itemAttrs %>><%= text %></coral-cyclebutton-item><%
-                }
-
-                // we map all rail items to the numbers in the keyboard using control + {index}
-                int railItemIndex = 1;
-                for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); railItemIndex++) {
-                    Resource item = it.next();
-                    if (cmp.getRenderCondition(item, true).check()) {
-                        Config itemCfg = new Config(item);
-
-                        String href = ex.getString(itemCfg.get("href", String.class));
-
-                        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                        itemAttrs.add("icon", itemCfg.get("icon", String.class));
-
-                        // we stop once we reach 9 since all available numbers have been used
-                        if (railItemIndex < 10) {
-                            itemAttrs.add("data-foundation-command", "alt+" + railItemIndex);
-                        }
-
-                        if (href != null) {
-                            itemAttrs.add("data-granite-toggleable-control-action", "navigate");
-                            itemAttrs.addHref("data-granite-toggleable-control-href", href);
-                        } else {
-                            String railPanelTarget = ".shell-propertiespage-rail-panel[data-shell-propertiespage-rail-panel='" + item.getName() + "']";
-
-                            itemAttrs.add("data-granite-toggleable-control-action", "show");
-                            itemAttrs.add("data-granite-toggleable-control-target", railPanelTarget);
-                        }
-                        itemAttrs.add("data-granite-toggleable-control-name", item.getName());
-                        if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
-                            itemAttrs.addSelected(true);
-                            savedRailTargetFound = true;
-                        }
-
-            %><coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %></coral-cyclebutton-item><%
                     }
-                }
-            %></coral-cyclebutton><%
-                }
-            %></betty-titlebar-primary>
+                %></betty-titlebar-primary>
             <betty-titlebar-secondary></betty-titlebar-secondary>
-        </betty-titlebar><%
+        </betty-titlebar>
+        <%
 
-        Resource header = resource.getChild("header");
-        if (header != null) {
-    %><sling:include resource="<%= header %>" /><%
+            Resource header = resource.getChild("header");
+            if (header != null) {
+        %><sling:include resource="<%= header %>"/><%
         }
     %></div>
     <div class="foundation-layout-panel-bodywrapper">
@@ -707,52 +757,60 @@ PropertiesPage
                     railAttrs.addClass("foundation-layout-panel-rail-activate-panel");
                 }
 
-        %><div <%= railAttrs %>>
-            <coral-panelstack maximized><%
-                for (Iterator<Resource> it = rails.listChildren(); it.hasNext();) {
-                    Resource item = it.next();
-                    Config itemCfg = new Config(item);
+        %>
+            <div <%= railAttrs %>>
+                <coral-panelstack maximized><%
+                    for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); ) {
+                        Resource item = it.next();
+                        Config itemCfg = new Config(item);
 
-                    AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                    itemAttrs.addClass("shell-propertiespage-rail-panel");
-                    itemAttrs.add("data-shell-propertiespage-rail-panel", item.getName());
-                    if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
-                        itemAttrs.addSelected(true);
+                        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                        itemAttrs.addClass("shell-propertiespage-rail-panel");
+                        itemAttrs.add("data-shell-propertiespage-rail-panel", item.getName());
+                        if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
+                            itemAttrs.addSelected(true);
+                        }
+                        cmp.include(item, new Tag(itemAttrs));
                     }
-                    cmp.include(item, new Tag(itemAttrs));
+                %></coral-panelstack>
+            </div>
+            <%
                 }
-            %></coral-panelstack>
-        </div><%
-            }
 
-            AttrBuilder contentAttrs = new AttrBuilder(request, xssAPI);
-            contentAttrs.addClass("foundation-layout-panel-content");
+                AttrBuilder contentAttrs = new AttrBuilder(request, xssAPI);
+                contentAttrs.addClass("foundation-layout-panel-content");
 
-            // Also set `.foundation-layout-form-mode-edit` to also support field content that set `renderReadOnly=true`.
-            contentAttrs.addClass("foundation-layout-form foundation-layout-form-mode-edit");
+                // Also set `.foundation-layout-form-mode-edit` to also support field content that set `renderReadOnly=true`.
+                contentAttrs.addClass("foundation-layout-form foundation-layout-form-mode-edit");
 
-        %><div <%= contentAttrs %>>
-            <sling:include resource="<%= resource.getChild("content") %>" />
+            %>
+            <div <%= contentAttrs %>>
+                <sling:include resource="<%= resource.getChild("content") %>"/>
+            </div>
         </div>
-        </div>
-    </div><%
+    </div>
+    <%
 
-    Resource footer = resource.getChild("footer");
-    if (footer != null) {
-%><div class="foundation-layout-panel-footer">
-    <sling:include resource="<%= footer %>" />
-</div><%
-    }
-%></div><%
+        Resource footer = resource.getChild("footer");
+        if (footer != null) {
+    %>
+    <div class="foundation-layout-panel-footer">
+        <sling:include resource="<%= footer %>"/>
+    </div>
+    <%
+        }
+    %></div>
+<%
 
     Resource globalFooter = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalfooter");
     if (globalFooter != null) {
-        for (Iterator<Resource> it = globalFooter.listChildren(); it.hasNext();) {
-%><sling:include resource="<%= it.next() %>" /><%
+        for (Iterator<Resource> it = globalFooter.listChildren(); it.hasNext(); ) {
+%><sling:include resource="<%= it.next() %>"/><%
         }
     }
 %>
-</body><%
+</body>
+<%
     } catch (Exception e) {
         logger.error("Unable to render properties page correctly", e);
         throw e;
@@ -761,14 +819,14 @@ PropertiesPage
 %>
 
 <%
-    if(StringUtils.isNotEmpty(assetId)) {
+    if (StringUtils.isNotEmpty(assetId)) {
         Resource asset = resourceResolver.getResource(assetId);
         if (asset != null) {
-            if(StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")){
+            if (StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")) {
                 Iterator<Resource> it = asset.listChildren();
-                while(it.hasNext()) {
+                while (it.hasNext()) {
                     Resource child = it.next();
-                    if(!StringUtils.equals(child.getName(),"jcr:content") &&  !StringUtils.equals(child.getName(),"rep:policy")){
+                    if (!StringUtils.equals(child.getName(), "jcr:content") && !StringUtils.equals(child.getName(), "rep:policy")) {
 %>
 <script>
     data.push({
@@ -779,7 +837,7 @@ PropertiesPage
 <%
         }
     }
-} else{
+} else {
 %>
 <script>
     data.push({
@@ -795,33 +853,34 @@ PropertiesPage
 
 <script type="text/javascript">
 
-    data.push({name: '_charset_',value: 'UTF-8'});
-    data.push({name: 'payloadType',value: 'JCR_PATH'});
-    data.push({name: 'model',value: '/var/workflow/models/mediahub/mediahub---validation'});
-    data.push({name: 'model@Delete',value: ''});
-    data.push({name: 'workflowTitle',value: 'Internal Publish'});
+    data.push({name: '_charset_', value: 'UTF-8'});
+    data.push({name: 'payloadType', value: 'JCR_PATH'});
+    data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---validation'});
+    data.push({name: 'model@Delete', value: ''});
+    data.push({name: 'workflowTitle', value: 'Internal Publish'});
     var asset = '<%= request.getParameter("item") %>';
+
     function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
 
-        if(isValidated && isValidated === 'true'){
+        if (isValidated && isValidated === 'true') {
             $.ajax({
                 type: "POST",
                 url: "/etc/workflow/instances",
                 data: data,
                 async: true,
                 cache: false,
-                success: function(response) {
+                success: function (response) {
                     if (response) {
                         var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
                     }
                 }
-            }).done(function(html) {
+            }).done(function (html) {
                 var ui = $(window).adaptTo("foundation-ui");
                 successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
                 ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
                     text: Granite.I18n.get("OK"),
                     primary: true,
-                    handler: function() {
+                    handler: function () {
                         location.href =
                             $(".foundation-backanchor").attr("href");
                     }
@@ -843,15 +902,15 @@ PropertiesPage
                 backdrop: "static"
             });
 
-            if(isFolderMetadataMissing || isFolderMetadataMissing === "true"){
+            if (isFolderMetadataMissing || isFolderMetadataMissing === "true") {
 
                 if (isMediaValidated === "true") {
                     alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
                     alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
-                } else if(isMediaValidated === "emptyMedia"){
+                } else if (isMediaValidated === "emptyMedia") {
                     alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
                     alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
-                } else if(isMediaValidated === "notinsidemedia"){
+                } else if (isMediaValidated === "notinsidemedia") {
                     alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be inside a media")) %>'
                     alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be in a media to be published")) %>'
                 } else {
@@ -866,7 +925,8 @@ PropertiesPage
         }
     }
 </script>
-</html><%!
+</html>
+<%!
 
     private String getPreferencesJSON(UserProperties props) throws Exception {
         JSONStringer json = new JSONStringer();
@@ -919,10 +979,10 @@ PropertiesPage
         Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
         SearchResult result = query.getResult();
         Iterator<Resource> requiredFields = result.getResources();
-        while(requiredFields.hasNext()){
+        while (requiredFields.hasNext()) {
             Resource field = requiredFields.next();
-            String metaField = StringUtils.replace(field.getValueMap().get("cq-msm-lockable", StringUtils.EMPTY),"./metadata/","");
-            if(StringUtils.isNotBlank(metaField)){
+            String metaField = StringUtils.replace(field.getValueMap().get("cq-msm-lockable", StringUtils.EMPTY), "./metadata/", "");
+            if (StringUtils.isNotBlank(metaField)) {
                 missedMetaData.add(metaField);
             }
         }
@@ -970,7 +1030,7 @@ PropertiesPage
             hierarchy = StringUtils.join(parts, ':', startIndex, parts.length - 1);
         }
 
-        return new String[] { hierarchy, name };
+        return new String[]{hierarchy, name};
     }
 
     /**
@@ -997,7 +1057,7 @@ PropertiesPage
                     .collect(Collectors.joining(":"));
         }
 
-        return new String[] { hierarchy, name };
+        return new String[]{hierarchy, name};
     }
 
     private RenderCondition getEditCondition(PageContext pageContext, SlingHttpServletRequest request, Resource resource) throws Exception {

@@ -168,7 +168,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
 
             if(policy != null &&  policy.getParent() != null){
                 CreatePolicyNodeUtil
-                    .creatrepPolicyeNodes(session, policy.getParent().getPath(), principalNameList);
+                    .createRepPolicyNodes(session, policy.getParent().getPath(), principalNameList);
             }
         }
 
