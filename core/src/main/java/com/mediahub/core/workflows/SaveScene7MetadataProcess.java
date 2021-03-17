@@ -50,9 +50,18 @@ public class SaveScene7MetadataProcess implements WorkflowProcess{
         Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
         ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
         String domain = modifiableValueMap.get("dam:scene7Domain", "https://s7g10.scene7.com/");
-        String file =  "is/image/" + modifiableValueMap.get("dam:scene7File", StringUtils.EMPTY);
-        modifiableValueMap.put("bnpp-external-broadcast-url", domain + URIUtil.encodePath(file));
-        modifiableValueMap.put("bnpp-external-file-url", domain + URIUtil.encodePath(file));
+
+        if(StringUtils.equals(modifiableValueMap.get("dam:scene7Type", StringUtils.EMPTY), "Video")){
+          String file =  "is/content/" + modifiableValueMap.get("dam:scene7File", StringUtils.EMPTY);
+          modifiableValueMap.put("bnpp-external-broadcast-url", domain + "s7viewers/html5/VideoViewer.html?asset=" + URIUtil.encodePath(modifiableValueMap.get("dam:scene7File", StringUtils.EMPTY)));
+          modifiableValueMap.put("bnpp-external-file-url", domain + URIUtil.encodePath(file));
+        } else {
+          String file =  "is/image/" + modifiableValueMap.get("dam:scene7File", StringUtils.EMPTY);
+          modifiableValueMap.put("bnpp-external-broadcast-url", domain + URIUtil.encodePath(file));
+          modifiableValueMap.put("bnpp-external-file-url", domain + URIUtil.encodePath(file));
+        }
+
+
 
         resourceResolver.commit();
       }
