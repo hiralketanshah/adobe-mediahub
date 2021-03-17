@@ -26,6 +26,19 @@
                     PROCESS="com.day.cq.wcm.workflow.process.DeactivatePageProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </deactivateresourcepr>
+            <process
+              jcr:created="{Date}2020-12-10T19:44:59.059+05:30"
+              jcr:createdBy="admin"
+              jcr:lastModified="{Date}2020-12-10T19:46:09.731+05:30"
+              jcr:lastModifiedBy="admin"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="Delete Internal Deactivation Details"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.DeleteInternalActivationData"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process>
         </flow>
     </jcr:content>
 </jcr:root>
