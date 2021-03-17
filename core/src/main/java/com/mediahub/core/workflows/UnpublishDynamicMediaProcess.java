@@ -76,6 +76,16 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
           throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
         }
         String status = scene7Service.deleteAsset(damResource.getChild("jcr:content").getChild("metadata").getValueMap().get("dam:scene7ID", StringUtils.EMPTY), s7Config);
+        log.info("Status of unpublishing dynamic media : " + status);
+
+        if(StringUtils.equals(status, "success")){
+          ModifiableValueMap properties = damResource.getChild("jcr:content").getChild("metadata").adaptTo(ModifiableValueMap.class);
+          properties.remove("bnpp-external-file-url");
+          properties.remove("bnpp-external-broadcast-url");
+          properties.remove("dam:scene7ID");
+          resourceResolver.commit();
+        }
+
         if(StringUtils.equals(status, "failure")){
           throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
         }

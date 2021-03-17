@@ -29,11 +29,21 @@
                 PROCESS_AUTO_ADVANCE="true"/>
         </node1>
         <node2
+          jcr:primaryType="cq:WorkflowNode"
+          description="Delete Internal Activaton Details"
+          title="Delete Internal Activaton Details"
+          type="PROCESS">
+            <metaData
+              jcr:primaryType="nt:unstructured"
+              PROCESS="com.mediahub.core.workflows.DeleteInternalActivationData"
+              PROCESS_AUTO_ADVANCE="true"/>
+        </node2>
+        <node3
             jcr:primaryType="cq:WorkflowNode"
             title="End"
             type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node2>
+        </node3>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -49,5 +59,11 @@
             to="node2">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node1_x0023_node2>
+        <node2_x0023_node3
+          jcr:primaryType="cq:WorkflowTransition"
+          from="node1"
+          to="node2">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node2_x0023_node3>
     </transitions>
 </jcr:root>
