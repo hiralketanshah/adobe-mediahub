@@ -1,0 +1,740 @@
+- global_config:
+    autoCreateTestUsers:
+      createForGroupNamesRegEx: "(mediahub)-.*"
+      prefix: "testuser-"
+      name: "TU %{group.name}"
+      path: /home/users/mediahub
+      skipForRunmodes: production
+    defaultUnmanagedExternalMembersRegex: .*
+
+- user_config:
+    - userDeactivationService:
+        - name:
+          isMemberOf: administrators
+          path: /home/users/system
+          isSystemUser: "true"
+
+- group_config:
+    - mediahub-users:
+        - name:
+          path: /home/groups/mediahub
+
+    - mediahub-reader-medialibrary:
+        - name:
+          isMemberOf: mediahub-users
+          path: /home/groups/mediahub
+
+    - mediahub-basic-entity-manager:
+        - name:
+          isMemberOf: mediahub-projects-users,user-administrators
+          path: /home/groups/mediahub
+
+    - mediahub-basic-reader:
+        - name:
+          isMemberOf: mediahub-users
+          path: /home/groups/mediahub
+
+    - mediahub-basic-contributor:
+        - name:
+          isMemberOf: mediahub-users
+          path: /home/groups/mediahub
+
+    - mediahub-projects-users:
+        - name:
+          isMemberOf: mediahub-users
+          path: /home/groups/mediahub
+
+- ace_config:
+    - mediahub-users:
+        - path: /
+          permission: allow
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /content
+          permission: deny
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob:
+
+        - path: /content
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+        - path: /content
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: /jcr:*
+
+        - path: /content/dam
+          permission: deny
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob:
+
+        - path: /content/dam
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+        - path: /content/dam
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: /jcr:*
+
+        - path: /content/projects
+          permission: deny
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob:
+
+        - path: /content/projects
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+        - path: /content/projects
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: /jcr:*
+
+        - path: /content/cq:tags
+          permission: deny
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob:
+
+        - path: /content/cq:tags
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+        - path: /content/cq:tags
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: /jcr:*
+
+        - path: /libs/wcm/core/content/damadmin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/wcm/core/content/siteadmin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/wcm/core/content/misc
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/security/content/admin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/workflow/content/console
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/tagging/content/tagadmin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/mcm/content/admin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/workflow/content/inbox
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/wcm/core/content/inbox
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/blueprints
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/commerce
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/dam
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/dashboards
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/docs
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/forms
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/importers
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/jobs
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/linkchecker
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/mobile
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/msm
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/notification
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/ocs
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/packages
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/replication
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/reports
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/scaffolding
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/security
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/social
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/tenants
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/versioning
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/virtual-repositories
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /etc/watchwords
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/sites
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/experience-fragments
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/projects
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/apps
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/publications
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/forms
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/assets
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/communities
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/commerce
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/crxde
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/packages
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/share
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/backup
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/config
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/cloudservices
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/launches
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/manuscriptsadmin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/publishingadmin
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/replication
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/reports
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/taskmanager
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/resources/workflows
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/docs/dev
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/cq/core/content/welcome/features/statusdump
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /libs/granite/security
+          permission: deny
+          actions: read
+          privileges:
+          repGlob:
+
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
+          permission: deny
+          actions: read
+
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab3
+          permission: deny
+          actions: read
+
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab4
+          permission: deny
+
+          actions: read
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab5
+          permission: deny
+          actions: read
+
+        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab
+          permission: deny
+          actions: read
+
+        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
+          permission: deny
+          actions: read
+
+        - path: /apps/dam/temp
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*wtab*'
+
+        - path: /apps/dam/temp
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*permissions-tab*'
+
+        - path: /libs/wcm/core/content/misc
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/tools
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
+
+        - path: /apps/cq/core/content/nav/tools
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
+
+        - path: /content/dam/technique/mediahub
+          permission: deny
+          actions: read
+
+        - path: /content/dam/technique/mediahub
+          permission: allow
+          actions: read
+          restrictions:
+            rep:glob: '/*'
+
+        - path: /conf
+          permission: allow
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/creator
+          permission: deny
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/filesize
+          permission: deny
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/description
+          permission: deny
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/notes
+          permission: deny
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/keywords
+          permission: deny
+          actions: read
+
+        - path: /conf/global/settings/dam/search/facets/assets/jcr:content/items/tags
+          permission: deny
+          actions: read
+
+        - path: /libs/wcm/core/content/sites
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/sites
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/experiencefragments
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/experience-fragments/content/experience-fragments
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/screens
+          permission: deny
+          actions: read
+
+        - path: /libs/screens/dcc/content/main
+          permission: deny
+          actions: read
+
+        - path: /libs/dam/gui/content/idsprint/templates
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/assets/templates
+          permission: deny
+          actions: read
+
+        - path: /libs/cq/core/content/nav/assets/catalogs
+          permission: deny
+          actions: read
+
+        - path: /libs/dam/gui/content/idsprint/catalogs
+          permission: deny
+          actions: read
+
+        - path: /libs/dam/gui/content/nav/navigationlinks/items/brochures-templates
+          permission: deny
+          actions: read
+
+        - path: /libs/dam/gui/content/nav/navigationlinks/items/catalogs
+          permission: deny
+          actions: read
+
+        - path: /libs/dam/gui/content/nav/navigationlinks/items/asyncjobs
+          permission: deny
+          actions: read
+
+    - mediahub-reader-medialibrary:
+        - path: /content/dam/medialibrary
+          permission: allow
+          privileges: jcr:read
+
+    - mediahub-basic-entity-manager:
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          privileges: jcr:read
+
+        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
+          permission: allow
+          actions: read
+
+        - path: /libs/wcm/core/content/misc
+          permission: allow
+          actions: read
+
+        - path: /libs/cq/core/content/nav/tools/security
+          permission: allow
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/security/users
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/cq/core/content/nav/tools/security/groups
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/cq/core/content/nav/tools/security/permissions
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/granite/security
+          permission: allow
+          actions: read
+          privileges:
+          repGlob:
+
+    - mediahub-basic-reader:
+        - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
+          permission: deny
+          actions: read
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+    - mediahub-basic-contributor:
+        - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
+          permission: deny
+          actions: read
+
+        - path: /content/cq:tags/default
+          permission: allow
+          actions: create,modify
+
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+    - mediahub-projects-users:
+        - path: /etc/cloudservices
+          permission: allow
+          privileges: jcr:read
+
+        - path: /libs/cq/core/content/tools/cloudservices
+          permission: allow
+          privileges: jcr:read
+
+        - path: /content/projects/masters
+          permission: deny
+          privileges: jcr:all
+
+        - path: /content/projects
+          permission: deny
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/projects
+          permission: allow
+          privileges: jcr:read
+          repGlob:
+
+        - path: /content/projects
+          permission: deny
+          keepOrder: true
+          privileges: jcr:read
+          repGlob: /*/*
+
+        - path: /content/projects
+          permission: allow
+          privileges: jcr:read
+          repGlob: /jcr:*
+
+        - path: /content/dam/projects
+          permission: deny
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/projects
+          permission: deny
+          privileges: jcr:read
+          repGlob:
+
+        - path: /content/dam/projects
+          permission: allow
+          privileges: jcr:read
+          repGlob: ""
+
+
+
+
+

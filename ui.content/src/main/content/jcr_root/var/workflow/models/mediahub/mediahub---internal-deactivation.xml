@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:isCheckedOut="{Boolean}false"
+    jcr:primaryType="cq:WorkflowModel"
+    jcr:uuid="efa43892-201b-4999-a8db-b751f27dc017"
+    sling:resourceType="cq/workflow/components/model"
+    description="No Description"
+    title="Mediahub - Internal Deactivation">
+    <metaData
+        cq:generatingPage="/conf/global/settings/workflow/models/mediahub/mediahub---internal-deactivation/jcr:content"
+        cq:lastModified="{Long}1615443570808"
+        cq:lastModifiedBy="admin"
+        jcr:primaryType="nt:unstructured"/>
+    <nodes jcr:primaryType="nt:unstructured">
+        <node0
+            jcr:primaryType="cq:WorkflowNode"
+            title="Start"
+            type="START">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node0>
+        <node1
+            jcr:primaryType="cq:WorkflowNode"
+            description="A process to deactivate a page or asset."
+            title="Deactivate Page/Asset"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.day.cq.wcm.workflow.process.DeactivatePageProcess"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node1>
+        <node2
+          jcr:primaryType="cq:WorkflowNode"
+          description="Delete Internal Activaton Details"
+          title="Delete Internal Activaton Details"
+          type="PROCESS">
+            <metaData
+              jcr:primaryType="nt:unstructured"
+              PROCESS="com.mediahub.core.workflows.DeleteInternalActivationData"
+              PROCESS_AUTO_ADVANCE="true"/>
+        </node2>
+        <node3
+            jcr:primaryType="cq:WorkflowNode"
+            title="End"
+            type="END">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node3>
+    </nodes>
+    <transitions jcr:primaryType="nt:unstructured">
+        <node0_x0023_node1
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node0"
+            rule=""
+            to="node1">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node0_x0023_node1>
+        <node1_x0023_node2
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node1"
+            to="node2">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node1_x0023_node2>
+        <node2_x0023_node3
+          jcr:primaryType="cq:WorkflowTransition"
+          from="node1"
+          to="node2">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node2_x0023_node3>
+    </transitions>
+</jcr:root>

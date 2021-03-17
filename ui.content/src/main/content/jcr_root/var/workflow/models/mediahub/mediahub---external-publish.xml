@@ -56,9 +56,9 @@
               PROCESS_AUTO_ADVANCE="true"/>
         </node3>
         <node4
-            jcr:primaryType="cq:WorkflowNode"
-            title="End"
-            type="END">
+          jcr:primaryType="cq:WorkflowNode"
+          title="End"
+          type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node4>
     </nodes>
