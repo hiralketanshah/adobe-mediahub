@@ -5,10 +5,13 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
+import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
+import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -19,13 +22,17 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.ValueFactory;
+import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author Shipra Arora
@@ -137,25 +144,49 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
                     }
-                }
 
-                NodeIterator ite = adminResolver.getResource(projectPath).adaptTo(Node.class).getNodes(BnpConstants.REP_POLICY);
-                if (ite.hasNext()) {
-                    Node policies = ((Node) ite.next());
-                    NodeIterator ite2 = policies.getNodes();
-                    while (ite2.hasNext()) {
-                        Node policyNode = (Node) ite2.next();
-                        String primaryType = policyNode.getProperty("jcr:primaryType").getString();
-                        String principalName = policyNode.getProperty("rep:principalName").getString();
-                        if ("rep:DenyACE".equals(primaryType) && "projects-users".equals(principalName)) {
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectPath, principalMgr.getPrincipal("mediahub-basic-project-manager"), Privilege.JCR_ALL);
-                            String damFolderPath = adminResolver.getResource(projectPath).getChild("jcr:content").getValueMap().get("damFolderPath", String.class);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, principalMgr.getPrincipal("mediahub-basic-project-manager"), Privilege.JCR_ALL);
+                    adminResource = adminResolver.getResource(projectPath);
+                    List<String> entityGroups = StreamSupport.stream(Spliterators.spliteratorUnknownSize(((Group) userManager.getAuthorizable("mediahub-basic-entity-manager")).getMembers(), Spliterator.ORDERED), false).filter(a -> a.isGroup()).map(g -> {
+                        try {
+                            return g.getID();
+                        } catch (RepositoryException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }).filter(i -> i != null).collect(Collectors.toList());
+                    AtomicBoolean matched = new AtomicBoolean(false);
+                    while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH) && !matched.get()) {
+                        adminResource = adminResource.getParent();
+                        JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(adminSession, adminResource.getPath());
+                        List<String> listOfGroups = Arrays.stream(acl.getAccessControlEntries()).map(a -> a.getPrincipal().getName()).collect(Collectors.toList());
+                        if (!Collections.disjoint(entityGroups, listOfGroups)) {
+                            for (String nodeGroup : listOfGroups) {
+                                for (String entityGroup : entityGroups) {
+                                    if (nodeGroup.equals(entityGroup)) {
+                                        List<Authorizable> entityUsers = StreamSupport.stream(Spliterators.spliteratorUnknownSize(((Group) userManager.getAuthorizable(entityGroup)).getMembers(), Spliterator.ORDERED), false).filter(a -> !a.isGroup()).collect(Collectors.toList());
+                                        entityUsers.forEach(e -> {
+                                            try {
+                                                ((Group) userManager.getAuthorizable(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString())).addMember(e);
+                                                ((Group) userManager.getAuthorizable(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString())).addMember(e);
+
+                                                matched.set(true);
+                                                if (!userManager.isAutoSave()) {
+                                                    js.save();
+                                                }
+                                            } catch (RepositoryException ex) {
+                                                log.error("Error when adding entity user to project owner group", e);
+                                            }
+
+                                        });
+
+                                    }
+                                }
+                            }
                         }
 
                     }
-                }
 
+                }
 
             }
         } catch (LoginException | RepositoryException | PersistenceException e) {
