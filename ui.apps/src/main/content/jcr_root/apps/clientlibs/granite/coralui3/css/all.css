@@ -24052,7 +24052,7 @@ a.endor-Footer-item:hover {
 }
 
 .bnp--green {
-	background-color: #fff !important;
+  background-color: #fff !important;
 }
 
 
@@ -24211,6 +24211,10 @@ coral-shell-header-content coral-shell-homeanchor-label:hover {
 
 a {
   color: #00915A;
+}
+
+betty-titlebar-title coral-selectlist > coral-selectlist-item:last-child{
+  display:none;
 }
 
 
