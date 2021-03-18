@@ -440,7 +440,11 @@ PropertiesPage
                         String saveBtnVariant = "primary";
 
                         AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
-                        doneAttrs.add("id", "shell-propertiespage-mediaactivator");
+                        if( StringUtils.contains(assetId ,"/content/dam") ){
+                          doneAttrs.add("id", "shell-propertiespage-mediaactivator");
+                        } else {
+                          doneAttrs.add("id", "shell-propertiespage-doneactivator");
+                        }
                         doneAttrs.add("type", "submit");
                         doneAttrs.add("form", formId);
                         doneAttrs.add("is", "coral-button");
