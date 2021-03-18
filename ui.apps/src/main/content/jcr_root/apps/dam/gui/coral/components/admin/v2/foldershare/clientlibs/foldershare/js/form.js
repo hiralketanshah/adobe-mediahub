@@ -168,7 +168,9 @@
         }
 
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
-        if(saveMediaMetadataChanges(e)){
+        if(!validateBnppStatus() && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") !== "true") ){
+          deactivateChildren();
+        } else if(saveMediaMetadataChanges(e)){
           internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
         }
         return false;
