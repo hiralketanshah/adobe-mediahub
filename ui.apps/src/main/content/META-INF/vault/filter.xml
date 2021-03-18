@@ -16,5 +16,6 @@
     </filter>
     <filter root="/apps/mediahub/projects"/>
     <filter root="/apps/mediahub/acl-configuration"/>
+    <filter root="/apps/mediahub/acl-configuration-new"/>
     <filter root="/apps/settings/dam"/>
 </workspaceFilter>
