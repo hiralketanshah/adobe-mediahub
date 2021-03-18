@@ -15,37 +15,73 @@
           isSystemUser: "true"
 
 - group_config:
-    - mediahub-users:
+    - mediahub-basic:
         - name:
           path: /home/groups/mediahub
 
     - mediahub-reader-medialibrary:
         - name:
-          isMemberOf: mediahub-users
+          isMemberOf: mediahub-basic
           path: /home/groups/mediahub
 
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: mediahub-projects-users,user-administrators
+          isMemberOf: mediahub-projects-users,user-administrators,mediahub-basic-project-manager
           path: /home/groups/mediahub
 
     - mediahub-basic-reader:
         - name:
-          isMemberOf: mediahub-users
+          isMemberOf: mediahub-basic
           path: /home/groups/mediahub
 
     - mediahub-basic-contributor:
         - name:
-          isMemberOf: mediahub-users
+          isMemberOf: mediahub-basic
           path: /home/groups/mediahub
 
     - mediahub-projects-users:
         - name:
-          isMemberOf: mediahub-users
+          isMemberOf: mediahub-basic
+          path: /home/groups/mediahub
+
+    - mediahub-basic-project-manager:
+        - name:
+          isMemberOf: projects-administrators
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-basic-project-publisher:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-basic-project-reader:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-basic-project-internal-contributor:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-basic-project-external-contributor:
+        - name:
+          isMemberOf:
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-administrators:
+        - name:
+          isMemberOf: mediahub-basic,user-administrators
+          members:
           path: /home/groups/mediahub
 
 - ace_config:
-    - mediahub-users:
+    - mediahub-basic:
         - path: /
           permission: allow
           actions: read
@@ -88,6 +124,24 @@
           privileges: jcr:read,jcr:readAccessControl
           repGlob: /jcr:*
 
+        - path: /content/dam/medialibrary
+          permission: deny
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob:
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: ""
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions:
+          privileges: jcr:read,jcr:readAccessControl
+          repGlob: /jcr:*
+
         - path: /content/projects
           permission: deny
           actions:
@@ -107,22 +161,10 @@
           repGlob: /jcr:*
 
         - path: /content/cq:tags
-          permission: deny
+          permission: allow
           actions:
-          privileges: jcr:read,jcr:readAccessControl
+          privileges: jcr:read
           repGlob:
-
-        - path: /content/cq:tags
-          permission: allow
-          actions:
-          privileges: jcr:read,jcr:readAccessControl
-          repGlob: ""
-
-        - path: /content/cq:tags
-          permission: allow
-          actions:
-          privileges: jcr:read,jcr:readAccessControl
-          repGlob: /jcr:*
 
         - path: /libs/wcm/core/content/damadmin
           permission: deny
@@ -613,6 +655,66 @@
           permission: allow
           privileges: jcr:read
 
+    - mediahub-administrators:
+
+        - path: /content/dam
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob: ""
+
+        - path: /content/dam/medialibrary
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/projects
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/cq:tags
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
+          permission: allow
+          actions: read
+
+        - path: /libs/wcm/core/content/misc
+          permission: allow
+          actions: read
+
+        - path: /libs/cq/core/content/nav/tools/security
+          permission: allow
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/security/users
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/cq/core/content/nav/tools/security/groups
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/cq/core/content/nav/tools/security/permissions
+          permission: allow
+          actions: read
+          restrictions:
+
+        - path: /libs/granite/security
+          permission: allow
+          actions: read
+          privileges:
+          repGlob:
+
     - mediahub-basic-entity-manager:
 
         - path: /content/dam/medialibrary
@@ -653,6 +755,17 @@
           privileges:
           repGlob:
 
+        - path: /content/cq:tags
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        #- path: /content/projects
+        #  permission: allow
+        #  privileges: rep:write
+        #  repGlob:
+
     - mediahub-basic-reader:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
@@ -668,10 +781,6 @@
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
           actions: read
-
-        - path: /content/cq:tags/default
-          permission: allow
-          actions: create,modify
 
         - path: /var/workflow/models
           permission: deny
@@ -734,7 +843,29 @@
           privileges: jcr:read
           repGlob: ""
 
+    - mediahub-basic-project-internal-contributor:
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
 
+        - path: /content/dam/projects
+          permission: allow
+          privileges: rep:write
+          restrictions:
+            rep:glob: '/*'
 
+    - mediahub-basic-project-external-contributor:
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
 
-
+    - mediahub-basic-project-reader:
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
