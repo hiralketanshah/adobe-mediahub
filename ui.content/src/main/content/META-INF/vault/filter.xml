@@ -12,6 +12,8 @@
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish"/>
     <filter root="/var/workflow/models/mediahub/mediahub---internal-publish"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---external-publish"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-deactivation"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---internal-deactivation"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---validation"  mode="update"/>
     <filter root="/var/workflow/models/mediahub/mediahub---external-publish"/>
     <filter root="/conf/global/settings/workflow/launcher"/>
