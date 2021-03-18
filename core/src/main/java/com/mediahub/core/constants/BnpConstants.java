@@ -45,6 +45,7 @@ public class BnpConstants {
     public static final String NT_NODE_TYPE = com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
     public static final String AEM_PROJECTS_PATH = "/content/projects";
     public static final String MEDIALIBRARY_PATH = "/content/dam/medialibrary";
+    public static final String MEDIALIBRARY_PROJECTS_PATH = "/content/dam/projects";
     public static final String REP_POLICY = "rep:policy";
     public static final String REP_ACL = "rep:ACL";
     public static final String JCR_MIXINTYPES = com.day.cq.commons.jcr.JcrConstants.JCR_MIXINTYPES;

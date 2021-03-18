@@ -9,7 +9,6 @@ import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.resource.*;
@@ -26,7 +25,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFactory;
-import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import java.security.Principal;
 import java.util.*;
@@ -143,6 +141,18 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         adminResource = adminResource.getParent();
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                    }
+
+
+                    String damFolderPath = adminResolver.getResource(projectPath).getChild("jcr:content").getValueMap().get("damFolderPath", String.class);
+                    adminResource = adminResolver.getResource(damFolderPath);
+                    while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
+                        adminResource = adminResource.getParent();
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupEditorPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupObserverPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupExternalContribPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
                     }
 
                     adminResource = adminResolver.getResource(projectPath);
