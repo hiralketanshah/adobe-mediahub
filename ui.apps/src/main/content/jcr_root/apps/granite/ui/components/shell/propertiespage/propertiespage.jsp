@@ -440,7 +440,11 @@ PropertiesPage
                         String saveBtnVariant = "primary";
 
                         AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
-                        doneAttrs.add("id", "shell-propertiespage-mediaactivator");
+                        if( StringUtils.contains(assetId ,"/content/dam") ){
+                          doneAttrs.add("id", "shell-propertiespage-mediaactivator");
+                        } else {
+                          doneAttrs.add("id", "shell-propertiespage-doneactivator");
+                        }
                         doneAttrs.add("type", "submit");
                         doneAttrs.add("form", formId);
                         doneAttrs.add("is", "coral-button");
@@ -498,6 +502,7 @@ PropertiesPage
                     boolean isFolderMetadataMissing = false;
                     boolean isAsset = false;
                     String isMediaValidated = "false";
+                    boolean isChildrenDeactivated = true;
 
                     boolean isProjectPublisher = false;
                     boolean isProjectInternal = false;
@@ -550,10 +555,14 @@ PropertiesPage
                                                         if (DamUtil.isAsset(child)) {
                                                             Asset asset = child.adaptTo(Asset.class);
                                                             if (child.getChild("jcr:content").getChild("metadata") != null) {
-
                                                                 Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
-                                                                for (String field : requiredFields) {
+                                                                if(isChildrenDeactivated && (!metadata.containsKey("bnpp-internal-file-url") || StringUtils.equals(metadata.get("bnpp-internal-file-url").toString(), StringUtils.EMPTY)) &&  (!metadata.containsKey("bnpp-external-file-url") || StringUtils.equals(metadata.get("bnpp-external-file-url").toString(), StringUtils.EMPTY))){
+                                                                    isChildrenDeactivated = true;
+                                                                } else {
+                                                                    isChildrenDeactivated = false;
+                                                                }
 
+                                                                for (String field : requiredFields) {
                                                                     if (!metadata.containsKey(field)) {
                                                                         fieldMissed = true;
                                                                         break;
@@ -639,15 +648,12 @@ PropertiesPage
                         <%
                             if (StringUtils.contains(assetId, "/content/dam/projects") && !isAsset && !isProjectInternal && !isProjectExternal) {
                         %>
-                        <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
-                        </button>
-                        <% } else if (StringUtils.contains(assetId, "/content/dam/medialibrary")) { %>
-                        <button  <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
-                        </button>
-                        <%
-                            }
-
+                        <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                        <% } else if (StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                            doneAttrs1.add("isChildrenDeactivated", isChildrenDeactivated);
                         %>
+                        <button  <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                        <% } %>
                     </coral-buttongroup>
                 </coral-actionbar-item>
                 <% } %>
@@ -859,6 +865,15 @@ PropertiesPage
     data.push({name: 'model@Delete', value: ''});
     data.push({name: 'workflowTitle', value: 'Internal Publish'});
     var asset = '<%= request.getParameter("item") %>';
+
+   function deactivateChildren() {
+      var ui = $(window).adaptTo("foundation-ui");
+      failureMessage = Granite.I18n.get("Kindly Deactivate Assets inside Media Folder");
+      ui.prompt(Granite.I18n.get("Kindly Deactivate Assets inside Media Folder"), failureMessage, "success", [{
+          text: Granite.I18n.get("OK"),
+          primary: true
+      }]);
+   }
 
     function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
 
