@@ -21,21 +21,29 @@ public class CreatePolicyNodeUtil {
 
     public static void createRepPolicyNodes(Session adminSession, String parentFolderPath, List<Principal> principalNameList) {
         for (Principal principalName : principalNameList) {
-            createRepPolicyNode(adminSession, parentFolderPath, principalName, Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+            createRepPolicyNode(adminSession, parentFolderPath, true, principalName, Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
         }
     }
 
     public static void createRepPolicyNodes(Session adminSession, String parentFolderPath, List<Principal> principalNameList, Map<String, Value> restrictions) {
         for (Principal principalName : principalNameList) {
-            createRepPolicyNode(adminSession, parentFolderPath, principalName, restrictions, Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+            createRepPolicyNode(adminSession, parentFolderPath, principalName, true, restrictions, Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
         }
     }
 
+    public static void createRepPolicyNode(Session adminSession, String parentFolderPath, boolean allow, Principal principalName, String... privilegeNames) {
+        createRepPolicyNode(adminSession, parentFolderPath, principalName, allow, null, privilegeNames);
+    }
+
     public static void createRepPolicyNode(Session adminSession, String parentFolderPath, Principal principalName, String... privilegeNames) {
-        createRepPolicyNode(adminSession, parentFolderPath, principalName, null, privilegeNames);
+        createRepPolicyNode(adminSession, parentFolderPath, principalName, true, null, privilegeNames);
     }
 
     public static void createRepPolicyNode(Session adminSession, String parentFolderPath, Principal principalName, Map<String, Value> restrictions, String... privilegeNames) {
+        createRepPolicyNode(adminSession, parentFolderPath, principalName, true, restrictions, privilegeNames);
+    }
+
+    public static void createRepPolicyNode(Session adminSession, String parentFolderPath, Principal principalName, boolean allow, Map<String, Value> restrictions, String... privilegeNames) {
         try {
             AccessControlManager accessControlManager = adminSession.getAccessControlManager();
             JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(adminSession, parentFolderPath);
@@ -50,9 +58,9 @@ public class CreatePolicyNodeUtil {
             }).filter(p -> p != null).collect(Collectors.toList());
             Privilege[] privileges = privilegesList.toArray(new Privilege[privilegesList.size()]);
             if (restrictions == null) {
-                acl.addEntry(principalName, privileges, true);// true for allow entry, false for deny
+                acl.addEntry(principalName, privileges, allow);// true for allow entry, false for deny
             } else {
-                acl.addEntry(principalName, privileges, true, restrictions);
+                acl.addEntry(principalName, privileges, allow, restrictions);
             }
             accessControlManager.setPolicy(parentFolderPath, acl);
             adminSession.save();
