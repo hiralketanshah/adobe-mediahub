@@ -140,7 +140,7 @@
 
             if (document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated") === "false") {
                 showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
-                    Granite.I18n.get("The Required Metadata fields are not authored in Asset."),
+                    Granite.I18n.get("One or more assets has required field(s) empty."),
                     '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
                 return false;
             }
