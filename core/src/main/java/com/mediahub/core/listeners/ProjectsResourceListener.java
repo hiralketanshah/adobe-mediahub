@@ -178,6 +178,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                                                 try {
                                                     Principal entityManagerGroup = principalMgr.getPrincipal(entityGroup);
                                                     CreatePolicyNodeUtil.createRepPolicyNode(currentSession, projectPath, entityManagerGroup, Privilege.JCR_ALL);
+                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, damFolderPath, entityManagerGroup, Privilege.JCR_ALL);
                                                     matched.set(true);
                                                     if (!userManager.isAutoSave()) {
                                                         js.save();
