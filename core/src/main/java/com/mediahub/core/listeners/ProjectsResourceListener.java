@@ -144,6 +144,9 @@ public class ProjectsResourceListener implements ResourceChangeListener {
 
 
                         String damFolderPath = adminResolver.getResource(projectPath).getChild("jcr:content").getValueMap().get("damFolderPath", String.class);
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectInternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectExternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
+                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectPublisherGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
                         adminResource = adminResolver.getResource(damFolderPath);
                         while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
                             adminResource = adminResource.getParent();
