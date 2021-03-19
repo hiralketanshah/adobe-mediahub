@@ -90,16 +90,11 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                     Node projectNode = adminResource.adaptTo(Node.class);
 
                     if (projectNode.hasProperty(BnpConstants.ROLE_EDITOR) && (!projectNode.hasProperty("initialized") || (projectNode.hasProperty("initialized") && !projectNode.getProperty("initialized").getBoolean()))) {
-                        Principal groupEditorPrincipal = principalMgr
-                                .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
-                        Principal groupObserverPrincipal = principalMgr
-                                .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
-                        Principal groupOwnerPrincipal = principalMgr
-                                .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
-                        Principal groupOwnerProjectPublisher = principalMgr
-                                .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
-                        Principal groupExternalContribPrincipal = principalMgr
-                                .getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+                        Principal groupEditorPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
+                        Principal groupObserverPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
+                        Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
+                        Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
+                        Principal groupExternalContribPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
                         principalNameList.add(groupEditorPrincipal);
                         principalNameList.add(groupObserverPrincipal);
                         principalNameList.add(groupOwnerPrincipal);
@@ -112,6 +107,10 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         projectExternalGroup.addMember(userManager.getAuthorizable(groupExternalContribPrincipal));
                         Group projectPublisherGroup = (Group) userManager.getAuthorizable(BnpConstants.PROJECT_PUBLISHER_GROUP);
                         projectPublisherGroup.addMember(userManager.getAuthorizable(groupOwnerProjectPublisher));
+                        Group projectReaderGroup = (Group) userManager.getAuthorizable(BnpConstants.PROJECT_READER_GROUP);
+                        projectReaderGroup.addMember(userManager.getAuthorizable(groupObserverPrincipal));
+                        Group projectManagerGroup = (Group) userManager.getAuthorizable(BnpConstants.PROJECT_MANAGER_GROUP);
+                        projectManagerGroup.addMember(userManager.getAuthorizable(groupOwnerPrincipal));
 
                         if (!userManager.isAutoSave()) {
                             js.save();
@@ -139,8 +138,8 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         adminResource = adminResolver.getResource(damPath);
                         while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PATH)) {
                             adminResource = adminResource.getParent();
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
                         }
 
 
@@ -148,11 +147,11 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         adminResource = adminResolver.getResource(damFolderPath);
                         while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
                             adminResource = adminResource.getParent();
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupEditorPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupObserverPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupExternalContribPrincipal, Privilege.JCR_READ, ImmutableMap.of("rep:glob", vf.createValue("")));
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupEditorPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupObserverPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupExternalContribPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
                         }
 
                         adminResource = adminResolver.getResource(projectPath);
@@ -174,11 +173,11 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                                     for (String entityGroup : entityGroups) {
                                         if (nodeGroup.equals(entityGroup)) {
                                             List<Authorizable> entityUsers = StreamSupport.stream(Spliterators.spliteratorUnknownSize(((Group) userManager.getAuthorizable(entityGroup)).getMembers(), Spliterator.ORDERED), false).filter(a -> !a.isGroup()).collect(Collectors.toList());
+                                            final Session currentSession = adminSession;
                                             entityUsers.forEach(e -> {
                                                 try {
-                                                    ((Group) userManager.getAuthorizable(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString())).addMember(e);
-                                                    ((Group) userManager.getAuthorizable(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString())).addMember(e);
-
+                                                    Principal entityManagerGroup = principalMgr.getPrincipal(entityGroup);
+                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, projectPath, entityManagerGroup, Privilege.JCR_ALL);
                                                     matched.set(true);
                                                     if (!userManager.isAutoSave()) {
                                                         js.save();
