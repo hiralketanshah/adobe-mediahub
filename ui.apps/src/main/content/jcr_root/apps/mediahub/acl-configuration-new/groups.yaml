@@ -1,10 +1,10 @@
 - global_config:
-    autoCreateTestUsers:
-      createForGroupNamesRegEx: "(mediahub)-.*"
-      prefix: "testuser-"
-      name: "TU %{group.name}"
-      path: /home/users/mediahub
-      skipForRunmodes: production
+    #autoCreateTestUsers:
+    #    createForGroupNamesRegEx: "(mediahub)-.*"
+    #    prefix: "testuser-"
+    #    name: "TU %{group.name}"
+    #    path: /home/users/mediahub
+    #    skipForRunmodes: production
     defaultUnmanagedExternalMembersRegex: .*
 
 - user_config:
@@ -52,25 +52,25 @@
 
     - mediahub-basic-project-publisher:
         - name:
-          isMemberOf:
+          isMemberOf: mediahub-projects-users
           members:
           path: /home/groups/mediahub
 
     - mediahub-basic-project-reader:
         - name:
-          isMemberOf:
+          isMemberOf: mediahub-projects-users
           members:
           path: /home/groups/mediahub
 
     - mediahub-basic-project-internal-contributor:
         - name:
-          isMemberOf:
+          isMemberOf: mediahub-projects-users
           members:
           path: /home/groups/mediahub
 
     - mediahub-basic-project-external-contributor:
         - name:
-          isMemberOf:
+          isMemberOf: mediahub-projects-users
           members:
           path: /home/groups/mediahub
 
@@ -761,11 +761,6 @@
           privileges: jcr:all
           repGlob:
 
-        #- path: /content/projects
-        #  permission: allow
-        #  privileges: rep:write
-        #  repGlob:
-
     - mediahub-basic-reader:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
@@ -817,17 +812,6 @@
           privileges: jcr:read
           repGlob:
 
-        - path: /content/projects
-          permission: deny
-          keepOrder: true
-          privileges: jcr:read
-          repGlob: /*/*
-
-        - path: /content/projects
-          permission: allow
-          privileges: jcr:read
-          repGlob: /jcr:*
-
         - path: /content/dam/projects
           permission: deny
           privileges: jcr:all
@@ -843,16 +827,22 @@
           privileges: jcr:read
           repGlob: ""
 
-    - mediahub-basic-project-internal-contributor:
+        - path: /libs/granite/security/clientlib/themes/default
+          permission: allow
+          privileges: jcr:read
+          repGlob:
+
+    - mediahub-basic-project-manager:
         - path: /var/workflow/models
-          permission: deny
+          permission: allow
           actions: read
           restrictions:
             rep:glob: '/*'
 
-        - path: /content/dam/projects
-          permission: allow
-          privileges: rep:write
+    - mediahub-basic-project-internal-contributor:
+        - path: /var/workflow/models
+          permission: deny
+          actions: read
           restrictions:
             rep:glob: '/*'
 

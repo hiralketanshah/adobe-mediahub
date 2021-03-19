@@ -58,6 +58,7 @@ public class BnpConstants {
     public static final String SLING_RESOURCETYPE = "sling:resourceType";
     public static final String PROJECT_RESOURCE = "cq/gui/components/projects/admin/card/projectcontent";
     public final static String PROJECT_READER_GROUP = "mediahub-basic-project-reader";
+    public final static String PROJECT_MANAGER_GROUP = "mediahub-basic-project-manager";
     public final static String PROJECT_INTERNAL_CONTRIBUTOR_GROUP = "mediahub-basic-project-internal-contributor";
     public final static String PROJECT_EXTERNAL_CONTRIBUTOR_GROUP = "mediahub-basic-project-external-contributor";
     public final static String PROJECT_PUBLISHER_GROUP = "mediahub-basic-project-publisher";

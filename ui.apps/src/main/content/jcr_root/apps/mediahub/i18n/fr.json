@@ -82,6 +82,8 @@
 
   "Asset must be inside a media" : "élément doit se trouver dans un média",
 
-  "Asset must be in a media to be published" : "élément doit être dans un média pour être publié"
+  "Asset must be in a media to be published" : "élément doit être dans un média pour être publié",
+
+  "One or more assets has required field(s) empty." : "Un ou plusieurs assets ont des champs obligatoires vides."
 
 }
