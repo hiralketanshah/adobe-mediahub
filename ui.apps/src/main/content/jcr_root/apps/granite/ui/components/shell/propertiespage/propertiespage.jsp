@@ -464,7 +464,12 @@ PropertiesPage
                         saveChevronAttrs.add("aria-haspopup", true);
 
                         AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
-                        saveAttrs.add("id", "shell-propertiespage-saveactivator");
+
+                        if (StringUtils.contains(assetId, "/content/dam")) {
+                          saveAttrs.add("id", "shell-propertiespage-saveactivator-media");
+                        } else {
+                          saveAttrs.add("id", "shell-propertiespage-saveactivator");
+                        }
                         saveAttrs.addClass("granite-ActionGroup-item");
                         saveAttrs.add("type", "submit");
                         saveAttrs.add("form", formId);
@@ -482,8 +487,7 @@ PropertiesPage
                                        target="_prev">
                             <coral-popover-content>
                                 <coral-buttonlist role="menu" class="granite-ActionGroup-list">
-                                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %>
-                                    </button>
+                                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %></button>
                                 </coral-buttonlist>
                             </coral-popover-content>
                         </coral-popover>

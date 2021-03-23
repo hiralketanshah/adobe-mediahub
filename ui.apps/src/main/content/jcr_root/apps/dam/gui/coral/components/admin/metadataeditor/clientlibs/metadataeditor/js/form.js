@@ -202,6 +202,22 @@
         return false;
     });
 
+    $(document).on("click", "#shell-propertiespage-saveactivator-media", function(e) {
+            if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
+                simpleSave = false;
+            } else {
+                simpleSave = true;
+            }
+            var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+            if (appendModeEnabled === undefined) {
+                appendModeEnabled = true;
+            }
+            if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+                saveMediaMetadataChanges(e);
+            }
+            return false;
+    });
+
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
             if (e.currentTarget.id === "shell-propertiespage-save-publish") {
                 simpleSave = false;
