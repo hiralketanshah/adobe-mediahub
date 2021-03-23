@@ -203,8 +203,14 @@
         return false;
     });
 
-    $(document).on("click", "#shell-propertiespage-saveactivator-media", function(e) {
-        saveMetadataChangesWithoutValidation(e);
+    $(document).on("click", "#shell-propertiespage-mediaactivator, #shell-propertiespage-saveactivator-media", function(e) {
+
+        if( (document.getElementById("shell-propertiespage-saveactivator-media").getAttribute("isChildrenDeactivated") !== null) && (document.getElementById("shell-propertiespage-saveactivator-media").getAttribute("isChildrenDeactivated") !== "true") ){
+          deactivateChildren();
+        } else {
+          saveMetadataChangesWithoutValidation(e);
+        }
+        alert("Testing");
         return false;
     });
 
