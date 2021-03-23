@@ -180,9 +180,9 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                                             final Session currentSession = adminSession;
                                             entityUsers.forEach(e -> {
                                                 try {
-                                                    Principal entityManagerGroup = principalMgr.getPrincipal(entityGroup);
-                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, projectPath, entityManagerGroup, Privilege.JCR_ALL);
-                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, damFolderPath, entityManagerGroup, Privilege.JCR_ALL);
+                                                    Principal projectAdmin = principalMgr.getPrincipal("mediahub-project-administrator");
+                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, projectPath, projectAdmin, Privilege.JCR_ALL);
+                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, damFolderPath, projectAdmin, Privilege.JCR_ALL);
                                                     matched.set(true);
                                                     if (!userManager.isAutoSave()) {
                                                         js.save();
