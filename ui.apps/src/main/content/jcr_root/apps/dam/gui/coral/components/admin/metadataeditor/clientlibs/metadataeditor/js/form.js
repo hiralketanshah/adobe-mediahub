@@ -149,8 +149,6 @@
             showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
                 Granite.I18n.get("Some assets are either removed or not accessible. Please refresh assets and try again."), ""); // eslint-disable-line max-len
         }
-
-        return true;
     }
 
     function saveMediaMetadataChanges(e) {
@@ -215,10 +213,9 @@
                 appendModeEnabled = true;
             }
             if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-                if(saveMetadataChanges(e)){
-                  internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                }
+                saveMetadataChanges(e);
             }
+            internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
             return false;
         });
 
