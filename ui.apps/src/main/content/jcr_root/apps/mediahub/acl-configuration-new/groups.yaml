@@ -26,7 +26,7 @@
 
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: mediahub-projects-users,user-administrators,mediahub-basic-project-manager
+          isMemberOf: mediahub-projects-users,user-administrators,mediahub-project-administrator
           path: /home/groups/mediahub
 
     - mediahub-basic-reader:
@@ -45,6 +45,12 @@
           path: /home/groups/mediahub
 
     - mediahub-basic-project-manager:
+        - name:
+          isMemberOf: projects-administrators,user-administrators
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-project-administrator:
         - name:
           isMemberOf: projects-administrators
           members:
@@ -76,7 +82,7 @@
 
     - mediahub-administrators:
         - name:
-          isMemberOf: mediahub-basic,user-administrators
+          isMemberOf: mediahub-basic,user-administrators,mediahub-project-administrator
           members:
           path: /home/groups/mediahub
 
@@ -670,6 +676,12 @@
           repGlob:
 
         - path: /content/projects
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/projects
           permission: allow
           actions:
           privileges: jcr:all
