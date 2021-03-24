@@ -839,6 +839,11 @@
           privileges: jcr:read
           repGlob: ""
 
+        - path: /content/dam/projects
+          permission: allow
+          privileges: rep:readProperties,jcr:readAccessControl
+          repGlob:
+
         - path: /libs/granite/security/clientlib/themes/default
           permission: allow
           privileges: jcr:read
