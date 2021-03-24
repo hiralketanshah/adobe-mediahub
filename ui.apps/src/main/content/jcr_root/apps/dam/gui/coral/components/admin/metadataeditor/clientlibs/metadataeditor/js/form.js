@@ -149,6 +149,8 @@
             showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
                 Granite.I18n.get("Some assets are either removed or not accessible. Please refresh assets and try again."), ""); // eslint-disable-line max-len
         }
+
+        return true;
     }
 
     function saveMediaMetadataChanges(e) {
@@ -202,6 +204,22 @@
         return false;
     });
 
+    $(document).on("click", "#shell-propertiespage-saveactivator-media", function(e) {
+            if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
+                simpleSave = false;
+            } else {
+                simpleSave = true;
+            }
+            var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+            if (appendModeEnabled === undefined) {
+                appendModeEnabled = true;
+            }
+            if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+                saveMediaMetadataChanges(e);
+            }
+            return false;
+    });
+
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
             if (e.currentTarget.id === "shell-propertiespage-save-publish") {
                 simpleSave = false;
@@ -213,9 +231,10 @@
                 appendModeEnabled = true;
             }
             if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-                saveMetadataChanges(e);
+                if(saveMetadataChanges(e)){
+                  internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                }
             }
-            internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
             return false;
         });
 
