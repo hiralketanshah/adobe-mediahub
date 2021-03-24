@@ -797,9 +797,7 @@
 
         - path: /content/dam/medialibrary
           permission: allow
-          actions:
-          privileges: jcr:read,jcr:readAccessControl
-          repGlob: ""
+          privileges: jcr:read
 
     - mediahub-projects-users:
         - path: /etc/cloudservices
