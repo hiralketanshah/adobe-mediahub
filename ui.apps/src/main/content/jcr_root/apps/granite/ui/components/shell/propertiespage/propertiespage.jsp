@@ -417,6 +417,136 @@ PropertiesPage
                     <a <%= backAttrs %>><%= xssAPI.encodeForHTML(cancelText) %>
                     </a>
                 </coral-actionbar-item>
+
+                <%
+                boolean isEntityManager = false;
+                boolean isContributor = false;
+                boolean isValidated = false;
+                boolean isFolderMetadataMissing = false;
+                boolean isAsset = false;
+                String isMediaValidated = "false";
+                boolean isChildrenDeactivated = true;
+
+                boolean isProjectPublisher = false;
+                boolean isProjectInternal = false;
+                boolean isProjectExternal = false;
+
+                try {
+                    if (null != auth) {
+                        Iterator<Group> projectGroups = auth.memberOf();
+                        while (projectGroups.hasNext()) {
+                            Group group = projectGroups.next();
+                            if (StringUtils.equals(group.getID(), "mediahub-basic-project-publisher")) {
+                                isProjectPublisher = true;
+                            }
+                            if (StringUtils.equals(group.getID(), "mediahub-basic-project-internal-contributor")) {
+                                isProjectInternal = true;
+                            }
+                            if (StringUtils.equals(group.getID(), "mediahub-basic-project-external-contributor")) {
+                                isProjectExternal = true;
+                            }
+                        }
+
+
+                        Iterator<Group> groups = auth.memberOf();
+                        while (groups.hasNext()) {
+                            Group group = groups.next();
+                            if (StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
+                                if (StringUtils.isNotEmpty(assetId)) {
+                                    Resource assetResource = resourceResolver.getResource(assetId);
+                                    boolean fieldMissed = false;
+                                    if (assetResource != null && assetResource.getChild("jcr:content") != null) {
+                                        if (assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
+                                            isEntityManager = true;
+                                            if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
+                                                isContributor = true;
+                                            }
+                                            String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
+                                            List<String> requiredFields = getRequiredMetadataFields(resourceResolver, assetSchema);
+
+                                            Iterator<Asset> mediaAssets = DamUtil.getAssets(assetResource);
+
+                                            if (!mediaAssets.hasNext()) {
+                                                isValidated = false;
+                                                isMediaValidated = "emptyMedia";
+                                            }
+
+                                            if (!StringUtils.equals(isMediaValidated, "emptyMedia") && assetResource.hasChildren()) {
+                                                Iterator<Resource> children = assetResource.listChildren();
+                                                while (children.hasNext()) {
+                                                    Resource child = children.next();
+                                                    if (DamUtil.isAsset(child)) {
+                                                        Asset asset = child.adaptTo(Asset.class);
+                                                        if (child.getChild("jcr:content").getChild("metadata") != null) {
+                                                            Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
+                                                            if(isChildrenDeactivated && (!metadata.containsKey("bnpp-internal-file-url") || StringUtils.equals(metadata.get("bnpp-internal-file-url").toString(), StringUtils.EMPTY)) &&  (!metadata.containsKey("bnpp-external-file-url") || StringUtils.equals(metadata.get("bnpp-external-file-url").toString(), StringUtils.EMPTY))){
+                                                                isChildrenDeactivated = true;
+                                                            } else {
+                                                                isChildrenDeactivated = false;
+                                                            }
+
+                                                            for (String field : requiredFields) {
+                                                                if (!metadata.containsKey(field)) {
+                                                                    fieldMissed = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (fieldMissed) {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            if (!fieldMissed) {
+                                                isValidated = true;
+                                            }
+                                        } else if (StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType", "false").toString(), "dam:Asset")) {
+                                            isEntityManager = true;
+                                            if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
+                                                isContributor = true;
+                                            }
+                                            isAsset = true;
+
+                                            if (assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
+                                                ValueMap metadata = assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap();
+                                                if (StringUtils.equals(metadata.get("bnpp-status", "false").toString(), "validated")) {
+
+                                                    String folderSchema = DamUtil.getInheritedProperty("folderMetadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema");
+                                                    List<String> requiredFields = getRequiredMetadataFields(resourceResolver, folderSchema);
+                                                    for (String field : requiredFields) {
+                                                        if (!metadata.containsKey(field)) {
+                                                            fieldMissed = true;
+                                                            isFolderMetadataMissing = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    if (!fieldMissed) {
+                                                        isValidated = true;
+                                                    }
+                                                } else {
+                                                    isMediaValidated = "true";
+                                                    isFolderMetadataMissing = true;
+                                                }
+                                            } else {
+                                                isMediaValidated = "notinsidemedia";
+                                                isFolderMetadataMissing = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Unable to check group the user belongs to", e);
+                }
+            %>
+
+
+
+
                 <%
 
                     if (showEdit) {
@@ -441,6 +571,7 @@ PropertiesPage
 
                         AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
                         if( StringUtils.contains(assetId ,"/content/dam") ){
+                          doneAttrs.add("isChildrenDeactivated", isChildrenDeactivated);
                           doneAttrs.add("id", "shell-propertiespage-mediaactivator");
                         } else {
                           doneAttrs.add("id", "shell-propertiespage-doneactivator");
@@ -464,7 +595,13 @@ PropertiesPage
                         saveChevronAttrs.add("aria-haspopup", true);
 
                         AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
-                        saveAttrs.add("id", "shell-propertiespage-saveactivator");
+
+                        if (StringUtils.contains(assetId, "/content/dam")) {
+                          saveAttrs.add("isChildrenDeactivated", isChildrenDeactivated);
+                          saveAttrs.add("id", "shell-propertiespage-saveactivator-media");
+                        } else {
+                          saveAttrs.add("id", "shell-propertiespage-saveactivator");
+                        }
                         saveAttrs.addClass("granite-ActionGroup-item");
                         saveAttrs.add("type", "submit");
                         saveAttrs.add("form", formId);
@@ -482,8 +619,7 @@ PropertiesPage
                                        target="_prev">
                             <coral-popover-content>
                                 <coral-buttonlist role="menu" class="granite-ActionGroup-list">
-                                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %>
-                                    </button>
+                                    <button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %></button>
                                 </coral-buttonlist>
                             </coral-popover-content>
                         </coral-popover>
@@ -495,131 +631,7 @@ PropertiesPage
                     }
                 %>
 
-                <%
-                    boolean isEntityManager = false;
-                    boolean isContributor = false;
-                    boolean isValidated = false;
-                    boolean isFolderMetadataMissing = false;
-                    boolean isAsset = false;
-                    String isMediaValidated = "false";
-                    boolean isChildrenDeactivated = true;
 
-                    boolean isProjectPublisher = false;
-                    boolean isProjectInternal = false;
-                    boolean isProjectExternal = false;
-
-                    try {
-                        if (null != auth) {
-                            Iterator<Group> projectGroups = auth.memberOf();
-                            while (projectGroups.hasNext()) {
-                                Group group = projectGroups.next();
-                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-publisher")) {
-                                    isProjectPublisher = true;
-                                }
-                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-internal-contributor")) {
-                                    isProjectInternal = true;
-                                }
-                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-external-contributor")) {
-                                    isProjectExternal = true;
-                                }
-                            }
-
-
-                            Iterator<Group> groups = auth.memberOf();
-                            while (groups.hasNext()) {
-                                Group group = groups.next();
-                                if (StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-administrator") || StringUtils.equals(auth.getID(), "admin") || StringUtils.contains(group.getID(), "project-publisher") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
-                                    if (StringUtils.isNotEmpty(assetId)) {
-                                        Resource assetResource = resourceResolver.getResource(assetId);
-                                        boolean fieldMissed = false;
-                                        if (assetResource != null && assetResource.getChild("jcr:content") != null) {
-                                            if (assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
-                                                isEntityManager = true;
-                                                if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
-                                                    isContributor = true;
-                                                }
-                                                String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
-                                                List<String> requiredFields = getRequiredMetadataFields(resourceResolver, assetSchema);
-
-                                                Iterator<Asset> mediaAssets = DamUtil.getAssets(assetResource);
-
-                                                if (!mediaAssets.hasNext()) {
-                                                    isValidated = false;
-                                                    isMediaValidated = "emptyMedia";
-                                                }
-
-                                                if (!StringUtils.equals(isMediaValidated, "emptyMedia") && assetResource.hasChildren()) {
-                                                    Iterator<Resource> children = assetResource.listChildren();
-                                                    while (children.hasNext()) {
-                                                        Resource child = children.next();
-                                                        if (DamUtil.isAsset(child)) {
-                                                            Asset asset = child.adaptTo(Asset.class);
-                                                            if (child.getChild("jcr:content").getChild("metadata") != null) {
-                                                                Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
-                                                                if(isChildrenDeactivated && (!metadata.containsKey("bnpp-internal-file-url") || StringUtils.equals(metadata.get("bnpp-internal-file-url").toString(), StringUtils.EMPTY)) &&  (!metadata.containsKey("bnpp-external-file-url") || StringUtils.equals(metadata.get("bnpp-external-file-url").toString(), StringUtils.EMPTY))){
-                                                                    isChildrenDeactivated = true;
-                                                                } else {
-                                                                    isChildrenDeactivated = false;
-                                                                }
-
-                                                                for (String field : requiredFields) {
-                                                                    if (!metadata.containsKey(field)) {
-                                                                        fieldMissed = true;
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        if (fieldMissed) {
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                                if (!fieldMissed) {
-                                                    isValidated = true;
-                                                }
-                                            } else if (StringUtils.equals(assetResource.getValueMap().get("jcr:primaryType", "false").toString(), "dam:Asset")) {
-                                                isEntityManager = true;
-                                                if (StringUtils.equals(group.getID(), "mediahub-basic-contributor")) {
-                                                    isContributor = true;
-                                                }
-                                                isAsset = true;
-
-                                                if (assetResource.getParent().getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
-                                                    ValueMap metadata = assetResource.getParent().getChild("jcr:content").getChild("metadata").getValueMap();
-                                                    if (StringUtils.equals(metadata.get("bnpp-status", "false").toString(), "validated")) {
-
-                                                        String folderSchema = DamUtil.getInheritedProperty("folderMetadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema");
-                                                        List<String> requiredFields = getRequiredMetadataFields(resourceResolver, folderSchema);
-                                                        for (String field : requiredFields) {
-                                                            if (!metadata.containsKey(field)) {
-                                                                fieldMissed = true;
-                                                                isFolderMetadataMissing = true;
-                                                                break;
-                                                            }
-                                                        }
-                                                        if (!fieldMissed) {
-                                                            isValidated = true;
-                                                        }
-                                                    } else {
-                                                        isMediaValidated = "true";
-                                                        isFolderMetadataMissing = true;
-                                                    }
-                                                } else {
-                                                    isMediaValidated = "notinsidemedia";
-                                                    isFolderMetadataMissing = true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        logger.error("Unable to check group the user belongs to", e);
-                    }
-                %>
 
 
                 <%
