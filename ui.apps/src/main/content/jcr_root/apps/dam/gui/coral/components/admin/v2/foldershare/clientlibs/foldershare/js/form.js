@@ -85,6 +85,28 @@
         return isValid;
     }
 
+    function saveMetadataChangesWithoutValidation(e) {
+
+            var wizard = $("form#folder-settings-form")[0];
+            var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+            var hintFields = createHintFields(false, false);
+            $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+                // submit the form after cug policy is applied to folder
+                $.DAM.FolderShare.submit(wizard, hintFields);
+            });
+
+            if ($("#collection-modifieddate").length) {
+                $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+            }
+
+            createNewTags($("form.data-fields.active")).done(function() {
+                addRating();
+            }).fail(function(response) {
+                showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
+            });
+    }
+
     function saveMetadataChanges(e) {
         // @see CQ-29669 Don't validate for bulkeditor
         if (!validateRequiredFields()) {
@@ -178,6 +200,17 @@
 
     $(document).on("click", "#shell-propertiespage-saveactivator, #shell-propertiespage-doneactivator", function(e) {
         saveMetadataChanges(e);
+        return false;
+    });
+
+    $(document).on("click", "#shell-propertiespage-mediaactivator, #shell-propertiespage-saveactivator-media", function(e) {
+
+        if( (document.getElementById("shell-propertiespage-saveactivator-media").getAttribute("isChildrenDeactivated") !== null) && (document.getElementById("shell-propertiespage-saveactivator-media").getAttribute("isChildrenDeactivated") !== "true") ){
+          deactivateChildren();
+        } else {
+          saveMetadataChangesWithoutValidation(e);
+        }
+        alert("Testing");
         return false;
     });
 
