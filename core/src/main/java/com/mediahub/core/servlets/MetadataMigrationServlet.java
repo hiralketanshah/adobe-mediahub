@@ -68,9 +68,11 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
   private void migrateMetadataDetails(SlingHttpServletRequest request,
       Map<String, List<String>> assets, List<Object> propertyNames, String folderMetadataSchema,
       String assetPath) throws PersistenceException {
-    if(StringUtils.equals(assetPath, ASSET_PATH)){
-      extractExcelHeaders(assets, propertyNames, assetPath);
-    } else {
+    if(propertyNames.isEmpty()){
+      extractExcelHeaders(assets, propertyNames, "assetPath");
+    }
+
+    if (!StringUtils.equals(assetPath, ASSET_PATH)) {
       Resource asset = request.getResourceResolver().getResource(assetPath);
       ModifiableValueMap contentValueMap = null;
       if(null != asset && asset.getChild(JcrConstants.JCR_CONTENT) != null ){
@@ -137,6 +139,8 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
       if (propertyNames.get(index) instanceof String){
         if(StringUtils.equals(propertyNames.get(index).toString(), JcrConstants.JCR_TITLE)){
           contentValueMap.put(propertyNames.get(index).toString(), propertyValues.get(index));
+        } else if(StringUtils.equals(propertyNames.get(index).toString(), "bnpp-media")){
+          modifiableValueMap.put(propertyNames.get(index).toString(), propertyValues.get(index).toLowerCase());
         } else if(StringUtils.contains(propertyNames.get(index).toString(), "Date:")) {
           try {
             Calendar cal = Calendar. getInstance();
@@ -194,7 +198,10 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
         for (int index = 1; index < details.length; index++) {
           values.add(details[index]);
         }
-        assets.put(details[0], values);
+        if(details.length > 0){
+          assets.put(details[0], values);
+        }
+
       }
     }
 
