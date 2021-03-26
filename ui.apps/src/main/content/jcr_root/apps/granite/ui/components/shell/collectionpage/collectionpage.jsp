@@ -737,7 +737,10 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
 
                                     cmp.include(item, new Tag(createAttrs));
                                 } else {
-                                    %><sling:include resource="<%= item %>" /><%
+                                    AttrBuilder attrs = new AttrBuilder(request, xssAPI);
+                                    attrs.add("data-shell-collection-target", targetCollection);
+                                    attrs.add("data-shell-collectionpage-consoleid", consoleId);
+                                    cmp.include(item, new Tag(attrs));
                                 }
                             }
                         }

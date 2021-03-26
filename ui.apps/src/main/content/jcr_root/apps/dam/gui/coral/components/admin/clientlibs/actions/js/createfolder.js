@@ -339,7 +339,7 @@
             var isParentSourcing = false;
             if (parentOutput.hasOwnProperty("jcr:content")) {
                 if (parentOutput["jcr:content"].hasOwnProperty("sourcing")) {
-                    isParentSourcing = parentOutput["jcr:content"].hasOwnProperty("sourcing") || false;
+                    isParentSourcing = parentOutput["jcr:content"].sourcing || false;
                 }
             }
 
@@ -992,7 +992,7 @@
             var isParentSourcing = false;
             if (parentOutput.hasOwnProperty("jcr:content")) {
                 if (parentOutput["jcr:content"].hasOwnProperty("sourcing")) {
-                    isParentSourcing = parentOutput["jcr:content"].hasOwnProperty("sourcing") || false;
+                    isParentSourcing = parentOutput["jcr:content"].sourcing || false;
                 }
             }
 
