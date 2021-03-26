@@ -21,8 +21,8 @@
                   java.util.Iterator,
                   javax.servlet.http.HttpServletRequest,
                   org.apache.jackrabbit.util.Text,
-                  org.apache.commons.lang3.StringUtils,
                   org.apache.sling.commons.json.io.JSONStringer,
+                  org.apache.commons.lang3.StringUtils,
                   com.adobe.granite.ui.components.AttrBuilder,
                   com.adobe.granite.ui.components.ComponentHelper.Options,
                   com.adobe.granite.ui.components.Config,
@@ -81,6 +81,12 @@ Assets' ColumnView
        *    The item limit of the pagination.
        * id
        *    The path of the target column.
+       * sortName
+       *    The value on which layout needs to be sorted.
+       *    This is optional variable that may not be passed when resolving the URI Template.
+       * sortDir
+       *    The direction of the sorting: ``asc`` or ``desc``.
+       *    This is optional variable that may not be passed when resolving the URI Template.
        */
       - src (StringEL)
 
@@ -211,11 +217,26 @@ Assets' ColumnView
        */
       - modeGroup (String)
 
+      [granite:ColumnViewDatasource]
+
+      /**
+       * The value on which layout needs to be sorted..
+       */
+      - sortName (StringEL)
+      /**
+       * The direction of the sorting: ``asc`` or ``desc``
+       *
+       * asc
+       *    layout items to be sorted in ascending order
+       * desc
+       *    layout items to be sorted in descending order
+       */
+      - sortDir (StringEL) = "asc" < "asc", "desc"
    Example::
 
       + mycolumnview
         - sling:resourceType = "granite/ui/components/coral/foundation/columnview"
-        - src = "/a/b/c{.offset,limit}.html{+id}"
+        - src = "/a/b/c{.offset,limit}.html{+id}{?sortName,sortDir}"
         - previewSrc = "/a/b/c.preview.html{+id}"
         - path = "${requestPathInfo.suffix}"
         - loadAncestors = true
@@ -223,98 +244,105 @@ Assets' ColumnView
         + datasource
           - sling:resourceType = "my/datasource"
 ###--%><%
-/** Maximum amount of items that will be generated. It includes normal items plus placeholders. */
-final long MAX_ITEM_COUNT = 100;
+    /** Maximum amount of items that will be generated. It includes normal items plus placeholders. */
+    final long MAX_ITEM_COUNT = 100;
 
-if (!cmp.getRenderCondition(resource, false).check()) {
-    return;
-}
-
-Config cfg = cmp.getConfig();
-ExpressionHelper ex = cmp.getExpressionHelper();
-
-String src = ex.getString(cfg.get("src", String.class));
-if (src != null && src.startsWith("/")) {
-    src = request.getContextPath() + src;
-}
-
-String previewSrc = ex.getString(cfg.get("previewSrc", String.class));
-if (previewSrc != null && previewSrc.startsWith("/")) {
-    previewSrc = request.getContextPath() + previewSrc;
-}
-
-String layoutName = "foundation-layout-columnview";
-String path = ex.getString(cfg.get("path", String.class));
-Integer size = ex.get(cfg.get("size", String.class), Integer.class);
-boolean isSelectionMode = ex.getBoolean(cfg.get("selectionMode", "true"));
-String selectionCount = ex.getString(cfg.get("selectionCount", "multiple"));
-String itemResourceType = cfg.get("itemResourceType", String.class);
-
-Resource datasource = resource.getChild("datasource");
-long offset = datasource != null ? ex.get(datasource.getValueMap().get("offset", "0"), long.class) : 0;
-long totalSize = size != null && size >= MAX_ITEM_COUNT ? size : MAX_ITEM_COUNT;
-
-final Resource currentRes = resourceResolver.getResource(path);
-
-DataSource ds;
-if (size == null || size < 20 || size >= totalSize || datasource == null) {
-    ds = cmp.getItemDataSource();
-    if (size != null) {
-        totalSize = size;
+    if (!cmp.getRenderCondition(resource, false).check()) {
+        return;
     }
-} else {
-    try {
-        Resource datasourceWrapper = new LimitIncreaseDatasourceWrapper(datasource, ex, totalSize - size + 1);
-        Resource resourceWrapper = new DatasourceOverrideWrapper(resource, datasourceWrapper);
-        ds = cmp.asDataSource(datasourceWrapper, resourceWrapper);
-    } catch(Exception e) {
-        log.warn("Failed to wrap datasource for lookahead", e);
-        log.info("Fallback to non-lookahead datasource");
+
+    Config cfg = cmp.getConfig();
+    ExpressionHelper ex = cmp.getExpressionHelper();
+
+    String src = ex.getString(cfg.get("src", String.class));
+    if (src != null && src.startsWith("/")) {
+        src = request.getContextPath() + src;
+    }
+
+    String previewSrc = ex.getString(cfg.get("previewSrc", String.class));
+    if (previewSrc != null && previewSrc.startsWith("/")) {
+        previewSrc = request.getContextPath() + previewSrc;
+    }
+
+    String layoutName = "foundation-layout-columnview";
+    String path = ex.getString(cfg.get("path", String.class));
+    Integer size = ex.get(cfg.get("size", String.class), Integer.class);
+    boolean isSelectionMode = ex.getBoolean(cfg.get("selectionMode", "true"));
+    String selectionCount = ex.getString(cfg.get("selectionCount", "multiple"));
+    String itemResourceType = cfg.get("itemResourceType", String.class);
+
+    Resource datasource = resource.getChild("datasource");
+    long offset = datasource != null ? ex.get(datasource.getValueMap().get("offset", "0"), long.class) : 0;
+    long totalSize = size != null && size >= MAX_ITEM_COUNT ? size : MAX_ITEM_COUNT;
+
+    final Resource currentRes = resourceResolver.getResource(path);
+
+    String sortBy = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap()
+            .get("sortName", String.class))) : null;
+    String sortOrder = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap()
+            .get("sortDir", String.class))) : null;
+
+    DataSource ds;
+    if (size == null || size < 20 || size >= totalSize || datasource == null) {
         ds = cmp.getItemDataSource();
         if (size != null) {
             totalSize = size;
         }
+    } else {
+        try {
+            Resource datasourceWrapper = new LimitIncreaseDatasourceWrapper(datasource, ex, totalSize - size + 1);
+            Resource resourceWrapper = new DatasourceOverrideWrapper(resource, datasourceWrapper);
+            ds = cmp.asDataSource(datasourceWrapper, resourceWrapper);
+        } catch(Exception e) {
+            log.warn("Failed to wrap datasource for lookahead", e);
+            log.info("Fallback to non-lookahead datasource");
+            ds = cmp.getItemDataSource();
+            if (size != null) {
+                totalSize = size;
+            }
+        }
     }
-}
 
-Iterator<Resource> items = ds.iterator();
-Boolean hasMore = null;
+    Iterator<Resource> items = ds.iterator();
+    Boolean hasMore = null;
 
-if (size != null) {
-    ArrayList<Resource> list = new ArrayList<Resource>();
+    if (size != null) {
+        ArrayList<Resource> list = new ArrayList<Resource>();
 
-    while (items.hasNext() && list.size() < totalSize) {
-        list.add(items.next());
+        while (items.hasNext() && list.size() < totalSize) {
+            list.add(items.next());
+        }
+
+        hasMore = items.hasNext();
+        items = list.iterator();
     }
 
-    hasMore = items.hasNext();
-    items = list.iterator();
-}
+    Tag tag = cmp.consumeTag();
+    AttrBuilder attrs = tag.getAttrs();
+    cmp.populateCommonAttrs(attrs);
 
-Tag tag = cmp.consumeTag();
-AttrBuilder attrs = tag.getAttrs();
-cmp.populateCommonAttrs(attrs);
+    attrs.addClass("foundation-collection");
+    attrs.add("data-foundation-collection-id", path);
+    attrs.add("data-foundation-collection-src", src);
+    attrs.add("data-foundation-selections-mode", selectionCount);
+    attrs.add("data-foundation-mode-group", cfg.get("modeGroup", String.class));
+    attrs.add("data-foundation-collection-sortby", sortBy);
+    attrs.add("data-foundation-collection-sortorder", sortOrder);
 
-attrs.addClass("foundation-collection");
-attrs.add("data-foundation-collection-id", path);
-attrs.add("data-foundation-collection-src", src);
-attrs.add("data-foundation-selections-mode", selectionCount);
-attrs.add("data-foundation-mode-group", cfg.get("modeGroup", String.class));
+    String layoutJson = new JSONStringer()
+            .object()
+            .key("name").value(layoutName)
+            .key("limit").value(cfg.get("limit", 40))
+            .key("previewSrc").value(previewSrc)
+            .key("layoutId").value(resource.getName()) // This is used as an id to identify the layout when there are multiple layouts to represent the same collection.
+            .key("trackingFeature").value(cfg.get("trackingFeature", String.class))
+            .key("trackingElement").value(cfg.get("trackingElement", String.class))
+            .endObject()
+            .toString();
 
-String layoutJson = new JSONStringer()
-    .object()
-        .key("name").value(layoutName)
-        .key("limit").value(cfg.get("limit", 40))
-        .key("previewSrc").value(previewSrc)
-        .key("layoutId").value(resource.getName()) // This is used as an id to identify the layout when there are multiple layouts to represent the same collection.
-        .key("trackingFeature").value(cfg.get("trackingFeature", String.class))
-        .key("trackingElement").value(cfg.get("trackingElement", String.class))
-    .endObject()
-    .toString();
-
-attrs.addClass(layoutName);
-attrs.add("data-foundation-layout", layoutJson);
-attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
+    attrs.addClass(layoutName);
+    attrs.add("data-foundation-layout", layoutJson);
+    attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
 
 %><coral-columnview <%= attrs %>><%
     String rootPath = ex.getString(cfg.get("rootPath", "/"));
@@ -341,11 +369,11 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
             parentColumnAttrs.add("data-foundation-layout-columnview-lazy", true);
             parentColumnAttrs.add("data-foundation-layout-columnview-activeitem", activeId);
 
-            %><coral-columnview-column <%= parentColumnAttrs %>>
-                <coral-columnview-column-content>
-                    <coral-wait size="L" centered></coral-wait>
-                </coral-columnview-column-content>
-            </coral-columnview-column><%
+%><coral-columnview-column <%= parentColumnAttrs %>>
+    <coral-columnview-column-content>
+        <coral-wait size="L" centered></coral-wait>
+    </coral-columnview-column-content>
+</coral-columnview-column><%
         }
     }
 
@@ -367,11 +395,11 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
         rootItemAttrs.add("data-foundation-collection-item-id", rootPath);
         rootItemAttrs.addBoolean("active", true);
 
-        %><coral-columnview-column <%= rootColumnAttrs %>>
-            <coral-columnview-column-content>
-                <% cmp.include(currentRes, itemResourceType, new Options().tag(new Tag(rootItemAttrs))); %>
-            </coral-columnview-column-content>
-        </coral-columnview-column><%
+%><coral-columnview-column <%= rootColumnAttrs %>>
+    <coral-columnview-column-content>
+        <% cmp.include(currentRes, itemResourceType, new Options().tag(new Tag(rootItemAttrs))); %>
+    </coral-columnview-column-content>
+</coral-columnview-column><%
     }
 
     AttrBuilder columnAttrs = new AttrBuilder(request, xssAPI);
@@ -380,33 +408,33 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
     }
     columnAttrs.add("data-foundation-layout-columnview-hasmore", hasMore);
 
-    %><coral-columnview-column <%= columnAttrs %>><coral-columnview-column-content><%
-        for (long index = 0; items.hasNext(); index++) {
-            Resource item = items.next();
+%><coral-columnview-column <%= columnAttrs %>><coral-columnview-column-content><%
+    for (long index = 0; items.hasNext(); index++) {
+        Resource item = items.next();
 
-            AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-            itemAttrs.addClass("foundation-collection-item");
-            itemAttrs.add("data-foundation-collection-item-id", item.getPath());
-            itemAttrs.add("data-granite-collection-item-id", item.getPath());
-            itemAttrs.add("data-datasource-index", "" + (index + offset));
+        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+        itemAttrs.addClass("foundation-collection-item");
+        itemAttrs.add("data-foundation-collection-item-id", item.getPath());
+        itemAttrs.add("data-granite-collection-item-id", item.getPath());
+        itemAttrs.add("data-datasource-index", "" + (index + offset));
 
-            if(size != null && size <= index) {
-                itemAttrs.addClass("is-lazyLoaded");
-                itemAttrs.addClass("foundation-layout-columnview-item-placeholder");
-                %><coral-columnview-item <%= itemAttrs %>></coral-columnview-item><%
-            } else {
-                cmp.include(item, itemResourceType, new Options().tag(new Tag(itemAttrs)));
-            }
+        if(size != null && size <= index) {
+            itemAttrs.addClass("is-lazyLoaded");
+            itemAttrs.addClass("foundation-layout-columnview-item-placeholder");
+%><coral-columnview-item <%= itemAttrs %>></coral-columnview-item><%
+        } else {
+            cmp.include(item, itemResourceType, new Options().tag(new Tag(itemAttrs)));
         }
+    }
 
-        // Put meta element here instead of under <coral-columnview-column>,
-        // as somehow Coral is moving all the elements under <coral-columnview-column> to be under <coral-columnview-column-content>
-        // even though <coral-columnview-column-content> is already given.
-        String metaRT = cfg.get("metaResourceType", String.class);
-        if (currentRes != null && metaRT != null) {
-            %><sling:include resource="<%= currentRes %>" resourceType="<%= metaRT %>" /><%
-        }
-    %></coral-columnview-column-content>
+    // Put meta element here instead of under <coral-columnview-column>,
+    // as somehow Coral is moving all the elements under <coral-columnview-column> to be under <coral-columnview-column-content>
+    // even though <coral-columnview-column-content> is already given.
+    String metaRT = cfg.get("metaResourceType", String.class);
+    if (currentRes != null && metaRT != null) {
+%><sling:include resource="<%= currentRes %>" resourceType="<%= metaRT %>" /><%
+    }
+%></coral-columnview-column-content>
     <div class="granite-collection-loading-title-wrapper">
         <div class="granite-collection-loading-title">
             <div class="granite-collection-loading-container">
@@ -415,7 +443,7 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
             </div>
         </div>
     </div>
-    </coral-columnview-column>
+</coral-columnview-column>
 </coral-columnview>
 <div class="granite-collection-loading-title-wrapper">
     <div class="granite-collection-loading-title">
@@ -459,18 +487,18 @@ attrs.add("selectionmode", isSelectionMode ? selectionCount : "none");
 %>
 
 <%
-if(StringUtils.contains(path, "/content/dam/medialibrary") ){
-    %>
+    if(StringUtils.contains(path, "/content/dam/medialibrary") ){
+%>
 <script>
 
-     $(".foundation-layout-panel-bodywrapper").css('background-color','#bfe4d6');
+    $(".foundation-layout-panel-bodywrapper").css('background-color','#bfe4d6');
 </script>
 <%
 }else{
-    %>
+%>
 <script>
- 	 $(".foundation-layout-panel-bodywrapper").css('background-color','');
+    $(".foundation-layout-panel-bodywrapper").css('background-color','');
 </script>
 <%
-}
+    }
 %>

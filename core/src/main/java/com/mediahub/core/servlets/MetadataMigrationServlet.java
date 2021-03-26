@@ -40,6 +40,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
 
   private static final long serialVersionUID = 1L;
   public static final String ASSET_PATH = "assetPath";
+  public static final String DATE = "Date:";
 
   @Override
   protected void doPost(final SlingHttpServletRequest request,
@@ -68,10 +69,19 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
   private void migrateMetadataDetails(SlingHttpServletRequest request,
       Map<String, List<String>> assets, List<Object> propertyNames, String folderMetadataSchema,
       String assetPath) throws PersistenceException {
-    if(StringUtils.equals(assetPath, ASSET_PATH)){
-      extractExcelHeaders(assets, propertyNames, assetPath);
-    } else {
-      Resource asset = request.getResourceResolver().getResource(assetPath);
+    if(propertyNames.isEmpty()){
+      extractExcelHeaders(assets, propertyNames, ASSET_PATH);
+    }
+
+    if (!StringUtils.equals(assetPath, ASSET_PATH)) {
+      Resource asset = null;
+
+      if(StringUtils.contains(assetPath, "à")){
+        asset = request.getResourceResolver().getResource(StringUtils.replace(assetPath, "à", "�"));
+      } else {
+        asset = request.getResourceResolver().getResource(assetPath);
+      }
+
       ModifiableValueMap contentValueMap = null;
       if(null != asset && asset.getChild(JcrConstants.JCR_CONTENT) != null ){
         Resource content  = asset.getChild(JcrConstants.JCR_CONTENT);
@@ -137,12 +147,14 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
       if (propertyNames.get(index) instanceof String){
         if(StringUtils.equals(propertyNames.get(index).toString(), JcrConstants.JCR_TITLE)){
           contentValueMap.put(propertyNames.get(index).toString(), propertyValues.get(index));
-        } else if(StringUtils.contains(propertyNames.get(index).toString(), "Date:")) {
+        } else if(StringUtils.equals(propertyNames.get(index).toString(), "bnpp-media")){
+          modifiableValueMap.put(propertyNames.get(index).toString(), propertyValues.get(index).toLowerCase());
+        } else if(StringUtils.contains(propertyNames.get(index).toString(), DATE)) {
           try {
             Calendar cal = Calendar. getInstance();
             Date date = new SimpleDateFormat("dd-MM-yyyy").parse(propertyValues.get(index));
             cal.setTime(date);
-            modifiableValueMap.put( StringUtils.replace(propertyNames.get(index).toString(), "Date:", StringUtils.EMPTY), cal );
+            modifiableValueMap.put( StringUtils.replace(propertyNames.get(index).toString(), DATE, StringUtils.EMPTY), cal );
           } catch (ParseException e) {
             LOGGER.error("Error while parsing Date", e);
           }
@@ -170,7 +182,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
         if(StringUtils.contains(values[1], "multi")){
           propertyNames.add(new String[] {values[0]});
         } else if(StringUtils.contains(values[1], "Date")){
-          propertyNames.add("Date:" + values[0]);
+          propertyNames.add(DATE + values[0]);
         } else {
           propertyNames.add(values[0]);
         }
@@ -189,12 +201,15 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
     try (BufferedReader br = new BufferedReader(new InputStreamReader(request.getRequestParameter("file").getInputStream()))) {
       String line;
       while (null != (line = br.readLine())) {
-        String[] details = line.split(",");
+        String[] details = line.split("\\|");
         List<String> values = new ArrayList<>();
         for (int index = 1; index < details.length; index++) {
           values.add(details[index]);
         }
-        assets.put(details[0], values);
+        if(details.length > 0){
+          assets.put(details[0], values);
+        }
+
       }
     }
 

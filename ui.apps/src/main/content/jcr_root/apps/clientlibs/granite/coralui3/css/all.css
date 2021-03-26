@@ -14918,31 +14918,6 @@ coral-popover-content {
   background-clip: padding-box;
 }
 
-.coral3-Tag:after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  visibility: visible;
-  -webkit-transition-delay: 0;
-  -moz-transition-delay: 0;
-  -o-transition-delay: 0;
-  -ms-transition-delay: 0;
-  transition-delay: 0;
-}
-
-.coral3-Tag:hover:after {
-  visibility: hidden;
-  -webkit-transition: visibility 50ms step-end;
-  -moz-transition: visibility 50ms step-end;
-  -o-transition: visibility 50ms step-end;
-  -ms-transition: visibility 50ms step-end;
-  transition: visibility 50ms step-end;
-}
-
 coral-tag-label {
   font-size: .8125rem;
   line-height: .9375rem;
@@ -14998,12 +14973,15 @@ coral-tag-label {
   color: #fff;
 }
 
+.coral3-Tag--red {
+  color: #232323;
+}
+
 .coral3-Tag--lightblue,
 .coral3-Tag--periwinkle,
 .coral3-Tag--plum,
 .coral3-Tag--fuchsia,
 .coral3-Tag--magenta,
-.coral3-Tag--red,
 .coral3-Tag--orange,
 .coral3-Tag--tangerine,
 .coral3-Tag--yellow,
@@ -20388,21 +20366,54 @@ coral-shell-help-separator {
   -webkit-align-items: center;
   align-items: center;
   padding: 1rem 0;
+  position: relative;
   text-decoration: none;
-  color: rgba(133,133,133,0.8);
+  color: #858585;
   font-size: 1rem;
   width: 100%;
+}
+
+.coral3-Shell-solution:before {
+  content: '';
+}
+
+.coral3-Shell-solution:focus {
+  outline: none;
+  color: #fff;
+  z-index: 1;
+}
+
+.coral3-Shell-solution:focus coral-shell-solution-label {
+  text-decoration: underline;
+}
+
+.coral3-Shell-solution:focus.is-focused:before {
+  position: absolute;
+  top: 0;
+  left: -8px;
+  bottom: 0;
+  right: 0;
+  border-radius: 4px;
+  outline: none;
+  -webkit-box-shadow: 0 0 .1875rem #87beff;
+  box-shadow: 0 0 .1875rem #87beff;
+  border: .0625rem solid #87beff;
 }
 
 .coral3-Shell-solution:hover {
   color: #fff;
 }
 
+.coral3-Shell-solution:hover coral-shell-solution-label {
+  text-decoration: underline;
+}
+
 .coral3-Shell-solution--linked {
   color: rgba(226,226,226,0.8);
 }
 
-.coral3-Shell-solution--linked:hover .coral3-Shell-solution-icon {
+.coral3-Shell-solution--linked:hover .coral3-Shell-solution-icon,
+.coral3-Shell-solution--linked:focus .coral3-Shell-solution-icon {
   -webkit-transform: scale(1.2);
   -moz-transform: scale(1.2);
   -o-transform: scale(1.2);
@@ -20460,12 +20471,12 @@ coral-shell-solution-label {
 }
 
 .coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type) {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: box;
-  display: flex;
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
   height: auto;
   width: auto;
   padding: 0;
@@ -20473,7 +20484,8 @@ coral-shell-solution-label {
   text-align: left;
 }
 
-.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):hover .coral3-Shell-solution-icon {
+.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):hover .coral3-Shell-solution-icon,
+.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):focus .coral3-Shell-solution-icon {
   -webkit-transform: scale(1);
   -moz-transform: scale(1);
   -o-transform: scale(1);
@@ -20481,8 +20493,10 @@ coral-shell-solution-label {
   transform: scale(1);
 }
 
-.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):hover coral-shell-solution-label {
+.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):hover coral-shell-solution-label,
+.coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type):focus coral-shell-solution-label {
   color: #fff;
+  text-decoration: underline;
 }
 
 .coral3-Shell-solutions--secondary .coral3-Shell-solution:not(:first-of-type) coral-shell-solution-label {
