@@ -418,7 +418,9 @@
         if (ui !== undefined) {
             ui.wait();
         }
-        if (location.search === undefined || location.search === "") {
+        if (simpleSave) {
+            window.location.reload();
+        } else if (location.search === undefined || location.search === "") {
             // Send user back to last page if its a POST request
             window.location = $("#shell-propertiespage-closeactivator")[0].href;
         } else {

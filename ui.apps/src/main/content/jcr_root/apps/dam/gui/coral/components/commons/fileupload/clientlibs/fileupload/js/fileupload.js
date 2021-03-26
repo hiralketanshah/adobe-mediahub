@@ -412,10 +412,14 @@
                     if (($(this.parentElement.previousElementSibling).find("#applyToAll").length &&
                         $(this.parentElement.previousElementSibling).find("#applyToAll")[0].checked) ||
                         self.duplicateAssets.length === 1) {
+                        for (var i = 0; i < self.duplicateAssets.length; i++) {
+                            self._initiateWorkflow(self.duplicateAssets[i][0]);
+                        }
                         self._cleanupAfterDeletingDuplicates();
                     } else {
                         // remove duplicates[0]
-                        self.duplicateAssets.splice(0, 1);
+                        var duplicateAssets = self.duplicateAssets.splice(0, 1);
+                        self._initiateWorkflow(duplicateAssets[0][0]);
                         self._detectDuplicateAssets(event);
                         // self._refresh(event);
                     }
@@ -537,6 +541,18 @@
             } else {
                 location.reload();
             }
+        },
+        _initiateWorkflow: function(assetPath) {
+            // making dummy update in asset to initiate set workflow(s)
+            Granite.$.ajax({
+                async: false,
+                url: assetPath + "/jcr:content/renditions/original/jcr:content",
+                type: "POST",
+                data: {
+                    "_charset_": "UTF-8",
+                    "jcr:mixinTypes": "mix:title"
+                }
+            });
         },
         _cleanupAfterRestrictedAssets: function(event) {
             var contentApi = $(".foundation-content").adaptTo(

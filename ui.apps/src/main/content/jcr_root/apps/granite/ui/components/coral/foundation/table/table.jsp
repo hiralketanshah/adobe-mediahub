@@ -79,6 +79,8 @@ Table
        *    The item offset of the current request.
        * limit
        *    The item limit of the pagination.
+       * size
+       *    The actual number items to be included(excluding placeholder)
        * id
        *    The id of the collection (:doc:`[data-foundation-collection-id] </jcr_root/libs/granite/ui/components/coral/foundation/clientlibs/foundation/vocabulary/collection>`).
        * sortName
@@ -88,7 +90,7 @@ Table
        *    The direction of the sorting: ``asc`` or ``desc``.
        *    This is optional variable that may not be passed when resolving the URI Template.
        *
-       * e.g. ``/a/b/c{.offset,limit}.html{+id}{?sortName,sortDir}``
+       * e.g. ``/a/b/c{.offset,limit,size}.html{+id}{?sortName,sortDir}``
        */
       - src (StringEL)
 
@@ -305,6 +307,24 @@ Table
       - sortType (String) = 'alphanumeric' < 'alphanumeric', 'number', 'date', 'custom'
 
 
+      [granite:TableDatasource]
+
+      /**
+       * The value on which layout needs to be sorted..
+       */
+      - sortName (StringEL)
+
+      /**
+       * The direction of the sorting: ``asc`` or ``desc``
+       *
+       * asc
+       *    layout items to be sorted in ascending order
+       * desc
+       *    layout items to be sorted in descending order
+       */
+      - sortDir (StringEL) = "asc" < "asc", "desc"
+
+
    **Item Markup**
 
    Each item (the row) needs to render the markup of ``Coral.Table.Row``:
@@ -338,7 +358,7 @@ Table
 
       + mytable
         - sling:resourceType = "granite/ui/components/coral/foundation/table"
-        - src = "/a/b/c{.offset,limit}.html{+id}{?sortName,sortDir}"
+        - src = "/a/b/c{.offset,limit,size}.html{+id}{?sortName,sortDir}"
         - rowReorderAction = "/reorder{?item,before}"
         + columns
           + select
@@ -352,8 +372,7 @@ Table
         + datasource
           - sling:resourceType = "my/datasource"
 ###--%><%
-    /** Maximum amount of items that will be generated. It includes normal items plus placeholders. */
-    final long MAX_ITEM_COUNT = 100;
+    final long DEFAULT_PAGINATION_LIMIT = 100;
 
     final Logger logger = LoggerFactory.getLogger("libs.granite.ui.components.coral.foundation.table");
 
@@ -378,13 +397,27 @@ Table
 
     String layoutName = "foundation-layout-table";
     String path = StringUtils.trimToNull(ex.getString(cfg.get("path", String.class)));
-    Integer size = ex.get(cfg.get("size", String.class), Integer.class);
     String selectionCount = ex.getString(cfg.get("selectionCount", "multiple"));
     String itemResourceType = cfg.get("itemResourceType", String.class);
 
     Resource datasource = resource.getChild("datasource");
+    Integer size = ex.get(cfg.get("size", String.class), Integer.class);
+    Long limit = ex.get(cfg.get("limit", String.class), Long.class);
     long offset = datasource != null ? ex.get(datasource.getValueMap().get("offset", "0"), long.class) : 0;
-    long totalSize = size != null && size >= MAX_ITEM_COUNT ? size : MAX_ITEM_COUNT;
+
+
+//Below statement for BC
+    long totalSize = limit != null && limit >= DEFAULT_PAGINATION_LIMIT ? limit : DEFAULT_PAGINATION_LIMIT;
+    totalSize = size != null && size >= totalSize ? size : totalSize;
+
+    String sortBy = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap()
+            .get("sortName", String.class))) : null;
+    String sortOrder = datasource != null ? StringUtils.trimToNull(ex.getString(datasource.getValueMap()
+            .get("sortDir", String.class))) : null;
+
+// For backward compatibility
+    sortBy = sortBy != null ? sortBy : request.getParameter("sortName");
+    sortOrder = sortOrder!= null ? sortOrder : request.getParameter("sortDir");
 
     DataSource ds;
     if (size == null || size < 20 || size >= totalSize || datasource == null) {
@@ -398,7 +431,7 @@ Table
             Resource resourceWrapper = new DatasourceOverrideWrapper(resource, datasourceWrapper);
             ds = cmp.asDataSource(datasourceWrapper, resourceWrapper);
         } catch (Exception e) {
-            logger.warn("Failed to wrap datasource for lookahead", e);
+            logger.debug("Failed to wrap datasource for lookahead {}", e);
             logger.info("Fallback to non-lookahead datasource");
             ds = cmp.getItemDataSource();
             if (size != null) {
@@ -437,11 +470,14 @@ Table
     attrs.add("data-foundation-collection-src", src);
     attrs.add("data-foundation-selections-mode", selectionCount);
     attrs.add("data-foundation-mode-group", cfg.get("modeGroup", String.class));
+    attrs.add("data-foundation-collection-sortby", sortBy);
+    attrs.add("data-foundation-collection-sortorder", sortOrder);
 
     String layoutJson = new JSONStringer()
             .object()
             .key("name").value(layoutName)
-            .key("limit").value(cfg.get("limit", 40))
+            .key("limit").value(limit != null ? limit : 40)
+            .key("size").value(size)
             .key("sortMode").value(cfg.get("sortMode", String.class))
             .key("rowReorderAction").value(rowReorderAction)
             .key("layoutId").value(resource.getName()) // This is used as an id to identify the layout when there are multiple layouts to represent the same collection.

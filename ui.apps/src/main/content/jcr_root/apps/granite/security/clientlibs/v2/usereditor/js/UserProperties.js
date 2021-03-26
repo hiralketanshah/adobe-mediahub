@@ -83,11 +83,16 @@
 
             //store the name of the user that was successfully modified and redirect to the main user list
             sessionStorage.setItem("modifiedAuthorizable", authorizableId);
-            window.location.href = document.referrer ? document.referrer : CUI.AuthorizableUtils.USER_MAIN_LIST_PATH;
+            var doneActivator = document.querySelector("#shell-propertiespage-doneactivator");
+            if (doneActivator) {
+                window.location.href = doneActivator.dataset.graniteFormSaveactivatorHref;
+            } else {
+                window.location.href = document.referrer ? document.referrer : CUI.AuthorizableUtils.USER_MAIN_LIST_PATH;
+            }
         } else {
             $(window).adaptTo('foundation-ui').notify('',
                 Granite.I18n.get("You have successfully saved changes to user {0}", _g.XSS.getXSSValue(authorizableId)),
-                    'success');
+                'success');
         }
     }
 
