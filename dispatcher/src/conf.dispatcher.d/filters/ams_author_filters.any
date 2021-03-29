@@ -18,4 +18,9 @@
 #Asset download defaults to deny but can be allowed in /etc/httpd/conf.d/variables/ams_default.vars
 /0070 { /type "${ASSET_DOWNLOAD_RULE}" /method "GET" /url "*.assetdownload.zip/assets.zip*" }
 
+/0080 { /type "deny" /method "GET" /url "*" /extension '(jsp|config)' }
+/0081 { /type "deny" /path "*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
+/0082 { /type "allow" /path "/content/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
+/0083 { /type "deny" /path "/bin/querybuilder" }
+
 
