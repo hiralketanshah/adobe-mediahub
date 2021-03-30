@@ -1,6 +1,11 @@
 package com.mediahub.core.servlets;
 
+import static com.adobe.xfa.STRS.COMMA;
+
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.tagging.InvalidTagFormatException;
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
 import com.mediahub.core.constants.BnpConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,6 +13,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -41,6 +47,8 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
   private static final long serialVersionUID = 1L;
   public static final String ASSET_PATH = "assetPath";
   public static final String DATE = "Date:";
+  public static final String KEYWORDS = "keywords";
+  public static final String MULTI = "multi";
 
   @Override
   protected void doPost(final SlingHttpServletRequest request,
@@ -162,10 +170,56 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
           modifiableValueMap.put(propertyNames.get(index).toString(), propertyValues.get(index));
         }
       } else {
-        modifiableValueMap.put( ((String[])propertyNames.get(index))[0], new String[] {propertyValues.get(index)});
+        setMultiValueProperty(request, propertyNames, modifiableValueMap, propertyValues, index);
       }
     }
     request.getResourceResolver().commit();
+  }
+
+  /**
+   * Method to add mutivalue property separated by comma
+   *
+   * @param propertyNames
+   * @param modifiableValueMap
+   * @param propertyValues
+   * @param index
+   */
+  private void setMultiValueProperty(SlingHttpServletRequest request, List<Object> propertyNames,
+      ModifiableValueMap modifiableValueMap, List<String> propertyValues, int index) {
+
+    String propertyName = ((String[])propertyNames.get(index))[0];
+
+    if(StringUtils.equals(propertyName, KEYWORDS)){
+      createKeywordTags(request, propertyValues, index);
+    }
+
+    if(propertyValues.get(index).contains(COMMA)){
+      List<String> multiValueList = Arrays.asList(propertyValues.get(index).split(COMMA));
+      modifiableValueMap.put(propertyName, multiValueList.toArray(new String[multiValueList.size()])) ;
+    } else {
+      modifiableValueMap.put(propertyName, new String[] {propertyValues.get(index)});
+    }
+  }
+
+  private void createKeywordTags(SlingHttpServletRequest request, List<String> propertyValues,
+      int index) {
+    TagManager tagManager =request.getResourceResolver().adaptTo(TagManager.class);
+    for(String value : propertyValues.get(index).split(COMMA)){
+      if(null == tagManager.resolveByTitle(value)){
+        Tag mediahub = tagManager.resolve("/content/cq:tags/mediahub");
+        if(null != mediahub ) {
+          Tag keywords = tagManager.resolve("/content/cq:tags/mediahub/keywords");
+          if(null == keywords){
+            keywords = tagManager.resolve("/content/cq:tags/mediahub/keywords");
+          }
+          try {
+            tagManager.createTag(keywords.getPath() + "/" + value, value, value,true);
+          } catch (InvalidTagFormatException e) {
+            LOGGER.error("Error while creating tags",e);
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -175,22 +229,26 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
    */
   private void extractExcelHeaders(Map<String, List<String>> assets, List<Object> propertyNames,
       String assetPath) {
-    List<String> namesWithType = assets.get(assetPath);
-    for(String name : namesWithType){
-      if(name.contains("{{")){
-        String values[] = name.split("\\{\\{");
-        if(StringUtils.contains(values[1], "multi")){
-          propertyNames.add(new String[] {values[0]});
-        } else if(StringUtils.contains(values[1], "Date")){
-          propertyNames.add(DATE + values[0]);
-        } else {
-          propertyNames.add(values[0]);
+    List<String> namesWithType = assets.containsKey(assetPath) ? assets.get(assetPath) : Collections.emptyList();
+
+      for(String name : namesWithType){
+        if(name.contains("{{")){
+          String values[] = name.split("\\{\\{");
+          if(StringUtils.contains(values[1], MULTI)){
+            propertyNames.add(new String[] {values[0]});
+          } else if(StringUtils.contains(values[1], "Date")){
+            propertyNames.add(DATE + values[0]);
+          } else {
+            propertyNames.add(values[0]);
+          }
         }
       }
-    }
+
   }
 
   /**
+   * To get the asset data from excel
+   *
    * @param request 
    * @return
    * @throws IOException
