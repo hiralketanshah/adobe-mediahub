@@ -47,7 +47,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
   private static final long serialVersionUID = 1L;
   public static final String ASSET_PATH = "assetPath";
   public static final String DATE = "Date:";
-  public static final String KEYWORDS = "keywords";
+  public static final String KEYWORDS = "bnpp-keywords";
   public static final String MULTI = "multi";
 
   @Override
@@ -188,21 +188,25 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
       ModifiableValueMap modifiableValueMap, List<String> propertyValues, int index) {
 
     String propertyName = ((String[])propertyNames.get(index))[0];
-
+    List<String> keywordTagIdList = null;
     if(StringUtils.equals(propertyName, KEYWORDS)){
-      createKeywordTags(request, propertyValues, index);
-    }
-
-    if(propertyValues.get(index).contains(COMMA)){
-      List<String> multiValueList = Arrays.asList(propertyValues.get(index).split(COMMA));
-      modifiableValueMap.put(propertyName, multiValueList.toArray(new String[multiValueList.size()])) ;
+      keywordTagIdList = createKeywordTags(request, propertyValues, index);
+      if(!keywordTagIdList.isEmpty()){
+        modifiableValueMap.put(propertyName, keywordTagIdList.toArray(new String[keywordTagIdList.size()]));
+      }
     } else {
-      modifiableValueMap.put(propertyName, new String[] {propertyValues.get(index)});
+      if(propertyValues.get(index).contains(COMMA)){
+        List<String> multiValueList = Arrays.asList(propertyValues.get(index).split(COMMA));
+        modifiableValueMap.put(propertyName, multiValueList.toArray(new String[multiValueList.size()]));
+      } else {
+        modifiableValueMap.put(propertyName, new String[] {propertyValues.get(index)});
+      }
     }
   }
 
-  private void createKeywordTags(SlingHttpServletRequest request, List<String> propertyValues,
+  private List<String> createKeywordTags(SlingHttpServletRequest request, List<String> propertyValues,
       int index) {
+    List<String> keywordTagIdList  = new ArrayList<>();
     TagManager tagManager =request.getResourceResolver().adaptTo(TagManager.class);
     for(String value : propertyValues.get(index).split(COMMA)){
       if(null == tagManager.resolveByTitle(value)){
@@ -213,13 +217,15 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
             keywords = tagManager.resolve("/content/cq:tags/mediahub/keywords");
           }
           try {
-            tagManager.createTag(keywords.getPath() + "/" + value, value, value,true);
+            Tag keywordTag = tagManager.createTag(keywords.getPath() + "/" + value, value, value,true);
+            keywordTagIdList.add(keywordTag.getTagID());
           } catch (InvalidTagFormatException e) {
             LOGGER.error("Error while creating tags",e);
           }
         }
       }
     }
+    return keywordTagIdList;
   }
 
   /**
