@@ -231,12 +231,17 @@
                 appendModeEnabled = true;
             }
             if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-                if(saveMetadataChanges(e)){
-                  internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                }
+                  var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
+                  if (isValidated && isValidated === 'true') {
+                      if(saveMetadataChanges(e)){
+                        internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                      }
+                  } else {
+                      internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                  }
             }
             return false;
-        });
+    });
 
     $(document).on("click", "#shell-propertiespage-mediaactivator", function(e) {
         if (e.currentTarget.id === "shell-propertiespage-mediaactivator") {

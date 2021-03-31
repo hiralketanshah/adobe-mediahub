@@ -888,68 +888,66 @@ PropertiesPage
    }
 
     function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
-
-        if (isValidated && isValidated === 'true') {
-            $.ajax({
-                type: "POST",
-                url: "/etc/workflow/instances",
-                data: data,
-                async: true,
-                cache: false,
-                success: function (response) {
-                    if (response) {
-                        var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
-                    }
-                }
-            }).done(function (html) {
-                var ui = $(window).adaptTo("foundation-ui");
-                successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
-                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
-                    text: Granite.I18n.get("OK"),
-                    primary: true,
-                    handler: function () {
-                        location.href =
-                            $(".foundation-backanchor").attr("href");
-                    }
-                }]);
-            });
-        } else {
-            event.preventDefault();
-            var alertdialog = new Coral.Dialog().set({
-                id: "demoDialog",
-                header: {
-                    innerHTML: '<%= i18n.get("Asset is Missing Required fields") %>'
-                },
-                content: {
-                    innerHTML: '<%= i18n.get("The Required Metadata fields are not authored in Asset") %>'
-                },
-                footer: {
-                    innerHTML: "<button is=\"coral-button\" variant=\"primary\" coral-close=\"\">Ok</button>"
-                },
-                backdrop: "static"
-            });
-
-            if (isFolderMetadataMissing || isFolderMetadataMissing === "true") {
-
-                if (isMediaValidated === "true") {
-                    alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
-                    alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
-                } else if (isMediaValidated === "emptyMedia") {
-                    alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
-                    alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
-                } else if (isMediaValidated === "notinsidemedia") {
-                    alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be inside a media")) %>'
-                    alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be in a media to be published")) %>'
-                } else {
-                    alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Folder Metadata Missing")) %>'
-                    alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Folder Metadata Missing")) %>'
+        $.ajax({
+            type: "POST",
+            url: "/etc/workflow/instances",
+            data: data,
+            async: true,
+            cache: false,
+            success: function (response) {
+                if (response) {
+                    var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
                 }
             }
+        }).done(function (html) {
+            var ui = $(window).adaptTo("foundation-ui");
+            successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+            ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                text: Granite.I18n.get("OK"),
+                primary: true,
+                handler: function () {
+                    location.href =
+                        $(".foundation-backanchor").attr("href");
+                }
+            }]);
+        });
+    }
 
-            document.body.appendChild(alertdialog);
-            alertdialog.show();
-            event.stopPropagation();
+    function internalPublishErrorMessage(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
+        event.preventDefault();
+        var alertdialog = new Coral.Dialog().set({
+            id: "demoDialog",
+            header: {
+                innerHTML: '<%= i18n.get("Asset is Missing Required fields") %>'
+            },
+            content: {
+                innerHTML: '<%= i18n.get("The Required Metadata fields are not authored in Asset") %>'
+            },
+            footer: {
+                innerHTML: "<button is=\"coral-button\" variant=\"primary\" coral-close=\"\">Ok</button>"
+            },
+            backdrop: "static"
+        });
+
+        if (isFolderMetadataMissing || isFolderMetadataMissing === "true") {
+
+            if (isMediaValidated === "true") {
+                alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
+                alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Media Folder is not validated")) %>'
+            } else if (isMediaValidated === "emptyMedia") {
+                alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
+                alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Cannot publish an empty media")) %>'
+            } else if (isMediaValidated === "notinsidemedia") {
+                alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be inside a media")) %>'
+                alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Asset must be in a media to be published")) %>'
+            } else {
+                alertdialog.header.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Folder Metadata Missing")) %>'
+                alertdialog.content.innerHTML = '<%= xssAPI.encodeForHTML(i18n.get("Folder Metadata Missing")) %>'
+            }
         }
+
+        document.body.appendChild(alertdialog);
+        alertdialog.show();
     }
 </script>
 </html>

@@ -198,7 +198,12 @@
         if(!validateBnppStatus() && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") !== null) && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") !== "true") ){
           deactivateChildren();
         } else if(saveMediaMetadataChanges(e)){
-          internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+          var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
+          if (isValidated && isValidated === 'true') {
+                internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+          } else {
+              internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+          }
         }
         return false;
     });
