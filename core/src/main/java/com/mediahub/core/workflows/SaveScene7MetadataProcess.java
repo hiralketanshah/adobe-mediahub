@@ -39,6 +39,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
     public static final String BNPP_EXTERNAL_BROADCAST_URL = "bnpp-external-broadcast-url";
     public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-url";
     public static final String IS_CONTENT = "is/content/";
+    public static final String S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET = "s7viewers/html5/VideoViewer.html?asset=";
 
     @Reference
     ResourceResolverFactory resolverFactory;
@@ -69,13 +70,14 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
                 if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.toString())) {
                     String file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + "s7viewers/html5/VideoViewer.html?asset=" + URIUtil.encodePath(modifiableValueMap.get(
+                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET
+                        + URIUtil.encodePath(modifiableValueMap.get(
                         DAM_SCENE_7_FILE, StringUtils.EMPTY)));
                     modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                     setMediumHighDefinitionAssetUrls(resourceResolver, modifiableValueMap, domain);
                 } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.MASTER_VIDEO.toString())) {
                     String file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + "s7viewers/html5/VideoViewer.html?asset=" + URIUtil.encodePath(modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY)));
+                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil.encodePath(modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY)));
                     modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                     setMediumHighDefinitionAssetUrls(resourceResolver, modifiableValueMap, domain);
                 } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.IMAGE.toString())){
@@ -118,12 +120,12 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 for (Scene7Asset asset : subAssets) {
                     if (asset.getHeight() == 388) {
                         modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-md",
-                            domain + "s7viewers/html5/VideoViewer.html?asset=" + URIUtil
+                            domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil
                                 .encodePath(asset.getFolder() + asset.getFolder()));
                     }
                     if (asset.getHeight() == 720) {
                         modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-hd",
-                            domain + "s7viewers/html5/VideoViewer.html?asset=" + URIUtil
+                            domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil
                                 .encodePath(asset.getFolder() + asset.getFileName()));
                     }
                 }
