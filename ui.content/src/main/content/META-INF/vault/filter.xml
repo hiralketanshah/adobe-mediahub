@@ -23,7 +23,6 @@
     <filter root="/etc/languages"/>
    <!-- <filter root="/conf/global/settings/dam/search/facets/assets"/>  -->
     <filter root="/conf/global/settings/workflow/models/mediahub/external-user-creation"/>
-    <filter root="/conf/global/settings/cloudconfigs/dmscene7" mode="update"/>
     <filter root="/var/workflow/models/mediahub/external-user-creation"/>
     <filter root="/var/workflow/models/mediahub" mode="update"/>
     <filter root="/etc/mediahub"/>
