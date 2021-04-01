@@ -26,7 +26,10 @@
                   com.adobe.granite.ui.components.ComponentHelper.Options,
                   com.adobe.granite.ui.components.Config,
                   com.adobe.granite.ui.components.ds.DataSource,
-                  com.adobe.granite.ui.components.Tag" %><%--###
+                  com.adobe.granite.ui.components.Tag,
+                  org.apache.sling.api.resource.ValueMap,
+                  java.util.Map,
+                  org.apache.sling.api.resource.ResourceResolver" %><%--###
 Masonry
 =======
 
@@ -541,6 +544,7 @@ Masonry
 
 
 <script>
+
 <%
 if(StringUtils.contains(path, "/content/dam/medialibrary") ){
     %>
@@ -553,6 +557,42 @@ if(StringUtils.contains(path, "/content/dam/medialibrary") ){
 
     $(".foundation-layout-panel-bodywrapper").css('background-color','');
 <%
+}
+%>
+
+<%
+
+if(StringUtils.contains(path, "/content/dam") ){
+Resource globalHead = resourceResolver.getResource(path);
+  if(globalHead != null && globalHead.getChild("jcr:content") != null && globalHead.getChild("jcr:content").getChild("metadata") != null) {
+	Map<String, Object> metadata = globalHead.getChild("jcr:content").getChild("metadata").getValueMap(); %>
+    var folder = document.getElementById("dam-create-folder");
+    var media = document.getElementById("dam-create-folder-1");
+    <% if( metadata.containsKey("bnpp-media")){%>
+	    if(folder){
+	      folder.style.display = "none";
+	    }
+	    if(media){
+	      media.style.display = "none";
+	    }
+    <%} else {  %>
+      if(folder){
+        folder.style.display = "block";
+      }
+      if(media){
+        media.style.display = "block";
+      }
+    <%
+    }
+    } else { %>
+   	if(folder){
+      folder.style.display = "block";
+    }
+    if(media){
+      media.style.display = "block";
+    }
+  <% }
+
 }
 %>
 </script>

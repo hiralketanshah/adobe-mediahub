@@ -27,15 +27,6 @@
                             sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
                             icon="folderAdd"
                             text="Folder">
-                            <granite:rendercondition
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/foundation/renderconditions/not">
-                                <condition1
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="mediahub/components/hasProperty"
-                                  propertyName="jcr:content/metadata/bnpp-media"
-                                  resourcePath="${requestPathInfo.suffix}"/>
-                            </granite:rendercondition>
                         </createfolder>
                         <createmedias
                             granite:class="dam-create-folder"
@@ -44,15 +35,6 @@
                             sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
                             icon="folderAdd"
                             text="Media">
-                            <granite:rendercondition
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/foundation/renderconditions/not">
-                                <condition1
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="mediahub/components/hasProperty"
-                                  propertyName="jcr:content/metadata/bnpp-media"
-                                  resourcePath="${requestPathInfo.suffix}"/>
-                            </granite:rendercondition>
                         </createmedias>
                         <fileupload
                             granite:class="cq-damadmin-admin-assets-upload"
