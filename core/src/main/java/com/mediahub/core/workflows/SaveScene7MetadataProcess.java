@@ -114,15 +114,15 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
             if (null != associatedAsset) {
                 List<Scene7Asset> subAssets = associatedAsset.getSubAssets();
                 for (Scene7Asset asset : subAssets) {
-                    if (asset.getHeight() == 388) {
-                        modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-md",
-                                domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil
-                                        .encodePath(asset.getFolder() + asset.getFolder()));
-                    }
-                    if (asset.getHeight() == 720) {
-                        modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-hd",
-                                domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil
-                                        .encodePath(asset.getFolder() + asset.getFileName()));
+                    if (asset != null && asset.getHeight() != null) {
+                        if (asset.getHeight() == 388L) {
+                            modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-md",
+                                    domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                        }
+                        if (asset.getHeight() == 720L) {
+                            modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-hd",
+                                    domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                        }
                     }
                 }
             }
