@@ -16,12 +16,12 @@
  *
  */
 
-(function(document, $, _g) {
+(function (document, $, _g) {
     "use strict";
 
     // For cross browser support - CQ-37914
     if (!String.prototype.endsWith) {
-        String.prototype.endsWith = function(suffix) {
+        String.prototype.endsWith = function (suffix) {
             return this.indexOf(suffix, this.length - suffix.length) !== -1;
         };
     }
@@ -30,7 +30,7 @@
     var selectionItemRel = ".cq-damadmin-admin-childpages .foundation-selections-item";
     var simpleSave = true;
 
-    $(document).on("keypress", ".data-fields input[type=text]", function(e) {
+    $(document).on("keypress", ".data-fields input[type=text]", function (e) {
         if (e.keyCode === 13) {
             return false;
         }
@@ -40,12 +40,12 @@
         var ariaRequired = $('.data-fields.active [aria-required="true"]');
         var dataRequired = $('.data-fields.active [data-required="true"]');
         var isValid = true;
-        ariaRequired.each(function(index, item) {
+        ariaRequired.each(function (index, item) {
             if ($(item).is("coral-multifield")) {
                 var child = $(item).children("coral-multifield-item");
                 var hasValue = false;
 
-                $(child).each(function(i, value) {
+                $(child).each(function (i, value) {
                     if ($(value).find('input[is="coral-textfield"]').val() !== "") {
                         hasValue = true;
                     }
@@ -65,7 +65,7 @@
             $(item).updateErrorUI();
         });
         if (isValid) {
-            dataRequired.each(function(index, item) {
+            dataRequired.each(function (index, item) {
                 if (!$('input[is="coral-textfield"]', $(item)).val()) {
                     isValid = false;
                     if ($(item).data("metatype") === "number") {
@@ -86,7 +86,7 @@
         var selectionItems = $(selectionItemRel);
         var filePath;
         var isAllAssetsValid = true;
-        selectionItems.each(function(index, value) {
+        selectionItems.each(function (index, value) {
             filePath = $(value).data("path");
             var jsonPath = encodeURIComponent(filePath).replace(/%2F/g, "/") + ".1.json?ch_ck = " + Date.now();
             jsonPath = Granite.HTTP.externalize(jsonPath);
@@ -137,10 +137,10 @@
                 $("#collection-modifieddate").attr("value", (new Date()).toISOString());
             }
 
-            createNewTags($("form.data-fields.active")).done(function() {
+            createNewTags($("form.data-fields.active")).done(function () {
                 var form = $("form.data-fields.active");
                 handleResponse(form, submitForm(form));
-            }).fail(function(response) {
+            }).fail(function (response) {
                 showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
                     Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
             });
@@ -154,41 +154,41 @@
     }
 
     function saveMediaMetadataChanges(e) {
-            var selectedArticles = $(selectionItemRel).length;
+        var selectedArticles = $(selectionItemRel).length;
 
-            var assetsAreValid = validateAssets();
-            if (assetsAreValid === true) {
-                // Assets is present
-                var cur = $(e.currentTarget);
-                var beforesubmit = $.Event("beforesubmit", {
-                    originalEvent: e
-                });
+        var assetsAreValid = validateAssets();
+        if (assetsAreValid === true) {
+            // Assets is present
+            var cur = $(e.currentTarget);
+            var beforesubmit = $.Event("beforesubmit", {
+                originalEvent: e
+            });
 
-                cur.trigger(beforesubmit);
-                if (beforesubmit.isDefaultPrevented()) {
-                    return false;
-                }
-
-                if ($("#collection-modifieddate").length) {
-                    $("#collection-modifieddate").attr("value", (new Date()).toISOString());
-                }
-
-                createNewTags($("form.data-fields.active")).done(function() {
-                    var form = $("form.data-fields.active");
-                    handleResponse(form, submitForm(form));
-                }).fail(function(response) {
-                    showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
-                        Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
-                });
-            } else {
-                // assets is not present
-                showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
-                    Granite.I18n.get("Some assets are either removed or not accessible. Please refresh assets and try again."), ""); // eslint-disable-line max-len
+            cur.trigger(beforesubmit);
+            if (beforesubmit.isDefaultPrevented()) {
+                return false;
             }
+
+            if ($("#collection-modifieddate").length) {
+                $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+            }
+
+            createNewTags($("form.data-fields.active")).done(function () {
+                var form = $("form.data-fields.active");
+                handleResponse(form, submitForm(form));
+            }).fail(function (response) {
+                showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
+            });
+        } else {
+            // assets is not present
+            showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                Granite.I18n.get("Some assets are either removed or not accessible. Please refresh assets and try again."), ""); // eslint-disable-line max-len
         }
+    }
 
 
-    $(document).on("click", "#shell-propertiespage-saveactivator, #shell-propertiespage-doneactivator", function(e) {
+    $(document).on("click", "#shell-propertiespage-saveactivator, #shell-propertiespage-doneactivator", function (e) {
         if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
             simpleSave = false;
         } else {
@@ -204,46 +204,46 @@
         return false;
     });
 
-    $(document).on("click", "#shell-propertiespage-saveactivator-media", function(e) {
-            if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
-                simpleSave = false;
-            } else {
-                simpleSave = true;
-            }
-            var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
-            if (appendModeEnabled === undefined) {
-                appendModeEnabled = true;
-            }
-            if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-                saveMediaMetadataChanges(e);
-            }
-            return false;
+    $(document).on("click", "#shell-propertiespage-saveactivator-media", function (e) {
+        if (e.currentTarget.id === "shell-propertiespage-doneactivator") {
+            simpleSave = false;
+        } else {
+            simpleSave = true;
+        }
+        var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+        if (appendModeEnabled === undefined) {
+            appendModeEnabled = true;
+        }
+        if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+            saveMediaMetadataChanges(e);
+        }
+        return false;
     });
 
-    $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
-            if (e.currentTarget.id === "shell-propertiespage-save-publish") {
-                simpleSave = false;
+    $(document).on("click", "#shell-propertiespage-save-publish", function (e) {
+        if (e.currentTarget.id === "shell-propertiespage-save-publish") {
+            simpleSave = false;
+        } else {
+            simpleSave = true;
+        }
+        var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+        if (appendModeEnabled === undefined) {
+            appendModeEnabled = true;
+        }
+        if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+            var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
+            if (isValidated && isValidated === 'true') {
+                if (saveMetadataChanges(e)) {
+                    internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                }
             } else {
-                simpleSave = true;
+                internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
             }
-            var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
-            if (appendModeEnabled === undefined) {
-                appendModeEnabled = true;
-            }
-            if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-                  var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
-                  if (isValidated && isValidated === 'true') {
-                      if(saveMetadataChanges(e)){
-                        internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                      }
-                  } else {
-                      internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                  }
-            }
-            return false;
+        }
+        return false;
     });
 
-    $(document).on("click", "#shell-propertiespage-mediaactivator", function(e) {
+    $(document).on("click", "#shell-propertiespage-mediaactivator", function (e) {
         if (e.currentTarget.id === "shell-propertiespage-mediaactivator") {
             simpleSave = false;
         } else {
@@ -260,21 +260,20 @@
     });
 
 
-
-    $(document).on("click", "#soft-submit-popover .aem-assets-metadataeditor-bulk-submit", function(e) {
+    $(document).on("click", "#soft-submit-popover .aem-assets-metadataeditor-bulk-submit", function (e) {
         saveMetadataChanges(e);
     });
 
 
     function handleResponse(form, xhr) {
         var ui = $(window).adaptTo("foundation-ui");
-        xhr.done(function() {
+        xhr.done(function () {
             if (ui !== undefined) {
                 ui.clearWait();
             }
             addRating();
             createSuccessHandler(form, xhr);
-        }).fail(function() {
+        }).fail(function () {
             if (ui !== undefined) {
                 ui.clearWait();
             }
@@ -295,7 +294,7 @@
             if (simpleSave) {
                 successModalForBulkEdit();
             } else {
-                form.trigger("foundation-form-submitted", [ true, xhr ]);
+                form.trigger("foundation-form-submitted", [true, xhr]);
             }
         } else {
             var url = $("[data-selfurl]").data("selfurl");
@@ -310,8 +309,8 @@
                 type: "GET",
                 cache: false,
                 url: url
-            }).success(function(response) {
-                form.trigger("foundation-form-submitted", [ true, xhr ]);
+            }).success(function (response) {
+                form.trigger("foundation-form-submitted", [true, xhr]);
             });
         }
     }
@@ -338,7 +337,7 @@
                     tallyType: "Rating",
                     ":operation": "social:postTallyResponse"
                 },
-                error: function(e) {
+                error: function (e) {
                     showDialog("aem-assets-rating-error", "error", Granite.I18n.get("Rating Failure"),
                         Granite.I18n.get("Error in rating the asset."),
                         '<button is="coral-button" class="aem-assets-rating-error" variant="default" coral-close>' +
@@ -380,7 +379,7 @@
         var selectedArticles = $(selectionItemRel);
         var assets = new Array();
         var limit = 10;
-        selectedArticles.each(function(item, value) {
+        selectedArticles.each(function (item, value) {
             assets[item] = $(value).data("title");
         });
         var resp = "";
@@ -418,7 +417,7 @@
     }
 
     // showing spinner after bulk metadata edit success and reloading the window
-    $(document).on("coral-overlay:close", "#aem-assets-metadataedit-success", function() {
+    $(document).on("coral-overlay:close", "#aem-assets-metadataedit-success", function () {
         var ui = $(window).adaptTo("foundation-ui");
         if (ui !== undefined) {
             ui.wait();
@@ -467,7 +466,7 @@
         if (selectionItems.length === 1) {
             multiAssets = false;
         }
-        selectionItems.each(function(index, value) {
+        selectionItems.each(function (index, value) {
             articleMarkup[index] = $(value);
             assets[index] = articleMarkup[index].data("path");
         });
@@ -490,18 +489,18 @@
         var hintFields = createHintFields(multiAssets, isCollection);
 
         var data = [];
-        data.push({ "name": "_charset_", "value": charset });
-        data.push({ "name": "dam:bulkUpdate", "value": "true" });
+        data.push({"name": "_charset_", "value": charset});
+        data.push({"name": "dam:bulkUpdate", "value": "true"});
 
         if (isCollection) {
-            data.push({ "name": contentPath + "/jcr:lastModified", "value": "" });
-            data.push({ "name": contentPath + "/jcr:lastModifiedBy", "value": "" });
+            data.push({"name": contentPath + "/jcr:lastModified", "value": ""});
+            data.push({"name": contentPath + "/jcr:lastModifiedBy", "value": ""});
         }
 
         var checked = $("#soft-submit-popover input:checkbox").prop("checked");
-        data.push(checked ? { "name": "mode", "value": "soft" } : { "name": "mode", "value": "hard" });
+        data.push(checked ? {"name": "mode", "value": "soft"} : {"name": "mode", "value": "hard"});
         if (checked) {
-            selectionItems.each(function(index, value) {
+            selectionItems.each(function (index, value) {
                 var cvm = $(value).data("contentvm");
                 var mdvm = $(value).data("metadatavm");
                 var collvm = $(value).data("collectionvm");
@@ -511,7 +510,7 @@
                 p["mdvm"] = mdvm;
                 p["collvm"] = collvm;
 
-                data.push({ "name": "asset", "value": JSON.stringify(p) });
+                data.push({"name": "asset", "value": JSON.stringify(p)});
             });
         }
 
@@ -525,7 +524,7 @@
 
             if (!pdfAsset) {
                 var asset = $(".cq-damadmin-admin-childpages .foundation-collection-item" +
-                             "[data-foundation-collection-item-id='" + assets[i].replace(/(')/g, "\\$1") + "']");
+                    "[data-foundation-collection-item-id='" + assets[i].replace(/(')/g, "\\$1") + "']");
                 pdfAsset = asset.length === 1 && asset.attr("data-mime-type") === "application/pdf";
             }
             for (j = 0; j < arrayEligibleFormData.length; j++) {
@@ -546,7 +545,7 @@
                 // publish all subassets if it is a s7 set
                 if (name === "./jcr:content/onTime" &&
                     articleMarkup[i].data("is-s7set") === true) {
-                    articleMarkup[i].data("s7set-subassets-path-list").split(":").forEach(function(val) {
+                    articleMarkup[i].data("s7set-subassets-path-list").split(":").forEach(function (val) {
                         data.push({
                             "name": "." + val.substring(basePath.length) + name.substring(1),
                             "value": value
@@ -554,14 +553,16 @@
                     });
                 }
                 if (value || assets.length === 1) {
-                    data.push({ "name": name, "value": value });
+                    data.push({"name": name, "value": value});
                 }
             }
 
             // If asset mimetype is application/pdf then pdf:Keywords and dc:subject has to be in sync
             if (pdfAsset) {
-                data.push({ "name": "." + assets[i].substring(basePath.length) +
-                          "/jcr:content/metadata/pdf:Keywords@Delete" });
+                data.push({
+                    "name": "." + assets[i].substring(basePath.length) +
+                        "/jcr:content/metadata/pdf:Keywords@Delete"
+                });
                 data.push({
                     "name": "." + assets[i].substring(basePath.length) + "/jcr:content/metadata/pdf:Keywords",
                     "value": pdfKeywords.join(",")
@@ -588,7 +589,7 @@
         var hintFields = [];
         var $form = $("form.data-fields.active");
         var allTags = $("[data-metatype=tags]", $form);
-        allTags.each(function(index, tag) {
+        allTags.each(function (index, tag) {
             var $tag = $(tag);
             var name = $("coral-taglist", $tag).data("fieldname");
             if (!name) {
@@ -604,7 +605,7 @@
 
 
         var allNumbers = $("[data-metatype=number]", $form);
-        allNumbers.each(function(index, number) {
+        allNumbers.each(function (index, number) {
             var $number = $(number);
             var typeHint = $number.data("typehint");
             if (!typeHint) {
@@ -622,7 +623,7 @@
         });
 
         var allMVText = $("[data-metatype=mvtext]", $form);
-        allMVText.each(function(index, mvtext) {
+        allMVText.each(function (index, mvtext) {
             var $mvtext = $(mvtext);
             var typeHint = $mvtext.data("typehint");
             if (!typeHint) {
@@ -637,7 +638,7 @@
 
 
         var allCheckbox = $("[data-metatype=checkbox]", $form);
-        allCheckbox.each(function(index, checkbox) {
+        allCheckbox.each(function (index, checkbox) {
             var $checkbox = $(checkbox);
             if ($checkbox.is(":checked")) {
                 $checkbox.attr("value", "true");
@@ -660,7 +661,7 @@
         });
 
         var allMVSelects = $("[data-metatype=dropdown]", $form);
-        allMVSelects.each(function(index, mvSelect) {
+        allMVSelects.each(function (index, mvSelect) {
             var $mvSelect = $(mvSelect);
             var typeHint = $mvSelect.data("typehint");
             if (!typeHint) {
@@ -677,7 +678,7 @@
     }
 
     function createNewTags(form) {
-        return $.when.apply(null, form.find('.cq-ui-tagfield coral-taglist input[type="hidden"][name]').map(function() {
+        return $.when.apply(null, form.find('.cq-ui-tagfield coral-taglist input[type="hidden"][name]').map(function () {
             var el = this;
             var tagName = "";
 
@@ -685,23 +686,22 @@
                 return;
             }
 
-            if(el.name.indexOf("/") >= 0){
+            if (el.name.indexOf("/") >= 0) {
                 var pieces = el.name.split("/");
-				        tagName = pieces[pieces.length-1];
+                tagName = pieces[pieces.length - 1];
             }
             var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
 
-            if(el.previousElementSibling.textContent.indexOf(tagName) < 0){
-                el.value = tenantId ? ("mac:" + tenantId + "/default/" + tagName + "/" +el.previousElementSibling.textContent)
-                : tagName + "/" + el.previousElementSibling.textContent;
-            }else {
-				        el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
-                : el.previousElementSibling.textContent;
+            if (el.previousElementSibling.textContent.indexOf(tagName) < 0) {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + tagName + "/" + el.previousElementSibling.textContent)
+                    : tagName + "/" + el.previousElementSibling.textContent;
+            } else {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
+                    : el.previousElementSibling.textContent;
             }
 
 
-
-            return createSingleTag(el.value).then(function(tag) {
+            return createSingleTag(el.value).then(function (tag) {
                 // Fix tag name in select element
                 var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
                 if (!tenantId) {
@@ -725,7 +725,7 @@
             data: param,
             async: false
         })
-            .then(function(html) {
+            .then(function (html) {
                 return $(html).find("#Path").text();
             });
     }

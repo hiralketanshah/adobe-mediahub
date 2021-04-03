@@ -150,7 +150,7 @@
                 return false;
             }
 
-            if(!validateBnppStatus() && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") === null) ){
+            if(!validateBnppStatus()){
                 showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
                     Granite.I18n.get("BNPP Status is not Validated."),
                     '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
@@ -195,9 +195,7 @@
         }
 
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
-        if(!validateBnppStatus() && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") !== null) && (document.getElementById("shell-propertiespage-save-publish").getAttribute("isChildrenDeactivated") !== "true") ){
-          deactivateChildren();
-        } else if(saveMediaMetadataChanges(e)){
+        if(saveMediaMetadataChanges(e)){
           var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
           if (isValidated && isValidated === 'true') {
                 internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
