@@ -14,42 +14,34 @@
   is strictly forbidden unless prior written permission is obtained
   from Adobe.
 --%><%
-%><%@ include file="/libs/granite/ui/global.jsp" %><%
-%><%@ page import="java.io.UnsupportedEncodingException,
-                  java.io.IOException,
-                  java.net.URLDecoder,
-                  java.net.URLEncoder,
-                  java.security.MessageDigest,
-                  java.security.NoSuchAlgorithmException,
-                  java.util.Arrays,
-                  java.util.ArrayList,
-                  java.util.Base64,
-                  java.util.Collection,
-                  java.util.Iterator,
-                  java.util.Map,
-                  java.util.List,
-                  java.util.stream.Collectors,
-                  javax.servlet.http.Cookie,
-                  org.apache.commons.collections4.IteratorUtils,
-                  org.apache.commons.lang3.StringUtils,
-                  org.apache.jackrabbit.api.security.user.Authorizable,
-                  org.apache.jackrabbit.util.Text,
-                  org.apache.sling.api.SlingHttpServletRequest,
-                  org.apache.sling.commons.json.JSONObject,
-                  org.apache.sling.commons.json.io.JSONStringer,
-                  org.apache.sling.commons.json.io.JSONWriter,
-                  org.apache.sling.resourcemerger.api.ResourceMergerService,
-                  com.adobe.granite.i18n.LocaleUtil,
-                  com.adobe.granite.security.user.UserProperties,
-                  com.adobe.granite.security.user.UserPropertiesManager,
-                  com.adobe.granite.security.user.UserPropertiesService,
-                  com.adobe.granite.ui.components.AttrBuilder,
-                  com.adobe.granite.ui.components.Config,
-                  com.adobe.granite.ui.components.ExpressionHelper,
-                  com.adobe.granite.ui.components.ExpressionResolver,
-                  com.adobe.granite.ui.components.FilteringResourceWrapper,
-                  com.adobe.granite.ui.components.Tag,
-                  com.adobe.granite.ui.components.Value" %><%--###
+%>
+<%@ include file="/libs/granite/ui/global.jsp" %>
+<%
+%>
+<%@ page import="com.adobe.granite.i18n.LocaleUtil,
+                 com.adobe.granite.security.user.UserProperties,
+                 com.adobe.granite.security.user.UserPropertiesManager,
+                 com.adobe.granite.security.user.UserPropertiesService,
+                 com.adobe.granite.ui.components.*,
+                 org.apache.commons.collections4.IteratorUtils,
+                 org.apache.commons.lang3.StringUtils,
+                 org.apache.jackrabbit.api.security.user.Authorizable,
+                 org.apache.jackrabbit.util.Text,
+                 org.apache.sling.api.SlingHttpServletRequest,
+                 org.apache.sling.api.resource.ResourceResolver,
+                 org.apache.sling.commons.json.JSONObject,
+                 org.apache.sling.commons.json.io.JSONStringer,
+                 org.apache.sling.commons.json.io.JSONWriter,
+                 org.apache.sling.resourcemerger.api.ResourceMergerService,
+                 javax.servlet.http.Cookie,
+                 java.io.IOException,
+                 java.io.UnsupportedEncodingException,
+                 java.net.URLDecoder,
+                 java.net.URLEncoder,
+                 java.security.MessageDigest,
+                 java.security.NoSuchAlgorithmException,
+                 java.util.*,
+                 java.util.stream.Collectors" %><%--###
 CollectionPage
 ==============
 
@@ -322,70 +314,73 @@ CollectionPage
             - offset = "${requestPathInfo.selectors[0]}"
             - limit = "${empty requestPathInfo.selectors[1] ? "20" : requestPathInfo.selectors[1]}"
             - path = "${requestPathInfo.suffix}"
-###--%><%
+###--%>
+<%
 
-Config cfg = cmp.getConfig();
-ExpressionHelper ex = cmp.getExpressionHelper();
+    Config cfg = cmp.getConfig();
+    ExpressionHelper ex = cmp.getExpressionHelper();
 
-if (!cfg.get("noMerge", false)) {
-    ResourceMergerService resourceMerger = sling.getService(ResourceMergerService.class);
-    if (resourceMerger != null) {
-        Resource uiResource = resourceMerger.getMergedResource(resource);
-        if (uiResource != null) {
-            resource = uiResource;
-            cfg = new Config(resource);
+    if (!cfg.get("noMerge", false)) {
+        ResourceMergerService resourceMerger = sling.getService(ResourceMergerService.class);
+        if (resourceMerger != null) {
+            Resource uiResource = resourceMerger.getMergedResource(resource);
+            if (uiResource != null) {
+                resource = uiResource;
+                cfg = new Config(resource);
+            }
         }
     }
-}
 
-resource = new FilteringResourceWrapper(resource, sling.getService(ExpressionResolver.class), slingRequest);
+    resource = new FilteringResourceWrapper(resource, sling.getService(ExpressionResolver.class), slingRequest);
 
-Resource redirector = resource.getChild("redirector");
-if (redirector != null) {
-    %><sling:include resource="<%= redirector %>" /><%
+    Resource redirector = resource.getChild("redirector");
+    if (redirector != null) {
+%><sling:include resource="<%= redirector %>"/><%
 
-    if (response.isCommitted()) {
-        return;
+        if (response.isCommitted()) {
+            return;
+        }
     }
-}
 
-String targetCollection = cfg.get("targetCollection", String.class);
-String consoleId = StringUtils.trimToNull(ex.getString(cfg.get("consoleId", String.class)));
+    String targetCollection = cfg.get("targetCollection", String.class);
+    String consoleId = StringUtils.trimToNull(ex.getString(cfg.get("consoleId", String.class)));
 
 // GRANITE-8258: Force the header to bypass the compatibility mode on intranet sites
-response.setHeader("X-UA-Compatible", "IE=edge");
+    response.setHeader("X-UA-Compatible", "IE=edge");
 
-AttrBuilder htmlAttrs = new AttrBuilder(request, xssAPI);
-htmlAttrs.addClass("skipCoral2Validation");
-htmlAttrs.add("lang", LocaleUtil.toRFC4646(request.getLocale()).toLowerCase());
-htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i18n/dict.{+locale}.json");
+    AttrBuilder htmlAttrs = new AttrBuilder(request, xssAPI);
+    htmlAttrs.addClass("skipCoral2Validation");
+    htmlAttrs.add("lang", LocaleUtil.toRFC4646(request.getLocale()).toLowerCase());
+    htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i18n/dict.{+locale}.json");
 
 %><!DOCTYPE html>
 <html <%= htmlAttrs %>>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="<%= request.getContextPath() %>/apps/granite/core/content/login/favicon.ico"><%
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/apps/granite/core/content/login/favicon.ico">
+    <%
 
-    String origTitle = cfg.get("jcr:title", String.class);
-    String baseTitle = i18n.getVar(origTitle);
-    String title = baseTitle;
-    if (baseTitle != null) {
-        String breadcrumbTitle = getBreadcrumbActiveItemTitle(resource, cmp);
-        if (!breadcrumbTitle.isEmpty()) {
-            // Expand the base title with the navigator/breadcrumb active element title.
-            title = breadcrumbTitle + " | " + title;
-        }
+        String origTitle = cfg.get("jcr:title", String.class);
+        String baseTitle = i18n.getVar(origTitle);
+        String title = baseTitle;
+        if (baseTitle != null) {
+            String breadcrumbTitle = getBreadcrumbActiveItemTitle(resource, cmp);
+            if (!breadcrumbTitle.isEmpty()) {
+                // Expand the base title with the navigator/breadcrumb active element title.
+                title = breadcrumbTitle + " | " + title;
+            }
 
-        String pageURITemplate = handleURITemplate(cfg, "pageURITemplate", ex, request);
+            String pageURITemplate = handleURITemplate(cfg, "pageURITemplate", ex, request);
 
-        AttrBuilder titleAttrs = new AttrBuilder(request, xssAPI);
-        titleAttrs.addClass("granite-collection-pagetitle");
-        titleAttrs.add("data-granite-collection-pagetitle-target", targetCollection);
-        titleAttrs.add("data-granite-collection-pagetitle-src", pageURITemplate);
-        titleAttrs.add("data-granite-collection-pagetitle-base", baseTitle);
+            AttrBuilder titleAttrs = new AttrBuilder(request, xssAPI);
+            titleAttrs.addClass("granite-collection-pagetitle");
+            titleAttrs.add("data-granite-collection-pagetitle-target", targetCollection);
+            titleAttrs.add("data-granite-collection-pagetitle-src", pageURITemplate);
+            titleAttrs.add("data-granite-collection-pagetitle-base", baseTitle);
 
-        %><title <%= titleAttrs %>><%= xssAPI.encodeForHTML(title) %></title><%
+    %><title <%= titleAttrs %>><%= xssAPI.encodeForHTML(title) %>
+</title><%
     }
 
     String[] pageHierarchy = getPageHierarchy(consoleId);
@@ -395,8 +390,8 @@ htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i
     }
 
     String assetId = StringUtils.isNotEmpty(request.getParameter("item"))
-        ? request.getParameter("item")
-        : slingRequest.getRequestPathInfo().getSuffix();
+            ? request.getParameter("item")
+            : slingRequest.getRequestPathInfo().getSuffix();
 
     JSONObject trackingPage = new JSONObject();
     trackingPage.put("type", "collection");
@@ -406,12 +401,14 @@ htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i
         trackingPage.put("assetId", assetId);
     }
 
-    %><meta name="foundation.tracking.page" content="<%= xssAPI.encodeForHTMLAttr(trackingPage.toString()) %>"><%
+%>
+    <meta name="foundation.tracking.page" content="<%= xssAPI.encodeForHTMLAttr(trackingPage.toString()) %>">
+    <%
 
-    Resource globalHead = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalhead");
-    if (globalHead != null) {
-        for (Iterator<Resource> it = globalHead.listChildren(); it.hasNext();) {
-            %><sling:include resource="<%= it.next() %>" /><%
+        Resource globalHead = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalhead");
+        if (globalHead != null) {
+            for (Iterator<Resource> it = globalHead.listChildren(); it.hasNext(); ) {
+    %><sling:include resource="<%= it.next() %>"/><%
         }
     }
 
@@ -421,131 +418,144 @@ htmlAttrs.add("data-i18n-dictionary-src", request.getContextPath() + "/libs/cq/i
     String userPreferencesPath = auth.getPath() + "/" + UserPropertiesService.PREFERENCES_PATH;
     String onboardingSrcPath = "/mnt/overlay/granite/ui/content/shell/onboarding.html";
 
-    %><%-- <meta name="granite.shell.showonboarding"> is deprecated, use foundation-preference instead --%>
-    <meta name="granite.shell.showonboarding" content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "granite.shell.showonboarding620", "true")) %>">
-    <meta class="granite-shell-onboarding-src" data-granite-shell-onboarding-src="<%= xssAPI.getValidHref(request.getContextPath() + onboardingSrcPath) %>"><%
+%><%-- <meta name="granite.shell.showonboarding"> is deprecated, use foundation-preference instead --%>
+    <meta name="granite.shell.showonboarding"
+          content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "granite.shell.showonboarding620", "true")) %>">
+    <meta class="granite-shell-onboarding-src"
+          data-granite-shell-onboarding-src="<%= xssAPI.getValidHref(request.getContextPath() + onboardingSrcPath) %>">
+    <%
 
-    AttrBuilder userPrefAttrs = new AttrBuilder(request, xssAPI);
-    userPrefAttrs.add("name", "user.preferences");
-    userPrefAttrs.add("content", getPreferencesJSON(userPreferences));
-    userPrefAttrs.addHref("data-foundation-preference-action", userPreferencesPath);
+        AttrBuilder userPrefAttrs = new AttrBuilder(request, xssAPI);
+        userPrefAttrs.add("name", "user.preferences");
+        userPrefAttrs.add("content", getPreferencesJSON(userPreferences));
+        userPrefAttrs.addHref("data-foundation-preference-action", userPreferencesPath);
 
-    %><meta <%= userPrefAttrs %>>
+    %>
+    <meta <%= userPrefAttrs %>>
     <%-- <meta name="user.preferences.winmode"> is deprecated, use foundation-preference instead --%>
-    <meta name="user.preferences.winmode" content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "winMode", "multi")) %>"><%
+    <meta name="user.preferences.winmode"
+          content="<%= xssAPI.encodeForHTMLAttr(getPreference(userPreferences, "winMode", "multi")) %>">
+    <%
 
-    if (cfg.get("coral2", false)) {
-        %><ui:includeClientLib categories="coralui2,granite.ui.coral.foundation,granite.ui.coral.foundation.addon.coral2,granite.ui.shell" /><%
-    } else {
-        %><ui:includeClientLib categories="coralui3,granite.ui.coral.foundation,granite.ui.shell" /><%
+        if (cfg.get("coral2", false)) {
+    %><ui:includeClientLib
+        categories="coralui2,granite.ui.coral.foundation,granite.ui.coral.foundation.addon.coral2,granite.ui.shell"/><%
+} else {
+%><ui:includeClientLib categories="coralui3,granite.ui.coral.foundation,granite.ui.shell"/><%
     }
 
-    %><meta class="granite-omnisearch-src"
-            data-granite-omnisearch-src="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/granite/ui/content/shell/omnisearch.html") %>"
-            data-granite-omnisearch-search-url="<%= xssAPI.getValidHref(request.getContextPath() + "/aem/search.html") %>"><%
+%>
+    <meta class="granite-omnisearch-src"
+          data-granite-omnisearch-src="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/granite/ui/content/shell/omnisearch.html") %>"
+          data-granite-omnisearch-search-url="<%= xssAPI.getValidHref(request.getContextPath() + "/aem/search.html") %>">
+    <%
 
-    Resource omnisearchConfigResource = resourceResolver.getResource(ex.getString(cfg.get("omnisearchLocationPath", String.class)));
-    if (omnisearchConfigResource != null) {
-        ValueMap props = omnisearchConfigResource.getValueMap();
+        Resource omnisearchConfigResource = resourceResolver.getResource(ex.getString(cfg.get("omnisearchLocationPath", String.class)));
+        if (omnisearchConfigResource != null) {
+            ValueMap props = omnisearchConfigResource.getValueMap();
 
-        %><meta class="granite-omnisearch-location"
-                data-granite-omnisearch-location-value="<%= xssAPI.encodeForHTMLAttr(omnisearchConfigResource.getName()) %>"
-                data-granite-omnisearch-location-label="<%= xssAPI.encodeForHTMLAttr(i18n.getVar(props.get("jcr:title", ""))) %>"><%
-    }
-
-    Resource head = resource.getChild("head");
-    if (head != null) {
-        for (Iterator<Resource> it = head.listChildren(); it.hasNext();) {
-            %><sling:include resource="<%= it.next() %>" /><%
-        }
-    }
-%></head><%
-// Flush head so that the browser can start downloading the clientlibs
-response.flushBuffer();
-
-String modeGroup = cfg.get("modeGroup", String.class);
-
-String navigationId = consoleId;
-
-if (consoleId == null) {
-    consoleId = generateConsoleId(resource);
-}
-
-String targetViewName = getTargetViewName(slingRequest, consoleId);
-
-List<Resource> viewCache = new ArrayList<Resource>();
-Resource currentView = null;
-
-{
-    int i = 0;
-    for (Iterator<Resource> it = resource.getChild("views").listChildren(); it.hasNext(); i++) {
-        Resource item = it.next();
-
-        if (i == 0 || item.getName().equals(targetViewName)) {
-            currentView = item;
+    %>
+    <meta class="granite-omnisearch-location"
+          data-granite-omnisearch-location-value="<%= xssAPI.encodeForHTMLAttr(omnisearchConfigResource.getName()) %>"
+          data-granite-omnisearch-location-label="<%= xssAPI.encodeForHTMLAttr(i18n.getVar(props.get("jcr:title", ""))) %>">
+    <%
         }
 
-        viewCache.add(item);
+        Resource head = resource.getChild("head");
+        if (head != null) {
+            for (Iterator<Resource> it = head.listChildren(); it.hasNext(); ) {
+    %><sling:include resource="<%= it.next() %>"/><%
+        }
     }
-}
+%></head>
+<%
+    // Flush head so that the browser can start downloading the clientlibs
+    response.flushBuffer();
 
-JSONWriter cookieConfig = new JSONStringer()
-    .object()
-        .key("name").value(consoleId)
-        .key("expires").value(7)
-        .key("path").value(request.getContextPath() + "/")
-    .endObject();
+    String modeGroup = cfg.get("modeGroup", String.class);
 
-JSONWriter availableSettings = new JSONStringer().array();
-for (Resource view : viewCache) {
-    if (view.getChild("settings") != null) {
-        availableSettings.value(view.getName());
+    String navigationId = consoleId;
+
+    if (consoleId == null) {
+        consoleId = generateConsoleId(resource);
     }
-}
-availableSettings.endArray();
 
-AttrBuilder viewAttrs = new AttrBuilder(request, xssAPI);
-viewAttrs.addClass("coral--light");
-viewAttrs.addClass("shell-collectionpage-view");
-viewAttrs.add("data-shell-collectionpage-view-target", targetCollection);
-viewAttrs.add("data-shell-collectionpage-view-cookie", cookieConfig.toString());
-viewAttrs.add("data-shell-collectionpage-view-layoutId", currentView == null ? null : currentView.getName());
-viewAttrs.add("data-shell-collectionpage-view-settings", availableSettings.toString());
+    String targetViewName = getTargetViewName(slingRequest, consoleId);
 
-Resource rails = resource.getChild("rails");
-String railSaveKey = "rail-" + consoleId;
-String railWidthSaveKey = "rail-width-" + consoleId;
-String savedRailTarget = getCookie(slingRequest, railSaveKey);
-String savedRailWidth = getCookie(slingRequest, railWidthSaveKey);
-boolean savedRailTargetFound = false;
-boolean hasActiveRail = rails != null && cmp.getExpressionHelper().getBoolean(rails.getValueMap().get("active", "false"));
+    List<Resource> viewCache = new ArrayList<Resource>();
+    Resource currentView = null;
 
-String collectionWidthSaveKey = "collection-width-" + consoleId;
-String savedCollectionWidth = getCookie(slingRequest, collectionWidthSaveKey);
+    {
+        int i = 0;
+        for (Iterator<Resource> it = resource.getChild("views").listChildren(); it.hasNext(); i++) {
+            Resource item = it.next();
 
-Resource columnViewItem = resource.getChild("views").getChild("column");
-Config columnViewItemCfg = new Config(columnViewItem);
-String rootPath = ex.getString(columnViewItemCfg.get("rootPath", ""));
+            if (i == 0 || item.getName().equals(targetViewName)) {
+                currentView = item;
+            }
 
-String itemPreviewSrc = handleURITemplate(cfg, "itemPreviewSrc", ex, request);
+            viewCache.add(item);
+        }
+    }
 
-int minContentSize = 100;
+    JSONWriter cookieConfig = new JSONStringer()
+            .object()
+            .key("name").value(consoleId)
+            .key("expires").value(7)
+            .key("path").value(request.getContextPath() + "/")
+            .endObject();
+
+    JSONWriter availableSettings = new JSONStringer().array();
+    for (Resource view : viewCache) {
+        if (view.getChild("settings") != null) {
+            availableSettings.value(view.getName());
+        }
+    }
+    availableSettings.endArray();
+
+    AttrBuilder viewAttrs = new AttrBuilder(request, xssAPI);
+    viewAttrs.addClass("coral--light");
+    viewAttrs.addClass("shell-collectionpage-view");
+    viewAttrs.add("data-shell-collectionpage-view-target", targetCollection);
+    viewAttrs.add("data-shell-collectionpage-view-cookie", cookieConfig.toString());
+    viewAttrs.add("data-shell-collectionpage-view-layoutId", currentView == null ? null : currentView.getName());
+    viewAttrs.add("data-shell-collectionpage-view-settings", availableSettings.toString());
+
+    Resource rails = resource.getChild("rails");
+    String railSaveKey = "rail-" + consoleId;
+    String railWidthSaveKey = "rail-width-" + consoleId;
+    String savedRailTarget = getCookie(slingRequest, railSaveKey);
+    String savedRailWidth = getCookie(slingRequest, railWidthSaveKey);
+    boolean savedRailTargetFound = false;
+    boolean hasActiveRail = rails != null && cmp.getExpressionHelper().getBoolean(rails.getValueMap().get("active", "false"));
+
+    String collectionWidthSaveKey = "collection-width-" + consoleId;
+    String savedCollectionWidth = getCookie(slingRequest, collectionWidthSaveKey);
+
+    Resource columnViewItem = resource.getChild("views").getChild("column");
+    Config columnViewItemCfg = new Config(columnViewItem);
+    String rootPath = ex.getString(columnViewItemCfg.get("rootPath", ""));
+
+    String itemPreviewSrc = handleURITemplate(cfg, "itemPreviewSrc", ex, request);
+
+    int minContentSize = 100;
 
 // Even if no rails are configured, we need to add them when the columnview is enabled to add the tree
-final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.isEmpty());
+    final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.isEmpty());
 
-%><body <%= viewAttrs %>>
+%>
+<body <%= viewAttrs %>>
 <%
     Resource skipNavigationLinksRes = resource.getChild("skipnavigationlinks");
     if (skipNavigationLinksRes != null) {
-        %><sling:include resource="<%= skipNavigationLinksRes %>" /><%
+%><sling:include resource="<%= skipNavigationLinksRes %>"/><%
     }
 %>
 <coral-shell>
     <div class="green-bar"></div>
     <coral-shell-header class="granite-shell-header bnp--green"
-        data-granite-shell-header-mode-group="<%= xssAPI.encodeForHTMLAttr(modeGroup) %>"
-        role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>">
+                        data-granite-shell-header-mode-group="<%= xssAPI.encodeForHTMLAttr(modeGroup) %>"
+                        role="region" aria-label="<%= xssAPI.encodeForHTMLAttr(i18n.get("Header Bar")) %>">
         <sling:call script="header.jsp"/>
     </coral-shell-header>
 
@@ -557,7 +567,8 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                 actionBarAttrs.addClass("foundation-collection-actionbar");
                 actionBarAttrs.add("data-foundation-collection-actionbar-target", targetCollection);
 
-                %><betty-titlebar <%= actionBarAttrs %>>
+            %>
+                <betty-titlebar <%= actionBarAttrs %>>
                     <betty-titlebar-title><%
                         Resource breadcrumbs = resource.getChild("breadcrumbs");
                         if (breadcrumbs != null) {
@@ -571,149 +582,161 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                                 navigatorAttrs.add("trackingelement", "breadcrumbs");
                                 navigatorAttrs.add("data-granite-collection-navigator-target", targetCollection);
 
-                                %><betty-breadcrumbs <%= navigatorAttrs %>><%
-                                    for (int j = 0; j < crumbs.size(); j++) {
-                                        Resource item = (Resource) crumbs.get(j);
-                                        Config itemCfg = new Config(item);
+                    %>
+                        <betty-breadcrumbs <%= navigatorAttrs %>><%
+                            for (int j = 0; j < crumbs.size(); j++) {
+                                Resource item = (Resource) crumbs.get(j);
+                                Config itemCfg = new Config(item);
 
-                                        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                                        String navigatorCollectionid = itemCfg.get("path", String.class);
-                                        if (navigatorCollectionid != null) {
-                                            itemAttrs.add("data-granite-collection-navigator-collectionid", navigatorCollectionid);
-                                        } else {
-                                            itemAttrs.add("data-granite-collection-navigator-href", itemCfg.get("href", String.class));
-                                        }
-                                        %><betty-breadcrumbs-item <%= itemAttrs %>><%= xssAPI.encodeForHTML(itemCfg.get("title")) %></betty-breadcrumbs-item><%
+                                AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                                String navigatorCollectionid = itemCfg.get("path", String.class);
+                                if (navigatorCollectionid != null) {
+                                    itemAttrs.add("data-granite-collection-navigator-collectionid", navigatorCollectionid);
+                                } else {
+                                    itemAttrs.add("data-granite-collection-navigator-href", itemCfg.get("href", String.class));
+                                }
+                                if (displayBreadcrumbItem(navigatorCollectionid, assetId, resourceResolver)) {
+                        %>
+                            <betty-breadcrumbs-item <%= itemAttrs %>><%= xssAPI.encodeForHTML(itemCfg.get("title")) %>
+                            </betty-breadcrumbs-item>
+                            <%
                                     }
-                                %></betty-breadcrumbs><%
+                                }
+                            %></betty-breadcrumbs>
+                        <%
                             }
                         } else {
                             Resource titleRes = resource.getChild("title");
                             if (titleRes != null) {
-                                %><span class="granite-title" role="heading" aria-level="1"><sling:include resource="<%= titleRes %>" /></span><%
-                            } else {
-                                %><span class="granite-title" role="heading" aria-level="1"><%= xssAPI.encodeForHTML(baseTitle) %></span><%
+                        %><span class="granite-title" role="heading" aria-level="1"><sling:include
+                                resource="<%= titleRes %>"/></span><%
+                        } else {
+                        %><span class="granite-title" role="heading"
+                                aria-level="1"><%= xssAPI.encodeForHTML(baseTitle) %></span><%
+                                }
                             }
-                        }
-                    %></betty-titlebar-title>
+                        %></betty-titlebar-title>
                     <betty-titlebar-primary><%
                         if (hasRails) {
-                                %>
-                                <label id="cyclebutton-rail-toggle-label" for="shell-collectionpage-rail-toggle" class="u-coral-screenReaderOnly"><%= xssAPI.encodeForHTML(i18n.get("Open left rail for additional features")) %></label>
-                                <coral-cyclebutton id="shell-collectionpage-rail-toggle"
-                                                     class="granite-toggleable-control"
-                                                     displaymode="icontext"
-                                                     icon="railLeft"
-                                                     threshold="1"
-                                                     trackingfeature="aem:collectionpage"
-                                                     aria-labelledby="cyclebutton-rail-toggle-label"
-                                                     trackingelement="rail"
-                                                     data-granite-toggleable-control-savekey="<%= xssAPI.encodeForHTMLAttr(railSaveKey) %>">
-                                    <coral-cyclebutton-item
-                                        displaymode="icon"
-                                        trackingelement="contentonly"
-                                        data-foundation-command="`"
-                                        data-granite-toggleable-control-name="content-only"
-                                        data-granite-toggleable-control-target="#shell-collectionpage-rail"
-                                        data-granite-toggleable-control-action="hide"><%= xssAPI.encodeForHTML(i18n.get("Content Only")) %></coral-cyclebutton-item><%
-
-                                    int railItemIndex = 1;
-                                    if (columnViewItem != null && !rootPath.isEmpty()) {
-                                        AttrBuilder navigationAttrs = new AttrBuilder(request, xssAPI);
-                                        navigationAttrs.add("trackingelement", "contenttree");
-                                        navigationAttrs.add("data-granite-toggleable-control-action", "show");
-                                        navigationAttrs.add("data-granite-toggleable-control-name", "content-tree");
-                                        navigationAttrs.add("data-foundation-command", "alt+" + railItemIndex++);
-                                        navigationAttrs.add("data-granite-toggleable-control-target", ".shell-collectionpage-rail-panel[data-shell-collectionpage-rail-panel='content-tree']");
-
-                                        if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals("content-tree")) {
-                                            navigationAttrs.addSelected(true);
-                                            savedRailTargetFound = true;
-                                        }
-                                        %><coral-cyclebutton-item <%= navigationAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Content Tree")) %></coral-cyclebutton-item><%
-                                    }
-                                    if (rails != null) {
-                                        // we map all rail items to the numbers in the keyboard using control + {index}
-                                        for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); railItemIndex++) {
-                                            Resource item = it.next();
-
-                                            if (cmp.getRenderCondition(item, true).check()) {
-                                                Config itemCfg = new Config(item);
-                                                AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-
-                                                // we stop once we reach 9 since all available numbers have been used
-                                                if (railItemIndex < 10) {
-                                                    itemAttrs.add("data-foundation-command", "alt+" + railItemIndex);
-                                                }
-
-                                                itemAttrs.add("trackingelement", item.getName());
-                                                itemAttrs.add("data-granite-toggleable-control-name", item.getName());
-
-                                                if (item.getName().equals("omnisearchfilter")) {
-                                                    itemAttrs.add("data-granite-toggleable-control-action", "hide");
-                                                    itemAttrs.add("data-granite-toggleable-control-target", "#shell-collectionpage-rail");
-                                                    itemAttrs.add("data-granite-omnisearch-filter", targetCollection);
-                                                } else {
-                                                    String href = ex.getString(itemCfg.get("href", String.class));
-
-                                                    itemAttrs.add("icon", itemCfg.get("icon", String.class));
-
-                                                    if (href != null) {
-                                                        itemAttrs.add("data-granite-toggleable-control-action", "navigate");
-                                                        itemAttrs.addHref("data-granite-toggleable-control-href", href);
-                                                    } else {
-                                                        String railPanelTarget = ".shell-collectionpage-rail-panel[data-shell-collectionpage-rail-panel='" + item.getName() + "']";
-
-                                                        itemAttrs.add("data-granite-toggleable-control-action", "show");
-                                                        itemAttrs.add("data-granite-toggleable-control-target", railPanelTarget);
-                                                    }
-
-                                                    itemAttrs.addSelected(itemCfg.get("active", false));
-
-                                                    if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
-                                                        itemAttrs.addSelected(true);
-                                                        savedRailTargetFound = true;
-                                                    }
-                                                }
-
-                                                %><coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %></coral-cyclebutton-item><%
-                                            }
-                                        }
-                                    }
-                                %></coral-cyclebutton><%
-                        }
-
-                        Resource primary = resource.getChild("actions/primary");
-                        if (primary != null) {
-                            for (Iterator<Resource> it = primary.listChildren(); it.hasNext();) {
-                                Resource item = it.next();
-                                %><sling:include resource="<%= item %>" /><%
-                            }
-                        }
                     %>
+                        <label id="cyclebutton-rail-toggle-label" for="shell-collectionpage-rail-toggle"
+                               class="u-coral-screenReaderOnly"><%= xssAPI.encodeForHTML(i18n.get("Open left rail for additional features")) %>
+                        </label>
+                        <coral-cyclebutton id="shell-collectionpage-rail-toggle"
+                                           class="granite-toggleable-control"
+                                           displaymode="icontext"
+                                           icon="railLeft"
+                                           threshold="1"
+                                           trackingfeature="aem:collectionpage"
+                                           aria-labelledby="cyclebutton-rail-toggle-label"
+                                           trackingelement="rail"
+                                           data-granite-toggleable-control-savekey="<%= xssAPI.encodeForHTMLAttr(railSaveKey) %>">
+                            <coral-cyclebutton-item
+                                    displaymode="icon"
+                                    trackingelement="contentonly"
+                                    data-foundation-command="`"
+                                    data-granite-toggleable-control-name="content-only"
+                                    data-granite-toggleable-control-target="#shell-collectionpage-rail"
+                                    data-granite-toggleable-control-action="hide"><%= xssAPI.encodeForHTML(i18n.get("Content Only")) %>
+                            </coral-cyclebutton-item>
+                            <%
 
-                   <%
-                   if(StringUtils.contains(assetId, "/content/dam/projects")){
-                      Resource asset = resourceResolver.getResource(assetId);
-                      boolean isProject=false;
-                      while(!asset.getPath().equals("/content/dam/projects") && !isProject){
-                          if(asset.getValueMap().containsKey("projectPath")){
-                              isProject=true;
-                          }else{
-                              asset=asset.getParent();
-                          }
-                      }
-                      String projectPath = asset.getValueMap().get("projectPath", String[].class)[0];
-                   %>
-                      <a id="backLink" href="/projects/details.html<%= projectPath %>">
-                        <button id="backToProject" is="coral-button" style="background-color: #6d6d6d; color: white;" iconsize="S">
-                          <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
-                        </button>
-                      </a>
-                   <%}
+                                int railItemIndex = 1;
+                                if (columnViewItem != null && !rootPath.isEmpty()) {
+                                    AttrBuilder navigationAttrs = new AttrBuilder(request, xssAPI);
+                                    navigationAttrs.add("trackingelement", "contenttree");
+                                    navigationAttrs.add("data-granite-toggleable-control-action", "show");
+                                    navigationAttrs.add("data-granite-toggleable-control-name", "content-tree");
+                                    navigationAttrs.add("data-foundation-command", "alt+" + railItemIndex++);
+                                    navigationAttrs.add("data-granite-toggleable-control-target", ".shell-collectionpage-rail-panel[data-shell-collectionpage-rail-panel='content-tree']");
 
-                   %>
+                                    if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals("content-tree")) {
+                                        navigationAttrs.addSelected(true);
+                                        savedRailTargetFound = true;
+                                    }
+                            %>
+                            <coral-cyclebutton-item <%= navigationAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Content Tree")) %>
+                            </coral-cyclebutton-item>
+                            <%
+                                }
+                                if (rails != null) {
+                                    // we map all rail items to the numbers in the keyboard using control + {index}
+                                    for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); railItemIndex++) {
+                                        Resource item = it.next();
 
+                                        if (cmp.getRenderCondition(item, true).check()) {
+                                            Config itemCfg = new Config(item);
+                                            AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+
+                                            // we stop once we reach 9 since all available numbers have been used
+                                            if (railItemIndex < 10) {
+                                                itemAttrs.add("data-foundation-command", "alt+" + railItemIndex);
+                                            }
+
+                                            itemAttrs.add("trackingelement", item.getName());
+                                            itemAttrs.add("data-granite-toggleable-control-name", item.getName());
+
+                                            if (item.getName().equals("omnisearchfilter")) {
+                                                itemAttrs.add("data-granite-toggleable-control-action", "hide");
+                                                itemAttrs.add("data-granite-toggleable-control-target", "#shell-collectionpage-rail");
+                                                itemAttrs.add("data-granite-omnisearch-filter", targetCollection);
+                                            } else {
+                                                String href = ex.getString(itemCfg.get("href", String.class));
+
+                                                itemAttrs.add("icon", itemCfg.get("icon", String.class));
+
+                                                if (href != null) {
+                                                    itemAttrs.add("data-granite-toggleable-control-action", "navigate");
+                                                    itemAttrs.addHref("data-granite-toggleable-control-href", href);
+                                                } else {
+                                                    String railPanelTarget = ".shell-collectionpage-rail-panel[data-shell-collectionpage-rail-panel='" + item.getName() + "']";
+
+                                                    itemAttrs.add("data-granite-toggleable-control-action", "show");
+                                                    itemAttrs.add("data-granite-toggleable-control-target", railPanelTarget);
+                                                }
+
+                                                itemAttrs.addSelected(itemCfg.get("active", false));
+
+                                                if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
+                                                    itemAttrs.addSelected(true);
+                                                    savedRailTargetFound = true;
+                                                }
+                                            }
+
+                            %>
+                            <coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %>
+                            </coral-cyclebutton-item>
+                            <%
+                                        }
+                                    }
+                                }
+                            %></coral-cyclebutton>
+                        <%
+                            }
+
+                            Resource primary = resource.getChild("actions/primary");
+                            if (primary != null) {
+                                for (Iterator<Resource> it = primary.listChildren(); it.hasNext(); ) {
+                                    Resource item = it.next();
+                        %><sling:include resource="<%= item %>"/><%
+                                }
+                            }
+                        %>
+
+                        <%
+                            String projectPath = getProjectPath(assetId, resourceResolver);
+                            if (!StringUtils.isEmpty(projectPath)) {
+                        %>
+                        <a id="backLink" href="/projects/details.html<%= projectPath %>">
+                            <button id="backToProject" is="coral-button"
+                                    style="background-color: #6d6d6d; color: white;" iconsize="S">
+                                <%= xssAPI.encodeForHTML(i18n.get("Back to project")) %>
+                            </button>
+                        </a>
+                        <%
+                            }
+
+                        %>
 
 
                     </betty-titlebar-primary>
@@ -725,46 +748,56 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                         selectAllAttrs.add("data-foundation-command", "ctrl+a");
                         selectAllAttrs.add("trackingfeature", "aem:collectionpage");
                         selectAllAttrs.add("trackingelement", "selectall");
-                        %><button is="coral-button" variant="quiet" icon="selectAll" <%= selectAllAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Select All")) %></button><%
-                        Resource secondary = resource.getChild("actions/secondary");
-                        if (secondary != null) {
-                            for (Iterator<Resource> it = secondary.listChildren(); it.hasNext();) {
-                                Resource item = it.next();
-                                if ("create".equals(item.getName())) {
-                                    AttrBuilder createAttrs = new AttrBuilder(request, xssAPI);
-                                    createAttrs.addClass("granite-collection-create");
-                                    createAttrs.add("data-granite-collection-create-target", targetCollection);
+                    %>
+                        <button is="coral-button" variant="quiet"
+                                icon="selectAll" <%= selectAllAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Select All")) %>
+                        </button>
+                        <%
+                            Resource secondary = resource.getChild("actions/secondary");
+                            if (secondary != null) {
+                                for (Iterator<Resource> it = secondary.listChildren(); it.hasNext(); ) {
+                                    Resource item = it.next();
+                                    if ("create".equals(item.getName())) {
+                                        AttrBuilder createAttrs = new AttrBuilder(request, xssAPI);
+                                        createAttrs.addClass("granite-collection-create");
+                                        createAttrs.add("data-granite-collection-create-target", targetCollection);
 
-                                    cmp.include(item, new Tag(createAttrs));
-                                } else {
-                                    AttrBuilder attrs = new AttrBuilder(request, xssAPI);
-                                    attrs.add("data-shell-collection-target", targetCollection);
-                                    attrs.add("data-shell-collectionpage-consoleid", consoleId);
-                                    cmp.include(item, new Tag(attrs));
+                                        cmp.include(item, new Tag(createAttrs));
+                                    } else {
+                                        AttrBuilder attrs = new AttrBuilder(request, xssAPI);
+                                        attrs.add("data-shell-collection-target", targetCollection);
+                                        attrs.add("data-shell-collectionpage-consoleid", consoleId);
+                                        cmp.include(item, new Tag(attrs));
+                                    }
                                 }
                             }
-                        }
 
-                        if (viewCache.size() > 1) {%>
-                        <label id="cyclebutton-switcher-toggle-label" for="granite-collection-switcher-toggle" class="u-coral-screenReaderOnly"><%= xssAPI.encodeForHTML(i18n.get("Switch display format and adjust display setting")) %></label><%
+                            if (viewCache.size() > 1) {%>
+                        <label id="cyclebutton-switcher-toggle-label" for="granite-collection-switcher-toggle"
+                               class="u-coral-screenReaderOnly"><%= xssAPI.encodeForHTML(i18n.get("Switch display format and adjust display setting")) %>
+                        </label><%
                             AttrBuilder switcherAttrs = new AttrBuilder(request, xssAPI);
                             switcherAttrs.addClass("granite-collection-switcher");
                             switcherAttrs.add("id", "granite-collection-switcher-toggle");
                             switcherAttrs.add("aria-labelledby", "cyclebutton-switcher-toggle-label");
                             switcherAttrs.add("data-granite-collection-switcher-target", targetCollection);
 
-                            %><coral-cyclebutton <%= switcherAttrs %>><%
-                                for (Resource item : viewCache) {
-                                    Config itemCfg = new Config(item);
+                        %>
+                        <coral-cyclebutton <%= switcherAttrs %>><%
+                            for (Resource item : viewCache) {
+                                Config itemCfg = new Config(item);
 
-                                    String src = ex.getString(itemCfg.get("src", String.class));
+                                String src = ex.getString(itemCfg.get("src", String.class));
 
-                                    AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                                    itemAttrs.add("data-granite-collection-switcher-src", handleURITemplate(src, request));
-                                    itemAttrs.add("icon", itemCfg.get("icon", String.class));
-                                    itemAttrs.addSelected(item.getName().equals(currentView.getName()));
+                                AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                                itemAttrs.add("data-granite-collection-switcher-src", handleURITemplate(src, request));
+                                itemAttrs.add("icon", itemCfg.get("icon", String.class));
+                                itemAttrs.addSelected(item.getName().equals(currentView.getName()));
 
-                                    %><coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %></coral-cyclebutton-item><%
+                        %>
+                            <coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %>
+                            </coral-cyclebutton-item>
+                            <%
                                 }
 
                                 if (!viewCache.isEmpty()) {
@@ -779,18 +812,23 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                                     itemAttrs.add("data-foundation-toggleable-control-action", "show");
                                     itemAttrs.add("data-foundation-toggleable-control-cache", "false");
 
-                                    %><coral-cyclebutton-action <%= itemAttrs %>><%= xssAPI.encodeForHTML(i18n.get("View Settings")) %></coral-cyclebutton-action><%
+                            %>
+                            <coral-cyclebutton-action <%= itemAttrs %>><%= xssAPI.encodeForHTML(i18n.get("View Settings")) %>
+                            </coral-cyclebutton-action>
+                            <%
                                 }
-                            %></coral-cyclebutton><%
-                        }
-                    %></betty-titlebar-secondary>
-                </betty-titlebar><%
+                            %></coral-cyclebutton>
+                        <%
+                            }
+                        %></betty-titlebar-secondary>
+                </betty-titlebar>
+                <%
 
-                Resource header = resource.getChild("header");
-                if (header != null) {
-                    %><sling:include resource="<%= header %>" /><%
-                }
-            %></div>
+                    Resource header = resource.getChild("header");
+                    if (header != null) {
+                %><sling:include resource="<%= header %>"/><%
+                    }
+                %></div>
 
 
             <div class="foundation-layout-panel-bodywrapper">
@@ -816,132 +854,154 @@ final boolean hasRails = rails != null || (columnViewItem != null && !rootPath.i
                         }
                         railAttrs.add("style", railStyle);
 
-                        %><div <%= railAttrs %>>
-                            <coral-panelstack maximized><%
-                                if (rails != null) {
-                                    for (Iterator<Resource> it = rails.listChildren(); it.hasNext();) {
-                                        Resource item = it.next();
+                %>
+                    <div <%= railAttrs %>>
+                        <coral-panelstack maximized><%
+                            if (rails != null) {
+                                for (Iterator<Resource> it = rails.listChildren(); it.hasNext(); ) {
+                                    Resource item = it.next();
 
-                                        AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
-                                        itemAttrs.addClass("shell-collectionpage-rail-panel");
-                                        itemAttrs.add("data-shell-collectionpage-rail-panel", item.getName());
+                                    AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
+                                    itemAttrs.addClass("shell-collectionpage-rail-panel");
+                                    itemAttrs.add("data-shell-collectionpage-rail-panel", item.getName());
 
-                                        if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
-                                            itemAttrs.addSelected(true);
-                                        }
-
-                                        cmp.include(item, new Tag(itemAttrs));
+                                    if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals(item.getName())) {
+                                        itemAttrs.addSelected(true);
                                     }
+
+                                    cmp.include(item, new Tag(itemAttrs));
                                 }
-                                if (columnViewItem != null && !rootPath.isEmpty()) {
-                                    Resource columnRoot = resourceResolver.getResource(rootPath);
-                                    String path = ex.getString(columnViewItemCfg.get("path", String.class));
-                                    Resource currentColumnItem = resourceResolver.getResource(path);
-                                    String src = request.getContextPath() + "/mnt/overlay/granite/ui/content/tree{.offset}.html{+id}?columnPath=" + Text.escapePath(columnViewItem.getPath());
+                            }
+                            if (columnViewItem != null && !rootPath.isEmpty()) {
+                                Resource columnRoot = resourceResolver.getResource(rootPath);
+                                String path = ex.getString(columnViewItemCfg.get("path", String.class));
+                                Resource currentColumnItem = resourceResolver.getResource(path);
+                                String src = request.getContextPath() + "/mnt/overlay/granite/ui/content/tree{.offset}.html{+id}?columnPath=" + Text.escapePath(columnViewItem.getPath());
 
-                                    AttrBuilder navigationPanelItemAttrs = new AttrBuilder(request, xssAPI);
-                                    navigationPanelItemAttrs.addClass("foundation-toggleable");
-                                    navigationPanelItemAttrs.addClass("foundation-layout-panel-rail-panel");
-                                    // navigationPanelItemAttrs.add("data-foundation-layout-panel-rail-panel-src",);
-                                    navigationPanelItemAttrs.addClass("shell-collectionpage-rail-panel");
-                                    navigationPanelItemAttrs.add("data-shell-collectionpage-rail-panel", "content-tree");
+                                AttrBuilder navigationPanelItemAttrs = new AttrBuilder(request, xssAPI);
+                                navigationPanelItemAttrs.addClass("foundation-toggleable");
+                                navigationPanelItemAttrs.addClass("foundation-layout-panel-rail-panel");
+                                // navigationPanelItemAttrs.add("data-foundation-layout-panel-rail-panel-src",);
+                                navigationPanelItemAttrs.addClass("shell-collectionpage-rail-panel");
+                                navigationPanelItemAttrs.add("data-shell-collectionpage-rail-panel", "content-tree");
 
-                                    if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals("content-tree")) {
-                                        navigationPanelItemAttrs.addSelected(true);
-                                    }
+                                if (!hasActiveRail && savedRailTarget != null && savedRailTarget.equals("content-tree")) {
+                                    navigationPanelItemAttrs.addSelected(true);
+                                }
 
-                                    AttrBuilder treeElemAttrs = new AttrBuilder(request, xssAPI);
-                                    treeElemAttrs.add("class", "shell-collectionpage-tree");
-                                    treeElemAttrs.add("data-shell-collectionpage-tree-target", targetCollection);
-                                    treeElemAttrs.add("root-id", columnRoot.getPath());
-                                    treeElemAttrs.add("src", src);
-                                    treeElemAttrs.add("children", getChildrenJSON(currentColumnItem, columnRoot));
-                                    treeElemAttrs.add("label", xssAPI.encodeForHTML(i18n.get("Content Tree")));
+                                AttrBuilder treeElemAttrs = new AttrBuilder(request, xssAPI);
+                                treeElemAttrs.add("class", "shell-collectionpage-tree");
+                                treeElemAttrs.add("data-shell-collectionpage-tree-target", targetCollection);
+                                treeElemAttrs.add("root-id", columnRoot.getPath());
+                                treeElemAttrs.add("src", src);
+                                treeElemAttrs.add("children", getChildrenJSON(currentColumnItem, columnRoot));
+                                treeElemAttrs.add("label", xssAPI.encodeForHTML(i18n.get("Content Tree")));
 
-                                    %><coral-panel <%= navigationPanelItemAttrs %>>
-                                        <foundation-tree <%= treeElemAttrs %>>
-                                            <foundation-tree-loading><%= xssAPI.encodeForHTML(i18n.get("Loading content")) %></foundation-tree-loading>
-                                            <foundation-tree-error><%= xssAPI.encodeForHTML(i18n.get("Could not load content")) %></foundation-tree-error>
-                                            <foundation-tree-empty><%= xssAPI.encodeForHTML(i18n.get("There is no item")) %></foundation-tree-empty>
-                                            <foundation-tree-load-more><%= xssAPI.encodeForHTML(i18n.get("Load more")) %></foundation-tree-load-more>
-                                        </foundation-tree>
-                                    </coral-panel><%
+                        %>
+                            <coral-panel <%= navigationPanelItemAttrs %>>
+                                <foundation-tree <%= treeElemAttrs %>>
+                                    <foundation-tree-loading><%= xssAPI.encodeForHTML(i18n.get("Loading content")) %>
+                                    </foundation-tree-loading>
+                                    <foundation-tree-error><%= xssAPI.encodeForHTML(i18n.get("Could not load content")) %>
+                                    </foundation-tree-error>
+                                    <foundation-tree-empty><%= xssAPI.encodeForHTML(i18n.get("There is no item")) %>
+                                    </foundation-tree-empty>
+                                    <foundation-tree-load-more><%= xssAPI.encodeForHTML(i18n.get("Load more")) %>
+                                    </foundation-tree-load-more>
+                                </foundation-tree>
+                            </coral-panel>
+                            <%
                                 }
                             %></coral-panelstack>
-                            <div class="foundation-container-resizable-handle"></div>
-                        </div><%
-                    }
+                        <div class="foundation-container-resizable-handle"></div>
+                    </div>
+                    <%
+                        }
 
-	                Config currentViewCfg = new Config(currentView);
-	                String selector = currentViewCfg.get("selector", String.class);
+                        Config currentViewCfg = new Config(currentView);
+                        String selector = currentViewCfg.get("selector", String.class);
 
-                	if (itemPreviewSrc != null) {
-                        %><div class="foundation-layout-panel-content" data-granite-layout-content-min-width="<%= minContentSize %>">
-                            <div class="foundation-layout-panel">
-                                <div class="foundation-layout-panel-body"><%
-                                    AttrBuilder collectionAttrs = new AttrBuilder(request, xssAPI);
-                                    collectionAttrs.addClass("foundation-layout-panel-rail foundation-layout-panel-rail-active");
-                                    collectionAttrs.addClass("foundation-container-resizable");
-                                    collectionAttrs.add("data-granite-layout-panel-save-key", collectionWidthSaveKey);
-                                    collectionAttrs.add("data-granite-layout-panel-min-width", 272);
+                        if (itemPreviewSrc != null) {
+                    %>
+                    <div class="foundation-layout-panel-content"
+                         data-granite-layout-content-min-width="<%= minContentSize %>">
+                        <div class="foundation-layout-panel">
+                            <div class="foundation-layout-panel-body"><%
+                                AttrBuilder collectionAttrs = new AttrBuilder(request, xssAPI);
+                                collectionAttrs.addClass("foundation-layout-panel-rail foundation-layout-panel-rail-active");
+                                collectionAttrs.addClass("foundation-container-resizable");
+                                collectionAttrs.add("data-granite-layout-panel-save-key", collectionWidthSaveKey);
+                                collectionAttrs.add("data-granite-layout-panel-min-width", 272);
 
-                                    if (!StringUtils.isEmpty(savedCollectionWidth)) {
-                                        collectionAttrs.add("style", "width: " + savedCollectionWidth + "px;");
-                                    }
+                                if (!StringUtils.isEmpty(savedCollectionWidth)) {
+                                    collectionAttrs.add("style", "width: " + savedCollectionWidth + "px;");
+                                }
 
-                                    %><div <%= collectionAttrs %>><%
-                                        // Need to introduce `.foundation-layout-util-maximized-container` wrapper element to work around a bug
-                                        // at `.foundation-container-resizable` which requires its child to be scrollable.
-                                        AttrBuilder previewSupportAttrs = new AttrBuilder(request, xssAPI);
-                                        previewSupportAttrs.addClass("foundation-layout-util-maximized-container");
-                                        previewSupportAttrs.addClass("foundation-collection-previewsupport");
-                                        previewSupportAttrs.add("data-foundation-collection-previewsupport-collection", "child");
-                                        previewSupportAttrs.add("data-foundation-collection-previewsupport-target", "#granite-shell-collection-preview");
-                                        previewSupportAttrs.add("data-foundation-collection-previewsupport-src", itemPreviewSrc);
+                            %>
+                                <div <%= collectionAttrs %>><%
+                                    // Need to introduce `.foundation-layout-util-maximized-container` wrapper element to work around a bug
+                                    // at `.foundation-container-resizable` which requires its child to be scrollable.
+                                    AttrBuilder previewSupportAttrs = new AttrBuilder(request, xssAPI);
+                                    previewSupportAttrs.addClass("foundation-layout-util-maximized-container");
+                                    previewSupportAttrs.addClass("foundation-collection-previewsupport");
+                                    previewSupportAttrs.add("data-foundation-collection-previewsupport-collection", "child");
+                                    previewSupportAttrs.add("data-foundation-collection-previewsupport-target", "#granite-shell-collection-preview");
+                                    previewSupportAttrs.add("data-foundation-collection-previewsupport-src", itemPreviewSrc);
 
-                                        %><div <%= previewSupportAttrs %>><%
-                                            if (StringUtils.isNotEmpty(selector)) {
-                                                %><sling:include resource="<%= currentView %>" addSelectors="<%= selector %>" /><%
-                                            } else {
-                                                %><sling:include resource="<%= currentView %>" /><%
-                                            }
-                                        %></div>
-                                        <div class="foundation-container-resizable-handle"></div>
-                                    </div>
-                                    <div id="granite-shell-collection-preview" class="foundation-layout-panel-content" data-granite-layout-content-min-width="<%= minContentSize %>"></div>
+                                %>
+                                    <div <%= previewSupportAttrs %>><%
+                                        if (StringUtils.isNotEmpty(selector)) {
+                                    %><sling:include resource="<%= currentView %>" addSelectors="<%= selector %>"/><%
+                                    } else {
+                                    %><sling:include resource="<%= currentView %>"/><%
+                                        }
+                                    %></div>
+                                    <div class="foundation-container-resizable-handle"></div>
                                 </div>
+                                <div id="granite-shell-collection-preview" class="foundation-layout-panel-content"
+                                     data-granite-layout-content-min-width="<%= minContentSize %>"></div>
                             </div>
-                        </div><%
+                        </div>
+                    </div>
+                    <%
                     } else {
                         // Note that `.foundation-collection-content` is not needed and can be removed.
                         // However, there is a bad selector using it in Assets code base right now.
-                        %><div class="foundation-layout-panel-content foundation-collection-content" data-granite-layout-content-min-width="<%= minContentSize %>"><%
-                            if (StringUtils.isNotEmpty(selector)) {
-                                %><sling:include resource="<%= currentView %>" addSelectors="<%= selector %>" /><%
-                            } else {
-                                %><sling:include resource="<%= currentView %>" /><%
-                            }
-                        %></div><%
-                    }
-                %></div>
-            </div><%
+                    %>
+                    <div class="foundation-layout-panel-content foundation-collection-content"
+                         data-granite-layout-content-min-width="<%= minContentSize %>"><%
+                        if (StringUtils.isNotEmpty(selector)) {
+                    %><sling:include resource="<%= currentView %>" addSelectors="<%= selector %>"/><%
+                    } else {
+                    %><sling:include resource="<%= currentView %>"/><%
+                        }
+                    %></div>
+                    <%
+                        }
+                    %></div>
+            </div>
+            <%
 
-            Resource footer = resource.getChild("footer");
-            if (footer != null) {
-                %><div class="foundation-layout-panel-footer">
-                    <sling:include resource="<%= footer %>" />
-                </div><%
-            }
-        %></div>
+                Resource footer = resource.getChild("footer");
+                if (footer != null) {
+            %>
+            <div class="foundation-layout-panel-footer">
+                <sling:include resource="<%= footer %>"/>
+            </div>
+            <%
+                }
+            %></div>
     </coral-shell-content>
-</coral-shell><%
+</coral-shell>
+<%
 
-AttrBuilder selectionAttrs = new AttrBuilder(request, xssAPI);
-selectionAttrs.addClass("granite-collection-selectionbar");
-selectionAttrs.addClass("foundation-mode-switcher");
-selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
+    AttrBuilder selectionAttrs = new AttrBuilder(request, xssAPI);
+    selectionAttrs.addClass("granite-collection-selectionbar");
+    selectionAttrs.addClass("foundation-mode-switcher");
+    selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
 
-%><div <%= selectionAttrs %>>
+%>
+<div <%= selectionAttrs %>>
     <div class="foundation-mode-switcher-item" data-foundation-mode-switcher-item-mode="selection"><%
         AttrBuilder selectionBarAttrs = new AttrBuilder(request, xssAPI);
         selectionBarAttrs.addClass("betty-ActionBar betty-ActionBar--large");
@@ -949,44 +1009,49 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
         selectionBarAttrs.add("data-foundation-collection-actionbar-target", targetCollection);
         selectionBarAttrs.add("role", "region");
         selectionBarAttrs.add("aria-label", i18n.get("Action Bar"));
-        %><coral-actionbar <%= selectionBarAttrs %>>
+    %>
+        <coral-actionbar <%= selectionBarAttrs %>>
             <coral-actionbar-primary><%
                 Resource selection = resource.getChild("actions/selection");
                 if (selection != null) {
-                    for (Iterator<Resource> it = selection.listChildren(); it.hasNext();) {
+                    for (Iterator<Resource> it = selection.listChildren(); it.hasNext(); ) {
                         Resource item = it.next();
 
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
 
-                        if(StringUtils.equals(item.getName(),"customadhocassetshare")) {
-                          if(StringUtils.contains(assetId, "/content/dam/projects")){
-                            %><coral-actionbar-item><%
-                                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                                selectionItemAttrs.addClass("betty-ActionBar-item");
-                                cmp.include(item, new Tag(selectionItemAttrs));
-                            %></coral-actionbar-item><%
-                          }
-                        } else if(StringUtils.equals(item.getName(),"adhocassetshare")) {
-                            if(!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")){
-                            %><coral-actionbar-item><%
-                                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                                selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
-                                cmp.include(item, new Tag(selectionItemAttrs));
-                            %></coral-actionbar-item><%
-                          }
-                        } else { %>
-                          <coral-actionbar-item><%
-                              AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                              selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
-                              cmp.include(item, new Tag(selectionItemAttrs));
-                          %></coral-actionbar-item>
-                        <%
+                        if (StringUtils.equals(item.getName(), "customadhocassetshare")) {
+                            if (StringUtils.contains(assetId, "/content/dam/projects")) {
+            %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item");
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                    }
+                } else if (StringUtils.equals(item.getName(), "adhocassetshare")) {
+                    if (!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")) {
+                %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                    }
+                } else { %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                            }
                         }
                     }
-                }
-            %></coral-actionbar-primary>
+                %></coral-actionbar-primary>
             <coral-actionbar-secondary>
                 <coral-actionbar-item><%
                     AttrBuilder deselectAttrs = new AttrBuilder(request, xssAPI);
@@ -1007,7 +1072,8 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
                     counterAttrs.add("data-foundation-admin-selectionstatus-template", i18n.get("{0} selected", null, "{{count}}"));
                     counterAttrs.add("data-foundation-admin-selectionstatus-target", targetCollection);
 
-                    %><button <%= deselectAttrs %>><span <%= counterAttrs %>></span></button>
+                %>
+                    <button <%= deselectAttrs %>><span <%= counterAttrs %>></span></button>
                 </coral-actionbar-item>
             </coral-actionbar-secondary>
         </coral-actionbar>
@@ -1019,244 +1085,282 @@ selectionAttrs.add("data-foundation-mode-switcher-group", modeGroup);
    data-foundation-toggleable-control-src="<%= request.getContextPath() %>/mnt/overlay/granite/ui/content/shell/shortcutsdialog.html">
 </a><%
 
-Resource globalFooter = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalfooter");
-if (globalFooter != null) {
-    for (Iterator<Resource> it = globalFooter.listChildren(); it.hasNext();) {
-        %><sling:include resource="<%= it.next() %>" /><%
+    Resource globalFooter = resourceResolver.getResource("/mnt/overlay/granite/ui/content/globalfooter");
+    if (globalFooter != null) {
+        for (Iterator<Resource> it = globalFooter.listChildren(); it.hasNext(); ) {
+%><sling:include resource="<%= it.next() %>"/><%
+        }
     }
-}
 %></body>
-</html><%!
+</html>
+<%!
 
-/**
- * Fetch the breadcrumb active item title.
- *
- * @return {String} - The active item title or en empty string.
- */
-private String getBreadcrumbActiveItemTitle(Resource resource, ComponentHelper cmp) throws ServletException, IOException {
-    String activeItemTitle = "";
-    Resource breadcrumbs = resource.getChild("breadcrumbs");
-    if (breadcrumbs != null) {
-        List<Resource> crumbs = IteratorUtils.toList(cmp.asDataSource(breadcrumbs).iterator());
-        // The item in position 0 is ignored as it represents the root item.
-        if (crumbs.size() > 1) {
-            Resource item = crumbs.get(0);
-            Config itemCfg = new Config(item);
-            activeItemTitle = itemCfg.get("title");
+    /**
+     * Fetch the breadcrumb active item title.
+     *
+     * @return {String} - The active item title or en empty string.
+     */
+    private String getBreadcrumbActiveItemTitle(Resource resource, ComponentHelper cmp) throws ServletException, IOException {
+        String activeItemTitle = "";
+        Resource breadcrumbs = resource.getChild("breadcrumbs");
+        if (breadcrumbs != null) {
+            List<Resource> crumbs = IteratorUtils.toList(cmp.asDataSource(breadcrumbs).iterator());
+            // The item in position 0 is ignored as it represents the root item.
+            if (crumbs.size() > 1) {
+                Resource item = crumbs.get(0);
+                Config itemCfg = new Config(item);
+                activeItemTitle = itemCfg.get("title");
+            }
+        }
+
+        return activeItemTitle;
+    }
+
+    private String getCookie(SlingHttpServletRequest request, String key) {
+        try {
+            Cookie cookie = request.getCookie(key);
+
+            if (cookie == null) {
+                return null;
+            }
+
+            return URLDecoder.decode(cookie.getValue(), "utf-8");
+        } catch (UnsupportedEncodingException impossible) {
+            throw new RuntimeException(impossible);
         }
     }
 
-    return activeItemTitle;
-}
+    private String getChildrenJSON(Resource current, Resource root) throws Exception {
+        List<Resource> ancestors = getAncestors(current, root);
 
-private String getCookie(SlingHttpServletRequest request, String key) {
-    try {
-        Cookie cookie = request.getCookie(key);
+        JSONStringer json = new JSONStringer();
 
-        if (cookie == null) {
-            return null;
+        json.array();
+
+        for (Resource ancestor : ancestors) {
+            json.object();
+            json.key("id").value(ancestor.getPath());
+            json.endObject();
         }
 
-        return URLDecoder.decode(cookie.getValue(), "utf-8");
-    } catch (UnsupportedEncodingException impossible) {
-        throw new RuntimeException(impossible);
-    }
-}
-
-private String getChildrenJSON(Resource current, Resource root) throws Exception {
-    List<Resource> ancestors = getAncestors(current, root);
-
-    JSONStringer json = new JSONStringer();
-
-    json.array();
-
-    for (Resource ancestor : ancestors) {
         json.object();
-        json.key("id").value(ancestor.getPath());
+        json.key("id").value(current.getPath());
         json.endObject();
+
+        json.endArray();
+
+        return json.toString();
     }
 
-    json.object();
-    json.key("id").value(current.getPath());
-    json.endObject();
+    /**
+     * Returns the ancestors of the current resource (exclusive) up to the root.
+     * The result is ordered with the root as the first item.
+     */
+    private List<Resource> getAncestors(Resource current, Resource root) {
+        List<Resource> results = new ArrayList<Resource>();
 
-    json.endArray();
+        if (current == null || root == null || current.getPath().equals(root.getPath())) {
+            return results;
+        }
 
-    return json.toString();
-}
+        Resource r = current.getParent();
 
-/**
- * Returns the ancestors of the current resource (exclusive) up to the root.
- * The result is ordered with the root as the first item.
- */
-private List<Resource> getAncestors(Resource current, Resource root) {
-    List<Resource> results = new ArrayList<Resource>();
+        while (r != null) {
+            if (r.getPath().equals(root.getPath())) {
+                break;
+            }
 
-    if (current == null || root == null || current.getPath().equals(root.getPath())) {
+            results.add(0, r);
+            r = r.getParent();
+        }
+
         return results;
     }
 
-    Resource r = current.getParent();
+    private String generateConsoleId(Resource resource) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("md5");
+            byte[] b = md.digest(resource.getPath().getBytes("utf-8"));
+            return Base64.getUrlEncoder().encodeToString(b).substring(0, 22); // cut off last "==".
+        } catch (NoSuchAlgorithmException impossible) {
+            throw new RuntimeException(impossible);
+        } catch (UnsupportedEncodingException impossible) {
+            throw new RuntimeException(impossible);
+        }
+    }
 
-    while (r != null) {
-        if (r.getPath().equals(root.getPath())) {
-            break;
+    private String getTargetViewName(SlingHttpServletRequest request, String consoleId) {
+        try {
+            consoleId = URLEncoder.encode(consoleId, "utf-8");
+            Cookie cookie = request.getCookie(consoleId);
+
+            if (cookie == null) {
+                return null;
+            }
+
+            return URLDecoder.decode(cookie.getValue(), "utf-8");
+        } catch (UnsupportedEncodingException impossible) {
+            throw new RuntimeException(impossible);
+        }
+    }
+
+    private String handleURITemplate(String src, HttpServletRequest request) {
+        if (src != null && src.startsWith("/")) {
+            return request.getContextPath() + src;
+        }
+        return src;
+    }
+
+    private String handleURITemplate(Config cfg, String name, ExpressionHelper ex, HttpServletRequest request) {
+        String value = ex.getString(cfg.get(name, String.class));
+
+        if (value != null) {
+            if (value.startsWith("/")) {
+                return request.getContextPath() + value;
+            } else {
+                return value;
+            }
         }
 
-        results.add(0, r);
-        r = r.getParent();
-    }
+        value = ex.getString(cfg.get(name + ".abs", String.class));
 
-    return results;
-}
-
-private String generateConsoleId(Resource resource) {
-    try {
-        MessageDigest md = MessageDigest.getInstance("md5");
-        byte[] b = md.digest(resource.getPath().getBytes("utf-8"));
-        return Base64.getUrlEncoder().encodeToString(b).substring(0, 22); // cut off last "==".
-    } catch (NoSuchAlgorithmException impossible) {
-        throw new RuntimeException(impossible);
-    } catch (UnsupportedEncodingException impossible) {
-        throw new RuntimeException(impossible);
-    }
-}
-
-private String getTargetViewName(SlingHttpServletRequest request, String consoleId) {
-    try {
-        consoleId = URLEncoder.encode(consoleId, "utf-8");
-        Cookie cookie = request.getCookie(consoleId);
-
-        if (cookie == null) {
-            return null;
-        }
-
-        return URLDecoder.decode(cookie.getValue(), "utf-8");
-    } catch (UnsupportedEncodingException impossible) {
-        throw new RuntimeException(impossible);
-    }
-}
-
-private String handleURITemplate(String src, HttpServletRequest request) {
-    if (src != null && src.startsWith("/")) {
-        return request.getContextPath() + src;
-    }
-    return src;
-}
-
-private String handleURITemplate(Config cfg, String name, ExpressionHelper ex, HttpServletRequest request) {
-    String value = ex.getString(cfg.get(name, String.class));
-
-    if (value != null) {
-        if (value.startsWith("/")) {
+        if (value != null) {
             return request.getContextPath() + value;
         } else {
             return value;
         }
     }
 
-    value = ex.getString(cfg.get(name + ".abs", String.class));
+    private String getPreferencesJSON(UserProperties props) throws Exception {
+        JSONStringer json = new JSONStringer();
+        json.object();
 
-    if (value != null) {
-        return request.getContextPath() + value;
-    } else {
-        return value;
-    }
-}
-
-private String getPreferencesJSON(UserProperties props) throws Exception {
-    JSONStringer json = new JSONStringer();
-    json.object();
-
-    if (props != null) {
-        for (String name : props.getPropertyNames()) {
-            Object v = props.getProperty(name, null, Object.class); // No conversion, use Object.class
-            if (v != null) {
-                json.key(name).value(v);
+        if (props != null) {
+            for (String name : props.getPropertyNames()) {
+                Object v = props.getProperty(name, null, Object.class); // No conversion, use Object.class
+                if (v != null) {
+                    json.key(name).value(v);
+                }
             }
+        }
+
+        json.endObject();
+        return json.toString();
+    }
+
+    private String getPreference(UserProperties props, String name, String defaultValue) throws Exception {
+        if (props != null) {
+            return props.getProperty(name, defaultValue, String.class);
+        } else {
+            return defaultValue;
         }
     }
 
-    json.endObject();
-    return json.toString();
-}
+    /**
+     * Return the hierarchy and name of the current page based on consoleId.
+     *
+     * If the first part of the consoleId is "cq" or "granite", the part is ignored.
+     *
+     * Example
+     *
+     * ----------------------------------------------
+     * consoleId    | result
+     * ----------------------------------------------
+     * cq-sites     | hierarchy = sites, name = sites
+     * cq-sites-abc | hierarchy = sites, name = abc
+     * ----------------------------------------------
+     */
+    private String[] getPageHierarchy(String consoleId) {
+        if (StringUtils.isBlank(consoleId)) {
+            return null;
+        }
 
-private String getPreference(UserProperties props, String name, String defaultValue) throws Exception {
-    if (props != null) {
-        return props.getProperty(name, defaultValue, String.class);
-    } else {
-        return defaultValue;
+        String[] parts = consoleId.split("-");
+
+        int startIndex = 0;
+
+        String namespace = parts[0];
+        if (namespace.equals("cq") || namespace.equals("granite")) {
+            startIndex = 1;
+        }
+
+        if (startIndex >= parts.length) {
+            return null;
+        }
+
+        String name = parts[parts.length - 1];
+
+        String hierarchy;
+        if (startIndex == parts.length - 1) {
+            hierarchy = name;
+        } else {
+            hierarchy = StringUtils.join(parts, ':', startIndex, parts.length - 1);
+        }
+
+        return new String[]{hierarchy, name};
     }
-}
 
-/**
- * Return the hierarchy and name of the current page based on consoleId.
- *
- * If the first part of the consoleId is "cq" or "granite", the part is ignored.
- *
- * Example
- *
- * ----------------------------------------------
- * consoleId    | result
- * ----------------------------------------------
- * cq-sites     | hierarchy = sites, name = sites
- * cq-sites-abc | hierarchy = sites, name = abc
- * ----------------------------------------------
- */
-private String[] getPageHierarchy(String consoleId) {
-    if (StringUtils.isBlank(consoleId)) {
+    /**
+     * Returns the hierarchy and name of the current page based on the title.
+     */
+    private String[] getPageHierarchyByTitle(String title) {
+        String[] parts = title.split("\\|");
+
+        String namespace = parts[0];
+        if (namespace.startsWith("AEM")) {
+            parts[0] = namespace.replaceFirst("AEM", "");
+        }
+
+        String name = parts[parts.length - 1].trim().toLowerCase();
+
+        String hierarchy;
+        if (parts.length == 1) {
+            hierarchy = name;
+        } else {
+            hierarchy = Arrays.stream(parts)
+                    .limit(parts.length - 1)
+                    .map(String::trim)
+                    .map(String::toLowerCase)
+                    .collect(Collectors.joining(":"));
+        }
+
+        return new String[]{hierarchy, name};
+    }
+
+    private boolean displayBreadcrumbItem(String path, String assetId, ResourceResolver resourceResolver) {
+        if (!StringUtils.isEmpty(path)) {
+            if (path.equals("/content/dam")) {
+                return false;
+            }
+            String projectPath = getProjectPath(assetId, resourceResolver);
+            if (!StringUtils.isEmpty(projectPath)) {
+                String projectFolderPath = projectPath.substring("/content/projects".length());
+                String damFolderPath = path.substring("/content/dam/projects".length());
+                if (projectFolderPath.equals(damFolderPath)) {
+                    return true;
+                }
+                if (projectFolderPath.contains(damFolderPath)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private String getProjectPath(String assetId, ResourceResolver resourceResolver) {
+        if (StringUtils.contains(assetId, "/content/dam/projects")) {
+            Resource asset = resourceResolver.getResource(assetId);
+            boolean isProject = false;
+            while (!asset.getPath().equals("/content/dam/projects") && !isProject) {
+                if (asset.getValueMap().containsKey("projectPath")) {
+                    isProject = true;
+                } else {
+                    asset = asset.getParent();
+                }
+            }
+            return asset.getValueMap().get("projectPath", String[].class)[0];
+        }
         return null;
     }
 
-    String[] parts = consoleId.split("-");
-
-    int startIndex = 0;
-
-    String namespace = parts[0];
-    if (namespace.equals("cq") || namespace.equals("granite")) {
-        startIndex = 1;
-    }
-
-    if (startIndex >= parts.length) {
-        return null;
-    }
-
-    String name = parts[parts.length - 1];
-
-    String hierarchy;
-    if (startIndex == parts.length - 1) {
-        hierarchy = name;
-    } else {
-        hierarchy = StringUtils.join(parts, ':', startIndex, parts.length - 1);
-    }
-
-    return new String[] { hierarchy, name };
-}
-
-/**
- * Returns the hierarchy and name of the current page based on the title.
- */
-private String[] getPageHierarchyByTitle(String title) {
-    String[] parts = title.split("\\|");
-
-    String namespace = parts[0];
-    if (namespace.startsWith("AEM")) {
-        parts[0] = namespace.replaceFirst("AEM", "");
-    }
-
-    String name = parts[parts.length - 1].trim().toLowerCase();
-
-    String hierarchy;
-    if (parts.length == 1) {
-        hierarchy = name;
-    } else {
-    	hierarchy = Arrays.stream(parts)
-            .limit(parts.length - 1)
-            .map(String::trim)
-            .map(String::toLowerCase)
-            .collect(Collectors.joining(":"));
-    }
-
-    return new String[] { hierarchy, name };
-}
 %>

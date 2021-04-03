@@ -24227,7 +24227,7 @@ a {
   color: #00915A;
 }
 
-betty-titlebar-title coral-selectlist > coral-selectlist-item:last-child{
+.shell-collectionpage-tree div[name="Projects"]{
   display:none;
 }
 
