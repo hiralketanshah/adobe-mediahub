@@ -656,6 +656,10 @@
           permission: deny
           actions: read
 
+        - path: /etc/acs-commons/lists
+          permission: allow
+          actions: read
+
     - mediahub-reader-medialibrary:
         - path: /content/dam/medialibrary
           permission: allow
