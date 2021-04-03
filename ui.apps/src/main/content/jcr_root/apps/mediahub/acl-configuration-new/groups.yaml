@@ -26,7 +26,7 @@
 
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: mediahub-projects-users,user-administrators,mediahub-project-administrator
+          isMemberOf: user-administrators,mediahub-project-administrator
           path: /home/groups/mediahub
 
     - mediahub-basic-reader:
@@ -52,7 +52,7 @@
 
     - mediahub-project-administrator:
         - name:
-          isMemberOf: projects-administrators
+          isMemberOf: mediahub-projects-users,projects-administrators
           members:
           path: /home/groups/mediahub
 
@@ -82,7 +82,7 @@
 
     - mediahub-administrators:
         - name:
-          isMemberOf: mediahub-basic,user-administrators,mediahub-project-administrator
+          isMemberOf: user-administrators,mediahub-project-administrator
           members:
           path: /home/groups/mediahub
 
