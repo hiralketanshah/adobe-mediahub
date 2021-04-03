@@ -851,6 +851,11 @@
           privileges: jcr:read
           repGlob:
 
+        - path: /home/users
+          permission: allow
+          privileges: jcr:read
+          repGlob:
+
     - mediahub-basic-project-manager:
         - path: /var/workflow/models
           permission: allow
