@@ -569,26 +569,26 @@ Resource globalHead = resourceResolver.getResource(path);
     var folder = document.getElementById("dam-create-folder");
     var media = document.getElementById("dam-create-folder-1");
     <% if( metadata.containsKey("bnpp-media")){%>
-	    if(folder){
+	    if(typeof folder !== 'undefined'){
 	      folder.style.display = "none";
 	    }
-	    if(media){
+	    if(typeof media !== 'undefined'){
 	      media.style.display = "none";
 	    }
     <%} else {  %>
-      if(folder){
+      if(typeof folder !== 'undefined'){
         folder.style.display = "block";
       }
-      if(media){
+      if(typeof media !== 'undefined'){
         media.style.display = "block";
       }
     <%
     }
     } else { %>
-   	if(folder){
+   	if(typeof folder !== 'undefined'){
       folder.style.display = "block";
     }
-    if(media){
+    if(typeof media !== 'undefined'){
       media.style.display = "block";
     }
   <% }
