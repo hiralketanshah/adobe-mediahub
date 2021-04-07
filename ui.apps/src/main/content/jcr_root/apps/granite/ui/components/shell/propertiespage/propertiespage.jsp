@@ -814,7 +814,7 @@ PropertiesPage
     if (StringUtils.isNotEmpty(assetId)) {
         Resource asset = resourceResolver.getResource(assetId);
         if (asset != null) {
-            if (StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")) {
+            if (asset.getValueMap().get("jcr:primaryType") != null && StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")) {
                 Iterator<Resource> it = asset.listChildren();
                 while (it.hasNext()) {
                     Resource child = it.next();
