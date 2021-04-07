@@ -16,6 +16,12 @@ PassEnv DISP_ID
 			Header merge X-Content-Type-Options nosniff "expr=%{resp:X-Content-Type-Options}!='nosniff'"
 		# Make sure proxies don't deliver the wrong content
 		Header append Vary User-Agent env=!dont-vary
+
+		# Requested by BNPP security
+        Header always set Content-Security-Policy "default-src https: data: 'unsafe-inline' 'unsafe-eval'"
+        Header always set Referrer-Policy "strict-origin"
+        Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
+
 	</IfModule>
 	<Directory />
 		# Update /etc/sysconfig/httpd with setting the PUBLISH_WHITELIST_ENABLED from 0 or 1 to enable or disable ip restriction rules
