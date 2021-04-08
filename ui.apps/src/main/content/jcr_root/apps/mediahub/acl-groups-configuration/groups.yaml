@@ -6,6 +6,7 @@
     #    path: /home/users/mediahub
     #    skipForRunmodes: production
     defaultUnmanagedExternalMembersRegex: .*
+    defaultUnmanagedAcePathsRegex: /content/(projects|dam/(medialibrary|projects))/.*
 
 - user_config:
     - userDeactivationService:
@@ -866,6 +867,13 @@
     - mediahub-basic-project-internal-contributor:
         - path: /var/workflow/models
           permission: deny
+          actions: read
+          restrictions:
+            rep:glob: '/*'
+
+    - mediahub-basic-project-publisher:
+        - path: /var/workflow/models
+          permission: allow
           actions: read
           restrictions:
             rep:glob: '/*'
