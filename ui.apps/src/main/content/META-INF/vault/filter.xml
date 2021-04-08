@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/apps/mediahub/clientlibs"/>
-    <filter root="/apps/mediahub/components"/>
-    <!-- <filter root="/apps/mediahub/i18n"/>-->
     <filter root="/apps/granite"/>
     <filter root="/apps/cq">
         <exclude pattern="/apps/cq/core"/>
@@ -14,8 +11,8 @@
         <exclude pattern="/apps/dam/config"/>
         <exclude pattern="/apps/dam/temp"/>
     </filter>
-    <filter root="/apps/mediahub/projects"/>
-    <filter root="/apps/mediahub/acl-groups-configuration"/>
-    <filter root="/apps/mediahub/acl-groups-initialisation"/>
+    <filter root="/apps/mediahub">
+        <exclude pattern="/apps/mediahub/i18n"/>
+    </filter>
     <filter root="/apps/settings/dam"/>
 </workspaceFilter>
