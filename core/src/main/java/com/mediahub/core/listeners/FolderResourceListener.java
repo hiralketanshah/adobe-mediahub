@@ -84,7 +84,11 @@ public class FolderResourceListener implements EventHandler {
 	
 	      if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
 	        adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
-	        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+          if(!StringUtils.equals(event.getProperty(BnpConstants.USER_ID).toString(),
+              BnpConstants.USER_DEACTIVATION_SERVICE)) {
+            adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,
+                event.getProperty(BnpConstants.USER_ID).toString());
+          }
 	      }
       }
     }
@@ -103,11 +107,19 @@ public class FolderResourceListener implements EventHandler {
 
       if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_CHANGED)){
         adpatableResource.put(JcrConstants.JCR_LASTMODIFIED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+        if(!StringUtils.equals(event.getProperty(BnpConstants.USER_ID).toString(),
+            BnpConstants.USER_DEACTIVATION_SERVICE)){
+          adpatableResource.put(JcrConstants.JCR_LAST_MODIFIED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+        }
+
       }
       if(StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED)){
         adpatableResource.put(JcrConstants.JCR_CREATED, new GregorianCalendar());
-        adpatableResource.put(JcrConstants.JCR_CREATED_BY,  event.getProperty(BnpConstants.USER_ID).toString());
+        if(!StringUtils.equals(event.getProperty(BnpConstants.USER_ID).toString(),
+            BnpConstants.USER_DEACTIVATION_SERVICE)) {
+          adpatableResource
+              .put(JcrConstants.JCR_CREATED_BY, event.getProperty(BnpConstants.USER_ID).toString());
+        }
       }
     }
   }
