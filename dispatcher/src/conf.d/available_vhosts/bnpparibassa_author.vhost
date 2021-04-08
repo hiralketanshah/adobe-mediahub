@@ -23,7 +23,7 @@ PassEnv DISP_ID
 		# Requested by BNPP security
 		Header always set Content-Security-Policy "default-src https: data: 'unsafe-inline' 'unsafe-eval'"
         Header always set Referrer-Policy "strict-origin"
-        Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
+        Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(self),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
 
 	</IfModule>
 	<Directory "${AUTHOR_DOCROOT}">
