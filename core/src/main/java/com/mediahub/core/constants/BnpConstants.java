@@ -86,4 +86,5 @@ public class BnpConstants {
     public static final String MEDIAHUB_BASIC_READER = "mediahub-basic-reader";
     public static final String MEDIAHUB_BASIC_ENTITY_MANAGER = "mediahub-basic-entity-manager";
     public static final String MEDIAHUB_READER_MEDIALIBRARY = "mediahub-reader-medialibrary";
+    public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
 }
