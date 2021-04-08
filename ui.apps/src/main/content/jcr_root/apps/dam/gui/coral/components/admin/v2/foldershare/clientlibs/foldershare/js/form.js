@@ -99,7 +99,7 @@
                 $("#collection-modifieddate").attr("value", (new Date()).toISOString());
             }
 
-            createNewTags($("form.data-fields.active")).done(function() {
+            createNewTags($("form.cq-damadmin-admin-folder-settings-form")).done(function() {
                 addRating();
             }).fail(function(response) {
                 showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
@@ -184,7 +184,7 @@
                 $("#collection-modifieddate").attr("value", (new Date()).toISOString());
             }
 
-            createNewTags($("form.data-fields.active")).done(function() {
+            createNewTags($("form.cq-damadmin-admin-folder-settings-form")).done(function() {
                 addRating();
             }).fail(function(response) {
                 showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
