@@ -22,5 +22,4 @@
 /0081 { /type "deny" /path "*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 /0082 { /type "allow" /path "/content/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 /0083 { /type "deny" /path "/bin/querybuilder" }
-
-
+/0084 { /type "allow" /path "/bin/querybuilder" /query '.*(path=(\/|%2F)content).*' }
