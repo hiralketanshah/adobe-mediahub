@@ -37,7 +37,7 @@
 
     - mediahub-basic-contributor:
         - name:
-          isMemberOf: mediahub-basic
+          isMemberOf: mediahub-basic,workflow-users
           path: /home/groups/mediahub
 
     - mediahub-projects-users:
@@ -84,6 +84,12 @@
     - mediahub-administrators:
         - name:
           isMemberOf: user-administrators,mediahub-project-administrator
+          members:
+          path: /home/groups/mediahub
+
+    - mediahub-super-administrators:
+        - name:
+          isMemberOf: mediahub-administrators
           members:
           path: /home/groups/mediahub
 
@@ -793,12 +799,6 @@
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
           actions: read
-
-        - path: /var/workflow/models
-          permission: deny
-          actions: read
-          restrictions:
-            rep:glob: '/*'
 
         - path: /content/dam/medialibrary
           permission: allow
