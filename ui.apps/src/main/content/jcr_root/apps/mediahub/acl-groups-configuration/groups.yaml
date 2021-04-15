@@ -27,7 +27,7 @@
 
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: user-administrators,mediahub-project-administrator
+          isMemberOf: user-administrators,mediahub-project-administrator,tag-administrators
           path: /home/groups/mediahub
 
     - mediahub-basic-reader:
@@ -83,7 +83,7 @@
 
     - mediahub-administrators:
         - name:
-          isMemberOf: user-administrators,mediahub-project-administrator
+          isMemberOf: user-administrators,mediahub-project-administrator,workflow-administrators,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -698,11 +698,7 @@
           privileges: jcr:all
           repGlob:
 
-        - path: /content/cq:tags
-          permission: allow
-          actions:
-          privileges: jcr:all
-          repGlob:
+
 
         - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
           permission: allow
@@ -737,6 +733,73 @@
           actions: read
           privileges:
           repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/general
+          permission: allow
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/general/tagging
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/workflow
+          permission: allow
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/workflow/instances
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/workflow/archive
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/workflow/failures
+          permission: allow
+          actions: read
+          repGlob:
+
+
+
+    - mediahub-super-administrators:
+
+        - path: /conf/global/settings/dam/search/facets
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/general/customsearchfacets
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/operations
+          permission: allow
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/operations/systemoverview
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/cq/core/content/nav/tools/operations/monitoring
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /libs/granite/operations
+          permission: allow
+          actions: read
+          repGlob:
+
+
 
     - mediahub-basic-entity-manager:
 
@@ -778,11 +841,16 @@
           privileges:
           repGlob:
 
-        - path: /content/cq:tags
+        - path: /libs/cq/core/content/nav/tools/general
           permission: allow
-          actions:
-          privileges: jcr:all
+          actions: read
+          repGlob: ""
+
+        - path: /libs/cq/core/content/nav/tools/general/tagging
+          permission: allow
+          actions: read
           repGlob:
+
 
     - mediahub-basic-reader:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
