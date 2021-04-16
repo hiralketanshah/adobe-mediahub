@@ -21,5 +21,6 @@
 /0080 { /type "deny" /method "GET" /url "*" /extension '(jsp|config)' }
 /0081 { /type "deny" /path "*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 /0082 { /type "allow" /path "/content/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
-/0083 { /type "deny" /path "/bin/querybuilder" }
-/0084 { /type "allow" /path "/bin/querybuilder" /query '.*(path=(\/|%2F)content).*' }
+/0083 { /type "allow" /path "/libs/cq/security/content/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
+/0084 { /type "deny" /path "/bin/querybuilder" }
+/0085 { /type "allow" /path "/bin/querybuilder" /query '.*(path=(\/|%2F)content).*' }
