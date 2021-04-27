@@ -48,6 +48,7 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class ProjectsResourceListenerTest {
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
     private static final String PARENT_PATH = "/content/projects/bnpfolder1/bnpfolder2";
@@ -132,7 +133,7 @@ public class ProjectsResourceListenerTest {
 
     @Test
     public void onEventTest() throws Exception, RepositoryException {
-        /*when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
         when(resolver.getResource("/content/projects")).thenReturn(resource);
         when(resource.getResourceType()).thenReturn("cq/gui/components/projects/admin/card/projectcard");
@@ -167,13 +168,13 @@ public class ProjectsResourceListenerTest {
         changedResources.add(change);
 
         projectsResourceListener.onChange(changedResources);
-        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);*/
+        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
 
     }
 
     @Test
     public void onEventTest1() throws Exception, RepositoryException {
-        /*when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
         when(resolver.getResource("/content/projects")).thenReturn(resource);
         when(resource.getResourceType()).thenReturn("cq/gui/components/projects/admin/card/projectcard");
@@ -214,7 +215,7 @@ public class ProjectsResourceListenerTest {
         changedResources.add(change);
 
         projectsResourceListener.onChange(changedResources);
-        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);*/
+        verify(accessControlManager).setPolicy(PARENT_PATH, accessControlPolicy);
 
     }
 
