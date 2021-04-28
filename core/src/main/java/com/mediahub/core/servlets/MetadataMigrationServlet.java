@@ -116,7 +116,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
      * @return
      * @throws PersistenceException
      */
-    private Resource createOrGetMetadata(ResourceResolver resourceResolver, Resource content)
+    protected Resource createOrGetMetadata(ResourceResolver resourceResolver, Resource content)
             throws PersistenceException {
         Resource asset;
         if (content.getChild(BnpConstants.METADATA) == null) {
@@ -149,7 +149,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
      * @param modifiableValueMap
      * @throws PersistenceException
      */
-    private void setResourceMetadata(ResourceResolver resourceResolver, Map<String, List<String>> assets, List<Object> propertyNames, String assetPath,
+    protected void setResourceMetadata(ResourceResolver resourceResolver, Map<String, List<String>> assets, List<Object> propertyNames, String assetPath,
                                      ModifiableValueMap modifiableValueMap, ModifiableValueMap contentValueMap) throws PersistenceException {
         List<String> propertyValues = assets.get(assetPath);
         for (int index = 0; index < propertyValues.size(); index++) {
@@ -184,7 +184,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
      * @param propertyValues
      * @param index
      */
-    private void setMultiValueProperty(ResourceResolver resourceResolver, List<Object> propertyNames,
+    protected void setMultiValueProperty(ResourceResolver resourceResolver, List<Object> propertyNames,
                                        ModifiableValueMap modifiableValueMap, List<String> propertyValues, int index) {
 
         String propertyName = ((String[]) propertyNames.get(index))[0];
@@ -204,7 +204,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
         }
     }
 
-    private List<String> createKeywordTags(ResourceResolver resourceResolver, List<String> propertyValues,
+    protected List<String> createKeywordTags(ResourceResolver resourceResolver, List<String> propertyValues,
                                            int index) {
         List<String> keywordTagIdList = new ArrayList<>();
         TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
@@ -213,10 +213,10 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
                 Tag mediahub = tagManager.resolve("/content/cq:tags/mediahub");
                 if (null != mediahub) {
                     Tag keywords = tagManager.resolve("/content/cq:tags/mediahub/keywords");
-                    if (null == keywords) {
-                        keywords = tagManager.resolve("/content/cq:tags/mediahub/keywords");
-                    }
                     try {
+                        if (null == keywords) {
+                            keywords = tagManager.createTag("/content/cq:tags/mediahub/keywords", "keywords", "keywords", true);
+                        }
                         Tag keywordTag = tagManager.createTag(keywords.getPath() + "/" + value, value, value, true);
                         keywordTagIdList.add(keywordTag.getTagID());
                     } catch (InvalidTagFormatException e) {
