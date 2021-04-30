@@ -399,14 +399,24 @@
     function createNewTags(form) {
         return $.when.apply(null, form.find('.cq-ui-tagfield coral-taglist input[type="hidden"][name]').map(function() {
             var el = this;
+            var tagName = "";
 
             if (el.value.indexOf(":") >= 0) {
                 return;
             }
 
+            if (el.name.indexOf("/") >= 0) {
+                var pieces = el.name.split("/");
+                tagName = pieces[pieces.length - 1];
+            }
             var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
-            el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
-                : el.previousElementSibling.textContent;
+            if (el.previousElementSibling.textContent.indexOf(tagName) < 0) {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + tagName + "/" + el.previousElementSibling.textContent)
+                    : tagName + "/" + el.previousElementSibling.textContent;
+            } else {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
+                    : el.previousElementSibling.textContent;
+            }
             return createSingleTag(el.value).then(function(tag) {
                 // Fix tag name in select element
                 var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
