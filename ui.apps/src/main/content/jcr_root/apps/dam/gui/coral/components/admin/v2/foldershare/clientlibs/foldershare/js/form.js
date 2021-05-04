@@ -95,19 +95,38 @@
                 Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
         });
 
-            var wizard = $("form#folder-settings-form")[0];
-            var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
-            var hintFields = createHintFields(false, false);
-            $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
-                // submit the form after cug policy is applied to folder
-                $.DAM.FolderShare.submit(wizard, hintFields);
-            });
+        var form = $("form.cq-damadmin-admin-folder-settings-form");
+        var wizard = $("form#folder-settings-form")[0];
+        var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+        var hintFields = createHintFields(false, false);
+        var xhr = $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+            // submit the form after cug policy is applied to folder
+            $.DAM.FolderShare.submit(wizard, hintFields);
+        });
 
-            if ($("#collection-modifieddate").length) {
-                $("#collection-modifieddate").attr("value", (new Date()).toISOString());
-            }
+        if ($("#collection-modifieddate").length) {
+            $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+        }
 
+        // Custom Success Handler to solve save button product issue
+        createSuccessHandler(form, folderPath, xhr);
+    }
 
+    function createSuccessHandler(form, folderPath, xhr) {
+      var url = $("[data-selfurl]").data("selfurl");
+      if (!url) {
+          // Fallback
+          url = "/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard.html";
+      }
+      var assetPath = encodeURI(folderPath);
+      url += assetPath;
+      $.ajax({
+          type: "GET",
+          cache: false,
+          url: url
+      }).success(function (response) {
+          form.trigger("foundation-form-submitted", [true, xhr]);
+      });
     }
 
     function saveMetadataChanges(e) {
@@ -140,6 +159,7 @@
         if ($("#collection-modifieddate").length) {
             $("#collection-modifieddate").attr("value", (new Date()).toISOString());
         }
+
 
         //
     }
