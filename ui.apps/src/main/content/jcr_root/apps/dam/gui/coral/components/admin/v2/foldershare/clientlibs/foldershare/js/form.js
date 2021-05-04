@@ -99,17 +99,23 @@
         var wizard = $("form#folder-settings-form")[0];
         var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
         var hintFields = createHintFields(false, false);
-        var xhr = $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
-            // submit the form after cug policy is applied to folder
-            $.DAM.FolderShare.submit(wizard, hintFields);
-        });
+        if (e.currentTarget.id === "shell-propertiespage-saveactivator-media") {
+          $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+              // submit the form after cug policy is applied to folder
+              // Custom Success Handler to solve save button product issue
+              $.DAM.FolderShare.simpleSave(wizard, hintFields);
+          });
+        } else {
+          $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+              // submit the form after cug policy is applied to folder
+              $.DAM.FolderShare.submit(wizard, hintFields);
+          });
+        }
+
 
         if ($("#collection-modifieddate").length) {
             $("#collection-modifieddate").attr("value", (new Date()).toISOString());
         }
-
-        // Custom Success Handler to solve save button product issue
-        createSuccessHandler(form, folderPath, xhr);
     }
 
     function createSuccessHandler(form, folderPath, xhr) {
