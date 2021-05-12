@@ -1925,6 +1925,10 @@
                     duplicates.splice(0, 1);
                     damfileupload._showDuplicates(duplicates);
                 }
+                var xssName = _g.XSS.getXSSValue(duplicates[0]["name"]);
+                if(damfileupload.contentPath.includes("content/dam/medialibrary")){
+                  fileReplace(damfileupload.contentPath + "/" + xssName);
+                }
             },
             _autoResolveDuplicateFileNames: function(damfileupload, duplicates) {
                 var duplicatesIndex = 0;
@@ -2131,6 +2135,32 @@
             });
         });
     }
+
+    function fileReplace(filePath){
+      var data = [];
+      data.push({name: '_charset_', value: 'UTF-8'});
+      data.push({name: 'payloadType', value: 'JCR_PATH'});
+      data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---validation'});
+      data.push({name: 'model@Delete', value: ''});
+      data.push({name: 'workflowTitle', value: 'Internal Publish'});
+      data.push({name: 'payload', value: filePath});
+
+      $.ajax({
+          type: "POST",
+          url: "/etc/workflow/instances",
+          data: data,
+          async: true,
+          cache: false,
+          success: function (response) {
+              if (response) {
+                  var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+              }
+          }
+      })
+
+
+    }
+
 
     window.DamFileUpload = DamFileUpload;
 })(document, Granite.$, UNorm);
