@@ -43,12 +43,9 @@ public class UserCreationServiceImpl implements UserCreationService {
 	@Reference
 	private ResourceResolverFactory resourceResolverFactory;
 	
-	private ResourceResolver resourceResolver;
-	private Session session;
-	private List<UserData> users;
-
 	@Override
-	public void createUsers(List<UserData> users) {
+	public void createUsers(List<UserData> users, ResourceResolver resourceResolver) {
+		Session session;
 		try {
 			session = resourceResolver.adaptTo(Session.class);
 			JackrabbitSession js = (JackrabbitSession) session;
@@ -82,14 +79,15 @@ public class UserCreationServiceImpl implements UserCreationService {
 
 			}
 		} catch (RepositoryException e) {
-			log.info("Error while creating user {}", e.getMessage());
+			log.info("Error while creating user {}", e);
 		}
 	}
 
 	@Override
 	public void readCsv(String filePath) {
 		Resource resource = null;
-
+		ResourceResolver resourceResolver=null;
+		List<UserData> users;
 		Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 				BnpConstants.WRITE_SERVICE);
 		try {
@@ -132,12 +130,12 @@ public class UserCreationServiceImpl implements UserCreationService {
 				count++;
 
 			}
-			createUsers(users);
+			createUsers(users,resourceResolver);
 			
 			br.close();
 			
 		} catch (IOException | LoginException e) {
-			log.info("Error while reading CSV {}", e.getMessage());
+			log.info("Error while reading CSV {}", e);
 		}
 	}
 
