@@ -855,7 +855,7 @@ PropertiesPage
     function deactivateChildren() {
         var ui = $(window).adaptTo("foundation-ui");
         failureMessage = Granite.I18n.get("Kindly Deactivate Assets inside Media Folder");
-        ui.prompt(Granite.I18n.get("Kindly Deactivate Assets inside Media Folder"), failureMessage, "success", [{
+        ui.prompt(Granite.I18n.get("Kindly Deactivate Assets inside Media Folder"), failureMessage, "error", [{
             text: Granite.I18n.get("OK"),
             primary: true
         }]);

@@ -95,19 +95,44 @@
                 Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
         });
 
-            var wizard = $("form#folder-settings-form")[0];
-            var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
-            var hintFields = createHintFields(false, false);
-            $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
-                // submit the form after cug policy is applied to folder
-                $.DAM.FolderShare.submit(wizard, hintFields);
-            });
+        var form = $("form.cq-damadmin-admin-folder-settings-form");
+        var wizard = $("form#folder-settings-form")[0];
+        var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+        var hintFields = createHintFields(false, false);
+        if (e.currentTarget.id === "shell-propertiespage-saveactivator-media") {
+          $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+              // submit the form after cug policy is applied to folder
+              // Custom Success Handler to solve save button product issue
+              $.DAM.FolderShare.simpleSave(wizard, hintFields);
+          });
+        } else {
+          $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+              // submit the form after cug policy is applied to folder
+              $.DAM.FolderShare.submit(wizard, hintFields);
+          });
+        }
 
-            if ($("#collection-modifieddate").length) {
-                $("#collection-modifieddate").attr("value", (new Date()).toISOString());
-            }
 
+        if ($("#collection-modifieddate").length) {
+            $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+        }
+    }
 
+    function createSuccessHandler(form, folderPath, xhr) {
+      var url = $("[data-selfurl]").data("selfurl");
+      if (!url) {
+          // Fallback
+          url = "/mnt/overlay/dam/gui/content/assets/v2/foldersharewizard.html";
+      }
+      var assetPath = encodeURI(folderPath);
+      url += assetPath;
+      $.ajax({
+          type: "GET",
+          cache: false,
+          url: url
+      }).success(function (response) {
+          form.trigger("foundation-form-submitted", [true, xhr]);
+      });
     }
 
     function saveMetadataChanges(e) {
@@ -140,6 +165,7 @@
         if ($("#collection-modifieddate").length) {
             $("#collection-modifieddate").attr("value", (new Date()).toISOString());
         }
+
 
         //
     }
@@ -399,14 +425,24 @@
     function createNewTags(form) {
         return $.when.apply(null, form.find('.cq-ui-tagfield coral-taglist input[type="hidden"][name]').map(function() {
             var el = this;
+            var tagName = "";
 
             if (el.value.indexOf(":") >= 0) {
                 return;
             }
 
+            if (el.name.indexOf("/") >= 0) {
+                var pieces = el.name.split("/");
+                tagName = pieces[pieces.length - 1];
+            }
             var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
-            el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
-                : el.previousElementSibling.textContent;
+            if (el.previousElementSibling.textContent.indexOf(tagName) < 0) {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + tagName + "/" + el.previousElementSibling.textContent)
+                    : tagName + "/" + el.previousElementSibling.textContent;
+            } else {
+                el.value = tenantId ? ("mac:" + tenantId + "/default/" + el.previousElementSibling.textContent)
+                    : el.previousElementSibling.textContent;
+            }
             return createSingleTag(el.value).then(function(tag) {
                 // Fix tag name in select element
                 var tenantId = $(".foundation-form.mode-edit").attr("tenant-id");
