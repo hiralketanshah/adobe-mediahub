@@ -945,8 +945,7 @@ PropertiesPage
         alertdialog.show();
     }
 
-    function deactivateAsset(){
-
+    function deactivateAsset(event){
         data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---asset-deactivation'});
         $.ajax({
             type: "POST",

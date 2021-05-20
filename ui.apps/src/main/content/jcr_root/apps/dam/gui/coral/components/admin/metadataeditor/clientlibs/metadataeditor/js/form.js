@@ -265,7 +265,7 @@
     });
 
     $(document).on("click", "#shell-propertiespage-deactivate-asset", function (e) {
-        deactivateAsset();
+        deactivateAsset(e);
     });
 
     function handleResponse(form, xhr) {
