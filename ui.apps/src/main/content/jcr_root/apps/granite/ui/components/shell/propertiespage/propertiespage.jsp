@@ -642,7 +642,17 @@ PropertiesPage
                         <% } %>
                     </coral-buttongroup>
 
-                    <% if (StringUtils.contains(assetId, "/content/dam/medialibrary")) {  %>
+
+                    <%
+                    if (isAsset && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                      Resource assetResource = resourceResolver.getResource(assetId);
+                      if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
+                        Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
+                        if ( (assetMetadata.containsKey("bnpp-internal-file-url")) || (assetMetadata.containsKey("bnpp-external-file-url")) ) {
+                    %>
+
+
+
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <%
                             AttrBuilder unpublishAttributes = new AttrBuilder(request, xssAPI);
@@ -661,7 +671,11 @@ PropertiesPage
                         %>
                         <button <%= unpublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %></button>
                     </coral-buttongroup>
-                    <% } %>
+                    <%
+                        }
+                      }
+                    }
+                    %>
                 </coral-actionbar-item>
                 <% } %>
 
