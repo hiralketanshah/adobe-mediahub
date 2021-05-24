@@ -961,6 +961,7 @@ PropertiesPage
 
     function deactivateAsset(event){
         data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---asset-deactivation'});
+        event.preventDefault();
         $.ajax({
             type: "POST",
             url: "/etc/workflow/instances",
