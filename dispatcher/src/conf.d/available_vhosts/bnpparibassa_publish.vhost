@@ -6,6 +6,9 @@ PassEnv DISP_ID
 	ServerName	publish
 	# Put names of which domains are used for your published site/content here
 	ServerAlias	${PUBLISH_DEFAULT_HOSTNAME}
+	ServerAlias mediahub.dev.echonet
+	ServerAlias mediahub.staging.echonet
+	ServerAlias mediahub.group.echonet
 	# Use a doc root that matches what's in the /etc/httpd/conf/publish-farm.any
 	DocumentRoot	${PUBLISH_DOCROOT}
 	# Add header breadcrumbs for help in troubleshooting
@@ -20,7 +23,7 @@ PassEnv DISP_ID
 		# Requested by BNPP security
         Header always set Content-Security-Policy "default-src https: data: 'unsafe-inline' 'unsafe-eval'"
         Header always set Referrer-Policy "strict-origin"
-        Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
+        Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(self),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
 
 	</IfModule>
 	<Directory />
