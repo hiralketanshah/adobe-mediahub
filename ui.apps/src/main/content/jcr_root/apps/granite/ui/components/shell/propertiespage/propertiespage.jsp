@@ -641,6 +641,41 @@ PropertiesPage
                         </button>
                         <% } %>
                     </coral-buttongroup>
+
+
+                    <%
+                    if (isAsset && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                      Resource assetResource = resourceResolver.getResource(assetId);
+                      if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
+                        Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
+                        if ( (assetMetadata.containsKey("bnpp-internal-file-url")) || (assetMetadata.containsKey("bnpp-external-file-url")) ) {
+                    %>
+
+
+
+                    <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                        <%
+                            AttrBuilder unpublishAttributes = new AttrBuilder(request, xssAPI);
+                            unpublishAttributes.add("id", "shell-propertiespage-deactivate-asset");
+                            unpublishAttributes.add("type", "submit");
+                            unpublishAttributes.add("form", formId);
+                            unpublishAttributes.add("is", "coral-button");
+                            unpublishAttributes.add("variant", "primary");
+                            unpublishAttributes.addClass("granite-form-saveactivator");
+                            unpublishAttributes.addHref("data-granite-form-saveactivator-href", backHref);
+                            unpublishAttributes.addClass("foundation-fixedanchor");
+                            unpublishAttributes.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+                            unpublishAttributes.add("isValidated", isValidated);
+                            unpublishAttributes.add("isFolderMetadataMissing", isFolderMetadataMissing);
+                            unpublishAttributes.add("isMediaValidated", isMediaValidated);
+                        %>
+                        <button <%= unpublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %></button>
+                    </coral-buttongroup>
+                    <%
+                        }
+                      }
+                    }
+                    %>
                 </coral-actionbar-item>
                 <% } %>
 
@@ -847,7 +882,6 @@ PropertiesPage
 
     data.push({name: '_charset_', value: 'UTF-8'});
     data.push({name: 'payloadType', value: 'JCR_PATH'});
-    data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---validation'});
     data.push({name: 'model@Delete', value: ''});
     data.push({name: 'workflowTitle', value: 'Internal Publish'});
     var asset = '<%= request.getParameter("item") %>';
@@ -862,6 +896,7 @@ PropertiesPage
     }
 
     function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated) {
+        data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---validation'});
         $.ajax({
             type: "POST",
             url: "/etc/workflow/instances",
@@ -922,6 +957,34 @@ PropertiesPage
 
         document.body.appendChild(alertdialog);
         alertdialog.show();
+    }
+
+    function deactivateAsset(event){
+        data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---asset-deactivation'});
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/etc/workflow/instances",
+            data: data,
+            async: true,
+            cache: false,
+            success: function (response) {
+                if (response) {
+                    var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+                }
+            }
+        }).done(function (html) {
+            var ui = $(window).adaptTo("foundation-ui");
+            successMessage = Granite.I18n.get("The asset will be deactivated in sometime");
+            ui.prompt(Granite.I18n.get("Deactivate Asset"), successMessage, "success", [{
+                text: Granite.I18n.get("OK"),
+                primary: true,
+                handler: function () {
+                    location.href =
+                        $(".foundation-backanchor").attr("href");
+                }
+            }]);
+        });
     }
 </script>
 </html>

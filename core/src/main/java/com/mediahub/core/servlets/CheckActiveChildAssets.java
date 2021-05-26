@@ -34,7 +34,7 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         LOGGER.debug("Check Active Asset...");
         response.setContentType("text/plain");
         Resource resource = request.getResourceResolver().getResource(request.getRequestParameter("paths").toString());
-        if(resource.hasChildren()){
+        if(resource != null && resource.hasChildren()){
             Iterator<Resource> resources = resource.listChildren();
             while(resources.hasNext()){
                 Resource childResource = resources.next();

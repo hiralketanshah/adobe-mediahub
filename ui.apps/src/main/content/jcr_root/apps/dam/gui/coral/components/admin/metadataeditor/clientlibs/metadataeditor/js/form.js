@@ -264,6 +264,9 @@
         saveMetadataChanges(e);
     });
 
+    $(document).on("click", "#shell-propertiespage-deactivate-asset", function (e) {
+        deactivateAsset(e);
+    });
 
     function handleResponse(form, xhr) {
         var ui = $(window).adaptTo("foundation-ui");

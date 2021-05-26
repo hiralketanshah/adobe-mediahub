@@ -10,7 +10,9 @@
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---asset-deactivation"/>
     <filter root="/var/workflow/models/mediahub/mediahub---internal-publish"/>
+    <filter root="/var/workflow/models/mediahub/mediahub---asset-deactivation"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---external-publish"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-deactivation"/>
     <filter root="/var/workflow/models/mediahub/mediahub---internal-deactivation"/>
