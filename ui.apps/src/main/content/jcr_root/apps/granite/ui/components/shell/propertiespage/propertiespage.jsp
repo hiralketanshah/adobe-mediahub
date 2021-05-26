@@ -909,16 +909,7 @@ PropertiesPage
                 }
             }
         }).done(function (html) {
-            var ui = $(window).adaptTo("foundation-ui");
-            successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
-            ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
-                text: Granite.I18n.get("OK"),
-                primary: true,
-                handler: function () {
-                    location.href =
-                        $(".foundation-backanchor").attr("href");
-                }
-            }]);
+            // code is removed to handle the issue of popup in save and publish
         });
     }
 
