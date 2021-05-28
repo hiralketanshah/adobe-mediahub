@@ -134,6 +134,26 @@
                   jcr:primaryType="nt:unstructured"
                   src="/mnt/overlay/dam/gui/content/assets/bnpadhocassetsharedialog.html"/>
             </customadhocassetshare>
+			<quickpublish jcr:primaryType="nt:unstructured">
+                <granite:rendercondition
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                    <notexpiredorisadmin
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="/libs/dam/gui/components/admin/renderconditions/iscurrentuseradmin"
+                        path="${empty requestPathInfo.suffix ? param.item : requestPathInfo.suffix}"/>
+                </granite:rendercondition>
+            </quickpublish>
+            <managepublication jcr:primaryType="nt:unstructured">
+                <granite:rendercondition
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                    <notexpiredorisadmin
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="/libs/dam/gui/components/admin/renderconditions/iscurrentuseradmin"
+                        path="${empty requestPathInfo.suffix ? param.item : requestPathInfo.suffix}"/>
+                </granite:rendercondition>
+            </managepublication>
         </actions>
     </jcr:content>
 </jcr:root>
