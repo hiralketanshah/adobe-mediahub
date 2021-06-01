@@ -229,7 +229,17 @@
         if(saveMediaMetadataChanges(e)){
           var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
           if (isValidated && isValidated === 'true') {
-                internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                var ui = $(window).adaptTo("foundation-ui");
+                var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                    text: Granite.I18n.get("OK"),
+                    primary: true,
+                    handler: function () {
+                      internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                      location.href = $(".foundation-backanchor").attr("href");
+                    }
+                }]);
+
           } else {
               internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
           }
