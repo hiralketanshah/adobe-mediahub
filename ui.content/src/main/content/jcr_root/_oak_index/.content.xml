@@ -167,4 +167,29 @@
             </cq:AuditEvent>
         </indexRules>
     </cqAuditEvent>
+    <ntUnstructuredProjectsLucene
+      jcr:primaryType="oak:QueryIndexDefinition"
+      async="[async,nrt]"
+      compatVersion="{Long}2"
+      evaluatePathRestrictions="{Boolean}true"
+      includedPaths="[/content/projects]"
+      queryPaths="[/content/projects]"
+      reindex="{Boolean}false"
+      reindexCount="{Long}3"
+      seed="{Long}8340305425239591032"
+      type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <nt:unstructured jcr:primaryType="nt:unstructured">
+                <properties jcr:primaryType="nt:unstructured">
+                    <role_external-contributor
+                      jcr:primaryType="nt:unstructured"
+                      name="role_external-contributor"
+                      nodeScopeIndex="{Boolean}true"
+                      propertyIndex="{Boolean}true"
+                      useInSpellcheck="{Boolean}true"
+                      useInSuggest="{Boolean}true"/>
+                </properties>
+            </nt:unstructured>
+        </indexRules>
+    </ntUnstructuredProjectsLucene>
 </jcr:root>

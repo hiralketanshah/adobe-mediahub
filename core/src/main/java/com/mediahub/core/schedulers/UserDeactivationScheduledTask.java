@@ -118,15 +118,20 @@ public class UserDeactivationScheduledTask implements Runnable {
         throws ParseException, javax.jcr.RepositoryException {
         if(StringUtils.contains(expiryDate, "/")){
             Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = getSimpleDateFormat(expiryDate);
+
             Date actualDueDate = dateFormat.parse(expiryDate);
             Date currentDate = ProjectExpireNotificationUtil.getCurrentDate(dateFormat);
             int differenceInDays = (int) ((actualDueDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
-            if(authorizable instanceof User && !((User) authorizable).isDisabled()){
-                if(differenceInDays == 30){
-                    Iterator<Group> groupIterator =  authorizable.memberOf();
-                    String groupName = getProjectGroupFromUser(groupIterator);
+            if( !(authorizable instanceof User && !((User) authorizable).isDisabled()) ){
+               return;
+            }
+
+            if(differenceInDays == 30){
+                Iterator<Group> groupIterator =  authorizable.memberOf();
+                String groupName = getProjectGroupFromUser(groupIterator);
+                if(StringUtils.isNotEmpty(groupName)){
                     Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
                     // Adding email of the user
                     String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL,String.class);
@@ -138,13 +143,15 @@ public class UserDeactivationScheduledTask implements Runnable {
                     //send mail to managers
                     String[] managerEmail = managers.toArray(new String[0]);
                     sendWarningMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html");
-                } else if (differenceInDays <= 0){
+                }
+            } else if (differenceInDays <= 0){
 
-                    logger.info(user.getPath());
-                    ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
+                logger.info(user.getPath());
+                ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
 
-                    Iterator<Group> groupIterator =  authorizable.memberOf();
-                    String groupName = getProjectGroupFromUser(groupIterator);
+                Iterator<Group> groupIterator =  authorizable.memberOf();
+                String groupName = getProjectGroupFromUser(groupIterator);
+                if(StringUtils.isNotEmpty(groupName)){
                     Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName,
                         ROLE_OWNER);
                     fetchEmailFromSuperAdmin(userManager, managers);
@@ -161,7 +168,24 @@ public class UserDeactivationScheduledTask implements Runnable {
                     sendDeactivationgMail(user, managerEmail, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html");
                 }
             }
+
         }
+    }
+
+    /**
+     * Method to get date format from string value
+     *
+     * @param expiryDate - expiry date in string format
+     * @return SimpleDateFormat object
+     */
+    private SimpleDateFormat getSimpleDateFormat(String expiryDate) {
+        SimpleDateFormat dateFormat;
+        if(expiryDate.indexOf('/') == 2){
+            dateFormat = new SimpleDateFormat(BnpConstants.DD_MM_YYYY);
+        } else {
+            dateFormat = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
+        }
+        return dateFormat;
     }
 
     private void fetchEmailFromSuperAdmin(UserManager userManager, Set<String> managers)
@@ -181,6 +205,13 @@ public class UserDeactivationScheduledTask implements Runnable {
         }
     }
 
+    /**
+     * Method to send user deactivation within 30 days notice
+     *
+     * @param user - AEM user
+     * @param emailRecipients - Email recipient to which mail to be sent
+     * @param templatePath - template path to create email
+     */
     private void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
         String subject = "Mediahub - User will be Deactivated in 30 days";
         Map<String, String> emailParams = new HashMap<>();
@@ -194,6 +225,13 @@ public class UserDeactivationScheduledTask implements Runnable {
         genericEmailNotification.sendEmail(templatePath, emailRecipients, emailParams);
     }
 
+    /**
+     * Method to send user deactivation
+     *
+     * @param user - AEM user
+     * @param emailRecipients - Email recipient to which mail to be sent
+     * @param templatePath - template path to create email
+     */
     private void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
         String subject = "Mediahub - User will be Deactivated";
         Map<String, String> emailParams = new HashMap<>();
@@ -218,38 +256,53 @@ public class UserDeactivationScheduledTask implements Runnable {
     private Set<String> getMembersFromGroup(UserManager userManager, QueryBuilder builder,
         ResourceResolver resolver, String groupName, String role) {
         Set<String> managers = new HashSet<>();
-        if(StringUtils.isNotBlank(groupName)){
-            Map<String, String> predicateMapForQuery = getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH, groupName);
-            Query query = builder.createQuery(
-                PredicateGroup.create(predicateMapForQuery), resolver.adaptTo(Session.class));
-            SearchResult result = query.getResult();
-            Iterator<Resource> projectResources = result.getResources();
 
-            projectResources.forEachRemaining(project -> {
-                if(StringUtils.equals(project.getValueMap().get(BnpConstants.SLING_RESOURCETYPE, StringUtils.EMPTY), "cq/gui/components/projects/admin/card/projectcard")){
-                    String roleOwnerGroup = project.getValueMap().get(role, StringUtils.EMPTY);
-                    if(StringUtils.isNotEmpty(roleOwnerGroup)){
-                        try {
-                            Authorizable authorizableOwnersGroup = userManager.getAuthorizable(roleOwnerGroup);
-                            if(authorizableOwnersGroup != null && authorizableOwnersGroup.isGroup()){
-                                Group ownerGroup = (Group)authorizableOwnersGroup;
-                                Iterator<Authorizable> projectOwners = ownerGroup.getMembers();
-                                while(projectOwners.hasNext()){
-                                  Authorizable owner = projectOwners.next();
-                                    if(!owner.isGroup() && owner.getProperty(PROFILE_EMAIL) != null) {
-                                        managers.add(owner.getProperty(PROFILE_EMAIL)[0].getString());
-                                    }
-                                }
-                            }
-                        } catch (RepositoryException e) {
-                            logger.error("Error while fecthing user details from group",e);
-                        }
-                    }
-                }
-            });
+        if(StringUtils.isBlank(groupName)){
+            return managers;
         }
 
+
+        Map<String, String> predicateMapForQuery = getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH, groupName);
+        Query query = builder.createQuery(
+            PredicateGroup.create(predicateMapForQuery), resolver.adaptTo(Session.class));
+        SearchResult result = query.getResult();
+        Iterator<Resource> projectResources = result.getResources();
+
+        projectResources.forEachRemaining(project -> {
+            if(StringUtils.equals(project.getValueMap().get(BnpConstants.SLING_RESOURCETYPE, StringUtils.EMPTY), "cq/gui/components/projects/admin/card/projectcard")){
+                String roleOwnerGroup = project.getValueMap().get(role, StringUtils.EMPTY);
+                if(StringUtils.isNotEmpty(roleOwnerGroup)){
+                    fetchUserMailFromGroup(userManager, managers, roleOwnerGroup);
+                }
+            }
+        });
         return managers;
+    }
+
+    /**
+     * Method to fetch and add manager email
+     *
+     * @param userManager - User manager object to get autorizable
+     * @param managers - set of manager emails to notify
+     * @param roleOwnerGroup - role of the user
+     */
+    private void fetchUserMailFromGroup(UserManager userManager, Set<String> managers,
+        String roleOwnerGroup) {
+        try {
+            Authorizable authorizableOwnersGroup = userManager.getAuthorizable(roleOwnerGroup);
+            if(authorizableOwnersGroup != null && authorizableOwnersGroup.isGroup()){
+                Group ownerGroup = (Group)authorizableOwnersGroup;
+                Iterator<Authorizable> projectOwners = ownerGroup.getMembers();
+                while(projectOwners.hasNext()){
+                  Authorizable owner = projectOwners.next();
+                    if(!owner.isGroup() && owner.getProperty(PROFILE_EMAIL) != null) {
+                        managers.add(owner.getProperty(PROFILE_EMAIL)[0].getString());
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while fecthing user details from group",e);
+        }
     }
 
     /**
