@@ -52,7 +52,7 @@
                     bulkDeleteData: bulkDeleteData
                 })
                 .then(confirmDelete)
-                .then(confirmReferencesDelete)
+                .then(showActiveAssetsDialog)
                 .then(deleteAsset)
                 .then(function(deleteData) {
                     if(deleteData){
@@ -268,33 +268,74 @@
         dialog.show();
     }
 
-    /* Uses data - paths, bulkDeleteData, hiddenPaths
-     * Sets data - collection, pageId, isAsync
+    /**
+     * This function confirms if user want to delete resources with references and activations.
      */
-    function deleteAsset(deleteData) {
+    function showActiveAssetsDialog(deleteData) {
 
+        return new Promise(function(next, cancel) {
           var hasActiveAssets = false;
-		      var ajaxUrl = "/content/mediahub/us/en.active.asset.json";
+          var isAdmin = false;
+          var ajaxUrl = "/content/mediahub/us/en.active.asset.json";
 
           if(deleteData && deleteData.paths[0] && deleteData.paths[0].includes("content/dam/medialibrary")){
               $.ajax({
                   url: ajaxUrl,
                   async: false,
-                  type: "get",
+                  type: "GET",
+                  contentType : 'application/json; charset=UTF-8',
                   data: deleteData,
-                  success: function() {
-                      hasActiveAssets = false;
+                  success: function(response) {
+                      next(deleteData);
                   },
                   error: function(response) {
-                      hasActiveAssets = true;
-                      var ui = $(window).adaptTo("foundation-ui");
-                      ui.clearWait();
-                      showDeleteErrorDialog(Granite.I18n.get("Has Active Assets."));
+                      var responseObject = response.responseJSON;
+                      isAdmin = responseObject.hasAdminPrivilege;
+                      var dialog = new Coral.Dialog().set({
+                          id: "forceDeleteActiveAssetDialog",
+                          variant: "error",
+                          header: {
+                              innerHTML: Granite.I18n.get("Force Delete")
+                          },
+                          content: {
+                              innerHTML: Granite.I18n.get("One or more item(s) has local references and/or activated.")
+                          }
+                      });
+
+                      var footer = dialog.footer;
+                      var cancelBtn = new Coral.Button();
+                      cancelBtn.label.textContent = Granite.I18n.get("Cancel");
+                      footer.appendChild(cancelBtn).on("click", function() {
+                          dialog.hide();
+                          dialog.remove();
+                          cancel();
+                      });
+                      var deleteButton = new Coral.Button();
+                      deleteButton.label.textContent = Granite.I18n.get("Delete");
+                      deleteButton.variant = "warning";
+                      if(!isAdmin){
+                        deleteButton.disabled = true;
+                      }
+                      footer.appendChild(deleteButton).on("click", function() {
+                          dialog.hide();
+                          dialog.remove();
+                          next(deleteData);
+                      });
+
+                      document.body.appendChild(dialog);
+                      dialog.show();
                   }
               });
           }
+        });
+    }
 
-          if(!hasActiveAssets){
+    /* Uses data - paths, bulkDeleteData, hiddenPaths
+     * Sets data - collection, pageId, isAsync
+     */
+    function deleteAsset(deleteData) {
+
+          if(true){
               return new Promise(function(next, cancel) {
                   var url;
                   var data = {};
