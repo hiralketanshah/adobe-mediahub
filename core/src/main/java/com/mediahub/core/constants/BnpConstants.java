@@ -35,6 +35,7 @@ public class BnpConstants {
     public static final String FIRST_PROPERTY = "1_property";
     public static final String FIRST_PROPERTY_VALUE = "1_property.value";
     public static final String YYYY_MM_DD = "yyyy/MM/dd";
+    public static final String DD_MM_YYYY = "dd/MM/yyyy";
     public static final String HOME_USERS = "/home/users";
     public static final String REP_USERS = "rep:User";
     public static final String PROFILE_TYPE = "profile/@type";
@@ -88,4 +89,5 @@ public class BnpConstants {
     public static final String MEDIAHUB_READER_MEDIALIBRARY = "mediahub-reader-medialibrary";
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
+    public static final String FIRSTNAME = "firstname";
 }
