@@ -46,31 +46,65 @@
          * 5. Reload page.
          */
         deleteAssets: function(bulkDeleteData) {
-            Promise.resolve(
-                {
-                    type: "asset",
-                    bulkDeleteData: bulkDeleteData
-                })
-                .then(confirmDelete)
-                .then(showActiveAssetsDialog)
-                .then(deleteAsset)
-                .then(function(deleteData) {
-                    if(deleteData){
-                        if (deleteData.isAsync) {
-                        // we don't need post cleanup for async delete
-                            return Promise.resolve(deleteData);
-                        } else {
-                            return postDeleteCleanup(deleteData);
-                        }
-                    }
-                })
-                .then(loadPage)
-                .catch(function(err) {
-                    if (err) {
-                        throw err;
-                    }
-                // do nothing, delete cancelled
-                });
+
+            var selectedItems = $(".foundation-selections-item");
+            var paths = [];
+            selectedItems.each(function() {
+                paths.push($(this).get(0).getAttribute("data-foundation-collection-item-id"));
+            });
+
+            if(paths.length !== 0 && paths[0].includes("/content/dam/medialibrary")){
+              Promise.resolve({
+                  type: "asset",
+                  bulkDeleteData: bulkDeleteData
+              })
+              .then(confirmDelete)
+              .then(showActiveAssetsDialog)
+              .then(deleteAsset)
+              .then(function(deleteData) {
+                  if(deleteData){
+                      if (deleteData.isAsync) {
+                      // we don't need post cleanup for async delete
+                          return Promise.resolve(deleteData);
+                      } else {
+                          return postDeleteCleanup(deleteData);
+                      }
+                  }
+              })
+              .then(loadPage)
+              .catch(function(err) {
+                  if (err) {
+                      throw err;
+                  }
+              // do nothing, delete cancelled
+              });
+            } else {
+               Promise.resolve({
+                   type: "asset",
+                   bulkDeleteData: bulkDeleteData
+               })
+               .then(confirmDelete)
+               .then(confirmReferencesDelete)
+               .then(deleteAsset)
+               .then(function(deleteData) {
+                   if(deleteData){
+                       if (deleteData.isAsync) {
+                       // we don't need post cleanup for async delete
+                           return Promise.resolve(deleteData);
+                       } else {
+                           return postDeleteCleanup(deleteData);
+                       }
+                   }
+               })
+               .then(loadPage)
+               .catch(function(err) {
+                   if (err) {
+                       throw err;
+                   }
+               // do nothing, delete cancelled
+               });
+            }
+
         }
     };
 
