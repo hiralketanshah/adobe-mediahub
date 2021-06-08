@@ -108,7 +108,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
           emailParams.put("firstname", userName);
           String subject = "Mediahub - Comment added in the asset : " + assetName;
           emailParams.put(BnpConstants.SUBJECT, subject);
-          genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
+          genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/commentsnotificationtemplate.html", emailRecipients, emailParams);
         }
       }
     }
@@ -143,7 +143,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
         emailParams.put("firstname", userName);
         String subject = "Mediahub - Asset Added in the Project : " + title;
         emailParams.put(BnpConstants.SUBJECT, subject);
-        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
+        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/addassetnotificationtemplate.html", emailRecipients, emailParams);
       }
     }
   }
