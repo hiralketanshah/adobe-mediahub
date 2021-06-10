@@ -49,6 +49,16 @@
                   PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
                   PROCESS_AUTO_ADVANCE="true"/>
             </process_1607596535>
+            <process
+              jcr:description="CDN Cache Invalidation"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="CDN Cache Invalidation"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process>
         </flow>
     </jcr:content>
 </jcr:root>

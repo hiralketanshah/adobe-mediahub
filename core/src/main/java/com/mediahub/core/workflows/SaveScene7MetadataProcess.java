@@ -89,7 +89,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                     modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 }
 
-                metaDataMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 resourceResolver.commit();
             }
         } catch (LoginException | PersistenceException e) {
