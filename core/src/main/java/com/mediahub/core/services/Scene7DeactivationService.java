@@ -4,4 +4,6 @@ public interface Scene7DeactivationService {
 
   String getCloudConfigurationPath();
 
+  String getCdnCacheInvalidationPath();
+
 }

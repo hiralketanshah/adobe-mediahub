@@ -90,4 +90,5 @@ public class BnpConstants {
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
+    public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-url";
 }
