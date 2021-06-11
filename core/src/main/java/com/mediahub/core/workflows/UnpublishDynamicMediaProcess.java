@@ -5,6 +5,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
@@ -57,20 +58,26 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess{
         if(s7Config == null){
           throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
         }
-        String status = scene7Service.deleteAsset(damResource.getChild("jcr:content").getChild("metadata").getValueMap().get("dam:scene7ID", StringUtils.EMPTY), s7Config);
-        log.info("Status of unpublishing dynamic media : " + status);
 
-        if(StringUtils.equals(status, "success")){
-          ModifiableValueMap properties = damResource.getChild("jcr:content").getChild("metadata").adaptTo(ModifiableValueMap.class);
-          workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY), StringUtils.EMPTY);
-          properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
-          properties.remove("bnpp-external-broadcast-url");
-          properties.remove("dam:scene7ID");
-          resourceResolver.commit();
-        }
 
-        if(StringUtils.equals(status, "failure")){
-          throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
+        String scene7ID = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap().get("dam:scene7ID", StringUtils.EMPTY);
+
+        if(StringUtils.isNotBlank(scene7ID)){
+          String status = scene7Service.deleteAsset(scene7ID, s7Config);
+          log.info("Status of unpublishing dynamic media : " + status);
+
+          if(StringUtils.equals(status, "success")){
+            ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
+            workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+            properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
+            properties.remove("bnpp-external-broadcast-url");
+            properties.remove("dam:scene7ID");
+            resourceResolver.commit();
+          }
+
+          if(StringUtils.equals(status, "failure")){
+            throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
+          }
         }
       }
 
