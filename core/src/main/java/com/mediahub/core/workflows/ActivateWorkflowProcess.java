@@ -12,7 +12,7 @@ import com.mediahub.core.constants.BnpConstants;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -75,6 +75,22 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
                 WorkflowData parentWorkflowData = workflowSession.newWorkflowData("JCR_PATH",payload.getParent().getPath());
                 workflowSession.startWorkflow(wfModel, parentWorkflowData);
               }
+            }
+
+            if ( (!Arrays.asList(stasus).contains("external")) && properties.containsKey("dam:scene7ID") && StringUtils.isNotBlank(properties.get("dam:scene7ID", StringUtils.EMPTY))) {
+              String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession
+                  .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
+            }
+
+            if ( (!Arrays.asList(stasus).contains("internal")) && properties.containsKey("bnpp-internal-broadcast-url") && StringUtils.isNotBlank(properties.get("bnpp-internal-broadcast-url", StringUtils.EMPTY))) {
+              String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
+              WorkflowModel wfModel = workflowSession.getModel(workflowName);
+              WorkflowData wfData = workflowSession
+                  .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+              workflowSession.startWorkflow(wfModel, wfData);
             }
 
           }
