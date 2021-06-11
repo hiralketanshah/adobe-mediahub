@@ -57,10 +57,20 @@
         </node3>
         <node4
           jcr:primaryType="cq:WorkflowNode"
+          description="CDN Cache Invalidation"
+          title="CDN Cache Invalidation"
+          type="PROCESS">
+            <metaData
+              jcr:primaryType="nt:unstructured"
+              PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
+              PROCESS_AUTO_ADVANCE="true"/>
+        </node4>
+        <node5
+          jcr:primaryType="cq:WorkflowNode"
           title="End"
           type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node4>
+        </node5>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -91,5 +101,11 @@
           to="node4">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node3_x0023_node4>
+        <node4_x0023_node5
+          jcr:primaryType="cq:WorkflowTransition"
+          from="node4"
+          to="node5">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node4_x0023_node5>
     </transitions>
 </jcr:root>
