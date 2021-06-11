@@ -61,8 +61,8 @@
         </node1_x0023_node2>
         <node2_x0023_node3
           jcr:primaryType="cq:WorkflowTransition"
-          from="node1"
-          to="node2">
+          from="node2"
+          to="node3">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node2_x0023_node3>
     </transitions>
