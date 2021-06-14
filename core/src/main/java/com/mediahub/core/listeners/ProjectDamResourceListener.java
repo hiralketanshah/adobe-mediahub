@@ -53,7 +53,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   GenericEmailNotification genericEmailNotification;
 
   @Reference
-  private ResourceResolverFactory resolverFactory;
+  ResourceResolverFactory resolverFactory;
 
   @Override
   public void onChange(List<ResourceChange> list) {
@@ -121,7 +121,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
    * @param project - Project Resource to notify the users from project
    * @throws RepositoryException
    */
-  private void sendNotificationEmail(ResourceResolver adminResolver, Resource project)
+  protected void sendNotificationEmail(ResourceResolver adminResolver, Resource project)
       throws RepositoryException {
     if(null == project){
       return;

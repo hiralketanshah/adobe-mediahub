@@ -13,14 +13,20 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
@@ -74,6 +80,12 @@ public class UserDeactivationScheduledTaskTest {
   
   @Mock
   UserManager userManager;
+
+  @Mock
+  QueryBuilder builder;
+
+  @Mock
+  Authorizable authorizable;
   
   Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
           BnpConstants.WRITE_SERVICE);
@@ -123,6 +135,54 @@ public class UserDeactivationScheduledTaskTest {
     } catch (RepositoryException e) {
         e.printStackTrace();
     }
+  }
+
+  @Test
+  void sendWarningMail(){
+    when(resource.getValueMap()).thenReturn(valueMap);
+    when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
+    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+    fixture.sendWarningMail(resource, new String[]{"abibrahi@adobe.com"}, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+  }
+
+  @Test
+  void sendDeactivationgMail(){
+    when(resource.getValueMap()).thenReturn(valueMap);
+    when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
+    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+    fixture.sendDeactivationgMail(resource, new String[]{"abibrahi@adobe.com"}, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+  }
+
+  @Test
+  void getPredicateMapProjectSearch(){
+    Map<String, String> map = fixture.getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH, "externalContributer");
+    assertEquals(map.get(BnpConstants.PATH), BnpConstants.AEM_PROJECTS_PATH);
+  }
+
+  @Test
+  void getMembersFromGroup() throws LoginException {
+
+    QueryBuilder queryBuilder = mock(QueryBuilder.class);
+    when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
+    when(resolver.adaptTo(Session.class)).thenReturn(session);
+    when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+    when(resolver.adaptTo(Session.class)).thenReturn(session);
+    when(resource.getValueMap()).thenReturn(valueMap);
+    when(valueMap.get(BnpConstants.SLING_RESOURCETYPE, StringUtils.EMPTY)).thenReturn("");
+
+    List<Resource> userList = new ArrayList<>();
+    userList.add(resource);
+    when(builder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+    when(query.getResult()).thenReturn(searchResult);
+    when(searchResult.getResources()).thenReturn(userList.iterator());
+    fixture.getMembersFromGroup(userManager, builder, resolver, "groupName", "role");
+  }
+
+  @Test
+  void fetchUserMailFromGroup() throws ParseException, RepositoryException {
+    List<Group> userList = new ArrayList<>();
+    when(authorizable.memberOf()).thenReturn(userList.listIterator());
+    fixture.deactivateExpiredUsers(userManager, resource, "15/04/2021", builder, resolver);
   }
 
 }

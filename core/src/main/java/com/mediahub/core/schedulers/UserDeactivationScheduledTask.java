@@ -212,7 +212,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param emailRecipients - Email recipient to which mail to be sent
      * @param templatePath - template path to create email
      */
-    private void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
+    protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
         String subject = "Mediahub - User will be Deactivated in 30 days";
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
@@ -232,7 +232,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param emailRecipients - Email recipient to which mail to be sent
      * @param templatePath - template path to create email
      */
-    private void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
+    protected void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
         String subject = "Mediahub - User will be Deactivated";
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
@@ -253,7 +253,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param role - role of the user in project
      * @return
      */
-    private Set<String> getMembersFromGroup(UserManager userManager, QueryBuilder builder,
+    protected Set<String> getMembersFromGroup(UserManager userManager, QueryBuilder builder,
         ResourceResolver resolver, String groupName, String role) {
         Set<String> managers = new HashSet<>();
 
@@ -286,7 +286,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param managers - set of manager emails to notify
      * @param roleOwnerGroup - role of the user
      */
-    private void fetchUserMailFromGroup(UserManager userManager, Set<String> managers,
+    protected void fetchUserMailFromGroup(UserManager userManager, Set<String> managers,
         String roleOwnerGroup) {
         try {
             Authorizable authorizableOwnersGroup = userManager.getAuthorizable(roleOwnerGroup);
@@ -310,7 +310,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @return - group of external contributor from the user's group
      * @throws RepositoryException - Thrown while accessing nodes in JCR
      */
-    private String getProjectGroupFromUser(Iterator<Group> groupIterator)
+    protected String getProjectGroupFromUser(Iterator<Group> groupIterator)
         throws RepositoryException {
         while(groupIterator.hasNext()){
             Group group = groupIterator.next();
