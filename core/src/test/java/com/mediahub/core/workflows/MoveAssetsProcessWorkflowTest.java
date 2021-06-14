@@ -1,6 +1,7 @@
 package com.mediahub.core.workflows;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -237,6 +238,22 @@ public class MoveAssetsProcessWorkflowTest {
 
         workflowProcess.execute(workItem, workflowSession, metadataMap);
         assertEquals("JCR_PATH", workflowData.getPayloadType());
+    }
+
+    @Test
+    public void execute1() throws Exception {
+        when(resource.getPath()).thenReturn("/content/dam/projects/asset");
+        //when(session.adaptTo(JackrabbitSession.class)).thenReturn(jackrabbitSession);
+
+        when(resolver.getResource(anyString())).thenReturn(resource);
+        List<Resource> userList = new ArrayList<>();
+        userList.add(resource);
+        when(resource.listChildren()).thenReturn(userList.iterator());
+
+        when(resource.getValueMap()).thenReturn(valueMap);
+        when(valueMap.containsKey(JcrConstants.JCR_MIXINTYPES)).thenReturn(Boolean.TRUE);
+
+        workflowProcess.copyRepolicyNode(resolver, (Session)jackrabbitSession, resource, "/content/dam/projects");
     }
 
     @AfterEach
