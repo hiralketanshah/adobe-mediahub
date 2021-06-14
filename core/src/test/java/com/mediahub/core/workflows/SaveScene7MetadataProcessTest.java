@@ -96,7 +96,7 @@ public class SaveScene7MetadataProcessTest {
     when(scene7Service.getAssets(any(), any(), any(), any())).thenReturn(Collections.EMPTY_LIST);
   }
 
- /* @Test
+  @Test
   public void execute() throws Exception {
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
     workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -118,6 +118,6 @@ public class SaveScene7MetadataProcessTest {
   public void execute3() throws Exception {
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
     workflowProcess.execute(workItem, workflowSession, metadataMap);
-  }*/
+  }
 
 }
