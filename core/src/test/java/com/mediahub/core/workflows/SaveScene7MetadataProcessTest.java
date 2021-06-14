@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.dam.scene7.api.S7Config;
@@ -77,6 +78,9 @@ public class SaveScene7MetadataProcessTest {
   @Mock
   Scene7Service scene7Service;
 
+  @Mock
+  Workflow workflow;
+
   final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
       BnpConstants.WRITE_SERVICE);
 
@@ -98,24 +102,36 @@ public class SaveScene7MetadataProcessTest {
 
   @Test
   public void execute() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }
 
   @Test
   public void execute1() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.MASTER_VIDEO.getValue());
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }
 
   @Test
   public void execute2() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.IMAGE.getValue());
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }
 
   @Test
   public void execute3() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }

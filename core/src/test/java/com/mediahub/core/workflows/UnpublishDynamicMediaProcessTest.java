@@ -8,6 +8,7 @@ import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.dam.scene7.api.S7Config;
@@ -82,6 +83,9 @@ public class UnpublishDynamicMediaProcessTest {
   @Mock
   ModifiableValueMap modifiableValueMap;
 
+  @Mock
+  Workflow workflow;
+
   final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
       BnpConstants.WRITE_SERVICE);
 
@@ -102,6 +106,9 @@ public class UnpublishDynamicMediaProcessTest {
 
   @Test
   public void execute() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("failure");
     Assertions.assertThrows(WorkflowException.class, () -> {
       workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -110,6 +117,9 @@ public class UnpublishDynamicMediaProcessTest {
 
   @Test
   public void execute1() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("success");
     when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
     when(modifiableValueMap.remove(any())).thenReturn(true);
@@ -119,6 +129,9 @@ public class UnpublishDynamicMediaProcessTest {
 
   @Test
   public void execute2() throws Exception {
+    when(workItem.getWorkflow()).thenReturn(workflow);
+    when(workflow.getWorkflowData()).thenReturn(workflowData);
+    when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
     when(s7Configresource.adaptTo(S7Config.class)).thenReturn(null);
     when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("failure");
     Assertions.assertThrows(WorkflowException.class, () -> {
