@@ -26,6 +26,18 @@
                     PROCESS_ARGS="deactivate"
                     PROCESS_AUTO_ADVANCE="true"/>
             </process>
+            <process_copy_1586752155
+              jcr:description="CDN Cache Invalidation"
+              jcr:lastModified="{Date}2021-06-11T17:09:07.454+05:30"
+              jcr:lastModifiedBy="admin"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="CDN Cache Invalidation"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process_copy_1586752155>
         </flow>
     </jcr:content>
 </jcr:root>
