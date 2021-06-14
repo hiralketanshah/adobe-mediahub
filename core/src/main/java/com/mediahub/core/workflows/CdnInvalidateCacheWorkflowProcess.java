@@ -71,8 +71,10 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
               Map<String, Object> params = new HashMap<>();
               MetaDataMap dataMap = workItem.getWorkflow().getWorkflowData().getMetaDataMap();
               if(dataMap.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)){
+                log.info("Cdn invalidation url : " + dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
                 params.put("urls", dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
               }
+
 
               HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
               WCMMode.DISABLED.toRequest(req);
