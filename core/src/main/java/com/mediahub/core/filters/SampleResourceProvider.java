@@ -11,11 +11,10 @@ import org.osgi.service.component.annotations.Component;
 import java.util.*;
 
 @Component(
+        service = ResourceProvider.class,
         property = {
                 ResourceProvider.PROPERTY_NAME + "=acs-aem-sample.sample-resource-provider",
                 ResourceProvider.PROPERTY_ROOT + "=" + SampleResourceProvider.ROOT,
-                "provider.roots=" + SampleResourceProvider.ROOT,
-                ResourceProvider.PROPERTY_REFRESHABLE + "=true"
         },
         immediate = true
 )
