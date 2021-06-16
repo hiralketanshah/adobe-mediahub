@@ -59,7 +59,7 @@ public class UserDeactivationScheduledTask implements Runnable {
     public static @interface Config {
 
         @AttributeDefinition(name = "Cron-job expression")
-        String scheduler_expression() default "0 1 0 1/1 * ? *";
+        String scheduler_expression() default "0 6 0 * * ? *";
 
         @AttributeDefinition(name = "Concurrent task",
                              description = "Whether or not to schedule this task concurrently")
