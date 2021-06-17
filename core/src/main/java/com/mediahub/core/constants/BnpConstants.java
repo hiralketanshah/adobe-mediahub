@@ -91,4 +91,7 @@ public class BnpConstants {
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
     public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-url";
+    public static final String DAM_PATH = "/content/dam";
+    public static final String USER_PROFILE_EMAIL = "./profile/email";
+    public static final String P_LIMIT ="p.limit";
 }
