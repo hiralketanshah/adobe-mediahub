@@ -21,7 +21,7 @@ PassEnv DISP_ID
 		Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
 
 		# Requested by BNPP security
-		Header always set Content-Security-Policy "default-src https: data: 'unsafe-inline' 'unsafe-eval'"
+		Header always set Content-Security-Policy "default-src https: data: blob: 'unsafe-inline' 'unsafe-eval'"
         Header always set Referrer-Policy "strict-origin"
         Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(self),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
 

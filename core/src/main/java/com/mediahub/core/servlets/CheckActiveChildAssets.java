@@ -150,9 +150,11 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.write(new Gson().toJson(responseMap));
-        out.flush();
-        out.close();
+        if(out != null) {
+            out.write(new Gson().toJson(responseMap));
+            out.flush();
+            out.close();
+        }
     }
 
 }
