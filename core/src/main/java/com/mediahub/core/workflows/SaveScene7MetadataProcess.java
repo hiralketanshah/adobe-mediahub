@@ -5,13 +5,12 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
-import com.day.cq.dam.scene7.api.Scene7UploadService;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
-import com.day.cq.dam.scene7.impl.Scene7UploadServiceImpl;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import org.apache.commons.lang3.StringUtils;
@@ -34,8 +33,6 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     public static final String DAM_SCENE_7_TYPE = "dam:scene7Type";
     public static final String DAM_SCENE_7_FILE = "dam:scene7File";
-    public static final String BNPP_EXTERNAL_BROADCAST_URL = "bnpp-external-broadcast-url";
-    public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-url";
     public static final String IS_CONTENT = "is/content/";
     public static final String S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET = "s7viewers/html5/VideoViewer.html?asset=";
 
@@ -44,6 +41,9 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     @Reference
     Scene7Service scene7Service;
+
+    @Reference
+    private Externalizer externalizer;
 
     @Reference
     Scene7DeactivationService scene7DeactivationService;
@@ -69,27 +69,30 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 String file;
                 if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.getValue())) {
                     file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET
                             + URIUtil.encodePath(modifiableValueMap.get(
                             DAM_SCENE_7_FILE, StringUtils.EMPTY)));
-                    modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
-                    setMediumHighDefinitionAssetUrls(resourceResolver, modifiableValueMap, domain);
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                    setMediumHighDefinitionAssetUrls(movedAsset, resourceResolver, modifiableValueMap, domain);
                 } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.MASTER_VIDEO.getValue())) {
                     file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil.encodePath(modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY)));
-                    modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
-                    setMediumHighDefinitionAssetUrls(resourceResolver, modifiableValueMap, domain);
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil.encodePath(modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY)));
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                    setMediumHighDefinitionAssetUrls(movedAsset, resourceResolver, modifiableValueMap, domain);
                 } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.IMAGE.getValue())) {
                     file = "is/image/" + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
-                    modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 } else {
                     file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
-                    modifiableValueMap.put(BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
-                    modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
+                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 }
 
-                workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "external", "/mh/external/player/" + movedAsset.getValueMap().get("jcr:uuid", String.class)));
+                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "external", "/mh/external/original/" + movedAsset.getValueMap().get("jcr:uuid", String.class)));
+
+                workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 resourceResolver.commit();
             }
         } catch (LoginException | PersistenceException e) {
@@ -109,8 +112,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
      * @param modifiableValueMap
      * @param domain
      */
-    private void setMediumHighDefinitionAssetUrls(ResourceResolver resourceResolver,
-                                                  ModifiableValueMap modifiableValueMap, String domain) {
+    private void setMediumHighDefinitionAssetUrls(Resource originalAsset, ResourceResolver resourceResolver, ModifiableValueMap modifiableValueMap, String domain) {
         S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
 
         List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
@@ -121,12 +123,12 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 for (Scene7Asset asset : subAssets) {
                     if (asset != null && asset.getHeight() != null) {
                         if (asset.getHeight() == 388L) {
-                            modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-md",
-                                    domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "external", "/mh/external/md/" + originalAsset.getValueMap().get("jcr:uuid", String.class)));
                         }
                         if (asset.getHeight() == 720L) {
-                            modifiableValueMap.put(BNPP_EXTERNAL_FILE_URL + "-hd",
-                                    domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "external", "/mh/external/hd/" + originalAsset.getValueMap().get("jcr:uuid", String.class)));
                         }
                     }
                 }

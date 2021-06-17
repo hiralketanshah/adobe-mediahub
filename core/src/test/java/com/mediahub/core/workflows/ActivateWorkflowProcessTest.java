@@ -103,8 +103,8 @@ public class ActivateWorkflowProcessTest {
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     when(valueMap.containsKey("bnpp-broadcast-status")).thenReturn(Boolean.TRUE);
     when(valueMap.get("bnpp-broadcast-status", new String[]{})).thenReturn(new String[]{"not-broadcast"});
-    when(valueMap.containsKey("bnpp-internal-broadcast-url")).thenReturn(Boolean.TRUE);
-    when(valueMap.get("bnpp-internal-broadcast-url", StringUtils.EMPTY)).thenReturn("/content/dam/medialibrary/table.pdf");
+    when(valueMap.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)).thenReturn(Boolean.TRUE);
+    when(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, StringUtils.EMPTY)).thenReturn("/content/dam/medialibrary/table.pdf");
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }
 

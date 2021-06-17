@@ -79,8 +79,8 @@ public class SaveMetadataProcessTest {
     when(resource.getChild(any())).thenReturn(resource);
     when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
     when(externalizer.externalLink(any(), any(String.class), any(String.class) )).thenReturn("");
-    when(modifiableValueMap.put(any(String.class),eq("bnpp-internal-broadcast-url"))).thenReturn("bnpp-internal-broadcast-url");
-    when(modifiableValueMap.put(any(String.class),eq("bnpp-internal-file-url"))).thenReturn("bnpp-internal-file-url");
+    when(modifiableValueMap.put(any(String.class),eq(BnpConstants.BNPP_INTERNAL_BROADCAST_URL))).thenReturn(BnpConstants.BNPP_INTERNAL_BROADCAST_URL);
+    when(modifiableValueMap.put(any(String.class),eq(BnpConstants.BNPP_INTERNAL_FILE_URL))).thenReturn(BnpConstants.BNPP_INTERNAL_FILE_URL);
     workflowProcess.execute(workItem, workflowSession, metadataMap);
   }
 

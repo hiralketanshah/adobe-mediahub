@@ -90,5 +90,29 @@ public class BnpConstants {
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
+
+
+    /**
+     * Assets URLs
+     */
     public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-url";
+    public static final String BNPP_EXTERNAL_BROADCAST_URL = "bnpp-external-broadcast-url";
+    public static final String BNPP_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
+    public static final String BNPP_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
+    public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
+    public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
+
+    /**
+     * Assets Tracking URLs
+     */
+    public static final String BNPP_TRACKING_EXTERNAL_FILE_URL = "bnpp-tracking-external-file-url";
+    public static final String BNPP_TRACKING_EXTERNAL_BROADCAST_URL = "bnpp-tracking-external-broadcast-url";
+    public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-tracking-external-file-url-hd";
+    public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-tracking-external-file-url-md";
+    public static final String BNPP_TRACKING_INTERNAL_FILE_URL = "bnpp-tracking-internal-file-url";
+    public static final String BNPP_TRACKING_INTERNAL_BROADCAST_URL = "bnpp-tracking-internal-broadcast-url";
+
+
+    public static final String BROADCAST_VALUE_EXTERNAL = "external";
+    public static final String BROADCAST_VALUE_INTERNAL = "internal";
 }

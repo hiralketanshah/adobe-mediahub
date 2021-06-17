@@ -1,7 +1,11 @@
 package com.mediahub.core.filters;
 
 import com.day.cq.commons.jcr.JcrConstants;
-import org.apache.jackrabbit.oak.commons.PathUtils;
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.spi.resource.provider.ResolveContext;
@@ -9,8 +13,21 @@ import org.apache.sling.spi.resource.provider.ResourceContext;
 import org.apache.sling.spi.resource.provider.ResourceProvider;
 import org.osgi.service.component.annotations.Component;
 
-import java.util.*;
+import javax.jcr.Session;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
+import static com.mediahub.core.constants.BnpConstants.*;
+
+/**
+ * Catch tracking URLs with the following pattern https://domain/mh/STATUS/FORMAT/UUID
+ * <p>
+ * Where STATUS has the value 'external' or 'internal'
+ * Where FORMAT has the value 'player' or 'original' or 'hd' or 'md'
+ * Where UUID is the JCR property jcr:uuid of the requested asset
+ */
 @Component(
         service = ResourceProvider.class,
         property = {
@@ -23,9 +40,6 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
 
     public static final String ROOT = "/mh";
 
-    private static final int MIN_NUMBER = 0;
-    private static final int MAX_NUMBER = 100;
-
     @Override
     public Resource getResource(final ResolveContext<Object> resolveContext,
                                 final String path,
@@ -34,145 +48,109 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
 
         final ResourceResolver resourceResolver = resolveContext.getResourceResolver();
 
-        // Make getResource() return as fast as possible!
-        // Return null early if getResource() cannot/should not process the resource request
+        String[] segments = path.split("/");
 
-        // If path is a root, return a Synthetic Sling Folder
-        // This could be any "type" of SyntheticResource
-        Resource asset= resourceResolver.getResource("/content/dam/medialibrary/drapeauanglais.jpg");
-        return new ResourceImpl(asset.getPath(),
-                asset.getResourceType(), asset.getResourceSuperType(),
-                asset.getValueMap(), resourceResolver, createMetaData(0, 0));
-    }
+        Resource asset = null;
+        if (segments.length == 5) {
+            String uuid = segments[4];
+            String status = segments[2];
+            String format = segments[3];
 
-    private ResourceMetadata createMetaData(long creationTime, long lastModified) {
-        ResourceMetadata metadata = new ResourceMetadata();
-        metadata.setCreationTime(creationTime);
-        metadata.setModificationTime(lastModified);
-        return metadata;
+            QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
+            Map<String, String> map = new HashMap<>();
+            map.put(BnpConstants.PATH, "/content/dam/medialibrary");
+            map.put(BnpConstants.FIRST_PROPERTY, "jcr:uuid");
+            map.put(BnpConstants.FIRST_PROPERTY_VALUE, uuid);
+            map.put("p.limit", "-1");
+
+            Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
+            SearchResult result = query.getResult();
+            Iterator<Resource> userResources = result.getResources();
+
+
+            if (userResources.hasNext()) {
+                asset = userResources.next();
+                Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+                String[] broadcastStatus = (String[]) metadata.getValueMap().get("bnpp-broadcast-status");
+                try {
+                    if (metadata != null && metadata.getValueMap().get("bnpp-broadcast-status") != null) {
+                        switch (status) {
+                            case BnpConstants.BROADCAST_VALUE_EXTERNAL:
+                                if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
+                                    return processExternalUrl(asset, path, format);
+                                }
+                                break;
+                            case BROADCAST_VALUE_INTERNAL:
+                                if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+                                    return processInternalUrl(asset, path, format);
+                                }
+                                break;
+                        }
+                    }
+
+                } catch (Exception e) {
+
+                }
+            }
+
+        }
+
+
+        // Note that ResourceMetadata is NOT the data that populates a resources ValueMap; that is done below via the ProvidedResourceWrapper
+        ResourceMetadata resourceMetaData = new ResourceMetadata();
+        // Set the resolution path
+        resourceMetaData.setResolutionPath(path);
+        return new SyntheticResource(resourceResolver, path, "sling:Folder");
+
+
     }
 
     @Override
-    public Iterator<Resource> listChildren(final ResolveContext<Object> resolveContext, final Resource parentResource) {
-        final List<Resource> numberResources = new ArrayList<Resource>();
-
-        // This example will only list children of the registered root
-        if (!ROOT.equals(parentResource.getPath())) {
-            return null;
+    public Iterator<Resource> listChildren(ResolveContext<Object> resolveContext, Resource resource) {
+        // unwrap resource if it is a wrapped resource
+        final Resource currentResource;
+        if (resource instanceof ResourceWrapper) {
+            currentResource = ((ResourceWrapper) resource).getResource();
+        } else {
+            currentResource = resource;
         }
 
-        // Collect some resources to list - this is often from a third party system.
-        // In this case well generate a list of resources that represent numbers get and create a list of resources in a similar fashion as in getResource
-        for (int i = 0; i <= 100; i++) {
-            ResourceMetadata resourceMetaData = new ResourceMetadata();
-
-            // Create the "path" for this resource; this pathing scheme must be compatible with getResource(..)
-            resourceMetaData.setResolutionPath("/content/numbers/number-" + i);
-            resourceMetaData.put("index", String.valueOf(i));
-
-            // This resourceType is completely customizable
-            // Often it is set in the OSGi Properties if the value is fixed for all resources this provider returns
-            // It is important to ensure that any scripts associated w this resourceType stay in the Sling APIs and
-            // do not drop down to the JCR Node APIs as this synthetic resource is a Sling abstraction and the JCR APIs
-            // will see it as an invalid path/resource.
-            final String resourceType = "acs-samples/content/number";
-
-            // Create the synthetic resource
-            final Resource numberResource = new SyntheticResource(resolveContext.getResourceResolver(), resourceMetaData, resourceType);
-
-            // Create a ValueMap representation of this resource, this might come from a 3rd party system
-            final Map<String, Object> properties = new HashMap<String, Object>();
-
-            // Mocking some data that represents this resource
-            properties.put("sampleData", "This is sample data for the number " + i);
-            properties.put("listedAt", new Date());
-            properties.put("meaningOfLife", 42);
-
-            // Add the properties for this resource by wrapping the synthetic resource with a ResourceWrapper (defined below)
-            // that exposes a custom ValueMap via this resources .adaptTo(ValueMap.class)
-            numberResources.add(new ProvidedResourceWrapper(numberResource, properties));
+        // delegate resource listing to resource resolver
+        if (currentResource instanceof InternalResource) {
+            final InternalResource res = (InternalResource) currentResource;
+            final ResourceResolver resolver = res.getResource().getResourceResolver();
+            return resolver.listChildren(res.getResource());
         }
-
-        return numberResources.iterator();
+        return null;
     }
 
-
-    /**
-     * Custom Resource Wrapper that is used to expose a custom ValueMap via the "Provided" resource's .adaptTo(ValueMap.class);
-     */
-    private class ProvidedResourceWrapper extends ResourceWrapper {
-        private final ValueMap properties;
-
-        public ProvidedResourceWrapper(Resource resource, Map<String, Object> properties) {
-            super(resource);
-            this.properties = new ValueMapDecorator(properties);
+    private Resource processExternalUrl(Resource asset, String path, String format) {
+        Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+        String externalUrl = null;
+        switch (format) {
+            case "player":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_BROADCAST_URL, String.class);
+                break;
+            case "original":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL, String.class);
+                break;
+            case "hd":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL_HD, String.class);
+                break;
+            case "md":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL_MD, String.class);
+                break;
         }
 
-        @Override
-        public final <AdapterType> AdapterType adaptTo(Class<AdapterType> type) {
-            if (type != ValueMap.class) {
-                return super.adaptTo(type);
-            }
+        ValueMap vm = new ValueMapDecorator(new HashMap<>());
+        vm.put("redirectTarget", externalUrl);
+        return new ExternalResource(asset, path, vm);
 
-            // Return the ValueMap of the properties passed in
-            return (AdapterType) this.properties;
-        }
     }
 
-    private class ResourceImpl extends AbstractResource {
+    private Resource processInternalUrl(Resource asset, String path, String format) {
+        return new InternalResource(asset, asset.getPath());
 
-
-        private final String path;
-        private final String resourceType;
-        private final String resourceSuperType;
-        private final ValueMap valueMap;
-        private final ResourceResolver resourceResolver;
-        private final ResourceMetadata metaData;
-
-        public ResourceImpl(String path, String resourceType, String resourceSuperType, Map<String, Object> valueMap, ResourceResolver resourceResolver, ResourceMetadata metaData)
-        {
-            this.path = path;
-            this.resourceType = resourceType;
-            this.resourceSuperType = resourceSuperType;
-            this.valueMap = new ValueMapDecorator(Collections.unmodifiableMap(valueMap));
-            this.resourceResolver = resourceResolver;
-            this.metaData = metaData;
-        }
-
-        @Override
-        public String getPath()
-        {
-            return path;
-        }
-
-        @Override
-        public String getResourceType()
-        {
-            return resourceType;
-        }
-
-        @Override
-        public String getResourceSuperType()
-        {
-            return resourceSuperType;
-        }
-
-        @Override
-        public ResourceMetadata getResourceMetadata()
-        {
-            return metaData;
-        }
-
-        @Override
-        public ValueMap getValueMap()
-        {
-            return valueMap;
-        }
-
-        @Override
-        public ResourceResolver getResourceResolver()
-        {
-            return resourceResolver;
-        }
     }
+
 }
