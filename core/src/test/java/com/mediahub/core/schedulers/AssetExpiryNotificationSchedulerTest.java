@@ -125,7 +125,7 @@ public class AssetExpiryNotificationSchedulerTest {
     when(resolver.hasChanges()).thenReturn(true);
     fixture.activate(config);
     fixture.run();
-    assertEquals("0 1 0 1/1 * ? *", config.scheduler_expression());
+    assertEquals("0 0 6 1/1 * ? *", config.scheduler_expression());
     assertEquals(Boolean.FALSE, config.scheduler_concurrent());
     } catch (UnsupportedRepositoryOperationException e) {
         e.printStackTrace();
