@@ -97,7 +97,7 @@ public class AssetExpiryNotificationSchedulerTest {
     try {
     AssetExpiryNotificationScheduler.Config config = mock(AssetExpiryNotificationScheduler.Config.class);
     when(config.getDamPath()).thenReturn(BnpConstants.DAM_PATH);
-    when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
+    when(config.scheduler_expression()).thenReturn("0 0 6 1/1 * ? *");
     when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
     QueryBuilder queryBuilder = mock(QueryBuilder.class);    
     when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
