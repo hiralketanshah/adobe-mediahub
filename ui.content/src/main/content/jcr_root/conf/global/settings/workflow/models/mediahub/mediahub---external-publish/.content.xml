@@ -59,6 +59,20 @@
                   PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
                   PROCESS_AUTO_ADVANCE="true"/>
             </process>
+            <activateresourceproc
+                    jcr:created="{Date}2020-11-24T10:00:44.800Z"
+                    jcr:createdBy="arnaud-test"
+                    jcr:description="A process to activate a page or asset"
+                    jcr:lastModified="{Date}2020-11-24T10:00:50.539Z"
+                    jcr:lastModifiedBy="arnaud-test"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Activate Page/Asset"
+                    sling:resourceType="wcm/workflow/components/workflow/activateresourceprocess">
+                <metaData
+                        jcr:primaryType="nt:unstructured"
+                        PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
+                        PROCESS_AUTO_ADVANCE="true"/>
+            </activateresourceproc>
         </flow>
     </jcr:content>
 </jcr:root>

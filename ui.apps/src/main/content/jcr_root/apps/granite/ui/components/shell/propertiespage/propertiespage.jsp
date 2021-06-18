@@ -48,8 +48,10 @@
                  javax.jcr.Session,
                  java.io.UnsupportedEncodingException,
                  java.net.URLDecoder,
+                 com.mediahub.core.constants.*,
                  java.util.*,
-                 java.util.stream.Collectors" %><%--###
+                 java.util.stream.Collectors" %>
+<%--###
 PropertiesPage
 ==============
 
@@ -462,7 +464,7 @@ PropertiesPage
                                                 Asset asset = child.adaptTo(Asset.class);
                                                 if (child.getChild("jcr:content").getChild("metadata") != null) {
                                                     Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
-                                                    if (isChildrenDeactivated && (!metadata.containsKey("bnpp-internal-file-url") || StringUtils.equals(metadata.get("bnpp-internal-file-url").toString(), StringUtils.EMPTY)) && (!metadata.containsKey("bnpp-external-file-url") || StringUtils.equals(metadata.get("bnpp-external-file-url").toString(), StringUtils.EMPTY))) {
+                                                    if (isChildrenDeactivated && (!metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_INTERNAL_FILE_URL).toString(), StringUtils.EMPTY)) && (!metadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_EXTERNAL_FILE_URL).toString(), StringUtils.EMPTY))) {
                                                         isChildrenDeactivated = true;
                                                     } else {
                                                         isChildrenDeactivated = false;
@@ -648,7 +650,7 @@ PropertiesPage
                       Resource assetResource = resourceResolver.getResource(assetId);
                       if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                         Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
-                        if ( (assetMetadata.containsKey("bnpp-internal-file-url")) || (assetMetadata.containsKey("bnpp-external-file-url")) ) {
+                        if ( (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)) ) {
                     %>
 
 

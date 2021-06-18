@@ -66,11 +66,21 @@
               PROCESS_AUTO_ADVANCE="true"/>
         </node4>
         <node5
+                jcr:primaryType="cq:WorkflowNode"
+                description="A process to activate a page or asset"
+                title="Activate Page/Asset"
+                type="PROCESS">
+            <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+        </node5>
+        <node6
           jcr:primaryType="cq:WorkflowNode"
           title="End"
           type="END">
             <metaData jcr:primaryType="nt:unstructured"/>
-        </node5>
+        </node6>
     </nodes>
     <transitions jcr:primaryType="nt:unstructured">
         <node0_x0023_node1
@@ -107,5 +117,11 @@
           to="node5">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node4_x0023_node5>
+        <node5_x0023_node6
+                jcr:primaryType="cq:WorkflowTransition"
+                from="node5"
+                to="node6">
+            <metaData jcr:primaryType="nt:unstructured"/>
+        </node5_x0023_node6>
     </transitions>
 </jcr:root>
