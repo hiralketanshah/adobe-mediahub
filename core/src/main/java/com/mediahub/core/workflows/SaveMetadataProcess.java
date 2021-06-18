@@ -50,7 +50,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
-                modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", payloadPath));
+                modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 resourceResolver.commit();
             }
 

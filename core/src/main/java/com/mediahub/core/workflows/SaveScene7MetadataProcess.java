@@ -13,21 +13,17 @@ import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.JobManager;
 import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Abuthahir Ibrahim
@@ -98,8 +94,8 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                     modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 }
 
-                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "external", "/mh/external/player/" + movedAsset.getValueMap().get("jcr:uuid", String.class)));
-                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "external", "/mh/external/original/" + movedAsset.getValueMap().get("jcr:uuid", String.class)));
+                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
 
                 workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                 resourceResolver.commit();
@@ -115,17 +111,17 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
     }
 
     /**
-     * @param resourceResolver - Resolver object
-     * @param movedAsset - Assest moved from projects to medialibrary
+     * @param resourceResolver   - Resolver object
+     * @param movedAsset         - Assest moved from projects to medialibrary
      * @param modifiableValueMap - value map containing properties
      */
     private void submitSlingJobForDeactiveAsset(ResourceResolver resourceResolver,
-        Resource movedAsset, ModifiableValueMap modifiableValueMap) {
+                                                Resource movedAsset, ModifiableValueMap modifiableValueMap) {
         S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
         List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
 
-        for(Scene7Asset asset : scene7Assets){
-            if(!asset.isPublished()){
+        for (Scene7Asset asset : scene7Assets) {
+            if (!asset.isPublished()) {
                 final Map<String, Object> props = new HashMap<String, Object>();
                 props.put("action", "Activate");
                 props.put("path", movedAsset.getPath());
@@ -138,7 +134,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
     /**
      * Setting medium and high definition urls
      *
-     * @param resourceResolver - Resolver object
+     * @param resourceResolver   - Resolver object
      * @param modifiableValueMap - value map containing properties
      * @param domain
      */
@@ -155,11 +151,11 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                     if (asset != null && asset.getHeight() != null) {
                         if (asset.getHeight() == 388L) {
                             modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
-                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "external", "/mh/external/md/" + originalAsset.getValueMap().get("jcr:uuid", String.class)));
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/md/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                         if (asset.getHeight() == 720L) {
                             modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
-                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "external", "/mh/external/hd/" + originalAsset.getValueMap().get("jcr:uuid", String.class)));
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/hd/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                     }
                 }

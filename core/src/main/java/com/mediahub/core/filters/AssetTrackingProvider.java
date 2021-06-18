@@ -6,12 +6,16 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.AnalyticsTrackingService;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.spi.resource.provider.ResolveContext;
 import org.apache.sling.spi.resource.provider.ResourceContext;
 import org.apache.sling.spi.resource.provider.ResourceProvider;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Session;
 import java.util.Arrays;
@@ -25,7 +29,7 @@ import static com.mediahub.core.constants.BnpConstants.*;
  * Catch tracking URLs with the following pattern https://domain/mh/STATUS/FORMAT/UUID
  * <p>
  * Where STATUS has the value 'external' or 'internal'
- * Where FORMAT has the value 'player' or 'original' or 'hd' or 'md'
+ * Where FORMAT has the value 'player' or 'master' or 'hd' or 'md'
  * Where UUID is the JCR property jcr:uuid of the requested asset
  */
 @Component(
@@ -39,6 +43,11 @@ import static com.mediahub.core.constants.BnpConstants.*;
 public class AssetTrackingProvider extends ResourceProvider<Object> {
 
     public static final String ROOT = "/mh";
+
+    private static final Logger log = LoggerFactory.getLogger(AssetTrackingProvider.class);
+
+    @Reference
+    private AnalyticsTrackingService trackingService;
 
     @Override
     public Resource getResource(final ResolveContext<Object> resolveContext,
@@ -59,7 +68,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
             Map<String, String> map = new HashMap<>();
             map.put(BnpConstants.PATH, "/content/dam/medialibrary");
-            map.put(BnpConstants.FIRST_PROPERTY, "jcr:uuid");
+            map.put(BnpConstants.FIRST_PROPERTY, JcrConstants.JCR_UUID);
             map.put(BnpConstants.FIRST_PROPERTY_VALUE, uuid);
             map.put("p.limit", "-1");
 
@@ -71,17 +80,19 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             if (userResources.hasNext()) {
                 asset = userResources.next();
                 Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
-                String[] broadcastStatus = (String[]) metadata.getValueMap().get("bnpp-broadcast-status");
+                String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
                 try {
-                    if (metadata != null && metadata.getValueMap().get("bnpp-broadcast-status") != null) {
+                    if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
                         switch (status) {
                             case BnpConstants.BROADCAST_VALUE_EXTERNAL:
                                 if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
+                                    trackingService.trackExternal(asset, format);
                                     return processExternalUrl(asset, path, format);
                                 }
                                 break;
-                            case BROADCAST_VALUE_INTERNAL:
+                            case BnpConstants.BROADCAST_VALUE_INTERNAL:
                                 if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+                                    trackingService.trackInternal(asset, format);
                                     return processInternalUrl(asset, path, format);
                                 }
                                 break;
@@ -89,7 +100,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                     }
 
                 } catch (Exception e) {
-
+                    log.error("Error when processing asset", e);
                 }
             }
 
@@ -131,7 +142,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             case "player":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_BROADCAST_URL, String.class);
                 break;
-            case "original":
+            case "master":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL, String.class);
                 break;
             case "hd":

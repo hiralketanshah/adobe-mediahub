@@ -68,6 +68,12 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
                         properties.remove("dam:scene7ID");
                         resourceResolver.commit();
                     }

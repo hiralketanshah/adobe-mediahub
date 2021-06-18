@@ -80,8 +80,8 @@ public class ActivateWorkflowProcessTest {
   @Test
   public void execute() throws Exception {
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(valueMap.containsKey("bnpp-broadcast-status")).thenReturn(Boolean.TRUE);
-    when(valueMap.get("bnpp-broadcast-status", new String[]{})).thenReturn(new String[]{"not-broadcast"});
+    when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
+    when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})).thenReturn(new String[]{"not-broadcast"});
     when(valueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
     when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
     workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -101,8 +101,8 @@ public class ActivateWorkflowProcessTest {
   @Test
   public void execute2() throws Exception {
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(valueMap.containsKey("bnpp-broadcast-status")).thenReturn(Boolean.TRUE);
-    when(valueMap.get("bnpp-broadcast-status", new String[]{})).thenReturn(new String[]{"not-broadcast"});
+    when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
+    when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})).thenReturn(new String[]{"not-broadcast"});
     when(valueMap.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)).thenReturn(Boolean.TRUE);
     when(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, StringUtils.EMPTY)).thenReturn("/content/dam/medialibrary/table.pdf");
     workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -111,8 +111,8 @@ public class ActivateWorkflowProcessTest {
   @Test
   public void execute3() throws Exception {
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(valueMap.containsKey("bnpp-broadcast-status")).thenReturn(Boolean.TRUE);
-    when(valueMap.get("bnpp-broadcast-status", new String[]{})).thenReturn(new String[]{"external"});
+    when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
+    when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})).thenReturn(new String[]{"external"});
     when(valueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
     when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
     workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -121,8 +121,8 @@ public class ActivateWorkflowProcessTest {
   @Test
   public void execute4() throws Exception {
     when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-    when(valueMap.containsKey("bnpp-broadcast-status")).thenReturn(Boolean.TRUE);
-    when(valueMap.get("bnpp-broadcast-status", new String[]{})).thenReturn(new String[]{"internal"});
+    when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
+    when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})).thenReturn(new String[]{"internal"});
     when(valueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
     when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
     when(resource.getParent()).thenReturn(resource);
