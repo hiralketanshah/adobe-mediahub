@@ -115,4 +115,8 @@ public class BnpConstants {
 
     public static final String BROADCAST_VALUE_EXTERNAL = "external";
     public static final String BROADCAST_VALUE_INTERNAL = "internal";
+
+    public static final String DAM_PATH = "/content/dam";
+    public static final String USER_PROFILE_EMAIL = "./profile/email";
+    public static final String P_LIMIT ="p.limit";
 }
