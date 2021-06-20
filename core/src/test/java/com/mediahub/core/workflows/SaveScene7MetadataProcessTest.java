@@ -10,6 +10,7 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.Externalizer;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
@@ -81,6 +82,9 @@ public class SaveScene7MetadataProcessTest {
   @Mock
   Workflow workflow;
 
+  @Mock
+  Externalizer externalizer;
+
   final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
       BnpConstants.WRITE_SERVICE);
 
@@ -93,7 +97,8 @@ public class SaveScene7MetadataProcessTest {
     when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
     when(resource.getChild(any())).thenReturn(resource);
     when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
-
+    when(resource.getValueMap()).thenReturn(modifiableValueMap);
+    when(externalizer.externalLink(any(), any(String.class), any(String.class) )).thenReturn("");
     when(scene7DeactivationService.getCloudConfigurationPath()).thenReturn("/conf/global/settings/cloudconfigs/dmscene7");
     when(resolver.getResource("/conf/global/settings/cloudconfigs/dmscene7")).thenReturn(s7Configresource);
     when(s7Configresource.adaptTo(S7Config.class)).thenReturn(s7Config);

@@ -78,6 +78,7 @@ public class SaveMetadataProcessTest {
     when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
     when(resource.getChild(any())).thenReturn(resource);
     when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
+    when(resource.getValueMap()).thenReturn(modifiableValueMap);
     when(externalizer.externalLink(any(), any(String.class), any(String.class) )).thenReturn("");
     when(modifiableValueMap.put(any(String.class),eq(BnpConstants.BNPP_INTERNAL_BROADCAST_URL))).thenReturn(BnpConstants.BNPP_INTERNAL_BROADCAST_URL);
     when(modifiableValueMap.put(any(String.class),eq(BnpConstants.BNPP_INTERNAL_FILE_URL))).thenReturn(BnpConstants.BNPP_INTERNAL_FILE_URL);
