@@ -40,7 +40,8 @@ from Adobe.
                   com.adobe.granite.security.user.UserManagementService,
                   org.apache.sling.auth.core.AuthUtil,
                   org.apache.sling.auth.core.AuthConstants,
-                  java.util.Calendar"%><%
+                  java.util.Calendar"%>
+<%
 %><%@taglib prefix="sling" uri="http://sling.apache.org/taglibs/sling/1.0"%><%
 %><%@ taglib prefix="ui" uri="http://www.adobe.com/taglibs/granite/ui/1.0" %><%--
 login
@@ -577,6 +578,7 @@ login
                         <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
                     </coral-alert>
                     <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= isLogin ? loginSubmitText : changeSubmitText %></button>
+                    <a href="/content/saml.html" x-cq-linkchecker="valid" is="coral-anchorbutton">Connexion SSO</a>
                     <br><button is="coral-button" id="back-button" hidden><%= printProperty(cfg, i18n, xssAPI, "box/backText", i18n.get("Back")) %></button>
                 </form>
                 <input id="login_title" type="hidden" value="<%= loginTitle %>">
