@@ -9,6 +9,12 @@ PassEnv DISP_ID
 	ServerAlias mediahub.dev.echonet
 	ServerAlias mediahub.staging.echonet
 	ServerAlias mediahub.group.echonet
+	ServerAlias broadcast-dev.mediahub.bnpparibas
+	ServerAlias broadcast-staging.mediahub.bnpparibas
+	ServerAlias broadcast.mediahub.bnpparibas
+	ServerAlias portal.mediahub.bnpparibas
+	ServerAlias portal-dev.mediahub.bnpparibas
+	ServerAlias portal-staging.mediahub.bnpparibas
 	# Use a doc root that matches what's in the /etc/httpd/conf/publish-farm.any
 	DocumentRoot	${PUBLISH_DOCROOT}
 	# Add header breadcrumbs for help in troubleshooting
