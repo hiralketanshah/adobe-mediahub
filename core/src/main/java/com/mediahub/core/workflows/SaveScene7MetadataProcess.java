@@ -13,6 +13,7 @@ import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.utils.AssetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.JobManager;
@@ -70,7 +71,10 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 String domain = modifiableValueMap.get("dam:scene7Domain", "https://s7g10.scene7.com/");
-                submitSlingJobForDeactiveAsset(resourceResolver, movedAsset, modifiableValueMap);
+
+                AssetUtils.slingJobForActivateOrDeactiveAsset(resourceResolver, movedAsset, scene7DeactivationService,
+                    jobManager, scene7Service, "Activate");
+
                 String file;
                 if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.getValue())) {
                     file = IS_CONTENT + modifiableValueMap.get(DAM_SCENE_7_FILE, StringUtils.EMPTY);
@@ -108,27 +112,6 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
             }
         }
 
-    }
-
-    /**
-     * @param resourceResolver   - Resolver object
-     * @param movedAsset         - Assest moved from projects to medialibrary
-     * @param modifiableValueMap - value map containing properties
-     */
-    private void submitSlingJobForDeactiveAsset(ResourceResolver resourceResolver,
-                                                Resource movedAsset, ModifiableValueMap modifiableValueMap) {
-        S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
-        List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
-
-        for (Scene7Asset asset : scene7Assets) {
-            if (!asset.isPublished()) {
-                final Map<String, Object> props = new HashMap<String, Object>();
-                props.put("action", "Activate");
-                props.put("path", movedAsset.getPath());
-                props.put("user", "");
-                jobManager.addJob("dam/scene7/asset/activation", props);
-            }
-        }
     }
 
     /**
