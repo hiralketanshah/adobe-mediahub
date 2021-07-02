@@ -10,7 +10,16 @@ import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
-import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.QueryUtils;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.jcr.Node;
+import javax.jcr.Session;
+import org.apache.http.client.utils.DateUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -26,11 +35,6 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.Session;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 /**
  * Scheduler class to send Project Expire Email Notification to project group users.
  * <p>
@@ -40,6 +44,7 @@ import java.util.*;
 @Component(service = Runnable.class)
 public class ProjectExpireNotificationScheduler implements Runnable {
 
+    public static final String YYYY_MM_DD = "yyyy-MM-dd";
     private final Logger logger = LoggerFactory.getLogger(getClass());
     @Reference
     private Externalizer externalizer;
@@ -50,7 +55,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
     public static @interface Config {
 
         @AttributeDefinition(name = "Cron-job expression")
-        String scheduler_expression() default "0 0 2 1/1 * ? *";
+        String scheduler_expression() default "0 0 6 1/1 * ? *";
 
         @AttributeDefinition(
                 name = "Concurrent task",
@@ -79,7 +84,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
             resolver = resolverFactory.getServiceResourceResolver(authInfo);
 
             QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
-            Map<String, String> map = ProjectExpireNotificationUtil.getPredicateMap(projectPath);
+            Map<String, String> map = QueryUtils.getPredicateMapProjectDueDate(projectPath);
             Query query = builder.createQuery(PredicateGroup.create(map), resolver.adaptTo(Session.class));
 
             SearchResult result = query.getResult();
@@ -89,7 +94,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 String path = hit.getPath();
                 logger.debug("Projecs Paths : {}", path);
 
-                int index = path.lastIndexOf("/");
+                int index = path.lastIndexOf('/');
                 String projectpath = path.substring(0, index);
 
                 Resource adminResource = resolver.getResource(path);
@@ -99,69 +104,26 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 ProjectManager projectManager = resolver.adaptTo(ProjectManager.class);
                 Project project = resolver.getResource(projectpath).adaptTo(Project.class);
                 logger.debug("Projecs due date : {}", projectactualDueDate);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date actualDueDate = dateFormat.parse(projectactualDueDate);
-                Date crrentDate = ProjectExpireNotificationUtil.getCurrentDate(dateFormat);
+                Date actualDueDate = DateUtils.parseDate(projectactualDueDate, new String[]{
+                    YYYY_MM_DD});
+                Date crrentDate = DateUtils.parseDate(DateUtils.formatDate(Calendar.getInstance().getTime(),YYYY_MM_DD), new String[]{YYYY_MM_DD});
                 int differenceInDays = (int) ((actualDueDate.getTime() - crrentDate.getTime()) / (1000 * 60 * 60 * 24));
-                logger.debug("difference jour : " + differenceInDays);
-                if (differenceInDays == 30 || differenceInDays == 0 || differenceInDays == -31) {
+                logger.debug("difference jour : {}", differenceInDays);
+                if (differenceInDays == 30 || differenceInDays == 0 || differenceInDays <= -31) {
                     Resource groupOwnerResource = resolver.getResource(projectpath);
                     Node projectNode = groupOwnerResource.adaptTo(Node.class);
                     projectOwnerProperty = projectNode.getProperty(BnpConstants.ROLE_OWNER).getValue().getString();
                     UserManager userManager = resolver.adaptTo(UserManager.class);
-                    Authorizable authorizable;
-                    authorizable = userManager.getAuthorizable(projectOwnerProperty);
+                    Authorizable authorizable = userManager.getAuthorizable(projectOwnerProperty);
                     org.apache.jackrabbit.api.security.user.Group group = (org.apache.jackrabbit.api.security.user.Group) authorizable;
                     Iterator<Authorizable> itr = group.getDeclaredMembers();
-                    Map<String, String> emailParams = new HashMap<String, String>();
+                    Map<String, String> emailParams = new HashMap<>();
                     emailParams.put("projectitle", project.getTitle());
                     emailParams.put("projecturl", externalizer.authorLink(resolver, "/projects/details.html" + projectpath));
 
-                    while (itr.hasNext()) {
-                        Object obj = itr.next();
-                        if (obj instanceof User) {
-                            User user = (User) obj;
-                            String userID = user.getID();
-                            logger.debug("userID : {} ", userID);
-                            Authorizable userAuthorization = userManager.getAuthorizable(userID);
-                            if (userAuthorization.hasProperty(BnpConstants.PEOFILE_EMAIL)
-                                    && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL) != null
-                                    && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL).length > 0) {
-                                String userName = userAuthorization.getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0]
-                                        .getString();
-                                logger.debug("User GivenName : {} ", userName);
-
-                                String userEmailID = userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL)[0]
-                                        .getString();
-
-                                logger.debug("EMailID----- : {} ", userEmailID);
-                                String[] emailRecipients = {userEmailID};
-
-                                emailParams.put("firstname", userName);
-                                if (differenceInDays == 30) {
-                                    logger.debug("Notification deletion dans 1mois");
-                                    String subject = "Mediahub - Project Expiration";
-                                    emailParams.put(BnpConstants.SUBJECT, subject);
-                                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
-
-                                } else if (differenceInDays == 0) {
-                                    logger.debug("Notification deactivation");
-                                    jcrContentNode.setProperty(BnpConstants.ACTIVE, false);
-                                    String subject = "Mediahub - Project Deactivation";
-                                    emailParams.put(BnpConstants.SUBJECT, subject);
-                                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html", emailRecipients, emailParams);
-
-                                } else if (differenceInDays == -31) {
-                                    logger.debug("Notification deletion");
-                                    String subject = "Mediahub - Project Deletion";
-                                    emailParams.put(BnpConstants.SUBJECT, subject);
-                                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html", emailRecipients, emailParams);
-
-                                }
-                            }
-                        }
-                    }
-                    if (differenceInDays == -31) {
+                    sendProjectExpiryNotification(jcrContentNode, differenceInDays, userManager,
+                        itr, emailParams);
+                    if (differenceInDays <= -31) {
                         logger.debug(" deletion");
                         projectManager.deleteProject(project);
                     }
@@ -173,6 +135,55 @@ public class ProjectExpireNotificationScheduler implements Runnable {
             resolver.close();
         } catch (Exception e) {
             logger.error("Error while project expire notification  {}", e.getMessage());
+        }
+    }
+
+    private void sendProjectExpiryNotification(Node jcrContentNode, int differenceInDays,
+        UserManager userManager, Iterator<Authorizable> itr, Map<String, String> emailParams)
+        throws javax.jcr.RepositoryException {
+        while (itr.hasNext()) {
+            Object obj = itr.next();
+            if (obj instanceof User) {
+                User user = (User) obj;
+                String userID = user.getID();
+                logger.debug("userID : {} ", userID);
+                Authorizable userAuthorization = userManager.getAuthorizable(userID);
+                if (userAuthorization.hasProperty(BnpConstants.PEOFILE_EMAIL)
+                        && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL) != null
+                        && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL).length > 0) {
+                    String userName = userAuthorization.getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0]
+                            .getString();
+                    logger.debug("User GivenName : {} ", userName);
+
+                    String userEmailID = userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL)[0]
+                            .getString();
+
+                    logger.debug("EMailID----- : {} ", userEmailID);
+                    String[] emailRecipients = {userEmailID};
+
+                    emailParams.put("firstname", userName);
+                    if (differenceInDays == 30) {
+                        logger.debug("Notification deletion dans 1mois");
+                        String subject = "Mediahub - Project Expiration";
+                        emailParams.put(BnpConstants.SUBJECT, subject);
+                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
+
+                    } else if (differenceInDays == 0) {
+                        logger.debug("Notification deactivation");
+                        jcrContentNode.setProperty(BnpConstants.ACTIVE, false);
+                        String subject = "Mediahub - Project Deactivation";
+                        emailParams.put(BnpConstants.SUBJECT, subject);
+                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html", emailRecipients, emailParams);
+
+                    } else if (differenceInDays <= -31) {
+                        logger.debug("Notification deletion");
+                        String subject = "Mediahub - Project Deletion";
+                        emailParams.put(BnpConstants.SUBJECT, subject);
+                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html", emailRecipients, emailParams);
+
+                    }
+                }
+            }
         }
     }
 
