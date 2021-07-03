@@ -985,6 +985,34 @@ PropertiesPage
             }]);
         });
     }
+
+    function deactivateAssetsInsideMedia(event){
+            data.push({name: 'model', value: '/var/workflow/models/mediahub/unpublish-media-folder'});
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/etc/workflow/instances",
+                data: data,
+                async: true,
+                cache: false,
+                success: function (response) {
+                    if (response) {
+                        var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+                    }
+                }
+            }).done(function (html) {
+                var ui = $(window).adaptTo("foundation-ui");
+                successMessage = Granite.I18n.get("The asset inside media will be deactivated in sometime");
+                ui.prompt(Granite.I18n.get("Deactivate Assets inside media"), successMessage, "success", [{
+                    text: Granite.I18n.get("OK"),
+                    primary: true,
+                    handler: function () {
+                        location.href =
+                            $(".foundation-backanchor").attr("href");
+                    }
+                }]);
+            });
+        }
 </script>
 </html>
 <%!
