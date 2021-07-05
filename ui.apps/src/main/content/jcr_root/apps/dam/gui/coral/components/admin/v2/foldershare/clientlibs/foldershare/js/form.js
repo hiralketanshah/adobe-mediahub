@@ -267,7 +267,6 @@
     });
 
     $(document).on("click", "#shell-propertiespage-deactivate-media", function (e) {
-        alert("#shell-propertiespage-deactivate-media");
         deactivateAssetsInsideMedia(e);
     });
 
