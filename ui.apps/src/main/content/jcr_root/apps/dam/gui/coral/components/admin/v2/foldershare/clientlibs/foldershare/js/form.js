@@ -266,6 +266,11 @@
         saveMetadataChanges(e);
     });
 
+    $(document).on("click", "#shell-propertiespage-deactivate-media", function (e) {
+        alert("#shell-propertiespage-deactivate-media");
+        deactivateAssetsInsideMedia(e);
+    });
+
     function addRating() {
         var rating = $(".rating.edit-mode coral-icon[icon='starFill'].current-rating").data("rate");
         if (rating) {

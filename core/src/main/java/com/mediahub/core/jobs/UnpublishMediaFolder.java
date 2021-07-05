@@ -1,6 +1,6 @@
 package com.mediahub.core.jobs;
 
-import com.day.cq.dam.api.Asset;
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.workflow.WorkflowException;
 import com.day.cq.workflow.WorkflowService;
@@ -13,6 +13,8 @@ import java.util.Map;
 import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -43,36 +45,52 @@ public class UnpublishMediaFolder implements JobConsumer {
 
   @Override
   public JobResult process(Job job) {
-    String payload = job.getProperty("payload").toString();
-    LOGGER.debug("Asset path {}", payload);
+    String payload = job.getProperty("offloading.input.payload").toString();
+
     if(StringUtils.isBlank(payload)){
       return JobResult.OK;
     }
+
+    if(payload.contains("|")){
+      payload = job.getProperty("offloading.input.payload").toString().split("\\|")[0];
+    }
+
+    LOGGER.debug("Asset path {}", payload);
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
         BnpConstants.WRITE_SERVICE);
     try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
       Resource payloadResource = resourceResolver.resolve(payload);
-      if(payloadResource.hasChildren()){
-        payloadResource.getChildren().forEach(resource -> {
-          Asset asset = DamUtil.resolveToAsset(payloadResource);
-          String scene7Path = asset.getMetadata().getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
-          String publishPath = asset.getMetadata().getOrDefault(BnpConstants.BNPP_INTERNAL_FILE_URL, StringUtils.EMPTY).toString();
 
-          WorkflowSession workflowSession = workflowService.getWorkflowSession(resourceResolver.adaptTo(
-              Session.class));
 
-          if(StringUtils.isNotBlank(scene7Path)){
-            String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
-            startWorkflow(job, workflowSession, workflowName, resource.getPath());
-          } else if(StringUtils.isNotBlank(publishPath)){
-            String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
-            startWorkflow(job, workflowSession, workflowName, resource.getPath());
+          if(DamUtil.isAsset(payloadResource)){
+            ModifiableValueMap valueMap = payloadResource.getChild(JcrConstants.JCR_CONTENT).getChild("metadata").adaptTo(
+                ModifiableValueMap.class);
+            String scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+            String publishPath = valueMap.getOrDefault(BnpConstants.BNPP_INTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+
+            WorkflowSession workflowSession = workflowService.getWorkflowSession(resourceResolver.adaptTo(
+                Session.class));
+
+            if(StringUtils.isNotBlank(scene7Path)){
+              String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
+              startWorkflow(job, workflowSession, workflowName, payloadResource.getPath());
+            }
+
+            if(StringUtils.isNotBlank(publishPath)){
+              String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
+              startWorkflow(job, workflowSession, workflowName, payloadResource.getPath());
+            }
+
+            valueMap.remove("bnpp-broadcast-status");
+            resourceResolver.commit();
           }
-        });
-      }
+
     } catch (LoginException e) {
       LOGGER.error("Error while Scene 7 cache invalidation", e);
+      return JobResult.FAILED;
+    } catch (PersistenceException e) {
+      LOGGER.error("Error while Removing broadcast status", e);
       return JobResult.FAILED;
     }
     return JobResult.OK;

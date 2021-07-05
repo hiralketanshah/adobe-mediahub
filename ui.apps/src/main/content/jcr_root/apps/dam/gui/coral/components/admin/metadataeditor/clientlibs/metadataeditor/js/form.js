@@ -277,10 +277,6 @@
         deactivateAsset(e);
     });
 
-    $(document).on("click", "#shell-propertiespage-deactivate-media", function (e) {
-        deactivateAssetsInsideMedia(e);
-    });
-
     function handleResponse(form, xhr) {
         var ui = $(window).adaptTo("foundation-ui");
         xhr.done(function () {
