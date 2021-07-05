@@ -54,11 +54,17 @@ public class InvalidateScene7Cache implements JobConsumer {
 
   @Override
   public JobResult process(Job job) {
-    String payload = job.getProperty("payload").toString();
-    LOGGER.debug("Asset path {}", payload);
+    String payload = job.getProperty("offloading.input.payload").toString();
+
     if(StringUtils.isBlank(payload)){
       return JobConsumer.JobResult.OK;
     }
+
+    if(payload.contains("|")){
+      payload = job.getProperty("offloading.input.payload").toString().split("\\|")[0];
+    }
+
+    LOGGER.debug("Asset path {}", payload);
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
         BnpConstants.WRITE_SERVICE);
