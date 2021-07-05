@@ -8,6 +8,8 @@
     <filter root="/etc/acs-commons/lists/user-type" mode="merge"/>
     <!-- <filter root="/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema" mode="update"/> -->
     <!-- <filter root="/conf/global/settings/dam/adminui-extension/foldermetadataschema/mediahub-medias-schema" mode="update"/> -->
+    <filter root="/conf/global/settings/workflow/models/dam/dam_update_asset1-1"/>
+    <filter root="/var/workflow/models/dam/dam_update_asset1-1"/>
     <filter root="/conf/global/settings/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/var/workflow/models/dam/mediahub_dam_update_asset"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish"/>

@@ -6,12 +6,15 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.utils.AssetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
+import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -39,6 +42,9 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
     @Reference
     Scene7DeactivationService scene7DeactivationService;
 
+    @Reference
+    JobManager jobManager;
+
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
@@ -56,31 +62,23 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                     throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
                 }
 
-
                 String scene7ID = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap().get("dam:scene7ID", StringUtils.EMPTY);
 
                 if (StringUtils.isNotBlank(scene7ID)) {
-                    String status = scene7Service.deleteAsset(scene7ID, s7Config);
-                    log.info("Status of unpublishing dynamic media : " + status);
-
-                    if (StringUtils.equals(status, "success")) {
-                        ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
-                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
-                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
-                        properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
-                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
-                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
-                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
-                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
-                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
-                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
-                        properties.remove("dam:scene7ID");
-                        resourceResolver.commit();
-                    }
-
-                    if (StringUtils.equals(status, "failure")) {
-                        throw new WorkflowException("The Asset Could not be deleted in Dynamic Media");
-                    }
+                    AssetUtils.slingJobForActivateOrDeactiveAsset(resourceResolver, damResource, scene7DeactivationService,
+                        jobManager, scene7Service, "Deactivate");
+                    ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
+                    workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
+                    properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
+                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
+                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
+                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
+                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
+                    //properties.remove("dam:scene7ID");
+                    resourceResolver.commit();
                 }
             }
 
