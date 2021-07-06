@@ -266,6 +266,10 @@
         saveMetadataChanges(e);
     });
 
+    $(document).on("click", "#shell-propertiespage-deactivate-media", function (e) {
+        deactivateAssetsInsideMedia(e);
+    });
+
     function addRating() {
         var rating = $(".rating.edit-mode coral-icon[icon='starFill'].current-rating").data("rate");
         if (rating) {

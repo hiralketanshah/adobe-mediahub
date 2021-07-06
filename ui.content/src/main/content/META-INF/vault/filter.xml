@@ -31,4 +31,6 @@
     <filter root="/var/workflow/models/mediahub/external-user-creation"/>
     <filter root="/var/workflow/models/mediahub" mode="update"/>
     <filter root="/etc/mediahub"/>
+    <filter root="/conf/global/settings/workflow/models/mediahub/unpublish-media-folder"/>
+    <filter root="/var/workflow/models/mediahub/unpublish-media-folder"/>
 </workspaceFilter>

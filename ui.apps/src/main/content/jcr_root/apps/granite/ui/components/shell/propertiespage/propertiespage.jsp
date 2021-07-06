@@ -426,6 +426,7 @@ PropertiesPage
                     boolean isAsset = false;
                     String isMediaValidated = "false";
                     boolean isChildrenDeactivated = true;
+                    boolean isMedia = false;
 
                     boolean canSavePublishForProjects = true;
 
@@ -446,6 +447,7 @@ PropertiesPage
                             boolean fieldMissed = false;
                             if (assetResource != null && assetResource.getChild("jcr:content") != null) {
                                 if (assetResource.getChild("jcr:content").getChild("metadata") != null && StringUtils.equals(assetResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", "false").toString(), "true")) {
+                                    isMedia = true;
                                     String assetSchema = DamUtil.getInheritedProperty("metadataSchema", assetResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
                                     List<String> requiredFields = getRequiredMetadataFields(resourceResolver, assetSchema);
 
@@ -646,11 +648,11 @@ PropertiesPage
 
 
                     <%
-                    if (isAsset && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                    if ( (isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
                       Resource assetResource = resourceResolver.getResource(assetId);
                       if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                         Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
-                        if ( (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)) ) {
+                        if ( isMedia || (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)) ) {
                     %>
 
 
@@ -658,7 +660,11 @@ PropertiesPage
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <%
                             AttrBuilder unpublishAttributes = new AttrBuilder(request, xssAPI);
-                            unpublishAttributes.add("id", "shell-propertiespage-deactivate-asset");
+                            if(isAsset){
+                              unpublishAttributes.add("id", "shell-propertiespage-deactivate-asset");
+                            } else {
+                              unpublishAttributes.add("id", "shell-propertiespage-deactivate-media");
+                            }
                             unpublishAttributes.add("type", "submit");
                             unpublishAttributes.add("form", formId);
                             unpublishAttributes.add("is", "coral-button");
@@ -979,6 +985,34 @@ PropertiesPage
             }]);
         });
     }
+
+    function deactivateAssetsInsideMedia(event){
+            data.push({name: 'model', value: '/var/workflow/models/mediahub/unpublish-media-folder'});
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/etc/workflow/instances",
+                data: data,
+                async: true,
+                cache: false,
+                success: function (response) {
+                    if (response) {
+                        var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+                    }
+                }
+            }).done(function (html) {
+                var ui = $(window).adaptTo("foundation-ui");
+                successMessage = Granite.I18n.get("The asset inside media will be deactivated in sometime");
+                ui.prompt(Granite.I18n.get("Deactivate Assets inside media"), successMessage, "success", [{
+                    text: Granite.I18n.get("OK"),
+                    primary: true,
+                    handler: function () {
+                        location.href =
+                            $(".foundation-backanchor").attr("href");
+                    }
+                }]);
+            });
+        }
 </script>
 </html>
 <%!

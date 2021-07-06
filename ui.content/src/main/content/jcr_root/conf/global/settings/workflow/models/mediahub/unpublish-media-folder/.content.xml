@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:designPath="/libs/settings/wcm/designs/default"
+        cq:lastModified="{Date}2021-07-04T00:18:29.350+05:30"
+        cq:lastModifiedBy="admin"
+        cq:template="/libs/cq/workflow/templates/model"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Unpublish Media Folder"
+        sling:resourceType="cq/workflow/components/pages/model">
+        <flow
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="foundation/components/parsys">
+            <genericjobprocess
+                jcr:created="{Date}2021-07-04T00:18:05.450+05:30"
+                jcr:createdBy="admin"
+                jcr:description="Generic Job Process"
+                jcr:lastModified="{Date}2021-07-04T00:18:29.346+05:30"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Generic Job Process"
+                sling:resourceType="cq/workflow/components/workflow/genericjobprocess">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    advanceOnTimeout="true"
+                    EXTERNAL_PROCESS="com.adobe.granite.offloading.workflow.impl.GenericJobOffloadingProcess"
+                    jobTopic="scene7/cache/invalidation"
+                    offloadingInputIncludeWorkflowPayload="true"
+                    offloadingOutputIncludeWorkflowPayload="true"
+                    period="5"
+                    PROCESS_AUTO_ADVANCE="true"
+                    timeout="3600"/>
+            </genericjobprocess>
+        </flow>
+    </jcr:content>
+</jcr:root>
