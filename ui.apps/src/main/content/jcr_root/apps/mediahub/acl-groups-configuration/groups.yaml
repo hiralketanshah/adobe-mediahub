@@ -119,6 +119,11 @@
           privileges: jcr:read,jcr:readAccessControl
           repGlob: /jcr:*
 
+        - path: /content/saml
+          permission: allow
+          actions: read
+          repGlob:
+
         - path: /content/dam
           permission: deny
           actions:

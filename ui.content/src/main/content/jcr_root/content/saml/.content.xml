@@ -7,5 +7,5 @@
         sling:redirectStatus="{Long}302"
         sling:resourceType="foundation/components/redirect"
         redirectModes="[EDIT]"
-        redirectTarget="/"/>
+        redirectTarget="/projects.html"/>
 </jcr:root>
