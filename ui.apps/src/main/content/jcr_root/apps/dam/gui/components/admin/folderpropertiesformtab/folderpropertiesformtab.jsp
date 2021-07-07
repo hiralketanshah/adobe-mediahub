@@ -24,7 +24,13 @@
 
     Config cfg = cmp.getConfig();
 
-    Resource contentNode = resourceResolver.getResource(slingRequest.getRequestPathInfo().getSuffix()).getChild("jcr:content");
+    String suffix = slingRequest.getRequestPathInfo().getSuffix();
+
+    if(StringUtils.contains(suffix, ",")){
+        suffix = suffix.split(",")[0];
+    }
+
+    Resource contentNode = resourceResolver.getResource(suffix).getChild("jcr:content");
 
     // do not honor inheritance (change to getInherited if inheritance is needed)
     String path = new HierarchyNodeInheritanceValueMap(contentNode).get("folderMetadataSchema", String.class);
