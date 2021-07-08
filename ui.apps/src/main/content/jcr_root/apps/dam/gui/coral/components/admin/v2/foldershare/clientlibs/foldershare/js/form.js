@@ -135,7 +135,6 @@
 
 
         var hintFields = createHintFields(false, false);
-        debugger;
         var paths;
         if(folderPath.includes("%2c")){
           paths = folderPath.split("%2c");

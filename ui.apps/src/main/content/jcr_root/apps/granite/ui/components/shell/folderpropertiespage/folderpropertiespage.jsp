@@ -362,7 +362,6 @@ try {
                 boolean showEdit = !StringUtils.isEmpty(formId) && editCondition.check();
 
 				showEdit = true;
-				out.println("Show Edit : " + showEdit);
 
 				String cancelText;
                 if (showEdit) {
