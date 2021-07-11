@@ -97,6 +97,10 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         Authorizable superAdministrators = userManager.getAuthorizable("mediahub-super-administrators");
         Group superAdministratorsGroup = (Group) superAdministrators;
 
+        // mediahub-administrators group
+        Authorizable mediahubAdministrators = userManager.getAuthorizable("mediahub-administrators");
+        Group mediahubAdministratorsGroup = (Group) mediahubAdministrators;
+
         Authorizable authorizable = userManager.getAuthorizable(request.getResourceResolver().getUserID());
 
         if (authorizable != null && !authorizable.isGroup()) {
@@ -104,6 +108,9 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
                 hasAdminPrivileges = true;
             }
             if (superAdministratorsGroup != null && superAdministratorsGroup.isDeclaredMember(authorizable)) {
+                hasAdminPrivileges = true;
+            }
+            if (mediahubAdministratorsGroup != null && mediahubAdministratorsGroup.isDeclaredMember(authorizable)) {
                 hasAdminPrivileges = true;
             }
 
@@ -150,7 +157,7 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        if(out != null) {
+        if (out != null) {
             out.write(new Gson().toJson(responseMap));
             out.flush();
             out.close();
