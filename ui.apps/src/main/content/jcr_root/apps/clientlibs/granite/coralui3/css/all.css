@@ -4931,7 +4931,7 @@ th {
 
 @font-face {
   font-family: "AdobeSpectrumIcons18";
-  src: url("../resources/coralui-component-icon/AdobeSpectrumIcons18.woff2?651453a29a2cf87546cdc6215616731e") format("woff2"),url("../resources/coralui-component-icon/AdobeSpectrumIcons18.woff?651453a29a2cf87546cdc6215616731e") format("woff"),url("../resources/coralui-component-icon/AdobeSpectrumIcons18.ttf?651453a29a2cf87546cdc6215616731e") format("truetype");
+  src: url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons18.woff2?651453a29a2cf87546cdc6215616731e") format("woff2"),url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons18.woff?651453a29a2cf87546cdc6215616731e") format("woff"),url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons18.ttf?651453a29a2cf87546cdc6215616731e") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -8178,7 +8178,7 @@ th {
 
 @font-face {
   font-family: "AdobeSpectrumIcons24";
-  src: url("../resources/coralui-component-icon/AdobeSpectrumIcons24.woff2?b750bfd862e4ef0daea700228de3e788") format("woff2"),url("../resources/coralui-component-icon/AdobeSpectrumIcons24.woff?b750bfd862e4ef0daea700228de3e788") format("woff"),url("../resources/coralui-component-icon/AdobeSpectrumIcons24.ttf?b750bfd862e4ef0daea700228de3e788") format("truetype");
+  src: url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons24.woff2?b750bfd862e4ef0daea700228de3e788") format("woff2"),url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons24.woff?b750bfd862e4ef0daea700228de3e788") format("woff"),url("/etc.clientlibs/clientlibs/granite/coralui3/resources/coralui-component-icon/AdobeSpectrumIcons24.ttf?b750bfd862e4ef0daea700228de3e788") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -24011,56 +24011,56 @@ a.endor-Footer-item:hover {
 
 @font-face {
   font-family: 'bnpp-sans';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-bold';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-bold-italic';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold-italic.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-bold-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-extrabold';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-extrabold-italic';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold-italic.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-extrabold-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-italic';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-italic.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-light';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'bnpp-sans-light-italic';
-  src: url('../../../../../etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light-italic.ttf');
+  src: url('/etc.clientlibs/clientlibs/granite/coralui3/resources/fonts/bnpp-sans-light-italic.ttf');
   font-weight: normal;
   font-style: normal;
 }
