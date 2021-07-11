@@ -769,6 +769,11 @@
           actions: read
           repGlob:
 
+        - path: /etc/languages
+          permission: allow
+          actions: read
+          repGlob:
+
 
 
     - mediahub-super-administrators:
