@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(service = JobConsumer.class, immediate = true,
-    property = {Constants.SERVICE_DESCRIPTION + "=Replication Job In NT",
-        JobConsumer.PROPERTY_TOPICS + "=" + "scene7/cache/invalidation"})
+    property = {Constants.SERVICE_DESCRIPTION + "=Job to unpublish assets inside media",
+        JobConsumer.PROPERTY_TOPICS + "=" + "unpublish/media/folder"})
 /**
  * This job will invalidate scene7 cache JOB.
  *

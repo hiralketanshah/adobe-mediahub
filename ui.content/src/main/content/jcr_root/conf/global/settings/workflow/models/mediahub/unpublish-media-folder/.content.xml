@@ -19,13 +19,13 @@
                 jcr:lastModified="{Date}2021-07-04T00:18:29.346+05:30"
                 jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
-                jcr:title="Generic Job Process"
+                jcr:title="Generic Job Process to unpublish assets inside media"
                 sling:resourceType="cq/workflow/components/workflow/genericjobprocess">
                 <metaData
                     jcr:primaryType="nt:unstructured"
                     advanceOnTimeout="true"
                     EXTERNAL_PROCESS="com.adobe.granite.offloading.workflow.impl.GenericJobOffloadingProcess"
-                    jobTopic="scene7/cache/invalidation"
+                    jobTopic="unpublish/media/folder"
                     offloadingInputIncludeWorkflowPayload="true"
                     offloadingOutputIncludeWorkflowPayload="true"
                     period="5"
