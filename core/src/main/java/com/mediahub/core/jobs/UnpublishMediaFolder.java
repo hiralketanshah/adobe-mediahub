@@ -86,11 +86,8 @@ public class UnpublishMediaFolder implements JobConsumer {
             resourceResolver.commit();
           }
 
-    } catch (LoginException e) {
-      LOGGER.error("Error while Scene 7 cache invalidation", e);
-      return JobResult.FAILED;
-    } catch (PersistenceException e) {
-      LOGGER.error("Error while Removing broadcast status", e);
+    } catch (Exception e) {
+      LOGGER.error("Error while unpublishing media", e);
       return JobResult.FAILED;
     }
     return JobResult.OK;
@@ -107,7 +104,7 @@ public class UnpublishMediaFolder implements JobConsumer {
       WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", assetPath);
       workflowSession.startWorkflow(wfModel, wfData);
     } catch (WorkflowException e) {
-      LOGGER.error("Error while Scene 7 cache invalidation", e);
+      LOGGER.error("Error while starting unpublishing workflows", e);
     }
 
   }
