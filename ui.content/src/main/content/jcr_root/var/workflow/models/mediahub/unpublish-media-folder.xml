@@ -20,14 +20,14 @@
         </node0>
         <node1
             jcr:primaryType="cq:WorkflowNode"
-            description="Generic Job Process"
-            title="Generic Job Process"
+            description="Generic Job Process to unpublish assets inside media"
+            title="Generic Job Process to unpublish assets inside media"
             type="EXTERNAL_PROCESS">
             <metaData
                 jcr:primaryType="nt:unstructured"
                 advanceOnTimeout="true"
                 EXTERNAL_PROCESS="com.adobe.granite.offloading.workflow.impl.GenericJobOffloadingProcess"
-                jobTopic="scene7/cache/invalidation"
+                jobTopic="unpublish/media/folder"
                 offloadingInputIncludeWorkflowPayload="true"
                 offloadingOutputIncludeWorkflowPayload="true"
                 period="5"

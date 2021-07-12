@@ -504,6 +504,72 @@
         }
     };
 
+    $.DAM.FolderShare.bulkSave = function(wizardForm, hintFields, path, host) {
+            $(".aem-assets-foldershare-selected-profile-detail")
+                .replaceWith('<div id="aem-assets-foldershare-selected-profile-detail" />');
+            // var operation = $(".foundation-wizard-step input[name=\":operation\"]").val();
+            var foundationContentPath = $(".foundation-content-path").data("foundationContentPath");
+
+            // var redirectionContentPath = $(".foundation-content-path").data("folder-parent-path");
+            // var folderShareSettings = $("#foldersharesettings");
+            var successMessage = "";
+            var errorMessage = "";
+            // Add the path of the current folder which is going to be shared before form submission
+
+
+            if(wizardForm.getElementsByClassName("assetPath") && wizardForm.getElementsByClassName("assetPath")[0]){
+             wizardForm.getElementsByClassName("assetPath")[0].remove();
+            }
+
+            var input = document.createElement("INPUT");
+            input.setAttribute("type", "hidden");
+            input.setAttribute("class", "assetPath");
+            input.setAttribute("name", "path");
+            input.setAttribute("value", path);
+            wizardForm.appendChild(input);
+
+            var data = new FormData(document.getElementById("folder-settings-form"));
+
+            for (var j = 0; j < hintFields.length; j++) {
+                data.append(hintFields[j].name, hintFields[j].value);
+            }
+
+            if ($.DAM.FolderShare.FormValidator.validate(data)) {
+                var processData = false;
+                var contentType = false;
+                successMessage = Granite.I18n.get("Folder properties have been saved");
+                errorMessage = Granite.I18n.get("Failed to save folder properties");
+                var ui = $(window).adaptTo("foundation-ui");
+
+                $.ajax({
+                    type: wizardForm.method,
+                    url: host + path,
+                    data: data,
+                    processData: processData,
+                    contentType: contentType
+                }).done(function(html) {
+                    ui.prompt(Granite.I18n.get("Success"), successMessage, "success", [{
+                        text: Granite.I18n.get("OK"),
+                        primary: true,
+                        handler: function() {
+                            location.href =
+                                    $(".foundation-backanchor").attr("href");
+                        }
+                    }]);
+                }).fail(function(xhr, error, errorThrown) {
+                    ui.prompt(Granite.I18n.get("Error"), errorMessage, "error", [{
+                        text: Granite.I18n.get("Close"),
+                        primary: true,
+                        handler: function() {
+                            location.href =
+                                    $(".foundation-backanchor").attr("href");
+                        }
+                    }]);
+                });
+
+            }
+        };
+
     $.DAM.FolderShare.simpleSave = function(wizardForm, hintFields) {
         $(".aem-assets-foldershare-selected-profile-detail")
             .replaceWith('<div id="aem-assets-foldershare-selected-profile-detail" />');
