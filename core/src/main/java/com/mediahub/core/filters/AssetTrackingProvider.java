@@ -87,7 +87,11 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                             case BnpConstants.BROADCAST_VALUE_EXTERNAL:
                                 if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
                                     trackingService.trackExternal(asset, format);
-                                    return processExternalUrl(asset, path, format);
+                                    if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
+                                        return processInternalUrl(asset, path, format);
+                                    } else {
+                                        return processExternalUrl(asset, path, format);
+                                    }
                                 }
                                 break;
                             case BnpConstants.BROADCAST_VALUE_INTERNAL:

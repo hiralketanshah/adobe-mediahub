@@ -111,12 +111,13 @@ public class BnpConstants {
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
 
-
+    public static final String S7_FILE_STATUS_PROPERTY = "dam:scene7FileStatus";
+    public static final String S7_FILE_STATUS_NOT_SUPPORTED = "NotSupported";
 
     public static final String BROADCAST_VALUE_EXTERNAL = "external";
     public static final String BROADCAST_VALUE_INTERNAL = "internal";
 
     public static final String DAM_PATH = "/content/dam";
     public static final String USER_PROFILE_EMAIL = "./profile/email";
-    public static final String P_LIMIT ="p.limit";
+    public static final String P_LIMIT = "p.limit";
 }
