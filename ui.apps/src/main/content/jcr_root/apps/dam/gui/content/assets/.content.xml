@@ -189,6 +189,21 @@
                 </create>
             </secondary>
             <selection jcr:primaryType="nt:unstructured">
+                <customviewproperties
+                  granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
+                  jcr:primaryType="nt:unstructured"
+                  sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                  text="Properties"
+                  action="foundation.link"
+                  actionConfigName="granite/ui/shell/actions/properties"
+                  activeSelectionCount="multiple"
+                  activeCount=">0"
+                  variant="actionBar">
+                    <data
+                      jcr:primaryType="nt:unstructured"
+                      href="/mnt/overlay/dam/gui/content/assets/v2/multifoldersharewizard.html{+item}"
+                      postRequestLimit="{Long}1"/>
+                </customviewproperties>
                 <customadhocassetshare
                     granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
                     jcr:primaryType="nt:unstructured"
