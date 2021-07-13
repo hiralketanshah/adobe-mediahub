@@ -530,8 +530,17 @@
 
             var data = new FormData(document.getElementById("folder-settings-form"));
 
+
             for (var j = 0; j < hintFields.length; j++) {
                 data.append(hintFields[j].name, hintFields[j].value);
+            }
+
+            var newFormData = new FormData();
+
+            for (var pair of data.entries()) {
+                if(pair[1] !== ""){
+                  newFormData.append(pair[0],pair[1]);
+                }
             }
 
             if ($.DAM.FolderShare.FormValidator.validate(data)) {
@@ -544,7 +553,7 @@
                 $.ajax({
                     type: wizardForm.method,
                     url: host + path,
-                    data: data,
+                    data: newFormData,
                     processData: processData,
                     contentType: contentType
                 }).done(function(html) {
