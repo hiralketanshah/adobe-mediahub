@@ -392,6 +392,14 @@
                         id="adhocassetshare-allowOriginal"
                         text="Allow download of original file"
                         value="{Boolean}true"/>
+                    <secureSharedLink
+                      granite:id="adhocassetshare-secureSharedLink"
+                      jcr:primaryType="nt:unstructured"
+                      sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                      checked="unchecked"
+                      id="adhocassetshare-secureSharedLink"
+                      text="Secure Share link - Share link can be accessed only after user logs in"
+                      value="{Boolean}true"/>
                     <expiryText
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/text"
