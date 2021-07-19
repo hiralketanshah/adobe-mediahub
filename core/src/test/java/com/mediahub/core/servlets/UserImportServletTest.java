@@ -11,20 +11,16 @@ import com.mediahub.core.services.UserCreationService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.servlet.ServletException;
 
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
@@ -58,24 +54,50 @@ public class UserImportServletTest {
 
 	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 			BnpConstants.WRITE_SERVICE);
+	MockSlingHttpServletResponse response;
+	Group userGroup;
 
 	@BeforeEach
-	public void setupMock() {
+	public void setupMock() throws RepositoryException {
 		MockitoAnnotations.initMocks(this);
 		context.registerService(UserCreationService.class, userCreationService);
-	}
 
-	@Test
-	void doGet(AemContext context) throws RepositoryException {
-
-		MockSlingHttpServletResponse response = context.response();
+		response = context.response();
 		final List<Group> groups = new ArrayList<>();
-		Group userGroup = Mockito.mock(Group.class);
+		userGroup = Mockito.mock(Group.class);
 		groups.add(userGroup);
 		when(request.getResourceResolver()).thenReturn(resourceResolver);
 		when(resourceResolver.adaptTo(User.class)).thenReturn(user);
 		when(user.memberOf()).thenReturn(groups.iterator());
+	}
+
+	@Test
+	void doGet(AemContext context) throws RepositoryException {
 		when(userGroup.getID()).thenReturn(BnpConstants.MEDIAHUB_BASIC_CONTRIBUTOR);
+		assertAll(() -> fixture.doGet(request, response));
+	}
+
+	@Test
+	void doGetMediahubAdmin(AemContext context) throws RepositoryException {
+		when(userGroup.getID()).thenReturn(BnpConstants.MEDIAHUB_ADMINISTRATOR);
+		assertAll(() -> fixture.doGet(request, response));
+	}
+
+	@Test
+	void doGetMediahubReader(AemContext context) throws RepositoryException {
+		when(userGroup.getID()).thenReturn(BnpConstants.MEDIAHUB_BASIC_READER);
+		assertAll(() -> fixture.doGet(request, response));
+	}
+
+	@Test
+	void doGetMediahubEntityManager(AemContext context) throws RepositoryException {
+		when(userGroup.getID()).thenReturn(BnpConstants.MEDIAHUB_BASIC_ENTITY_MANAGER);
+		assertAll(() -> fixture.doGet(request, response));
+	}
+
+	@Test
+	void doGetMediahubReaderLib(AemContext context) throws RepositoryException {
+		when(userGroup.getID()).thenReturn(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY);
 		assertAll(() -> fixture.doGet(request, response));
 	}
 }
