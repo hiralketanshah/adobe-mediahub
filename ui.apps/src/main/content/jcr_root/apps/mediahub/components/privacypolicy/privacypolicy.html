@@ -1,4 +1,3 @@
-
 <sly data-sly-use.clientLib="/libs/granite/sightly/templates/clientlib.html"
      data-sly-call="${clientlib.all @ categories='coralui3'}"/>
 
@@ -41,7 +40,9 @@
   </coral-panelstack>
 </coral-wizardview>
 
-<script>
+<script type="text/javascript">
+
+
   $('#agreeTerms').on('change', function enableNextButton(event) {
     if (!event.currentTarget.checked) {
       document.getElementById("nextStep").disabled = true;
@@ -56,6 +57,29 @@
       } else {
           document.getElementById("acceptButton").disabled = true;
       }
+  });
+
+  $('#acceptButton').on('click', function(event) {
+    var data = [];
+    data.push({
+        name: 'payload',
+        value: '${model.currentUserPath @ context="scriptString"}'
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "/content/mediahub/us/en.privacy.policy.json",
+        data: data,
+        async: true,
+        cache: false,
+        success: function (response) {
+          // do nothing;
+        }
+    }).done(function (html) {
+        alert('done');
+        location.href = '/assets.html/content/dam/medialibrary';
+    });
+
   });
 </script>
 

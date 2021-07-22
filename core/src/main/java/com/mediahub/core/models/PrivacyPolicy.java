@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.jcr.RepositoryException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -43,6 +44,8 @@ public class PrivacyPolicy implements ComponentExporter {
 
   private String language;
 
+  private String currentUserPath;
+
   @PostConstruct
   protected void init() {
     Principal userPrincipal = request.getUserPrincipal();
@@ -51,8 +54,10 @@ public class PrivacyPolicy implements ComponentExporter {
       if(authorizable.getProperty("./preferences/language") != null && authorizable.getProperty("./preferences/language").length > 0){
         this.language = authorizable.getProperty("./preferences/language")[0].getString();
         LOGGER.info("{0} language Preference is ", userPrincipal.getName(), this.language);
+        this.currentUserPath = authorizable.getPath();
       } else {
         this.language = "en";
+        this.currentUserPath = StringUtils.EMPTY;
       }
 
     } catch (LoginException e) {
@@ -71,4 +76,9 @@ public class PrivacyPolicy implements ComponentExporter {
   public String getLanguage() {
     return language;
   }
+
+  public String getCurrentUserPath() {
+    return currentUserPath;
+  }
+
 }

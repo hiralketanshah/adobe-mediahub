@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = Filter.class,
     property = {
         EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
-        EngineConstants.SLING_FILTER_PATTERN + "=" + "/.*.html",
+        EngineConstants.SLING_FILTER_PATTERN + "=" + "/.*.html.*",
         EngineConstants.SLING_FILTER_METHODS + "=" + "GET"
     })
 @ServiceDescription("To filter incoming asset or page requests")
