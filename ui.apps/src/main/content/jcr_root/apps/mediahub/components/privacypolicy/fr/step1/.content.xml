@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:created="{Date}2021-07-22T11:22:05.033+05:30"
+    jcr:createdBy="admin"
+    jcr:lastModified="{Date}2021-07-22T11:22:17.961+05:30"
+    jcr:lastModifiedBy="admin"
+    jcr:primaryType="nt:unstructured"
+    sling:resourceType="mediahub/components/contentfragment"
+    displayMode="multi"
+    fragmentPath="/content/dam/cf/privacy-policy-step1"
+    paragraphScope="all"
+    variationName="privacy_policy_french"/>
