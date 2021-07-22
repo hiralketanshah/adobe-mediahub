@@ -1,5 +1,5 @@
 <sly data-sly-use.clientLib="/libs/granite/sightly/templates/clientlib.html"
-     data-sly-call="${clientlib.all @ categories='coralui3'}"/>
+     data-sly-call="${clientlib.all @ categories='mediahub.privacypolicy'}"/>
 
 
 <coral-wizardview>
@@ -76,7 +76,6 @@
           // do nothing;
         }
     }).done(function (html) {
-        alert('done');
         location.href = '/assets.html/content/dam/medialibrary';
     });
 
