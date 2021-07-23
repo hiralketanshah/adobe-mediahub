@@ -67,15 +67,23 @@
 
         var shareLinkValue = $("#sharelink").val();
         var shareLinkToken = shareLinkValue.substr(shareLinkValue.indexOf("?sh=") + 4);
-        if (shareLinkToken.length > 0) {
-            data += "&shareLinkToken=" + shareLinkToken;
-        }
+
         if ($form.find("input[type=checkbox]").prop("checked")) {
             data += "&allowOriginal=true";
         } else {
             data += "&allowOriginal=false";
         }
+
+        if ($form.find("input[id=adhocassetshare-secureSharedLink]").prop("checked")) {
+            data += "&secured=true";
+        } else {
+            data += "&secured=false";
+        }
+
         var numAssetsShared = $(".foundation-selections-item").length;
+
+
+
         $.ajax({
             type: "POST",
             url: Granite.HTTP.externalize(contentPath + ".adhocassetshare.html"),
@@ -381,4 +389,14 @@
         $userPickerEl.find("#user-picker-fielderror-icon").remove();
         $userPickerEl.find("#user-picker-fielderror-tooltip").remove();
     }
+
+    // use change event, rather than click to handle keyboard events for accessibility
+    $(document).on("change", "#adhocassetshare-secureSharedLink", function(e) {
+       if(e.currentTarget.checked){
+           document.getElementById('sharelink').value = assetShareLink + "&secured=true";
+       } else {
+           document.getElementById('sharelink').value = assetShareLink + "&secured=false";
+       }
+
+    });
 })(document, Granite.$);
