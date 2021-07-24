@@ -18,7 +18,6 @@
 /* eslint camelcase: 0 */
 (function(document) {
     "use strict";
-    var showTerms = true;
 
     /**
      *  Flush error.
