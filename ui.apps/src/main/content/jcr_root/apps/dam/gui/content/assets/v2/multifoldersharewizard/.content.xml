@@ -227,6 +227,7 @@
                                                                 <titlefieldBody
                                                                     jcr:primaryType="nt:unstructured"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    granite:id="multifoldertitle"
                                                                     name="title">
                                                                     <granite:data
                                                                         jcr:primaryType="nt:unstructured"
