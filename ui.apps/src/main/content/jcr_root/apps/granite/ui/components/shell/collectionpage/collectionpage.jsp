@@ -1092,6 +1092,22 @@ CollectionPage
         }
     }
 %></body>
+
+<script type="text/javascript">
+var registry = $(window).adaptTo("foundation-registry");
+
+registry.register("foundation.collection.action.activecondition", {
+  name: "media.bulk.edit.active.condition",
+	handler: function (name, el, config, collection, selections) {
+		if (( selections.length  > 1)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+});
+</script>
+
 </html>
 <%!
 
