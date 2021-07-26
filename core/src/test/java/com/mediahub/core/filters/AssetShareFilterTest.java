@@ -18,6 +18,7 @@ import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -35,58 +36,52 @@ class AssetShareFilterTest {
 	private AssetShareFilter fixture;
 
 	private final AemContext context = new AemContext();
-	
-    @Mock
-    ResourceResolverFactory resolverFactory;
-    
-    @Mock
-    ResourceResolver resolver;
-    
-    @Mock
-    HttpServletRequest req;
 
-    @Mock
-    HttpServletResponse resp;
+	@Mock
+	ResourceResolverFactory resolverFactory;
+
+	@Mock
+	ResourceResolver resolver;
+
+	@Mock
+	HttpServletRequest req;
+
+	@Mock
+	HttpServletResponse resp;
 
 	Resource res;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-            BnpConstants.WRITE_SERVICE);
+	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+			BnpConstants.WRITE_SERVICE);
+
 	@BeforeEach
 	void setup() throws LoginException {
 		MockitoAnnotations.initMocks(this);
-        context.registerService(ResourceResolverFactory.class, resolverFactory);
-        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-        Map<String, String[]> mapOfParams = new HashMap<>();
-        mapOfParams.put("sh", new String[] {"test.text"});
-        
-        when(req.getParameterMap()).thenReturn(mapOfParams);
-        
-		res = context.create().resource("/var/dam/share/test", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured", "secured",true);
+		context.registerService(ResourceResolverFactory.class, resolverFactory);
+		when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+		Map<String, String[]> mapOfParams = new HashMap<>();
+		mapOfParams.put("sh", new String[] { "test.text" });
+
+		when(req.getParameterMap()).thenReturn(mapOfParams);
+
+		res = context.create().resource("/var/dam/share/test", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured",
+				"secured", true);
 		when(resolver.getResource(Mockito.any(String.class))).thenReturn(res);
-		
 	}
 
 	@Test
 	void extractCredentialsTest(AemContext context) {
-		
-		 Cookie c = new Cookie("login-token", "123");
-	        Cookie[] cookies = new Cookie[1];
-	        cookies[0] = c;
-	        when(req.getCookies()).thenReturn(cookies);
-	        
-		fixture.extractCredentials(req, resp);
-
+		Cookie c = new Cookie("login-token", "123");
+		Cookie[] cookies = new Cookie[1];
+		cookies[0] = c;
+		when(req.getCookies()).thenReturn(cookies);
+		assertAll(() -> fixture.extractCredentials(req, resp));
 	}
 
 	@Test
 	void extractCredentialsTest1(AemContext context) {
-		
-	        Cookie[] cookies = new Cookie[0];
-	        when(req.getCookies()).thenReturn(cookies);
-	        
-		fixture.extractCredentials(req, resp);
-
+		Cookie[] cookies = new Cookie[0];
+		when(req.getCookies()).thenReturn(cookies);
+		assertAll(() -> fixture.extractCredentials(req, resp));
 	}
-
 }
