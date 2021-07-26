@@ -18,7 +18,6 @@
 /* eslint camelcase: 0 */
 (function(document) {
     "use strict";
-    var showTerms = true;
 
     /**
      *  Flush error.
@@ -168,61 +167,6 @@
             var path = form.action;
             var user = form.j_username.value;
             var pass = form.j_password.value;
-
-
-            if(document.getElementById("popup").innerHTML === 'show'){
-                          var dialog = showDialog();
-
-                          dialog.on('change', '#agree', function() {
-                              if (!document.querySelector('#agree').checked) {
-                                document.getElementById("nextButton").disabled = true;
-                              }
-                              else {
-                                document.getElementById("nextButton").disabled = false;
-                              }
-                              showTerms=false;
-                          });
-
-                          dialog.on('click', '#nextButton', function() {
-                           if (document.querySelector('#agree').checked) {
-                              dialog.hide();
-                              var secondDialog = showSecondDialog();
-                              secondDialog.show();
-
-                              var container = document.querySelector('#terms');
-
-                              container.addEventListener('change', function(event) {
-                                  if (event.target.value === 'agree'){
-                                      document.getElementById("acceptButton").disabled = false;
-                                  } else {
-                                      document.getElementById("acceptButton").disabled = true;
-                                  }
-                              });
-
-
-                              secondDialog.on('click', '#acceptButton', function() {
-                               if (document.querySelector('#agree').checked) {
-                                  secondDialog.hide();
-                                  document.getElementById("login").submit();
-                                }
-
-                              });
-                              secondDialog.on('click', '#prevButton', function() {
-                                secondDialog.hide();
-                                dialog = showDialog();
-                              });
-
-                            }
-
-                          });
-                		      dialog.on('click', '#cancelButton', function() {
-                            dialog.hide();
-                            document.getElementById("popup").innerHTML = "show";
-
-                          });
-					                document.getElementById("popup").innerHTML = "shown";
-                  }
-				    return false;
 
             // if no user is given, avoid login request
             //GRANITE-29649 input validation for empty user/password

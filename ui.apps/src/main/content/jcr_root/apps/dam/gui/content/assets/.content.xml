@@ -70,7 +70,7 @@
                         <createfragment
                             granite:class="dam-create-fragment"
                             jcr:primaryType="nt:unstructured"
-                            sling:hideResource="{Boolean}true"
+                            sling:hideResource="{Boolean}false"
                             sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
                             action="dam-create-fragment"
                             icon="tableHistogram"
@@ -79,8 +79,16 @@
                                 jcr:primaryType="nt:unstructured"
                                 wizard.url="/mnt/overlay/dam/cfm/admin/content/v2/createfragment.html"/>
                             <granite:rendercondition
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="dam/gui/components/admin/renderconditions/fragmentsenabled"/>
+                              jcr:primaryType="nt:unstructured"
+                              sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                <isadmin
+                                  jcr:primaryType="nt:unstructured"
+                                  sling:resourceType="/libs/dam/gui/components/admin/renderconditions/iscurrentuseradmin"
+                                  path="${empty requestPathInfo.suffix ? param.item : requestPathInfo.suffix}"/>
+                                <isfragmentsenabled
+                                  jcr:primaryType="nt:unstructured"
+                                  sling:resourceType="dam/gui/components/admin/renderconditions/fragmentsenabled"/>
+                            </granite:rendercondition>
                         </createfragment>
                         <createlivecopy
                             granite:rel="cq-damadmin-admin-actions-createlivecopy"
