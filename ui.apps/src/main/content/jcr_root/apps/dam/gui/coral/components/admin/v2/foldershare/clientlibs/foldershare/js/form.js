@@ -34,6 +34,12 @@
         }
     });
 
+    $(document).ready(function() {
+        if ($("#multifoldertitle")) {
+            $("#multifoldertitle").attr("value", "");
+        }
+    });
+
 
     function validateBnppStatus() {
             var ariaRequired = $('.cq-damadmin-admin-folder-settings-form [aria-required="true"]');
