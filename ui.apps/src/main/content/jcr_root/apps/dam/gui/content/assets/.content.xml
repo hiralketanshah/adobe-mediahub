@@ -196,8 +196,7 @@
                   text="Properties"
                   action="foundation.link"
                   actionConfigName="granite/ui/shell/actions/properties"
-                  activeSelectionCount="multiple"
-                  activeCount=">0"
+                  activeCondition="media.bulk.edit.active.condition"
                   variant="actionBar">
                     <data
                       jcr:primaryType="nt:unstructured"
