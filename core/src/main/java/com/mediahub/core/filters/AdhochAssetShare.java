@@ -33,7 +33,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
@@ -77,10 +76,6 @@ public class AdhochAssetShare implements Filter {
         String requestURI = slingRequest.getRequestURI();
 
         logger.debug("requestURI {}" , requestURI);
-
-        logger.debug("request for {}, with selector {}", slingRequest
-            .getRequestPathInfo().getResourcePath(), slingRequest
-            .getRequestPathInfo().getSelectorString());
 
         if(slingRequest.getRequestParameterMap().getValue("shareLink") != null){
             String shareLink = slingRequest.getRequestParameterMap().getValue("shareLink").getString();
