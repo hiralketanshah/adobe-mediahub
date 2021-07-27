@@ -66,7 +66,7 @@ public class LoginPageFilter implements Filter {
                 Group mediahubBasicGroup = (Group) mediahubBasic;
                 Resource privacyPolicyStep1 = slingRequest.getResourceResolver().getResource("/content/dam/technique/mediahub/privacy-policy/privacy-policy-step1");
                 Resource privacyPolicyStep2 = slingRequest.getResourceResolver().getResource("/content/dam/technique/mediahub/privacy-policy/privacy-policy-step2");
-                if ( (!((User) authorizable).isAdmin()) &&  mediahubBasicGroup != null && mediahubBasicGroup.isMember(authorizable) && (privacyPolicyStep1 != null || privacyPolicyStep2 != null) ) {
+                if ( (!((User) authorizable).isAdmin()) &&  mediahubBasicGroup != null && mediahubBasicGroup.isMember(authorizable) && privacyPolicyStep1 != null && privacyPolicyStep2 != null ) {
                     redirectUserForPrivacyPolicy(slingResponse, authorizable, privacyPolicyStep1, privacyPolicyStep2);
                 }
 
