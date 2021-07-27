@@ -3,14 +3,12 @@ package com.mediahub.core.listeners;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.mediahub.core.constants.BnpConstants;
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -21,7 +19,7 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.Privilege;
-import mockit.MockUp;
+
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
@@ -41,14 +39,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.event.Event;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-@MockitoSettings(strictness = Strictness.LENIENT)
+import com.mediahub.core.constants.BnpConstants;
+
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import mockit.MockUp;
+
+@ExtendWith({ AemContextExtension.class })
 public class ProjectsResourceListenerTest {
     private static final String PROJECT_PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject";
     private static final String PARENT_PATH = "/content/projects/bnpfolder1/bnpfolder2";

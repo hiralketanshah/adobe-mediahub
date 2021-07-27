@@ -245,7 +245,6 @@ public class MoveAssetsProcessWorkflowTest {
         userList1.add(parentResource);
         when(parentResource.listChildren()).thenReturn(userList1.iterator());
         when(resolver.isLive()).thenReturn(true);
-
         workflowProcess.execute(workItem, workflowSession, metadataMap);
         assertEquals("JCR_PATH", workflowData.getPayloadType());
     }

@@ -3,6 +3,29 @@ package com.mediahub.core.workflows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -17,33 +40,10 @@ import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
+
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.jcr.Session;
-import org.apache.commons.lang.StringUtils;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith({ AemContextExtension.class })
 public class ValidateMetadataProcessWorkflowTest {
 
     MetaDataMap metadataMap;
@@ -107,6 +107,7 @@ public class ValidateMetadataProcessWorkflowTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         metadataMap = new SimpleMetaDataMap();
         when(workItem.getWorkflowData()).thenReturn(workflowData);
     }

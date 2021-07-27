@@ -1,29 +1,5 @@
 package com.mediahub.core.schedulers;
 
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.Hit;
-import com.day.cq.search.result.SearchResult;
-import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.services.GenericEmailNotification;
-import com.adobe.cq.projects.api.Project;
-import com.adobe.cq.projects.api.ProjectManager;
-import com.day.cq.commons.Externalizer;
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -45,12 +21,36 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.adobe.cq.projects.api.Project;
+import com.adobe.cq.projects.api.ProjectManager;
+import com.day.cq.commons.Externalizer;
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.Hit;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.GenericEmailNotification;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
-import org.apache.jackrabbit.api.security.user.User;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({ AemContextExtension.class })
 public class ProjectExpireNotificationSchedulerTest {
 
     private static final String PATH = "/content/projects/bnpfolder1/bnpfolder2/bnpproject/jcr:content";
@@ -177,6 +177,7 @@ public class ProjectExpireNotificationSchedulerTest {
 
     @BeforeEach
     void setup() {
+        MockitoAnnotations.initMocks(this);
         TestLoggerFactory.clear();
         context.registerAdapter(ResourceResolver.class, QueryBuilder.class, queryBuilder);
     }
@@ -239,59 +240,64 @@ public class ProjectExpireNotificationSchedulerTest {
 
     @Test
     void TestRun2() throws LoginException {
-        /*try {
-            ProjectExpireNotificationScheduler.Config config = mock(ProjectExpireNotificationScheduler.Config.class);
-            when(config.getProjectPath()).thenReturn(BnpConstants.AEM_PROJECTS_PATH);
-            TestRun4();
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, 30);
-            Date onePlusMonth = cal.getTime();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String strDate = dateFormat.format(onePlusMonth);
-            when(value.getString()).thenReturn(strDate);
-            when(resolver.adaptTo(ProjectManager.class)).thenReturn(projectManager);
-            when(resolver.getResource(PROJECT_PATH)).thenReturn(resource1);
-            when(resource1.adaptTo(Project.class)).thenReturn(project);
-            when(resource1.adaptTo(Node.class)).thenReturn(node1);
-            when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1);
-            when(property1.getValue()).thenReturn(value1);
-            when(value1.getString()).thenReturn("projects-projectoct21-owner");
-
-            when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-            when(userManager.getAuthorizable("projects-projectoct21-owner")).thenReturn(group);
-
-            List<Authorizable> userList = new ArrayList<>();
-            userList.add(user);
-            when(group.getDeclaredMembers()).thenReturn(userList.iterator());
-
-            when(project.getTitle()).thenReturn("bnpproject");
-            when(externalizer.authorLink(any(ResourceResolver.class), any(String.class))).thenReturn(
-                    "http://localhost:4502/projects/details.html/content/projects/bnpfolder1/bnpfolder2/bnpproject");
-            when(user.getID()).thenReturn("emp123");
-            when(userManager.getAuthorizable("emp123")).thenReturn(authorizable);
-            when(authorizable.hasProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(true);
-
-            when(value2.getString()).thenReturn("emp123");
-            when(value3.getString()).thenReturn("wmp123@gmail.com");
-
-            Value[] valueArray = { value2 };
-            Value[] valueArray1 = { value3 };
-
-            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray);
-            when(authorizable.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray);
-            when(value2.getString()).thenReturn("MediaUserName");
-            when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn(valueArray1);
-            when(value3.getString()).thenReturn("MediaHub@gmail.com");
-            when(resolver.hasChanges()).thenReturn(true);
-
-            scheduler.activate(config);
-            scheduler.run();
-
-            assertEquals(null, externalizer.authorLink(any(ResourceResolver.class), any(String.class)));
-
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }*/
+        /*
+         * try { ProjectExpireNotificationScheduler.Config config =
+         * mock(ProjectExpireNotificationScheduler.Config.class);
+         * when(config.getProjectPath()).thenReturn(BnpConstants.
+         * AEM_PROJECTS_PATH); TestRun4(); Calendar cal =
+         * Calendar.getInstance(); cal.add(Calendar.DATE, 30); Date onePlusMonth
+         * = cal.getTime(); DateFormat dateFormat = new
+         * SimpleDateFormat("yyyy-MM-dd"); String strDate =
+         * dateFormat.format(onePlusMonth);
+         * when(value.getString()).thenReturn(strDate);
+         * when(resolver.adaptTo(ProjectManager.class)).thenReturn(
+         * projectManager);
+         * when(resolver.getResource(PROJECT_PATH)).thenReturn(resource1);
+         * when(resource1.adaptTo(Project.class)).thenReturn(project);
+         * when(resource1.adaptTo(Node.class)).thenReturn(node1);
+         * when(node1.getProperty(BnpConstants.ROLE_OWNER)).thenReturn(property1
+         * ); when(property1.getValue()).thenReturn(value1);
+         * when(value1.getString()).thenReturn("projects-projectoct21-owner");
+         * 
+         * when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+         * when(userManager.getAuthorizable("projects-projectoct21-owner")).
+         * thenReturn(group);
+         * 
+         * List<Authorizable> userList = new ArrayList<>(); userList.add(user);
+         * when(group.getDeclaredMembers()).thenReturn(userList.iterator());
+         * 
+         * when(project.getTitle()).thenReturn("bnpproject");
+         * when(externalizer.authorLink(any(ResourceResolver.class),
+         * any(String.class))).thenReturn(
+         * "http://localhost:4502/projects/details.html/content/projects/bnpfolder1/bnpfolder2/bnpproject"
+         * ); when(user.getID()).thenReturn("emp123");
+         * when(userManager.getAuthorizable("emp123")).thenReturn(authorizable);
+         * when(authorizable.hasProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn
+         * (true);
+         * 
+         * when(value2.getString()).thenReturn("emp123");
+         * when(value3.getString()).thenReturn("wmp123@gmail.com");
+         * 
+         * Value[] valueArray = { value2 }; Value[] valueArray1 = { value3 };
+         * 
+         * when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn
+         * (valueArray);
+         * when(authorizable.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).
+         * thenReturn(valueArray);
+         * when(value2.getString()).thenReturn("MediaUserName");
+         * when(authorizable.getProperty(BnpConstants.PEOFILE_EMAIL)).thenReturn
+         * (valueArray1);
+         * when(value3.getString()).thenReturn("MediaHub@gmail.com");
+         * when(resolver.hasChanges()).thenReturn(true);
+         * 
+         * scheduler.activate(config); scheduler.run();
+         * 
+         * assertEquals(null,
+         * externalizer.authorLink(any(ResourceResolver.class),
+         * any(String.class)));
+         * 
+         * } catch (RepositoryException e) { e.printStackTrace(); }
+         */
     }
 
     @Test
