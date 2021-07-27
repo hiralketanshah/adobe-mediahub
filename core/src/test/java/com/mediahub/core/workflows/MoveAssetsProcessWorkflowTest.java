@@ -5,17 +5,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
-import com.adobe.granite.workflow.WorkflowSession;
-import com.adobe.granite.workflow.exec.WorkItem;
-import com.adobe.granite.workflow.exec.Workflow;
-import com.adobe.granite.workflow.exec.WorkflowData;
-import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.day.cq.commons.jcr.JcrConstants;
-import com.mediahub.core.constants.BnpConstants;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import mockit.MockUp;
-
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
@@ -37,23 +27,36 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.mockito.MockitoAnnotations;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-@MockitoSettings(strictness = Strictness.LENIENT)
-public class MoveAssetsProcessWorkflowTest {    
+import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
+import com.adobe.granite.workflow.WorkflowException;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
+import com.adobe.granite.workflow.exec.WorkflowData;
+import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.jcr.JcrConstants;
+import com.mediahub.core.constants.BnpConstants;
+
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import mockit.MockUp;
+
+@ExtendWith({ AemContextExtension.class })
+public class MoveAssetsProcessWorkflowTest {
     @InjectMocks
     MoveAssetsProcessWorkflow workflowProcess = new MoveAssetsProcessWorkflow();
 
@@ -68,7 +71,7 @@ public class MoveAssetsProcessWorkflowTest {
 
     @Mock
     WorkflowData workflowData;
-    
+
     @Mock
     Workflow workflow;
 
@@ -129,6 +132,9 @@ public class MoveAssetsProcessWorkflowTest {
     Principal principal;
 
     @Mock
+    ModifiableValueMap modifiableValueMap;
+
+    @Mock
     Map<String, Object> folderProperties;
 
     private MockUp<AccessControlUtils> accessControlUtilsMockup;
@@ -142,19 +148,20 @@ public class MoveAssetsProcessWorkflowTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-
+        MockitoAnnotations.initMocks(this);
+        when(workItem.getWorkflowData()).thenReturn(workflowData);
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
+        when(workflowData.getPayload()).thenReturn(payload);
+        when(payload.toString()).thenReturn("/content/dam/projects/");
     }
 
     @Test
     public void execute() throws Exception {
 
-        when(workItem.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-        when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
-        when(workflowData.getPayload()).thenReturn(payload);
-        when(payload.toString()).thenReturn("/content/dam/projects/");
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
+
         when(resource.getParent()).thenReturn(parentResource);
         when(parentResource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(parentResource);
         when(parentResource.getChild(BnpConstants.METADATA)).thenReturn(parentResource);
@@ -165,7 +172,9 @@ public class MoveAssetsProcessWorkflowTest {
         when(parentResource.getPath()).thenReturn("/content/dam/projects/");
         when(resolver.getResource("/content/projects/")).thenReturn(resource);
         when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(resource);
+        when(resource.getChild(BnpConstants.METADATA)).thenReturn(resource);
         when(resource.getValueMap()).thenReturn(valueMap);
+        when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
         when(valueMap.get("project.path", "")).thenReturn("/content/dam/medialibrary");
         when(resolver.getResource("/content/dam/medialibrary")).thenReturn(resource);
         when(valueMap.containsKey("projectPath")).thenReturn(true);
@@ -219,9 +228,10 @@ public class MoveAssetsProcessWorkflowTest {
         when(valueMap.get(JcrConstants.JCR_PRIMARYTYPE, BnpConstants.SLING_FOLDER)).thenReturn("sling:Folder");
         folderProperties.put(JcrConstants.JCR_PRIMARYTYPE, "sling:Folder");
         when(resolver.create(resource, "testName", folderProperties)).thenReturn(resource);
+
         when(parentResource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(parentResource);
         when(jackrabbitSession.getWorkspace()).thenReturn(workspace);
-        when(parentResource.getPath()).thenReturn("/content/dam/projects");        
+        when(parentResource.getPath()).thenReturn("/content/dam/projects");
         workflowUtils = new MockUp<WorkflowUtils>() {
 
             @mockit.Mock
@@ -243,7 +253,7 @@ public class MoveAssetsProcessWorkflowTest {
     @Test
     public void execute1() throws Exception {
         when(resource.getPath()).thenReturn("/content/dam/projects/asset");
-        //when(session.adaptTo(JackrabbitSession.class)).thenReturn(jackrabbitSession);
+        // when(session.adaptTo(JackrabbitSession.class)).thenReturn(jackrabbitSession);
 
         when(resolver.getResource(anyString())).thenReturn(resource);
         List<Resource> userList = new ArrayList<>();
@@ -251,9 +261,57 @@ public class MoveAssetsProcessWorkflowTest {
         when(resource.listChildren()).thenReturn(userList.iterator());
 
         when(resource.getValueMap()).thenReturn(valueMap);
-        when(valueMap.containsKey(JcrConstants.JCR_MIXINTYPES)).thenReturn(Boolean.TRUE);
+        when(valueMap.containsKey(JcrConstants.JCR_MIXINTYPES)).thenReturn(Boolean.FALSE);
+        when(resource.adaptTo(Node.class)).thenReturn(node);
+        when(node.getSession()).thenReturn(session);
+        when(resource.getName()).thenReturn("allow");
+        when(valueMap.get(BnpConstants.REP_PRINCIPAL_NAME, "")).thenReturn("projects-publisher");
+        when(resource.getParent()).thenReturn(parentResource);
+        when(jackrabbitSession.getPrincipalManager()).thenReturn(principalManager);
+        when(jackrabbitSession.getAccessControlManager()).thenReturn(accessControlManager);
+        accessControlUtilsMockup = new MockUp<AccessControlUtils>() {
 
-        workflowProcess.copyRepolicyNode(resolver, (Session)jackrabbitSession, resource, "/content/dam/projects");
+            @mockit.Mock
+            JackrabbitAccessControlList getAccessControlList(Session session, String path) {
+                return jackrabbitAccessControlList;
+            }
+        };
+
+        Privilege[] privileges = new Privilege[] { accessControlManager.privilegeFromName(Privilege.JCR_READ) };
+        when(jackrabbitAccessControlList.addEntry(principal, privileges, true)).thenReturn(true);
+        accessControlManager.setPolicy("/content/dam/projects/", accessControlPolicy);
+        when(resolver.create(resource, BnpConstants.REP_POLICY,
+                Collections.singletonMap(JcrConstants.JCR_PRIMARYTYPE, BnpConstants.REP_ACL))).thenReturn(resource);
+        workflowProcess.copyRepolicyNode(resolver, jackrabbitSession, resource, "/content/dam/projects");
+    }
+
+    @Test
+    public void executeWithoutPayloadType() throws WorkflowException, LoginException {
+        when(workflowData.getPayloadType()).thenReturn("TEST_PAYLOAD");
+
+        Assertions.assertThrows(WorkflowException.class, () -> {
+            workflowProcess.execute(workItem, workflowSession, metadataMap);
+        });
+    }
+
+    @Test
+    public void executeWithoutPayload() throws WorkflowException, LoginException {
+        when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+        when(resolver.getResource("/content/dam/projects/")).thenReturn(null);
+
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
+
+    }
+
+    @Test
+    public void executeWithoutMedia() throws WorkflowException, LoginException {
+        when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+        when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
+        when(resource.getParent()).thenReturn(parentResource);
+        when(resource.getPath()).thenReturn("/content/dam/projects/");
+
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
+
     }
 
     @AfterEach
