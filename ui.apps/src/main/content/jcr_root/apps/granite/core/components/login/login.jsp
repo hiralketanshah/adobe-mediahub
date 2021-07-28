@@ -266,6 +266,7 @@ login
     static final String DEFAULT_AUTH_URL_SUFFIX  = "/j_security_check";
 
     static final String ERROR_SELECTOR = "error";
+    static final String RESET_PWD_SELECTOR = "resetpassword";
     static final String CHANGE_PWD_SELECTOR = "changepassword";
 
     String imsLoginUrl = null;
@@ -399,7 +400,9 @@ login
 
     List<String> selectors = Arrays.asList(slingRequest.getRequestPathInfo().getSelectors());
 
-    boolean isLogin = ! selectors.contains(CHANGE_PWD_SELECTOR);
+    boolean isReset = selectors.contains(RESET_PWD_SELECTOR);
+    boolean isChagePassword = selectors.contains(CHANGE_PWD_SELECTOR);
+    boolean isLogin = ! ( selectors.contains(CHANGE_PWD_SELECTOR) || selectors.contains(RESET_PWD_SELECTOR) );
     boolean isError = selectors.contains(ERROR_SELECTOR);
 
 %><!DOCTYPE html>
@@ -546,41 +549,84 @@ login
                 </coral-alert>
                 <% } else { %>
                 <% String autocomplete = cfg.get("box/autocomplete", false) ? "on" : "off" ; %>
-                <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="login" action="<%= xssAPI.getValidHref(urlLogin) %>" novalidate="novalidate">
-                    <input type="hidden" name="_charset_" value="UTF-8">
-                    <input type="hidden" name="errorMessage" value="<%= validReasons.get(REASON_KEY_INVALID_LOGIN) %>">
-                    <input type="hidden" name="resource" id="resource" value="<%= xssAPI.encodeForHTMLAttr(redirect) %>">
-                    <%
-                        String loginTitle = printProperty(cfg, i18n, xssAPI, "box/formTitle", i18n.get("Sign In"));
-                        String changeTitle = printProperty(cfg, i18n, xssAPI, "box/changePasswordTitle", i18n.get("Change Password"));
-                        String loginSubmitText = printProperty(cfg, i18n, xssAPI, "box/submitText", i18n.get("Sign In"));
-                        String changeSubmitText = printProperty(cfg, i18n, xssAPI, "box/changePasswordSubmitText", i18n.get("Submit"));
-                        String userPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/userPlaceholder", i18n.get("User name"));
-                        String loginPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/passwordPlaceholder", i18n.get("Password"));
-                        String changePasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/oldPasswordPlaceholder", i18n.get("Old password"));
-                        String newPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/newPasswordPlaceholder", i18n.get("New password"));
-                        String confirmPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/confirmPasswordPlaceholder", i18n.get("Confirm new password"));
-                    %>
-                   
-                    <div class="coral-Form-fieldwrapper">
-                        <input is="coral-textfield" aria-label="<%= userPlaceholder %>" class="coral-Form-field" id="username" name="j_username" type="text" autofocus="autofocus" pattern=".*" placeholder="<%= userPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
-                    </div>
-                    <div class="coral-Form-fieldwrapper">
-                        <input is="coral-textfield" aria-label="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" class="coral-Form-field" id="password" name="j_password" type="password"  placeholder="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
-                    </div>
-                    <div class="coral-Form-fieldwrapper">
-                        <input is="coral-textfield" aria-label="<%= newPasswordPlaceholder %>" class="coral-Form-field" id="new_password" name="<%= isLogin ? "" : "j_newpassword" %>" type="password"  placeholder="<%= newPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
-                    </div>
-                    <div class="coral-Form-fieldwrapper">
-                        <input is="coral-textfield" aria-label="<%= confirmPasswordPlaceholder %>" class="coral-Form-field" id="confirm_password" name="" type="password"  placeholder="<%= confirmPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
-                    </div>
-                    <coral-alert id="error" style="background-color:#aa0016;" variant="error" <%= reason.length() > 0 ? "" : "hidden" %>>
-                        <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
-                    </coral-alert>
-                    <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= isLogin ? loginSubmitText : changeSubmitText %></button>
-                    <a href="/content/saml.html" x-cq-linkchecker="valid" is="coral-anchorbutton">Connexion SSO</a>
-                    <br><button is="coral-button" id="back-button" hidden><%= printProperty(cfg, i18n, xssAPI, "box/backText", i18n.get("Back")) %></button>
-                </form>
+
+                <%
+                    String loginTitle = printProperty(cfg, i18n, xssAPI, "box/formTitle", i18n.get("Sign In"));
+                    String changeTitle = printProperty(cfg, i18n, xssAPI, "box/changePasswordTitle", i18n.get("Change Password"));
+                    String loginSubmitText = printProperty(cfg, i18n, xssAPI, "box/submitText", i18n.get("Sign In"));
+                    String changeSubmitText = printProperty(cfg, i18n, xssAPI, "box/changePasswordSubmitText", i18n.get("Submit"));
+                    String userPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/userPlaceholder", i18n.get("User name"));
+                    String loginPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/passwordPlaceholder", i18n.get("Password"));
+                    String changePasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/oldPasswordPlaceholder", i18n.get("Old password"));
+                    String newPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/newPasswordPlaceholder", i18n.get("New password"));
+                    String confirmPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/confirmPasswordPlaceholder", i18n.get("Confirm new password"));
+                %>
+                <% if(isReset) { %>
+                    <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="sendResetPassword" action="/apps/granite/core/content/login.sendrestpassowrdemail.json" novalidate="novalidate">
+                        <input type="hidden" name="_charset_" value="UTF-8">
+                        <input type="hidden" name="errorMessage" value="User does not exist">
+                        <input type="hidden" name="resource" id="resource" value="<%= xssAPI.encodeForHTMLAttr(redirect) %>">
+
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= userPlaceholder %>" class="coral-Form-field" id="username" name="j_username" type="text" autofocus="autofocus" pattern=".*" placeholder="<%= userPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
+                        </div>
+                        <coral-alert id="error" style="background-color:#aa0016;" variant="error" <%= reason.length() > 0 ? "" : "hidden" %>>
+                            <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
+                        </coral-alert>
+                        <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= xssAPI.encodeForHTML(i18n.get("Send Reset Password Link"))%></button>
+                    </form>
+
+                <% } else if(isChagePassword) {
+                    String token = request.getParameter("token") != null ? request.getParameter("token") : "";
+                %>
+                    <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="changePassword" action="/apps/granite/core/content/login.changePassword.json" novalidate="novalidate">
+                        <input type="hidden" name="_charset_" value="UTF-8">
+                        <input type="hidden" name="errorMessage" value="Unable to change password now, Kindly try after sometime.">
+                        <input type="hidden" name="resource" id="resource" value="<%= xssAPI.encodeForHTMLAttr(redirect) %>">
+                        <input type="hidden" name="userToken" id="userToken" value="<%= xssAPI.encodeForHTMLAttr(token) %>">
+
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= newPasswordPlaceholder %>" class="coral-Form-field" id="new_password" name="j_newpassword" type="password"  placeholder="<%= newPasswordPlaceholder %>" spellcheck="false" autocomplete="false">
+                        </div>
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= confirmPasswordPlaceholder %>" class="coral-Form-field" id="confirm_password" name="" type="password"  placeholder="<%= confirmPasswordPlaceholder %>" spellcheck="false" autocomplete="false">
+                        </div>
+                        <coral-alert id="error" style="background-color:#aa0016;" variant="error" <%= reason.length() > 0 ? "" : "hidden" %>>
+                            <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
+                        </coral-alert>
+                        <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= xssAPI.encodeForHTML(i18n.get("Reset Password"))%></button>
+                    </form>
+
+
+                <% } else {%>
+                    <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="login" action="<%= xssAPI.getValidHref(urlLogin) %>" novalidate="novalidate">
+                        <input type="hidden" name="_charset_" value="UTF-8">
+                        <input type="hidden" name="errorMessage" value="<%= validReasons.get(REASON_KEY_INVALID_LOGIN) %>">
+                        <input type="hidden" name="resource" id="resource" value="<%= xssAPI.encodeForHTMLAttr(redirect) %>">
+
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= userPlaceholder %>" class="coral-Form-field" id="username" name="j_username" type="text" autofocus="autofocus" pattern=".*" placeholder="<%= userPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
+                        </div>
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" class="coral-Form-field" id="password" name="j_password" type="password"  placeholder="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
+                        </div>
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= newPasswordPlaceholder %>" class="coral-Form-field" id="new_password" name="<%= isLogin ? "" : "j_newpassword" %>" type="password"  placeholder="<%= newPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
+                        </div>
+                        <div class="coral-Form-fieldwrapper">
+                            <input is="coral-textfield" aria-label="<%= confirmPasswordPlaceholder %>" class="coral-Form-field" id="confirm_password" name="" type="password"  placeholder="<%= confirmPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
+                        </div>
+                        <coral-alert id="error" style="background-color:#aa0016;" variant="error" <%= reason.length() > 0 ? "" : "hidden" %>>
+                            <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
+                        </coral-alert>
+                        <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= isLogin ? loginSubmitText : changeSubmitText %></button>
+                        <a href="/content/saml.html" x-cq-linkchecker="valid" is="coral-anchorbutton">Connexion SSO</a>
+                        <br><button is="coral-button" id="back-button" hidden><%= printProperty(cfg, i18n, xssAPI, "box/backText", i18n.get("Back")) %></button>
+                    </form>
+                    <br>
+                    <a href="/apps/granite/core/content/login.resetpassword.html"><%= xssAPI.encodeForHTML(i18n.get("Forgot Password"))%></a>
+                <% } %>
+
                 <input id="login_title" type="hidden" value="<%= loginTitle %>">
                 <input id="change_title" type="hidden" value="<%= changeTitle %>">
                 <input id="login_password_placeholder" type="hidden" value="<%= loginPasswordPlaceholder %>">
