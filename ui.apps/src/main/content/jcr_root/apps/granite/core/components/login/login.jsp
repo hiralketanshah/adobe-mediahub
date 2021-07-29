@@ -582,7 +582,7 @@ login
                     <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="changePassword" action="/apps/granite/core/content/login.changePassword.json" novalidate="novalidate">
                         <input type="hidden" name="_charset_" value="UTF-8">
                         <input type="hidden" name="errorMessage" value="Unable to change password now, Kindly try after sometime.">
-                        <input type="hidden" name="resource" id="resource" value="<%= xssAPI.encodeForHTMLAttr(redirect) %>">
+                        <input type="hidden" name="resource" id="resource" value="/apps/granite/core/content/login.html">
                         <input type="hidden" name="userToken" id="userToken" value="<%= xssAPI.encodeForHTMLAttr(token) %>">
 
                         <div class="coral-Form-fieldwrapper">
@@ -640,6 +640,7 @@ login
                 <input id="in_history_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/loginInHistoryText", i18n.get("New password was found in password history")) %>"/>
                 <input id="not_match_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordsDoNotMatchText", i18n.get("New passwords do not match")) %>"/>
                 <input id="empty_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordEmptyText", i18n.get("New password must not be blank")) %>"/>
+                <input id="not_able_reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("Not able to reset Password now. Kindly try after sometime.")) %>"/>
                 <% } %>
             </div>
         <% } %>
@@ -670,10 +671,19 @@ login
 
     </div>
 </div>
-
 <%
     String modalTitle = printProperty(cfg, i18n, xssAPI, "changePasswordSuccessTitle", i18n.get("Password Changed"));
 %>
+
+<coral-dialog id="success-dialog" variant="success" closable="true">
+    <coral-dialog-header><%= modalTitle %></coral-dialog-header>
+    <coral-dialog-content>
+        <%= printProperty(cfg, i18n, xssAPI, "changePasswordSuccessText", i18n.get("Forgot password link has been sent to your email.")) %>
+    </coral-dialog-content>
+    <coral-dialog-footer>
+        <button is="coral-button" variant="primary" coral-close><%= i18n.get("Ok") %></button>
+    </coral-dialog-footer>
+</coral-dialog>
 
 <script type="text/javascript">
     // try to append the current hash/fragment to the redirect resource

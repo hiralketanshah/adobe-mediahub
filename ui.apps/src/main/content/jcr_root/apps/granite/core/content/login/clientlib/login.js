@@ -262,6 +262,7 @@
         if(document.getElementById("sendResetPassword")){
             document.getElementById("sendResetPassword").addEventListener("submit", function(event) {
             hideError();
+            event.stopImmediatePropagation();
             event.preventDefault();
             var form = this;
             var path = form.action;
@@ -289,7 +290,8 @@
             xhr.onload = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        alert("Sent Mail");
+                        var dialog = document.getElementById("success-dialog");
+                        dialog.show();
                     } else {
                         var reason = xhr.getResponseHeader("X-Reason-Code");
                         var messageId = "invalid_message";
@@ -311,6 +313,7 @@
         if(document.getElementById("changePassword")){
             document.getElementById("changePassword").addEventListener("submit", function(event) {
             hideError();
+            event.stopImmediatePropagation();
             event.preventDefault();
             var form = this;
             var path = form.action;
@@ -334,7 +337,7 @@
                 } else if (new_password.value !== confirm_password.value) {
                     // passwords do not match: error
                     clearPasswords();
-                    document.getElementById("new_password").focus();
+                    new_password.focus();
                     displayError(document.getElementById("not_match_message").value);
                     return false;
                 } else {
@@ -351,12 +354,10 @@
             xhr.onload = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        alert("Password change");
+                        redirect();
                     } else {
                         var reason = xhr.getResponseHeader("X-Reason-Code");
-
-                        var messageId = reason === "password_expired_and_new_password_in_history"
-                            ? "in_history_message" : "invalid_message";
+                        var messageId = reason;
                         displayError(document.getElementById(messageId).value);
                         clearPasswords();
                     }

@@ -111,21 +111,22 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
             }
         } catch (LoginException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
-            setErrorResponse(response, "Error which accessing repository");
+            setErrorResponse(response, "not_able_reset");
         } catch (RepositoryException e) {
             LOGGER.error("Error while changing password : {0}", e);
-            setErrorResponse(response, "Error while changing password");
+            setErrorResponse(response, "not_able_reset");
         }
 
     }
 
     /**
      * @param response
-     * @param message
+     * @param errorCode
      * @throws IOException
      */
-    private void setErrorResponse(SlingHttpServletResponse response, String message) throws IOException {
+    private void setErrorResponse(SlingHttpServletResponse response, String errorCode) throws IOException {
         response.getWriter().print("User ID not found");
+        response.setHeader("X-Reason-Code", errorCode);
         response.setStatus(500);
     }
 
