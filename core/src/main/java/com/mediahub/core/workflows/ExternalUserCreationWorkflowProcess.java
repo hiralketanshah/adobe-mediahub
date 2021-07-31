@@ -4,6 +4,7 @@ package com.mediahub.core.workflows;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.UUID;
 import javax.jcr.PropertyType;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -20,6 +22,8 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -96,10 +100,10 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 			Session adminSession = resourceResolver.adaptTo(Session.class);
 			JackrabbitSession js = (JackrabbitSession) adminSession;
+
+			String userToken = UUID.randomUUID().toString();
 			
 			if (payloadPath != null) {
-				
-				
 				UserManager userManager = js.getUserManager();
 				User user = null;
 				ValueFactory valueFactory = adminSession.getValueFactory();
@@ -108,11 +112,11 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
 		              while (password.matches(BnpConstants.P_CONSTRAINT)==false) {
 			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
-			       			       	
+
 			        }
 		            user = userManager.createUser(email, password);
-
-		            Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
+								setUserTokenDetails(resourceResolver, user, userToken);
+								Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
 		            user.setProperty("./profile/givenName", firstNameValue);
 
 		            Value lastNameValue = valueFactory.createValue(lastName, PropertyType.STRING);
@@ -170,27 +174,25 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			      project.updateMembers(usersList, rolesList); 
 
 
-			     //notification with the expiry date modification if the user already exists and project link...username and pwd
-			       String[] emailRecipients = { email };
-			       String subject = "Mediahub - Assignment project : " + projectName;
-			       Map<String, String> emailParams = new HashMap<String, String>();
-			       emailParams.put(BnpConstants.SUBJECT, subject);
-			       emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
-			       emailParams.put("projectitle",project.getTitle());
-			       emailParams.put("login",email);
-			       emailParams.put("password",password);
-			       emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
-			       emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"/projects/details.html"+payloadPath.replace("/dam", "") ));
-			       emailParams.put("projectowner",item.getWorkflow().getInitiator());
+			      //notification with the expiry date modification if the user already exists and project link...username and pwd
+						String[] emailRecipients = { email };
+						String subject = "Mediahub - Assignment project : " + projectName;
+						Map<String, String> emailParams = new HashMap<String, String>();
+						emailParams.put(BnpConstants.SUBJECT, subject);
+						emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
+						emailParams.put("projectitle",project.getTitle());
+						emailParams.put("login",email);
+						emailParams.put("resetlink",externalizer.authorLink(resourceResolver, "/apps/granite/core/content/login.changepassword.html?token=" + userToken));
+						emailParams.put("password",password);
+						emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
+						emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"/projects/details.html"+payloadPath.replace("/dam", "") ));
+						emailParams.put("projectowner",item.getWorkflow().getInitiator());
 
-			       if(isUserAlreadyExists)
-				       {
-						 genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html",emailRecipients, emailParams);
-						 
-				       }
-			       else {
-			    	   genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html",emailRecipients, emailParams);
-			       }
+						if(isUserAlreadyExists) {
+							genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html",emailRecipients, emailParams);
+						} else {
+						 genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html",emailRecipients, emailParams);
+						}
 				       
 			       if (! userManager.isAutoSave()) {
 		            	  js.save();
@@ -215,6 +217,22 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 	
 }
+
+	/**
+	 * @param resourceResolver
+	 * @param user
+	 * @throws javax.jcr.RepositoryException
+	 */
+	private void setUserTokenDetails(ResourceResolver resourceResolver, User user, String token)
+			throws javax.jcr.RepositoryException {
+		Resource userResource = resourceResolver.getResource(user.getPath());
+		ModifiableValueMap modifiableValueMap = userResource.adaptTo(ModifiableValueMap.class);
+
+		modifiableValueMap.put("userToken", token);
+		Calendar tokenExpiryDate = Calendar.getInstance();
+		tokenExpiryDate.add(Calendar.DATE, 1);
+		modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
+	}
 
 	/**
 	 * Set Expiry date for existing user
