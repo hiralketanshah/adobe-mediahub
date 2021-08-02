@@ -224,7 +224,7 @@ Import-Package: javax.annotation;version=0.0.0,com.day.cq.dam.scene7.api;version
         <dependency>
             <groupId>com.adobe.acs</groupId>
             <artifactId>acs-aem-commons-bundle</artifactId>
-            <version>4.11.2</version>
+            <version>5.0.6</version>
         </dependency>
 
         <dependency>
