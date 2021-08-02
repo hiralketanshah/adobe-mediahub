@@ -18,6 +18,7 @@ package com.mediahub.core.servlets;
 import com.mediahub.core.constants.BnpConstants;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
 import javax.jcr.RepositoryException;
@@ -75,7 +76,7 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
             Resource user = resolver.getResource(userPath);
             if(null != user){
                 ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
-                modifiableValueMap.put("privacyAccepted" , Boolean.TRUE);
+                modifiableValueMap.put("privacyAcceptedDate", Calendar.getInstance());
             }
             resolver.commit();
         } catch (LoginException e) {

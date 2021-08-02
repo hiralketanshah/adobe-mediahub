@@ -1,12 +1,27 @@
 package com.mediahub.core.filters;
 
+import com.mediahub.core.constants.BnpConstants;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Calendar;
+import javax.jcr.RepositoryException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -15,11 +30,6 @@ import org.osgi.service.component.propertytypes.ServiceRanking;
 import org.osgi.service.component.propertytypes.ServiceVendor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.*;
-import java.io.IOException;
-import java.security.Principal;
 
 /**
  * Simple servlet filter component that logs incoming requests.
@@ -37,9 +47,6 @@ public class LoginPageFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Reference
-    private ResourceResolverFactory resolverFactory;
-
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response,
                          final FilterChain filterChain) throws IOException, ServletException {
@@ -54,19 +61,13 @@ public class LoginPageFilter implements Filter {
             if (null != userPrincipal && !StringUtils.contains(requestURI, "/apps/mediahub/content/privacypolicy.html") && !StringUtils.contains(requestURI, "/apps/granite/core/content/login.html")) {
                 UserManager userManager = slingRequest.getResourceResolver().adaptTo(UserManager.class);
                 Authorizable authorizable = userManager.getAuthorizable(userPrincipal);
-
                 // mediahub-administrators group
                 Authorizable mediahubBasic = userManager.getAuthorizable("mediahub-basic");
                 Group mediahubBasicGroup = (Group) mediahubBasic;
-                if (mediahubBasicGroup != null && mediahubBasicGroup.isMember(authorizable)) {
-                    if (authorizable.getProperty("privacyAccepted") != null && authorizable.getProperty("privacyAccepted").length > 0) {
-                        boolean isPrivacyAgreed = authorizable.getProperty("privacyAccepted")[0].getBoolean();
-                        if (!isPrivacyAgreed) {
-                            redirectUser(slingResponse);
-                        }
-                    } else {
-                        redirectUser(slingResponse);
-                    }
+                Resource privacyPolicyStep1 = slingRequest.getResourceResolver().getResource("/content/dam/technique/mediahub/privacy-policy/privacy-policy-step1");
+                Resource privacyPolicyStep2 = slingRequest.getResourceResolver().getResource("/content/dam/technique/mediahub/privacy-policy/privacy-policy-step2");
+                if ( (!((User) authorizable).isAdmin()) &&  mediahubBasicGroup != null && mediahubBasicGroup.isMember(authorizable) && privacyPolicyStep1 != null && privacyPolicyStep2 != null ) {
+                    redirectUserForPrivacyPolicy(slingResponse, authorizable, privacyPolicyStep1, privacyPolicyStep2);
                 }
 
             }
@@ -78,6 +79,39 @@ public class LoginPageFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Redirect users based on Privacy Policy
+     *
+     * @param slingResponse
+     * @param authorizable
+     * @param privacyPolicyStep1
+     * @param privacyPolicyStep2
+     * @throws RepositoryException
+     * @throws IOException
+     */
+    private void redirectUserForPrivacyPolicy(SlingHttpServletResponse slingResponse,
+        Authorizable authorizable, Resource privacyPolicyStep1, Resource privacyPolicyStep2)
+        throws RepositoryException, IOException {
+        ValueMap contentNodeOfStep1 = privacyPolicyStep1.getChild(JcrConstants.JCR_CONTENT).getValueMap();
+        ValueMap contentNodeOfStep2 = privacyPolicyStep2.getChild(JcrConstants.JCR_CONTENT).getValueMap();
+        if (authorizable.getProperty(BnpConstants.PRIVACY_ACCEPTED_DATE) != null && authorizable.getProperty(BnpConstants.PRIVACY_ACCEPTED_DATE).length > 0) {
+            Calendar lastModifiedStep1 = contentNodeOfStep1.get(JcrConstants.JCR_LASTMODIFIED, Calendar.class);
+            Calendar lastModifiedStep2 = contentNodeOfStep2.get(JcrConstants.JCR_LASTMODIFIED, Calendar.class);
+            Calendar privacyAcceptedDate = authorizable.getProperty(BnpConstants.PRIVACY_ACCEPTED_DATE)[0].getDate();
+            if (lastModifiedStep1 != null && (privacyAcceptedDate.before(lastModifiedStep1) || privacyAcceptedDate.before(lastModifiedStep2)) ) {
+                redirectUser(slingResponse);
+            }
+        } else {
+            redirectUser(slingResponse);
+        }
+    }
+
+    /**
+     * Redirecting user to privacy policy page
+     *
+     * @param slingResponse
+     * @throws IOException
+     */
     private void redirectUser(SlingHttpServletResponse slingResponse) throws IOException {
         String newURI = "/apps/mediahub/content/privacypolicy.html";
         slingResponse.sendRedirect(newURI);

@@ -11,9 +11,9 @@
         cq:lastReplicationAction="Activate"
         cq:scaffolding="/conf/Content Fragment/settings/dam/cfm/models/test-content-fragment/jcr:content/model"
         cq:templateType="/libs/settings/dam/cfm/model-types/fragment"
-        jcr:description="Test Content Fragment"
+        jcr:description="Privacy Policy Content Fragment"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Test Content Fragment"
+        jcr:title="Privacy Policy Content Fragment"
         sling:resourceSuperType="dam/cfm/models/console/components/data/entity"
         sling:resourceType="dam/cfm/models/console/components/data/entity/default">
         <model

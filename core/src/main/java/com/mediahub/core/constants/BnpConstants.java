@@ -120,4 +120,6 @@ public class BnpConstants {
     public static final String DAM_PATH = "/content/dam";
     public static final String USER_PROFILE_EMAIL = "./profile/email";
     public static final String P_LIMIT = "p.limit";
+
+    public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
 }
