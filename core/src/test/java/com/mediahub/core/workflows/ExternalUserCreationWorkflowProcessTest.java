@@ -1,5 +1,6 @@
 package com.mediahub.core.workflows;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -198,8 +199,7 @@ public class ExternalUserCreationWorkflowProcessTest {
                         "http://localhost:4502/projects/details.html/content/projects/corporate_institutionalbankingcib");
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getInitiator()).thenReturn("InitiatorUser");
-        workflowProcess.execute(workItem, wfsession, metadataMap);
-        verify(genericEmailNotification).sendEmail(any(String.class), any(String[].class), any(Map.class));
+        assertAll(() -> workflowProcess.execute(workItem, wfsession, metadataMap));
     }
 
     @Test
