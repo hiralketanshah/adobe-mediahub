@@ -1,40 +1,38 @@
 package com.mediahub.core.models.impl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.request.RequestPathInfo;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import com.adobe.granite.security.user.UserPropertiesService;
-import com.adobe.granite.security.user.UserProperties;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.sling.api.resource.ResourceResolver;
-
-import com.day.cq.replication.ReplicationStatus;
-import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.api.resource.Resource;
-import com.day.cq.i18n.I18n;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 
 import javax.jcr.Session;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.request.RequestPathInfo;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.adobe.granite.security.user.UserProperties;
 import com.adobe.granite.security.user.UserPropertiesManager;
+import com.adobe.granite.security.user.UserPropertiesService;
 import com.adobe.granite.security.user.util.AuthorizableUtil;
+import com.day.cq.i18n.I18n;
+import com.day.cq.replication.ReplicationStatus;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
 import mockit.MockUp;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({ AemContextExtension.class })
 public class AuthorizableModelImplTest {
     @InjectMocks
     AuthorizableModelImpl authorizableModelImpl;
@@ -81,7 +79,7 @@ public class AuthorizableModelImplTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -220,12 +218,12 @@ public class AuthorizableModelImplTest {
         authorizableModelImpl.getType();
         assertEquals("Image", valueMap.get("type", StringUtils.EMPTY));
     }
-    
+
     @Test
     public void testIsGroup() throws Exception {
         when(authorizable.isGroup()).thenReturn(true);
         authorizableModelImpl.isGroup();
-        assertEquals(true,authorizable.isGroup());
+        assertEquals(true, authorizable.isGroup());
     }
 
     @Test

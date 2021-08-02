@@ -5,21 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.SearchResult;
-import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.services.GenericEmailNotification;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -39,150 +30,158 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.mockito.MockitoAnnotations;
+
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.GenericEmailNotification;
+
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
-@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith({ AemContextExtension.class })
 public class UserDeactivationScheduledTaskTest {
 
-  @InjectMocks  
-  private UserDeactivationScheduledTask fixture;
-  
-  @Mock
-  GenericEmailNotification genericEmailNotification;
+    @InjectMocks
+    private UserDeactivationScheduledTask fixture;
 
-  @Mock
-  private ResourceResolver resolver;
+    @Mock
+    GenericEmailNotification genericEmailNotification;
 
-  @Mock
-  ResourceResolverFactory resolverFactory;
-  
-  @Mock
-  private SearchResult searchResult;
-  
-  @Mock
-  ValueMap valueMap;
+    @Mock
+    private ResourceResolver resolver;
 
-  @Mock
-  private Query query;
-  
-  @Mock
-  private Session session;
-  
-  @Mock
-  Resource resource;
-  
-  @Mock
-  User user;
-  
-  @Mock
-  UserManager userManager;
+    @Mock
+    ResourceResolverFactory resolverFactory;
 
-  @Mock
-  QueryBuilder builder;
+    @Mock
+    private SearchResult searchResult;
 
-  @Mock
-  Authorizable authorizable;
-  
-  Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-          BnpConstants.WRITE_SERVICE);
+    @Mock
+    ValueMap valueMap;
 
-  @BeforeEach
-  void setup() {
-    TestLoggerFactory.clear();
-  }
+    @Mock
+    private Query query;
 
-  @Test
-  void run() throws LoginException {
-      try {
-    UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
-    when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
-    when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
-    when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
-    QueryBuilder queryBuilder = mock(QueryBuilder.class);    
-    when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
-    when(resolver.adaptTo(Session.class)).thenReturn(session);
-    when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
-    when(resolver.adaptTo(Session.class)).thenReturn(session);
-    when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
-    when(query.getResult()).thenReturn(searchResult);
-    when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-    List<Resource> userList = new ArrayList<>();
-    userList.add(resource);
-    when(searchResult.getResources()).thenReturn(userList.iterator());
-    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
-    when(resource.getValueMap()).thenReturn(valueMap);
-    when(valueMap.get(BnpConstants.EXPIRY,String.class)).thenReturn("2019/06/09");
-    when(resource.getPath()).thenReturn("/etc/home/user");
-    when(userManager.getAuthorizableByPath("/etc/home/user")).thenReturn(user);
-    when(user.isDisabled()).thenReturn(false);
-    when(valueMap.get(BnpConstants.EMAIL,String.class)).thenReturn("MediaHub@gmail.com");
-    when(valueMap.get(BnpConstants.FIRST_NAME,String.class)).thenReturn("TestUser");
-    when(resolver.hasChanges()).thenReturn(true);
-    fixture.activate(config);
-    fixture.run();
+    @Mock
+    private Session session;
 
+    @Mock
+    Resource resource;
 
-    assertEquals("0 1 0 1/1 * ? *", config.scheduler_expression());
-    assertEquals(Boolean.FALSE, config.scheduler_concurrent());
+    @Mock
+    User user;
 
+    @Mock
+    UserManager userManager;
 
-    } catch (UnsupportedRepositoryOperationException e) {
-        e.printStackTrace();
-    } catch (RepositoryException e) {
-        e.printStackTrace();
+    @Mock
+    QueryBuilder builder;
+
+    @Mock
+    Authorizable authorizable;
+
+    Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.initMocks(this);
+        TestLoggerFactory.clear();
     }
-  }
 
-  @Test
-  void sendWarningMail(){
-    when(resource.getValueMap()).thenReturn(valueMap);
-    when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
-    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
-    fixture.sendWarningMail(resource, new String[]{"abibrahi@adobe.com"}, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
-  }
+    @Test
+    void run() throws LoginException {
+        try {
+            UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
+            when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
+            when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
+            when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
+            QueryBuilder queryBuilder = mock(QueryBuilder.class);
+            when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
+            when(resolver.adaptTo(Session.class)).thenReturn(session);
+            when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+            when(resolver.adaptTo(Session.class)).thenReturn(session);
+            when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+            when(query.getResult()).thenReturn(searchResult);
+            when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+            List<Resource> userList = new ArrayList<>();
+            userList.add(resource);
+            when(searchResult.getResources()).thenReturn(userList.iterator());
+            when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+            when(resource.getValueMap()).thenReturn(valueMap);
+            when(valueMap.get(BnpConstants.EXPIRY, String.class)).thenReturn("2019/06/09");
+            when(resource.getPath()).thenReturn("/etc/home/user");
+            when(userManager.getAuthorizableByPath("/etc/home/user")).thenReturn(user);
+            when(user.isDisabled()).thenReturn(false);
+            when(valueMap.get(BnpConstants.EMAIL, String.class)).thenReturn("MediaHub@gmail.com");
+            when(valueMap.get(BnpConstants.FIRST_NAME, String.class)).thenReturn("TestUser");
+            when(resolver.hasChanges()).thenReturn(true);
+            fixture.activate(config);
+            fixture.run();
 
-  @Test
-  void sendDeactivationgMail(){
-    when(resource.getValueMap()).thenReturn(valueMap);
-    when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
-    when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
-    fixture.sendDeactivationgMail(resource, new String[]{"abibrahi@adobe.com"}, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
-  }
+            assertEquals("0 1 0 1/1 * ? *", config.scheduler_expression());
+            assertEquals(Boolean.FALSE, config.scheduler_concurrent());
 
-  @Test
-  void getPredicateMapProjectSearch(){
-    Map<String, String> map = fixture.getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH, "externalContributer");
-    assertEquals(map.get(BnpConstants.PATH), BnpConstants.AEM_PROJECTS_PATH);
-  }
+        } catch (UnsupportedRepositoryOperationException e) {
+            e.printStackTrace();
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
+    }
 
-  @Test
-  void getMembersFromGroup() throws LoginException {
+    @Test
+    void sendWarningMail() {
+        when(resource.getValueMap()).thenReturn(valueMap);
+        when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
+        when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
+                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+    }
 
-    QueryBuilder queryBuilder = mock(QueryBuilder.class);
-    when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
-    when(resolver.adaptTo(Session.class)).thenReturn(session);
-    when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
-    when(resolver.adaptTo(Session.class)).thenReturn(session);
-    when(resource.getValueMap()).thenReturn(valueMap);
-    when(valueMap.get(BnpConstants.SLING_RESOURCETYPE, StringUtils.EMPTY)).thenReturn("");
+    @Test
+    void sendDeactivationgMail() {
+        when(resource.getValueMap()).thenReturn(valueMap);
+        when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
+        when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        fixture.sendDeactivationgMail(resource, new String[] { "abibrahi@adobe.com" },
+                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+    }
 
-    List<Resource> userList = new ArrayList<>();
-    userList.add(resource);
-    when(builder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
-    when(query.getResult()).thenReturn(searchResult);
-    when(searchResult.getResources()).thenReturn(userList.iterator());
-    fixture.getMembersFromGroup(userManager, builder, resolver, "groupName", "role");
-  }
+    @Test
+    void getPredicateMapProjectSearch() {
+        Map<String, String> map = fixture.getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH,
+                "externalContributer");
+        assertEquals(map.get(BnpConstants.PATH), BnpConstants.AEM_PROJECTS_PATH);
+    }
 
-  @Test
-  void fetchUserMailFromGroup() throws ParseException, RepositoryException {
-    List<Group> userList = new ArrayList<>();
-    when(authorizable.memberOf()).thenReturn(userList.listIterator());
-    fixture.deactivateExpiredUsers(userManager, resource, "15/04/2021", builder, resolver);
-  }
+    @Test
+    void getMembersFromGroup() throws LoginException {
+
+        QueryBuilder queryBuilder = mock(QueryBuilder.class);
+        when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
+        when(resolver.adaptTo(Session.class)).thenReturn(session);
+        when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+        when(resolver.adaptTo(Session.class)).thenReturn(session);
+        when(resource.getValueMap()).thenReturn(valueMap);
+        when(valueMap.get(BnpConstants.SLING_RESOURCETYPE, StringUtils.EMPTY)).thenReturn("");
+
+        List<Resource> userList = new ArrayList<>();
+        userList.add(resource);
+        when(builder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
+        when(query.getResult()).thenReturn(searchResult);
+        when(searchResult.getResources()).thenReturn(userList.iterator());
+        fixture.getMembersFromGroup(userManager, builder, resolver, "groupName", "role");
+    }
+
+    @Test
+    void fetchUserMailFromGroup() throws ParseException, RepositoryException {
+        List<Group> userList = new ArrayList<>();
+        when(authorizable.memberOf()).thenReturn(userList.listIterator());
+        fixture.deactivateExpiredUsers(userManager, resource, "15/04/2021", builder, resolver);
+    }
 
 }

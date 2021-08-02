@@ -3,23 +3,9 @@ package com.mediahub.core.workflows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.adobe.cq.projects.api.Project;
-import com.adobe.cq.projects.api.ProjectMember;
-import com.adobe.cq.projects.api.ProjectMemberRole;
-import com.adobe.granite.workflow.WorkflowSession;
-import com.adobe.granite.workflow.exec.WorkItem;
-import com.adobe.granite.workflow.exec.Workflow;
-import com.adobe.granite.workflow.exec.WorkflowData;
-import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
-import com.day.cq.commons.Externalizer;
-import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.services.GenericEmailNotification;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -37,6 +23,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 import javax.jcr.ValueFormatException;
+
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -50,12 +37,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.mockito.MockitoAnnotations;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-@MockitoSettings(strictness = Strictness.LENIENT)
+import com.adobe.cq.projects.api.Project;
+import com.adobe.cq.projects.api.ProjectMember;
+import com.adobe.cq.projects.api.ProjectMemberRole;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
+import com.adobe.granite.workflow.exec.WorkflowData;
+import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
+import com.day.cq.commons.Externalizer;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.GenericEmailNotification;
+
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+
+@ExtendWith({ AemContextExtension.class })
 public class ExternalUserCreationWorkflowProcessTest {
     private static final String PATH = "/content/projects/corporate_institutionalbankingcib";
 
@@ -141,6 +140,7 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
         metadataMap = new SimpleMetaDataMap();
         metadataMap.put("firstName", "Test First Name");
         metadataMap.put("lastName", "Test First Name");
@@ -206,6 +206,7 @@ public class ExternalUserCreationWorkflowProcessTest {
     public void setExpiryDateExistingUser() throws ParseException, RepositoryException {
         when(userManager.getAuthorizable("test@gmail.com")).thenReturn(user);
         Value firstValue = new Value() {
+            @Override
             public String toString() {
                 return "2020/10/11";
             }

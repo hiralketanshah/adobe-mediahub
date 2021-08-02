@@ -21,13 +21,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.day.cq.commons.jcr.JcrConstants;
-import com.mediahub.core.constants.BnpConstants;
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
@@ -42,12 +39,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.osgi.service.event.Event;
+
+import com.day.cq.commons.jcr.JcrConstants;
+import com.mediahub.core.constants.BnpConstants;
+
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class })
 class FolderResourceListenerTest {
 
     private FolderResourceListener fixture = new FolderResourceListener();
@@ -66,16 +69,19 @@ class FolderResourceListenerTest {
     @Mock
     private Resource resource;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     void setup() throws LoginException {
+        MockitoAnnotations.initMocks(this);
         context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
     }
 
     @Test
     void handleEvent() throws LoginException {
-        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
+        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH,
+                "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
 
         fixture.resourceResolverFactory = resourceResolverFactory;
         when(fixture.resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
@@ -83,19 +89,19 @@ class FolderResourceListenerTest {
         when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
         fixture.handleEvent(resourceEvent);
 
-        assertAll(
-                () -> assertEquals("event/topic", resourceEvent.getTopic()),
-                () -> assertEquals("/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content", resourceEvent.getProperty(SlingConstants.PROPERTY_PATH).toString())
-        );
+        assertAll(() -> assertEquals("event/topic", resourceEvent.getTopic()),
+                () -> assertEquals("/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content",
+                        resourceEvent.getProperty(SlingConstants.PROPERTY_PATH).toString()));
     }
 
     @Test
     void handleEventWithLoginException() throws LoginException {
-        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH, "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
+        Event resourceEvent = new Event("event/topic", Collections.singletonMap(SlingConstants.PROPERTY_PATH,
+                "/content/dam/mediahub/corporate_institutionalbankingcib/jcr:content"));
         fixture.resourceResolverFactory = resourceResolverFactory;
         when(fixture.resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(new LoginException());
         fixture.handleEvent(resourceEvent);
-        Assertions.assertThrows(LoginException.class, () ->{
+        Assertions.assertThrows(LoginException.class, () -> {
             fixture.resourceResolverFactory.getServiceResourceResolver(authInfo);
         });
     }
@@ -115,12 +121,10 @@ class FolderResourceListenerTest {
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
         fixture.captureDamAssetChanges(resourceEvent, resolver, resource);
 
-        assertAll(
-            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
-            () -> assertEquals(3, resourceEvent.getPropertyNames().length),
-            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
-            () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID))
-        );
+        assertAll(() -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
+                () -> assertEquals(3, resourceEvent.getPropertyNames().length),
+                () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
+                () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID)));
     }
 
     @Test
@@ -138,12 +142,10 @@ class FolderResourceListenerTest {
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
         fixture.captureFolderChanges(resourceEvent, resolver, resource);
 
-        assertAll(
-            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
-            () -> assertEquals(3, resourceEvent.getPropertyNames().length),
-            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
-            () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID))
-        );
+        assertAll(() -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
+                () -> assertEquals(3, resourceEvent.getPropertyNames().length),
+                () -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
+                () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID)));
     }
 
     @Test
@@ -161,11 +163,9 @@ class FolderResourceListenerTest {
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
         fixture.captureFolderChanges(resourceEvent, resolver, resource);
 
-        assertAll(
-            () -> assertEquals(BnpConstants.TOPIC_RESOURCE_CHANGED, resourceEvent.getTopic()),
-            () -> assertEquals(3, resourceEvent.getPropertyNames().length),
-            () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID))
-        );
+        assertAll(() -> assertEquals(BnpConstants.TOPIC_RESOURCE_CHANGED, resourceEvent.getTopic()),
+                () -> assertEquals(3, resourceEvent.getPropertyNames().length),
+                () -> assertEquals("admin", resourceEvent.getProperty(BnpConstants.USER_ID)));
     }
 
 }

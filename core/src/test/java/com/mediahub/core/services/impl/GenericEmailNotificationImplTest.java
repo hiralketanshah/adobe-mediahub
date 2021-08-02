@@ -1,26 +1,27 @@
 package com.mediahub.core.services.impl;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 
 import com.adobe.acs.commons.email.EmailService;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({ AemContextExtension.class })
 public class GenericEmailNotificationImplTest {
 
     @InjectMocks
@@ -41,7 +42,7 @@ public class GenericEmailNotificationImplTest {
 
     @BeforeEach
     public void setupMock() throws IOException {
-
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
