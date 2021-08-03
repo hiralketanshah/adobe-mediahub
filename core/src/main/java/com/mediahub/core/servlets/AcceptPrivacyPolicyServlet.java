@@ -16,31 +16,27 @@
 package com.mediahub.core.servlets;
 
 import com.mediahub.core.constants.BnpConstants;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Map;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Servlet that writes some sample content into the response. It is mounted for
@@ -48,13 +44,9 @@ import org.slf4j.LoggerFactory;
  * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
-@Component(service = Servlet.class,
-    property = {
-        "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-        "sling.servlet.resourceTypes=" + "cq/Page",
-        "sling.servlet.selectors=" + "privacy.policy",
-        "sling.servlet.extensions=" + "json"})
-@ServiceDescription("Accept Privacy Policy Servlet")
+@Component(
+        service = Servlet.class,
+        property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/privacy"})
 public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AcceptPrivacyPolicyServlet.class);
@@ -62,19 +54,19 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
     private static final long serialVersionUID = 1L;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-        BnpConstants.WRITE_SERVICE);
+            BnpConstants.WRITE_SERVICE);
 
     @Reference
     private transient ResourceResolverFactory resolverFactory;
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,
-            final SlingHttpServletResponse response) throws ServletException, IOException {
-        try(ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)){
+                          final SlingHttpServletResponse response) throws ServletException, IOException {
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             Principal userPrincipal = request.getUserPrincipal();
             String userPath = resolver.adaptTo(UserManager.class).getAuthorizable(userPrincipal).getPath();
             Resource user = resolver.getResource(userPath);
-            if(null != user){
+            if (null != user) {
                 ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
                 modifiableValueMap.put("privacyAcceptedDate", Calendar.getInstance());
             }

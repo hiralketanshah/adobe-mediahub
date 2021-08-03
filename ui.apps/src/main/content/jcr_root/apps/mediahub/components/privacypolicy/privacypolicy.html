@@ -4,81 +4,82 @@
 
 <coral-wizardview>
 
-  <coral-steplist coral-wizardview-steplist="" interaction="on">
-    <coral-step>${'Terms and Conditions' @ i18n}</coral-step>
-    <coral-step>${'Document sensitivity' @ i18n}</coral-step>
-  </coral-steplist>
+    <coral-steplist coral-wizardview-steplist="" interaction="on">
+        <coral-step>${'Terms and Conditions' @ i18n}</coral-step>
+        <coral-step>${'Document sensitivity' @ i18n}</coral-step>
+    </coral-steplist>
 
-  <coral-panelstack coral-wizardview-panelstack="">
-    <sly data-sly-use.model="com.mediahub.core.models.PrivacyPolicy">
+    <coral-panelstack coral-wizardview-panelstack="">
+        <sly data-sly-use.model="com.mediahub.core.models.PrivacyPolicy">
 
-    <coral-panel class="coral-Well">
-      <sly data-sly-resource='/apps/mediahub/components/privacypolicy/${model.language}/step1'/>
-      <coral-checkbox value="" id="agreeTerms">${'Agree Terms and Conditions' @ i18n}</coral-checkbox>
-      <br>
-      <button id="nextStep" is="coral-button" variant="primary" coral-wizardview-next="" disabled>
-        Next
-      </button>
-    </coral-panel>
+            <coral-panel class="coral-Well">
+                <sly data-sly-resource='/apps/mediahub/components/privacypolicy/${model.language}/step1'/>
+                <coral-checkbox value="" id="agreeTerms">${'Agree Terms and Conditions' @ i18n}</coral-checkbox>
+                <br>
+                <button id="nextStep" is="coral-button" variant="primary" coral-wizardview-next="" disabled>
+                    Next
+                </button>
+            </coral-panel>
 
-    <coral-panel class="coral-Well">
-      <sly data-sly-resource='/apps/mediahub/components/privacypolicy/${model.language}/step2'/>
-      <div id="terms">
-        <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="radioValueOne" labelledby="label-aligned-radiogroup-1">${'secret or confidential' @ i18n}</coral-radio>
-        <br>
-        <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="agree" labelledby="label-aligned-radiogroup-1">${'Restricted or Public' @ i18n}</coral-radio>
-      </div>
-      <button is="coral-button" variant="primary" coral-wizardview-previous="">
-        Previous
-      </button>
-      <button id="acceptButton" is="coral-button" variant="primary" disabled>
-        Accept
-      </button>
-    </coral-panel>
+            <coral-panel class="coral-Well">
+                <sly data-sly-resource='/apps/mediahub/components/privacypolicy/${model.language}/step2'/>
+                <div id="terms">
+                    <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="radioValueOne"
+                                 labelledby="label-aligned-radiogroup-1">${'secret or confidential' @ i18n}
+                    </coral-radio>
+                    <br>
+                    <coral-radio class="coral-Form-field" name="radioGroupAlignedTwo" value="agree"
+                                 labelledby="label-aligned-radiogroup-1">${'Restricted or Public' @ i18n}
+                    </coral-radio>
+                </div>
+                <button is="coral-button" variant="primary" coral-wizardview-previous="">
+                    Previous
+                </button>
+                <button id="acceptButton" is="coral-button" variant="primary" disabled>
+                    Accept
+                </button>
+            </coral-panel>
 
-    </sly>
-  </coral-panelstack>
+        </sly>
+    </coral-panelstack>
 </coral-wizardview>
 
 <script type="text/javascript">
 
 
-  $('#agreeTerms').on('change', function enableNextButton(event) {
-    if (!event.currentTarget.checked) {
-      document.getElementById("nextStep").disabled = true;
-    } else {
-      document.getElementById("nextStep").disabled = false;
-    }
-  });
-
-  $('#terms').on('change', function(event) {
-      if (event.target.value === 'agree'){
-          document.getElementById("acceptButton").disabled = false;
-      } else {
-          document.getElementById("acceptButton").disabled = true;
-      }
-  });
-
-  $('#acceptButton').on('click', function(event) {
-    var data = [];
-    data.push({
-        name: 'payload',
-        value: '${model.currentUserPath @ context="scriptString"}'
-    });
-
-    $.ajax({
-        type: "POST",
-        url: "/content/mediahub/us/en.privacy.policy.json",
-        data: data,
-        async: true,
-        cache: false,
-        success: function (response) {
-          // do nothing;
+    $('#agreeTerms').on('change', function enableNextButton(event) {
+        if (!event.currentTarget.checked) {
+            document.getElementById("nextStep").disabled = true;
+        } else {
+            document.getElementById("nextStep").disabled = false;
         }
-    }).done(function (html) {
-        location.href = '/assets.html/content/dam/medialibrary';
     });
 
-  });
+    $('#terms').on('change', function (event) {
+        if (event.target.value === 'agree') {
+            document.getElementById("acceptButton").disabled = false;
+        } else {
+            document.getElementById("acceptButton").disabled = true;
+        }
+    });
+
+    $('#acceptButton').on('click', function (event) {
+        var data = [];
+        data.push({
+            name: 'payload',
+            value: '${model.currentUserPath @ context="scriptString"}'
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/bin/mediahub/privacy",
+            data: data,
+            async: true,
+            cache: false
+        }).done(function () {
+            location.href = '/';
+        });
+
+    });
 </script>
 

@@ -18,27 +18,11 @@ package com.mediahub.core.servlets;
 import com.day.cq.commons.Externalizer;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
-import java.io.IOException;
-import java.security.Principal;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -48,6 +32,14 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Servlet that writes token in user node and to send reset password link. It is mounted for
  * all resources of a specific Sling resource type. The
@@ -55,11 +47,11 @@ import org.slf4j.LoggerFactory;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 @Component(service = Servlet.class,
-    property = {
-        "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-        "sling.servlet.resourceTypes=" + "granite/core/components/login",
-        "sling.servlet.selectors=" + "sendrestpassowrdemail",
-        "sling.servlet.extensions=" + "json"})
+        property = {
+                "sling.servlet.methods=" + HttpConstants.METHOD_POST,
+                "sling.servlet.resourceTypes=" + "granite/core/components/login",
+                "sling.servlet.selectors=" + "sendrestpassowrdemail",
+                "sling.servlet.extensions=" + "json"})
 @ServiceDescription("To send Forgot Password Link")
 public class ForgotPasswordServlet extends SlingAllMethodsServlet {
 
@@ -68,7 +60,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
     private static final long serialVersionUID = 1L;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-        BnpConstants.WRITE_SERVICE);
+            BnpConstants.WRITE_SERVICE);
 
     @Reference
     private Externalizer externalizer;
@@ -81,18 +73,19 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,
-            final SlingHttpServletResponse response) throws ServletException, IOException {
-        try(ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)){
+                          final SlingHttpServletResponse response) throws ServletException, IOException {
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 
             String userName = request.getRequestParameterMap().getValue("j_username").getString();
             Authorizable userAuthorizable = resolver.adaptTo(UserManager.class).getAuthorizable(userName);
 
-            if(null != userAuthorizable){
+            if (null != userAuthorizable) {
                 String userPath = userAuthorizable.getPath();
                 Resource user = resolver.getResource(userPath);
                 ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
 
                 Value[] emails = userAuthorizable.getProperty("./profile/email");
+                Value[] firstname = userAuthorizable.getProperty("./profile/givenName");
                 String userToken = UUID.randomUUID().toString();
                 modifiableValueMap.put("userToken", userToken);
                 Calendar tokenExpiryDate = Calendar.getInstance();
@@ -100,11 +93,12 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                 modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
 
                 Map<String, String> emailParams = new HashMap<>();
-                if(null != emails && emails.length > 0){
+                if (null != emails && emails.length > 0) {
                     String email = emails[0].getString();
                     String[] emailRecipients = {email};
                     String subject = "Mediahub - Forgot password link";
                     emailParams.put(BnpConstants.SUBJECT, subject);
+                    emailParams.put("firstname", firstname[0].getString());
                     emailParams.put("link", externalizer.authorLink(resolver, "/apps/granite/core/content/login.changepassword.html?token=" + userToken));
                     genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/forgotpasswordemailtemplate.html", emailRecipients, emailParams);
                 }
