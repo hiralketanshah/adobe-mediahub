@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -40,17 +42,16 @@ public class UserResourceListener implements EventHandler {
 
   public void handleEvent(final Event event) {
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-
-    if(StringUtils.equals(event.getProperty("resourceType").toString(), "rep:User")){
+    if(StringUtils.equals(event.getProperty("resourceType").toString(), UserConstants.NT_REP_USER)){
       try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
         String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
         Resource user = resolver.getResource(path);
-        if(null != user.getChild("profile")){
-          Resource profile = user.getChild("profile");
+        if(null != user.getChild(BnpConstants.PROFILE)){
+          Resource profile = user.getChild(BnpConstants.PROFILE);
           ValueMap profileProperties = profile.getValueMap();
-          final Map<String, Object> properties = new HashMap<String, Object>();
-          properties.put("givenName",profileProperties.get("givenName", StringUtils.EMPTY));
-          properties.put("email",profileProperties.get("email", StringUtils.EMPTY));
+          final Map<String, Object> properties = new HashMap<>();
+          properties.put(BnpConstants.FIRST_NAME,profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
+          properties.put(BnpConstants.EMAIL,profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY));
           jobManager.addJob("user/welcome/email", properties);
         }
       } catch (LoginException e) {

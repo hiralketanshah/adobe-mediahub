@@ -22,20 +22,16 @@ import org.slf4j.LoggerFactory;
  */
 public class UserWelcomeEmail implements JobConsumer {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserWelcomeEmail.class);
-
   @Reference
   GenericEmailNotification genericEmailNotification;
 
-
   @Override
   public JobResult process(Job job) {
-    if(StringUtils.isNotBlank(job.getProperty("email", StringUtils.EMPTY))){
-      String[] emailRecipients = { job.getProperty("email").toString() };
-      String subject = "Mediahub - Welcome Email";
+    if(StringUtils.isNotBlank(job.getProperty(BnpConstants.EMAIL, StringUtils.EMPTY))){
+      String[] emailRecipients = { job.getProperty(BnpConstants.EMAIL).toString() };
       Map<String, String> emailParams = new HashMap<>();
       emailParams.put(BnpConstants.SUBJECT, "Mediahub - Welcome Email");
-      emailParams.put("firstname", job.getProperty("givenName", StringUtils.EMPTY));
+      emailParams.put("firstname", job.getProperty(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
       genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/welcome.html",emailRecipients, emailParams);
       return JobResult.OK;
     } else {
