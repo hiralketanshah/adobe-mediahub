@@ -82,13 +82,13 @@
           path: /home/groups/mediahub
 
     - mediahub-administrators:
-        - name:
+        - name: Functional administrator
           isMemberOf: user-administrators,mediahub-project-administrator,workflow-administrators,tag-administrators
           members:
           path: /home/groups/mediahub
 
     - mediahub-super-administrators:
-        - name:
+        - name: Technical administrator
           isMemberOf: mediahub-administrators
           members:
           path: /home/groups/mediahub
