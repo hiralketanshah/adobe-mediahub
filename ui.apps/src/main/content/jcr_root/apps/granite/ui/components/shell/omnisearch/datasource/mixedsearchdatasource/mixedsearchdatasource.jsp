@@ -13,6 +13,11 @@
   Dissemination of this information or reproduction of this material
   is strictly forbidden unless prior written permission is obtained
   from Adobe.
+
+
+  MEDIAHUB NOTICE
+  This overlay has been created to allow user and group search only to mediahub administrators
+
 --%><%
 %>
 <%@ include file="/libs/granite/ui/global.jsp" %>

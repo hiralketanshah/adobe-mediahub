@@ -53,6 +53,16 @@
         return currentUserId;
     }
 
+    function isColumnView() {
+        var layoutData = JSON.parse($(".cq-damadmin-admin-childpages.foundation-collection")
+            .attr("data-foundation-layout"));
+        if (layoutData["name"] === "foundation-layout-columnview") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function getCheckedOutBy(assetPath) {
         var checkedOutBy = "";
         var checkedOutInfo;
@@ -412,14 +422,16 @@
                     if (($(this.parentElement.previousElementSibling).find("#applyToAll").length &&
                         $(this.parentElement.previousElementSibling).find("#applyToAll")[0].checked) ||
                         self.duplicateAssets.length === 1) {
+                        var dupPaths = [];
                         for (var i = 0; i < self.duplicateAssets.length; i++) {
-                            self._initiateWorkflow(self.duplicateAssets[i][0]);
+                            dupPaths.push(self.duplicateAssets[i][0]);
                         }
+                        self._initiateWorkflow(dupPaths);
                         self._cleanupAfterDeletingDuplicates();
                     } else {
                         // remove duplicates[0]
                         var duplicateAssets = self.duplicateAssets.splice(0, 1);
-                        self._initiateWorkflow(duplicateAssets[0][0]);
+                        self._initiateWorkflow([ duplicateAssets[0][0] ]);
                         self._detectDuplicateAssets(event);
                         // self._refresh(event);
                     }
@@ -542,16 +554,20 @@
                 location.reload();
             }
         },
-        _initiateWorkflow: function(assetPath) {
+        _initiateWorkflow: function(assetPaths) {
             // making dummy update in asset to initiate set workflow(s)
+            var payload = {
+                "_charset_": "UTF-8"
+            };
+            for (var i = 0; i < assetPaths.length; i++) {
+                payload["." + assetPaths[i].substring("/content/dam".length) +
+                "/jcr:content/renditions/original/jcr:content/jcr:mixinTypes"] = "mix:title";
+            }
             Granite.$.ajax({
                 async: false,
-                url: assetPath + "/jcr:content/renditions/original/jcr:content",
+                url: Granite.HTTP.externalize("/content/dam"),
                 type: "POST",
-                data: {
-                    "_charset_": "UTF-8",
-                    "jcr:mixinTypes": "mix:title"
-                }
+                data: payload
             });
         },
         _cleanupAfterRestrictedAssets: function(event) {
@@ -855,12 +871,13 @@
             var description;
             var canOverwrite = self.utils.canOverwriteAssets(duplicates, self.contentPath);
 
-            if (self.contentType === "folder") {
+            if (self.contentType === "folder" || (self
+                .contentType === "asset" && isColumnView())) {
                 assetExistsMessage = Granite.I18n.get(
                     "An asset named {0} already exists in this location.",
                     firstDuplicate);
                 description = canOverwrite ? Granite.I18n
-                    .get("Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.")// eslint-disable-line max-len
+                        .get("Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.")// eslint-disable-line max-len
                     : Granite.I18n.get("Click 'Keep Both' to keep both assets or 'Cancel' to cancel the upload.");
             } else if (self.contentType === "asset") {
                 assetExistsMessage = Granite.I18n.get(
@@ -895,7 +912,7 @@
                 duplicateDialog.hide();
             });
 
-           /* if (canOverwrite) {
+            /*if (canOverwrite) {
                 var replaceButton = new Coral.Button().set({
                     variant: "secondary"
                 });
@@ -907,7 +924,8 @@
                 });
             }*/
 
-            if (self.contentType === "folder" && canOverwrite) {
+            if (self.contentType === "folder" && canOverwrite || (self
+                .contentType === "asset" && isColumnView())) {
                 var createVersionButton = new Coral.Button().set({
                     variant: "primary"
                 });
@@ -1925,7 +1943,6 @@
                     duplicates.splice(0, 1);
                     damfileupload._showDuplicates(duplicates);
                 }
-
             },
             _autoResolveDuplicateFileNames: function(damfileupload, duplicates) {
                 var duplicatesIndex = 0;
@@ -2014,7 +2031,11 @@
                 if (foundationContentType === "folder") {
                     jsonPath = resourcePath + ".1.json?ch_ck = " + Date.now();
                 } else if (foundationContentType === "asset") {
-                    jsonPath = resourcePath + "/_jcr_content/renditions.1.json?ch_ck = " + Date.now();
+                    if (isColumnView()) {
+                        jsonPath = resourcePath + ".1.json?ch_ck = " + Date.now();
+                    } else {
+                        jsonPath = resourcePath + "/_jcr_content/renditions.1.json?ch_ck = " + Date.now();
+                    }
                 }
                 jsonPath = Granite.HTTP.externalize(jsonPath);
                 var result = Granite.$.ajax({
@@ -2025,8 +2046,11 @@
                 if (result.status === 200) {
                     jsonResult = JSON.parse(result.responseText);
                     for (var i = 0; i < uploadFiles.length; i++) {
-                        if (jsonResult[UNorm.normalize("NFKC",
-                            uploadFiles[i].name ? uploadFiles[i].name : uploadFiles[i].file.name)]) {
+                        var name = uploadFiles[i].name ? uploadFiles[i].name : uploadFiles[i].file.name;
+                        // Here we are trimming the spaces(at the end and beginning) from 'name' to make comparison
+                        // agnostic of such spaces. CQ-4315863.
+                        name = name.trim();
+                        if (jsonResult[UNorm.normalize("NFKC", name)]) {
                             duplicates[duplicateCount] = uploadFiles[i];
                             duplicateCount++;
                         }

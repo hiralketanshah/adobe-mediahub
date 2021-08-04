@@ -449,7 +449,7 @@
 
     $.DAM.FolderShare.submit = function(wizardForm, hintFields) {
         $(".aem-assets-foldershare-selected-profile-detail")
-            .replaceWith('<div id="aem-assets-foldershare-selected-profile-detail" />');
+            .replaceWith('<div id="aem-assets-foldershare-selected-profile-detail"></div>');
         // var operation = $(".foundation-wizard-step input[name=\":operation\"]").val();
         var foundationContentPath = $(".foundation-content-path").data("foundationContentPath");
         // var redirectionContentPath = $(".foundation-content-path").data("folder-parent-path");

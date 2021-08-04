@@ -34,6 +34,7 @@
         createFolder: null,
 		dialog: null,
         _ILLEGAL_FILENAME_CHARS: "%/\\:*?\"[]|\n\t\r. #{}^;+",
+        nameForceChanged: false,
 
         set: function(prop, value) {
             this[prop] = value;
@@ -136,6 +137,8 @@
                     }).on("change", function(event) {
                         var name = $(this).get(0);
                         self._validateAndAddTooltip(name.value);
+                    }).on("input", function(event) {
+                        self.nameForceChanged = true;
                     });
                     input.className += " coral-Form-field";
                     dialog.nameInput = input;
@@ -573,15 +576,18 @@
                 self.dialog.nameInput.parentElement.appendChild(errorTooltip);
                 var validValue;
                 if (Dam.Util.NameValidation !== undefined) {
-                    validValue = Dam.Util.NameValidation.getValidFolderName(enteredText.toLowerCase())
+                    validValue = Dam.Util.NameValidation.getValidFolderName(enteredText)
                         .replace(/ /g, "-");
                 } else {
                     // This block is to support backward compatibility.
-                    validValue = self._replaceRestrictedCodes(enteredText.toLowerCase()).replace(/ /g, "-");
+                    validValue = self._replaceRestrictedCodes(enteredText).replace(/ /g, "-");
                 }
                 self.dialog.nameInput.value = validValue;
             } else {
-                self.dialog.nameInput.value = enteredText.toLowerCase().replace(/ /g, "-");
+                self.dialog.nameInput.value = enteredText.replace(/ /g, "-");
+            }
+            if (!self.nameForceChanged) { // if folder name is not force changed, change case to lower
+                self.dialog.nameInput.value = self.dialog.nameInput.value.toLowerCase();
             }
 
             self.dialog.submit.disabled = toDisable;
@@ -610,6 +616,7 @@
                 item.remove();
             });
             $(self.dialog).find("coral-tooltip[variant='error']").remove();
+            self.nameForceChanged = false;
         },
 
         // @Deprecated, Use Dam.Util.NameValidation

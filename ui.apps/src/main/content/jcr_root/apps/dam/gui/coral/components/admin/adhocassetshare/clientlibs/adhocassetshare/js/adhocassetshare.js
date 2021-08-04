@@ -28,7 +28,6 @@
 
     var userPickerEl = "#adhocassetshare-userpicker";
     var userPickerErrorToolTip;
-    var userPickerErrorIcon;
 
     $(document).on("click", activator, function(e) {
         var $form = $(form);
@@ -324,6 +323,7 @@
                 "border-style": "solid",
                 "border-color": "#d0d0d0"
             });
+            $("#adhocassetshare-userpicker input[is='coral-textfield']").attr("aria-required", "true");
         }, 3000);
     });
 
@@ -358,35 +358,26 @@
     function showUserPickerRequiredError() {
         var $userPickerEl = $(userPickerEl);
         $userPickerEl.find("input[is='coral-textfield']").addClass("is-invalid");
-        $userPickerEl.css("padding-top", "1.6875rem");
-        if (!userPickerErrorIcon) {
-            userPickerErrorIcon = new Coral.Icon().set({
-                id: "user-picker-fielderror-icon",
-                icon: "alert",
-                size: "S"
-            });
-            userPickerErrorIcon.className += " coral-Form-fielderror error-info-icon";
-        }
-        $userPickerEl.prepend(userPickerErrorIcon);
         if (!userPickerErrorToolTip) {
             userPickerErrorToolTip = new Coral.Tooltip().set({
                 variant: "error",
                 content: {
                     innerHTML: Granite.I18n.get("Please fill out this field.")
                 },
-                target: "#user-picker-fielderror-icon",
-                placement: "left",
+                target: "#adhocassetshare-adduser input",
+                placement: "bottom",
                 id: "user-picker-fielderror-tooltip"
             });
         }
         $userPickerEl.prepend(userPickerErrorToolTip);
+        $("#adhocassetshare-userpicker input[is='coral-textfield']")
+            .attr("aria-describedby", userPickerErrorToolTip.id);
     }
 
     function hideUserPickerRequiredError() {
         var $userPickerEl = $(userPickerEl);
         $userPickerEl.find("input[is='coral-textfield']").removeClass("is-invalid");
         $userPickerEl.css("padding-top", "0");
-        $userPickerEl.find("#user-picker-fielderror-icon").remove();
         $userPickerEl.find("#user-picker-fielderror-tooltip").remove();
     }
 

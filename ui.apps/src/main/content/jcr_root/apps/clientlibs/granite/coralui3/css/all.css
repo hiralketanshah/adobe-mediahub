@@ -18995,6 +18995,20 @@ coral-search .coral-DecoratedTextfield-input.coral3-Search-input {
   color: rgba(0,0,0,0.4);
 }
 
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row coral-table-row-selectcheckbox + coral-icon,
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row coral-table-row-selectcheckbox + img {
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row coral-table-row-selectcheckbox + coral-icon {
+  background-color: #fafafa;
+  color: rgba(0,0,0,0.4);
+}
+
 .coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected):focus .coral-Table-cell,
 .coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected).is-focused .coral-Table-cell {
   background-color: rgba(0,0,0,0.03);
@@ -19007,11 +19021,24 @@ coral-search .coral-DecoratedTextfield-input.coral3-Search-input {
   filter: alpha(opacity=40);
 }
 
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected):focus coral-table-row-selectcheckbox + img,
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected).is-focused coral-table-row-selectcheckbox + img {
+  opacity: .4;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+  filter: alpha(opacity=40);
+}
+
 .coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected):hover .coral-Table-cell {
   background-color: rgba(0,0,0,0.03);
 }
 
 .coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected):hover [coral-table-rowselect] img:only-child {
+  opacity: .4;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+  filter: alpha(opacity=40);
+}
+
+.coral-Table-wrapper[selectable].coral-Table-wrapper--list .coral-Table-row:not(.is-selected):hover coral-table-row-selectcheckbox + img {
   opacity: .4;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
   filter: alpha(opacity=40);
@@ -24234,4 +24261,5 @@ a {
 
 /* Notes */
 /* #00925a could be replaced by #00915A */
+/* #87beff could be replaced by #00915A (or lighter) */
 /* #87beff could be replaced by #00915A (or lighter) */
