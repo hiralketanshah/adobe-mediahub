@@ -18,6 +18,7 @@ package com.mediahub.core.servlets;
 import com.day.cq.commons.Externalizer;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -26,6 +27,7 @@ import org.apache.sling.api.resource.*;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
@@ -71,6 +73,9 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
     @Reference
     GenericEmailNotification genericEmailNotification;
 
+    @Reference
+    private SlingSettingsService slingSettingsService;
+
     @Override
     protected void doPost(final SlingHttpServletRequest request,
                           final SlingHttpServletResponse response) throws ServletException, IOException {
@@ -96,7 +101,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                 if (null != emails && emails.length > 0) {
                     String email = emails[0].getString();
                     String[] emailRecipients = {email};
-                    String subject = "Mediahub - Forgot password link";
+                    String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Forgot password link";
                     emailParams.put(BnpConstants.SUBJECT, subject);
                     emailParams.put("firstname", firstname[0].getString());
                     emailParams.put("link", externalizer.authorLink(resolver, "/apps/granite/core/content/login.changepassword.html?token=" + userToken));

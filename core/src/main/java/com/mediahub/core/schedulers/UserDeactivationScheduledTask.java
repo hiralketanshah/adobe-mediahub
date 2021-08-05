@@ -27,6 +27,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,6 +54,9 @@ public class UserDeactivationScheduledTask implements Runnable {
 
     @Reference
     private GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private SlingSettingsService slingSettingsService;
 
     @ObjectClassDefinition(name="User Deactivation Task",
                            description = "User Deactivation cron-job past expiray date")
@@ -213,7 +217,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param templatePath - template path to create email
      */
     protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
-        String subject = "Mediahub - User will be Deactivated in 30 days";
+        String subject =   ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - User will be Deactivated in 30 days";
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         Resource profile = user.getChild(BnpConstants.PROFILE);
@@ -233,7 +237,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param templatePath - template path to create email
      */
     protected void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
-        String subject = "Mediahub - User will be Deactivated";
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - User will be Deactivated";
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         Resource profile = user.getChild(BnpConstants.PROFILE);

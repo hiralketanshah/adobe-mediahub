@@ -1,6 +1,7 @@
 package com.mediahub.core.workflows;
 
 
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -54,12 +56,16 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 	@Reference
 	ResourceResolverFactory resourceResolverFactory;
-	@Reference 
+	@Reference
 	EmailService emailService;	
 	@Reference
 	GenericEmailNotification genericEmailNotification;
     @Reference
     private Externalizer externalizer;
+
+	@Reference
+	private SlingSettingsService slingSettingsService;
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
@@ -176,7 +182,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 			      //notification with the expiry date modification if the user already exists and project link...username and pwd
 						String[] emailRecipients = { email };
-						String subject = "Mediahub - Assignment project : " + projectName;
+						String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Assignment project : " + projectName;
 						Map<String, String> emailParams = new HashMap<String, String>();
 						emailParams.put(BnpConstants.SUBJECT, subject);
 						emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());

@@ -4,6 +4,7 @@ import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
@@ -54,6 +56,9 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
 
   @Reference
   ResourceResolverFactory resolverFactory;
+
+  @Reference
+  private SlingSettingsService slingSettingsService;
 
   @Override
   public void onChange(List<ResourceChange> list) {
@@ -106,7 +111,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
           String assetName = addedResource.getParent().getParent().getParent() != null ? addedResource.getParent().getParent().getParent().getName() : StringUtils.EMPTY;
           String userName = ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0].getString();
           emailParams.put("firstname", userName);
-          String subject = "Mediahub - Comment added in the asset : " + assetName;
+          String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Comment added in the asset : " + assetName;
           emailParams.put(BnpConstants.SUBJECT, subject);
           genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/commentsnotificationtemplate.html", emailRecipients, emailParams);
         }
@@ -141,7 +146,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
         String title = project.getChild(JcrConstants.JCR_CONTENT) != null ? project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE, StringUtils.EMPTY) : StringUtils.EMPTY;
         String userName = ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME) != null ? ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0].getString() : StringUtils.EMPTY;
         emailParams.put("firstname", userName);
-        String subject = "Mediahub - Asset Added in the Project : " + title;
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Asset Added in the Project : " + title;
         emailParams.put(BnpConstants.SUBJECT, subject);
         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/addassetnotificationtemplate.html", emailRecipients, emailParams);
       }

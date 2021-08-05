@@ -10,6 +10,7 @@ import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.QueryUtils;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,6 +73,9 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 
     @Reference
     GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private SlingSettingsService slingSettingsService;
 
     private String projectPath;
 
@@ -164,20 +169,20 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                     emailParams.put("firstname", userName);
                     if (differenceInDays == 30) {
                         logger.debug("Notification deletion dans 1mois");
-                        String subject = "Mediahub - Project Expiration";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Expiration";
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
 
                     } else if (differenceInDays == 0) {
                         logger.debug("Notification deactivation");
                         jcrContentNode.setProperty(BnpConstants.ACTIVE, false);
-                        String subject = "Mediahub - Project Deactivation";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Deactivation";
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html", emailRecipients, emailParams);
 
                     } else if (differenceInDays <= -31) {
                         logger.debug("Notification deletion");
-                        String subject = "Mediahub - Project Deletion";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Deletion";
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html", emailRecipients, emailParams);
 

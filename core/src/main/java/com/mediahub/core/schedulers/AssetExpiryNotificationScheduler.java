@@ -8,6 +8,7 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,6 +52,9 @@ public class AssetExpiryNotificationScheduler implements Runnable {
 
     @Reference
     private GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private SlingSettingsService slingSettingsService;
 
     @ObjectClassDefinition(
             name = "MediaHub Asset Expiry Notification Scheduler",
@@ -160,7 +165,7 @@ public class AssetExpiryNotificationScheduler implements Runnable {
      * @param expiredAsset - Expired asset resource
      */
     protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath, Resource expiredAsset) {
-        String subject = "Mediahub - Image is past expiry and will be deactivated";
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Image is past expiry and will be deactivated";
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         emailParams.put("assetPath", expiredAsset.getPath());

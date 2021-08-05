@@ -7,9 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
@@ -24,6 +26,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,12 +88,18 @@ public class AssetExpiryNotificationSchedulerTest {
     @Mock
     Authorizable authorizable;
 
+    @Mock
+    SlingSettingsService slingSettingsService;
+
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
+        Set<String> runModes = new HashSet<>();
+        runModes.add("stage");
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
         TestLoggerFactory.clear();
     }
 
