@@ -894,7 +894,7 @@ PropertiesPage
     data.push({name: 'workflowTitle', value: 'Internal Publish'});
     var asset = '<%= request.getParameter("item") %>';
 
-    function deactivateChildren() {
+    function isChildrenDeactivated {
         var ui = $(window).adaptTo("foundation-ui");
         failureMessage = Granite.I18n.get("Kindly Deactivate Assets inside Media Folder");
         ui.prompt(Granite.I18n.get("Kindly Deactivate Assets inside Media Folder"), failureMessage, "error", [{
