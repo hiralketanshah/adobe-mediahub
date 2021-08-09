@@ -22,6 +22,7 @@
                   java.util.Collection,
                   java.util.Iterator,
                   java.util.stream.Collectors,
+                  java.util.Map,
                   java.net.URLDecoder,
                   java.io.UnsupportedEncodingException,
                   org.apache.commons.lang3.StringUtils,
@@ -44,7 +45,10 @@
                   com.adobe.granite.ui.components.FilteringResourceWrapper,
                   com.adobe.granite.ui.components.Tag,
                   com.adobe.granite.ui.components.rendercondition.RenderCondition,
-                  com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition" %><%--###
+                  com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition,
+                  com.day.cq.dam.api.Asset,
+                  com.day.cq.dam.commons.util.DamUtil,
+                  com.mediahub.core.constants.BnpConstants" %><%--###
 PropertiesPage
 ==============
 
@@ -392,9 +396,30 @@ try {
                             %><button <%= saveAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save")) %></button><%
                         } else {
                             String saveBtnVariant = "primary";
+                            boolean isChildAssetActive = false;
+                            String[] assets = assetId.split(",");
+                            for(String asset : assets){
+                                Iterator<Asset> subAssets = DamUtil.getAssets(resourceResolver.getResource(asset));
+                                while(subAssets.hasNext()){
+                                    Asset subAsset = subAssets.next();
+                                    if(subAsset.adaptTo(Resource.class).getChild("jcr:content") != null && subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata") != null){
+                                      ValueMap metadata =  subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata").getValueMap();
+                                      if(metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)){
+                                          isChildAssetActive = true;
+                                          break;
+                                      }
+                                    }
+                                }
+
+                                if(isChildAssetActive){
+                                  break;
+                                }
+                            }
+
 
                             AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
                             doneAttrs.add("id", "propertiespage-bulkedit-save");
+                            doneAttrs.add("isChildAssetActive", isChildAssetActive);
                             doneAttrs.add("type", "submit");
                             doneAttrs.add("form", formId);
                             doneAttrs.add("is", "coral-button");
@@ -584,6 +609,17 @@ try {
 }
 logger.debug("Render ends");
 %>
+<script type="text/javascript">
+  function isChildrenDeactivated() {
+      var ui = $(window).adaptTo("foundation-ui");
+      var failureMessage = Granite.I18n.get("Kindly Deactivate Assets inside Media Folder");
+      ui.prompt(Granite.I18n.get("Kindly Deactivate Assets inside Media Folder"), failureMessage, "error", [{
+          text: Granite.I18n.get("OK"),
+          primary: true
+      }]);
+  }
+</script>
+
 </html><%!
 
 private String getPreferencesJSON(UserProperties props) throws Exception {
