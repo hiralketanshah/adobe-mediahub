@@ -90,6 +90,22 @@ public class BnpConstants {
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
+    public static final String BNPP_CONFIDENTIALITY = "bnpp-confidentiality";
+    public static final String BNPP_LANGUAGE = "bnpp-language";
+    public static final String BNPP_SUBTITLES = "bnpp-subtitles";
+    public static final String BNPP_SUBTITLE_LANGUAGES = "bnpp-subtitlelanguage";
+    public static final String BNPP_MEDIA_TYPE = "bnpp-media-type";
+    public static final String BNPP_MEDIA_CATEGORY = "bnpp-category";
+    public static final String BNPP_MEDIA_THEME = "bnpp-theme";
+    public static final String BNPP_MEDIA_ENTITIES = "bnpp-identified-entities";
+    public static final String BNPP_MEDIA_GEOGRAPHICAL = "bnpp-geographicalarea";
+    public static final String BNPP_MEDIA_COUNTRY = "bnpp-country-prod";
+    public static final String BNPP_MEDIA_SPONSOR = "bnpp-sponsor-entities";
+
+
+
+    public static final String DAM_MIME_TYPE = "dam:MIMEtype";
+    public static final String DAM_SLING_FOLDER = "sling:Folder";
 
 
     /**
