@@ -1,7 +1,7 @@
 <%@include file="/libs/granite/ui/global.jsp"%>
 <%@ page import="org.apache.sling.api.resource.ValueMap" %>
 <%@ page import="org.apache.sling.api.resource.Resource" %>
-<%@ page import="com.mediahub.core.constants.*," %>
+<%@ page import="com.mediahub.core.constants.*" %>
 <%@taglib prefix="cq" uri="http://www.day.com/taglibs/cq/1.0"%>
  
 <%
