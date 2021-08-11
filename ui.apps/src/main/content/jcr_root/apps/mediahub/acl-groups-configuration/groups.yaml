@@ -691,6 +691,22 @@
           privileges: jcr:all
           repGlob:
 
+        - path: /content/dam/technique
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/technique/mediahub
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/technique/mediahub/privacy-policy
+          permission: deny
+          actions: delete
+
         - path: /content/projects
           permission: allow
           actions:
