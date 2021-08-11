@@ -251,9 +251,17 @@
                                                             text="Enable Smart Tags"
                                                             value="true">
                                                             <granite:rendercondition
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                                                feature="com.adobe.dam.asset.autotag.feature.flag"/>
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                  groups="[administrators,mediahub-super-administrators]"/>
+                                                                <featureFlag
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                                  feature="com.adobe.dam.asset.autotag.feature.flag"/>
+                                                            </granite:rendercondition>
                                                             <granite:data
                                                                 jcr:primaryType="nt:unstructured"
                                                                 cq-msm-lockable="autotag"
@@ -434,9 +442,17 @@
                                                                     value="selective"/>
                                                             </items>
                                                             <granite:rendercondition
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                  groups="[administrators,mediahub-super-administrators]"/>
+                                                                <featureFlag
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                                                  feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                                            </granite:rendercondition>
                                                         </dmpublish-options>
                                                     </items>
                                                 </fixedColumn1>
