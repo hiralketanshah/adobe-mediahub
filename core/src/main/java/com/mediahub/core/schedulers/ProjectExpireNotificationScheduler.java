@@ -1,5 +1,6 @@
 package com.mediahub.core.schedulers;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectManager;
 import com.day.cq.commons.Externalizer;
@@ -12,14 +13,17 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.QueryUtils;
+import com.mediahub.core.utils.UserUtils;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.Session;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
@@ -76,6 +80,9 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 
     @Reference
     private SlingSettingsService slingSettingsService;
+
+    @Reference
+    I18nProvider provider;
 
     private String projectPath;
 
@@ -153,6 +160,8 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 String userID = user.getID();
                 logger.debug("userID : {} ", userID);
                 Authorizable userAuthorization = userManager.getAuthorizable(userID);
+
+
                 if (userAuthorization.hasProperty(BnpConstants.PEOFILE_EMAIL)
                         && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL) != null
                         && userAuthorization.getProperty(BnpConstants.PEOFILE_EMAIL).length > 0) {
@@ -165,24 +174,26 @@ public class ProjectExpireNotificationScheduler implements Runnable {
 
                     logger.debug("EMailID----- : {} ", userEmailID);
                     String[] emailRecipients = {userEmailID};
-
                     emailParams.put("firstname", userName);
+                    String language = UserUtils.getUserLanguage(userAuthorization);
+                    Locale locale = LocaleUtils.toLocale(language);
+
                     if (differenceInDays == 30) {
                         logger.debug("Notification deletion dans 1mois");
-                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Expiration";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Project Expiration", locale);
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectexpirationmailtemplate.html", emailRecipients, emailParams);
 
                     } else if (differenceInDays == 0) {
                         logger.debug("Notification deactivation");
                         jcrContentNode.setProperty(BnpConstants.ACTIVE, false);
-                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Deactivation";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Project Deactivation", locale);
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeactivationmailtemplate.html", emailRecipients, emailParams);
 
                     } else if (differenceInDays <= -31) {
                         logger.debug("Notification deletion");
-                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Project Deletion";
+                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Project Deletion", locale);
                         emailParams.put(BnpConstants.SUBJECT, subject);
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectdeletionmailtemplate.html", emailRecipients, emailParams);
 

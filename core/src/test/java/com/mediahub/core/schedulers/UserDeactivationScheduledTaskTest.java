@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
+import com.mediahub.core.utils.UserUtils;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -91,6 +94,9 @@ public class UserDeactivationScheduledTaskTest {
     @Mock
     SlingSettingsService slingSettingsService;
 
+    @Mock
+    I18nProvider provider;
+
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
@@ -144,19 +150,23 @@ public class UserDeactivationScheduledTaskTest {
     }
 
     @Test
-    void sendWarningMail() {
+    void sendWarningMail() throws RepositoryException {
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        when(provider.translate("User will be Deactivated in 30 days", LocaleUtils
+            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated in 30 days");
         fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
     }
 
     @Test
-    void sendDeactivationgMail() {
+    void sendDeactivationgMail() throws RepositoryException {
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        when(provider.translate("User will be Deactivated", LocaleUtils
+            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated");
         fixture.sendDeactivationgMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
     }

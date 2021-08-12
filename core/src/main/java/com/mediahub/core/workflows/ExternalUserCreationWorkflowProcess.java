@@ -1,7 +1,9 @@
 package com.mediahub.core.workflows;
 
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.UserUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +22,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -65,6 +69,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 	@Reference
 	private SlingSettingsService slingSettingsService;
+
+	@Reference
+	I18nProvider provider;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -182,7 +189,10 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 			      //notification with the expiry date modification if the user already exists and project link...username and pwd
 						String[] emailRecipients = { email };
-						String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - Assignment project : " + projectName;
+
+						String language = UserUtils.getUserLanguage(user);
+						Locale locale = LocaleUtils.toLocale(language);
+						String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Assignment project", locale) + " : " + projectName;
 						Map<String, String> emailParams = new HashMap<String, String>();
 						emailParams.put(BnpConstants.SUBJECT, subject);
 						emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
