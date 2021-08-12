@@ -112,7 +112,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
 
       if(!user.isGroup()){
         String email = user.getProperty(PROFILE_EMAIL) != null ? user.getProperty(PROFILE_EMAIL)[0].getString() : StringUtils.EMPTY;
-        String language = user.getProperty(BnpConstants.PREFERENCES_LANGUAGE_PROPERTY) != null ? user.getProperty(BnpConstants.PREFERENCES_LANGUAGE_PROPERTY)[0].getString() : StringUtils.EMPTY;
+        String language = UserUtils.getUserLanguage(user);
         Locale locale = LocaleUtils.toLocale(language);
         if(StringUtils.isNotEmpty(email)){
           String[] emailRecipients = {email};
