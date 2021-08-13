@@ -8,7 +8,7 @@
     title="Mediahub - External publish">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/mediahub/mediahub---external-publish/jcr:content"
-        cq:lastModified="{Long}1628754629046"
+        cq:lastModified="{Long}1628859590193"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"/>
     <nodes jcr:primaryType="nt:unstructured">
@@ -29,22 +29,22 @@
         </node1>
         <node2
             jcr:primaryType="cq:WorkflowNode"
-            description="CDN Cache Invalidation"
-            title="CDN Cache Invalidation"
-            type="PROCESS">
-            <metaData
-                jcr:primaryType="nt:unstructured"
-                PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
-                PROCESS_AUTO_ADVANCE="true"/>
-        </node2>
-        <node3
-            jcr:primaryType="cq:WorkflowNode"
             description="A process to activate a page or asset"
             title="Activate Page/Asset"
             type="PROCESS">
             <metaData
                 jcr:primaryType="nt:unstructured"
                 PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node2>
+        <node3
+            jcr:primaryType="cq:WorkflowNode"
+            description="CDN Cache Invalidation"
+            title="CDN Cache Invalidation"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
                 PROCESS_AUTO_ADVANCE="true"/>
         </node3>
         <node4

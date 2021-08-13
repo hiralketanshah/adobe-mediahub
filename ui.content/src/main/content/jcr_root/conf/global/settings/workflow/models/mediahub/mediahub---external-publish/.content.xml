@@ -3,7 +3,7 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:designPath="/libs/settings/wcm/designs/default"
-        cq:lastModified="{Date}2021-08-12T09:50:28.016+02:00"
+        cq:lastModified="{Date}2021-08-13T14:59:48.999+02:00"
         cq:lastModifiedBy="admin"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:primaryType="cq:PageContent"
@@ -21,16 +21,6 @@
                     PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </process_1607596535>
-            <process
-                jcr:description="CDN Cache Invalidation"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="CDN Cache Invalidation"
-                sling:resourceType="cq/workflow/components/model/process">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
-                    PROCESS_AUTO_ADVANCE="true"/>
-            </process>
             <activateresourceproc
                 jcr:created="{Date}2020-11-24T10:00:44.800Z"
                 jcr:createdBy="arnaud-test"
@@ -45,6 +35,16 @@
                     PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </activateresourceproc>
+            <process
+                jcr:description="CDN Cache Invalidation"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="CDN Cache Invalidation"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process>
         </flow>
     </jcr:content>
 </jcr:root>
