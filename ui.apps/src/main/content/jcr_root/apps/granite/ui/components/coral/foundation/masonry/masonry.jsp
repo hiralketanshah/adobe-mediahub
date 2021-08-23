@@ -29,6 +29,7 @@
                   com.adobe.granite.ui.components.Tag,
                   org.apache.sling.api.resource.ValueMap,
                   java.util.Map,
+                  java.util.Arrays,
                   org.apache.jackrabbit.api.security.user.UserManager,
                   org.apache.jackrabbit.api.security.user.Authorizable,
                   org.apache.sling.api.resource.ResourceResolver" %><%--###
@@ -491,10 +492,20 @@ Masonry
         AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
         itemAttrs.addClass("foundation-collection-item");
 
+
         if(StringUtils.contains(path, "/content/dam/projects") && item.getChild("jcr:content") != null && item.getChild("jcr:content").getChild("metadata") != null) {
-          Map<String, Object> metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
+          ValueMap metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
           if( metadata.containsKey("internalfolder") && !internalUser){
-            itemAttrs.add("hidden", "true");
+
+            if(metadata.containsKey("internaluserpicker")){
+              if( (metadata.get("internaluserpicker") instanceof String) && !StringUtils.equals( metadata.get("internaluserpicker", ""), resourceResolver.getUserID() ) ){
+                itemAttrs.add("hidden", "true");
+              } else if( !Arrays.asList(metadata.get("internaluserpicker", String[].class)).contains(resourceResolver.getUserID())){
+                itemAttrs.add("hidden", "true");
+              }
+            } else {
+              itemAttrs.add("hidden", "true");
+            }
           }
         }
 
