@@ -342,6 +342,29 @@
                                                                 cq-msm-lockable="rep:policy"
                                                                 metaType="text"/>
                                                         </makeprivatefolder>
+                                                        <InternalUsers
+                                                          cq:showOnCreate="{Boolean}false"
+                                                          jcr:primaryType="nt:unstructured"
+                                                          sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <users
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                                                                  cq-msm-lockable="sling:vanityPath"
+                                                                  fieldLabel="Users to access private folder"
+                                                                  renderReadOnly="{Boolean}true">
+                                                                    <field
+                                                                      granite:id="foldershare-settings-userpicker-cug"
+                                                                      jcr:primaryType="nt:unstructured"
+                                                                      sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
+                                                                      name="./jcr:content/metadata/internaluserpicker"
+                                                                      showDeclaraedGroupMembersOnly="{Boolean}false"
+                                                                      sortOn="profile/@givenName"
+                                                                      sortOrder="ASCENDING"
+                                                                      userGroup="everyone"/>
+                                                                </users>
+                                                            </items>
+                                                        </InternalUsers>
                                                         <assetcontribution
                                                             granite:id="asset-contribution-checkbox"
                                                             jcr:primaryType="nt:unstructured"
