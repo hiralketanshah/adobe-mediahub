@@ -20,7 +20,11 @@
 				   org.apache.commons.lang3.StringUtils,
 				   java.util.Set,
 				   org.apache.sling.settings.SlingSettingsService,
-				   com.adobe.granite.ui.components.ExpressionHelper" %><%
+				   com.adobe.granite.ui.components.ExpressionHelper,
+				   org.apache.jackrabbit.api.security.user.UserManager,
+				   org.apache.jackrabbit.api.security.user.User,
+				   org.apache.jackrabbit.api.security.user.Group,
+				   org.apache.jackrabbit.api.security.user.Authorizable" %><%
 
     Config cfg = cmp.getConfig();
     ExpressionHelper ex = cmp.getExpressionHelper();
@@ -46,6 +50,22 @@
     } else if(runmodes.contains("stage")){
       runmode = " Stage";
     }
+
+    boolean isMediaAdmin = false;
+    UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+    User currentUser = (User)userManager.getAuthorizable(resourceResolver.getUserID());
+    if(StringUtils.equals("admin", resourceResolver.getUserID()) || (userManager.getAuthorizable("administrators") != null && ((Group)userManager.getAuthorizable("administrators")).isMember(currentUser)) ){
+        isMediaAdmin = true;
+    }
+
+    if(userManager.getAuthorizable("mediahub-super-administrators") != null && ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser) ){
+        isMediaAdmin = true;
+    }
+
+    if(userManager.getAuthorizable("mediahub-basic-entity-manager") != null && ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser) ){
+        isMediaAdmin = true;
+    }
+
 %><coral-shell-header-home <%= headerHome %>> 
 	<a href="#" style="text-decoration: none;">
 		<img src="/content/dam/technique/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
@@ -76,6 +96,7 @@
           <coral-shell-homeanchor-label class="bnp-text-style bnpprojects"> Projects </coral-shell-homeanchor-label>
         </a>
       </coral-shell-menubar-item>
+      <% if(isMediaAdmin){%>
       <coral-shell-menubar-item>
         <a href="#">
           <coral-shell-homeanchor-label class="bnp-text-style"> Photostock </coral-shell-homeanchor-label>
@@ -86,6 +107,7 @@
           <coral-shell-homeanchor-label class="bnp-text-style"> Adobe Stock </coral-shell-homeanchor-label>
         </a>
       </coral-shell-menubar-item>
+      <%}%>
       <coral-shell-menubar-item class="bnpcollections">
         <a href="/mnt/overlay/dam/gui/content/collections.html/content/dam/collections">
           <coral-shell-homeanchor-label class="bnp-text-style bnpcollections"> Collections </coral-shell-homeanchor-label>
