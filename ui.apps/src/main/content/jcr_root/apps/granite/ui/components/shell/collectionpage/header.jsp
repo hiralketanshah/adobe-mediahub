@@ -56,13 +56,9 @@
     User currentUser = (User)userManager.getAuthorizable(resourceResolver.getUserID());
     if(StringUtils.equals("admin", resourceResolver.getUserID()) || (userManager.getAuthorizable("administrators") != null && ((Group)userManager.getAuthorizable("administrators")).isMember(currentUser)) ){
         isMediaAdmin = true;
-    }
-
-    if(userManager.getAuthorizable("mediahub-super-administrators") != null && ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser) ){
+    }else if(userManager.getAuthorizable("mediahub-super-administrators") != null && ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser) ){
         isMediaAdmin = true;
-    }
-
-    if(userManager.getAuthorizable("mediahub-basic-entity-manager") != null && ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser) ){
+    }else if(userManager.getAuthorizable("mediahub-basic-entity-manager") != null && ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser) ){
         isMediaAdmin = true;
     }
 
