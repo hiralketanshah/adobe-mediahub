@@ -36,4 +36,27 @@ public class QueryUtils {
       return map;
   }
 
+  public static Map<String, String> getPredicateMapProjectRole(String value) {
+    Map<String, String> map = new HashMap<>();
+    map.put("type", "nt:unstructured");
+    map.put(BnpConstants.PATH, "/content/projects");
+    map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.SLING_RESOURCETYPE);
+    map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
+    map.put(BnpConstants.FIRST_PROPERTY_VALUE, "cq/gui/components/projects/admin/card/projectcard");
+    map.put("group.p.or", "true");  // 2020-11-26T19:29:13.454+05:30
+    map.put("group.1_property", "role_observer");
+    map.put("group.2_property", "role_editor");
+    map.put("group.3_property", "role_owner");
+    map.put("group.4_property", "role_external-contributor");
+    map.put("group.5_property", "role_project-publisher");
+    map.put("group.1_property.value", value);
+    map.put("group.2_property.value", value);
+    map.put("group.3_property.value", value);
+    map.put("group.4_property.value", value);
+    map.put("group.5_property.value", value);
+    map.put(BnpConstants.P_LIMIT, "-1");
+
+    return map;
+  }
+
 }
