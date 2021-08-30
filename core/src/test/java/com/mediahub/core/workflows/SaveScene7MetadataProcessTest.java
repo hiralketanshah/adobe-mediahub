@@ -1,24 +1,5 @@
 package com.mediahub.core.workflows;
 
-import static com.mediahub.core.workflows.SaveScene7MetadataProcess.DAM_SCENE_7_TYPE;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -31,10 +12,26 @@ import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-@ExtendWith({ AemContextExtension.class })
+import java.util.Collections;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+@ExtendWith({AemContextExtension.class})
 public class SaveScene7MetadataProcessTest {
 
     @InjectMocks
@@ -112,7 +109,7 @@ public class SaveScene7MetadataProcessTest {
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
-        when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
+        when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
@@ -121,7 +118,7 @@ public class SaveScene7MetadataProcessTest {
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
-        when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY))
+        when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY))
                 .thenReturn(Scene7AssetType.MASTER_VIDEO.getValue());
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
@@ -131,7 +128,7 @@ public class SaveScene7MetadataProcessTest {
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
-        when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.IMAGE.getValue());
+        when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.IMAGE.getValue());
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
@@ -140,7 +137,7 @@ public class SaveScene7MetadataProcessTest {
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
-        when(modifiableValueMap.get(DAM_SCENE_7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
+        when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 

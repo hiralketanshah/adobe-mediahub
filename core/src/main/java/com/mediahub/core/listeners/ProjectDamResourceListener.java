@@ -83,9 +83,11 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
         String resourceType = addedResource.getResourceType();
 
         if(StringUtils.equals(resourceType, DamConstants.NT_DAM_ASSETCONTENT)){
-          String projectPath = DamUtil.getInheritedProperty("projectPath", addedResource, "");
+          // Commenting the code as part of MED-168
+
+         /* String projectPath = DamUtil.getInheritedProperty("projectPath", addedResource, "");
           Resource project = adminResolver.getResource(projectPath);
-          sendNotificationEmail(adminResolver, project);
+          sendNotificationEmail(adminResolver, project);*/
         }
 
         notifyAssetCreaterForComments(adminResolver, addedResource);
@@ -129,7 +131,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   }
 
   /**
-   * Method to notify users from the project
+   * Method to notify users from the project for added assets
    *
    * @param adminResolver - Resolver Object to get user manager
    * @param project - Project Resource to notify the users from project

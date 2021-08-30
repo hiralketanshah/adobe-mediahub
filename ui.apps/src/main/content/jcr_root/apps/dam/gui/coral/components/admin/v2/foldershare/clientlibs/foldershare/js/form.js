@@ -307,6 +307,10 @@
 
     $(document).on("click", "#propertiespage-bulkedit-save", function(e) {
         var host = e.currentTarget.formAction.split("/mnt/overlay/dam")[0];
+        if(!validateBnppStatus() && (document.getElementById("propertiespage-bulkedit-save").getAttribute("ischildassetactive") !== null) && (document.getElementById("propertiespage-bulkedit-save").getAttribute("ischildassetactive") === "true") ){
+          isChildrenDeactivated();
+          return false;
+        }
         saveMetadataBulkEdit(e, host);
         return false;
     });

@@ -1,24 +1,24 @@
-(function($, $document) {
+(function ($, $document) {
     var BNP_STATUS = "./jcr:content/metadata/bnpp-status",
-    initialized = false;
+        initialized = false;
 
     $document.on("foundation-contentloaded", init);
 
-    function init(){
+    function init() {
         disableStatus();
     }
 
-    function disableStatus(){
+    function disableStatus() {
         var $status = document.getElementsByName(BNP_STATUS);
-        if(_.isEmpty($status) || $status.length < 0){
+        if ($status === undefined || $status.length < 0) {
             return;
         }
 
-        if(_.isEmpty(window.location.href) || !window.location.href.match("/foldersharewizard.html")){
+        if (window.location.href === undefined || !window.location.href.match("/foldersharewizard.html")) {
             return;
         }
 
-        if(window.location.href.match("/content/dam/medialibrary")){
+        if (window.location.href.match("/content/dam/medialibrary")) {
             $status[0].setAttribute("disabled", "true");
         }
     }
