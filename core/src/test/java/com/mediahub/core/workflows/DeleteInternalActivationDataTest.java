@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -81,10 +82,18 @@ public class DeleteInternalActivationDataTest {
 
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
+
+        String[] array = new String[]{};
+        when(modifiableValueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, array))
+            .thenReturn(array);
+        when(modifiableValueMap.put(any(String.class), eq(BnpConstants.BNPP_INTERNAL_FILE_URL)))
+            .thenReturn(BnpConstants.BNPP_INTERNAL_FILE_URL);
         when(modifiableValueMap.put(any(String.class), eq(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)))
                 .thenReturn(BnpConstants.BNPP_INTERNAL_BROADCAST_URL);
         when(modifiableValueMap.put(any(String.class), eq(BnpConstants.BNPP_INTERNAL_FILE_URL)))
                 .thenReturn(BnpConstants.BNPP_INTERNAL_FILE_URL);
+
+        //when(Arrays.asList(array)).thenReturn(Collections.EMPTY_LIST);
 
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
