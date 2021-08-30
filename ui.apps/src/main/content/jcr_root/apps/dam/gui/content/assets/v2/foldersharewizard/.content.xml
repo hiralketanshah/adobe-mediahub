@@ -356,12 +356,17 @@
                                                                     <field
                                                                       granite:id="foldershare-settings-userpicker-cug"
                                                                       jcr:primaryType="nt:unstructured"
-                                                                      sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
+                                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
                                                                       name="./jcr:content/metadata/internaluserpicker"
                                                                       showDeclaraedGroupMembersOnly="{Boolean}false"
                                                                       sortOn="profile/@givenName"
                                                                       sortOrder="ASCENDING"
-                                                                      userGroup="everyone"/>
+                                                                      userGroup="everyone">
+                                                                        <datasource
+                                                                          jcr:primaryType="nt:unstructured"
+                                                                          sling:resourceType="/bin/project/external"
+                                                                          addNone="{Boolean}true"/>
+                                                                    </field>
                                                                 </users>
                                                             </items>
                                                         </InternalUsers>

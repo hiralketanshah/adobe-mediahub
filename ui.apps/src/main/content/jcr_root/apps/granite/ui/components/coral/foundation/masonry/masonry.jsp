@@ -32,7 +32,12 @@
                   java.util.Arrays,
                   org.apache.jackrabbit.api.security.user.UserManager,
                   org.apache.jackrabbit.api.security.user.Authorizable,
-                  org.apache.sling.api.resource.ResourceResolver" %><%--###
+                  org.apache.sling.api.resource.ResourceResolver,
+                  org.apache.sling.jcr.base.util.AccessControlUtil,
+                  org.apache.jackrabbit.api.security.user.User,
+                  org.apache.jackrabbit.api.security.user.UserManager,
+                  org.apache.jackrabbit.api.security.user.Group,
+                  javax.jcr.Session" %><%--###
 Masonry
 =======
 
@@ -495,8 +500,23 @@ Masonry
 
         if(StringUtils.contains(path, "/content/dam/projects") && item.getChild("jcr:content") != null && item.getChild("jcr:content").getChild("metadata") != null) {
           ValueMap metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
-          if( metadata.containsKey("internalfolder") && !internalUser){
+          UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
+          boolean isAdmin = false;
 
+          if(userManager != null){
+              User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
+              Group group = (Group)userManager.getAuthorizable("administrators");
+              if(currentUser != null){
+                  if(group != null){
+                    isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
+                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+                    isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+                    isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+                  }
+              }
+          }
+          if( metadata.containsKey("internalfolder") && !(isAdmin || internalUser) ){
             if(metadata.containsKey("internaluserpicker")){
               if( (metadata.get("internaluserpicker") instanceof String) && !StringUtils.equals( metadata.get("internaluserpicker", ""), resourceResolver.getUserID() ) ){
                 itemAttrs.add("hidden", "true");
