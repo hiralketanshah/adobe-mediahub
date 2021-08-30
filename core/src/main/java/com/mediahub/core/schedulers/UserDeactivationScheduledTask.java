@@ -1,5 +1,6 @@
 package com.mediahub.core.schedulers;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
@@ -7,6 +8,7 @@ import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.UserUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -14,10 +16,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.api.security.user.Authorizable;
@@ -27,6 +31,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,6 +58,12 @@ public class UserDeactivationScheduledTask implements Runnable {
 
     @Reference
     private GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private SlingSettingsService slingSettingsService;
+
+    @Reference
+    I18nProvider provider;
 
     @ObjectClassDefinition(name="User Deactivation Task",
                            description = "User Deactivation cron-job past expiray date")
@@ -213,7 +224,9 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param templatePath - template path to create email
      */
     protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
-        String subject = "Mediahub - User will be Deactivated in 30 days";
+        String language = UserUtils.getUserLanguage(user);
+        Locale locale = LocaleUtils.toLocale(language);
+        String subject =   ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated in 30 days", locale);
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         Resource profile = user.getChild(BnpConstants.PROFILE);
@@ -233,7 +246,9 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @param templatePath - template path to create email
      */
     protected void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
-        String subject = "Mediahub - User will be Deactivated";
+        String language = UserUtils.getUserLanguage(user);
+        Locale locale = LocaleUtils.toLocale(language);
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " +  provider.translate("User will be Deactivated", locale);
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         Resource profile = user.getChild(BnpConstants.PROFILE);

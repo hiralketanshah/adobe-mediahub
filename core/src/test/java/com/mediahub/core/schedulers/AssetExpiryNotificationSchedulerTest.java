@@ -5,15 +5,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
+import com.mediahub.core.utils.UserUtils;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
@@ -24,6 +29,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,12 +91,21 @@ public class AssetExpiryNotificationSchedulerTest {
     @Mock
     Authorizable authorizable;
 
+    @Mock
+    SlingSettingsService slingSettingsService;
+
+    @Mock
+    I18nProvider provider;
+
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
+        Set<String> runModes = new HashSet<>();
+        runModes.add("stage");
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
         TestLoggerFactory.clear();
     }
 
@@ -137,20 +152,22 @@ public class AssetExpiryNotificationSchedulerTest {
     }
 
     @Test
-    void sendWarningMail() {
+    void sendWarningMail() throws RepositoryException {
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, org.apache.commons.lang3.StringUtils.EMPTY)).thenReturn("FirstName");
+        when(provider.translate("Image is past expiry and will be deactivated", LocaleUtils.toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("Image is past expiry and will be deactivated");
         fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/assetexpirationtemplate.html", resource);
         Assert.notNull(resource.getChild(BnpConstants.PROFILE));
     }
 
     @Test
-    void sendWarningMail1() {
+    void sendWarningMail1() throws RepositoryException {
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(null);
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, org.apache.commons.lang3.StringUtils.EMPTY)).thenReturn("FirstName");
+        when(provider.translate("Image is past expiry and will be deactivated", LocaleUtils.toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("Image is past expiry and will be deactivated");
         fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/assetexpirationtemplate.html", resource);
         Assert.isNull(resource.getChild(BnpConstants.PROFILE));

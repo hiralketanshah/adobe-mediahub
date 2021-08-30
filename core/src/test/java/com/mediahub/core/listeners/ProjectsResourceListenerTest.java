@@ -6,9 +6,11 @@ import static org.mockito.Mockito.when;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -40,6 +42,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -149,6 +152,9 @@ public class ProjectsResourceListenerTest {
     @Mock
     User user;
 
+    @Mock
+    SlingSettingsService slingSettingsService;
+
     private MockUp<AccessControlUtils> accessControlUtilsMockup;
     private MockUp<CreatePolicyNodeUtil> createPolicyNodeUtilMockup;
 
@@ -160,6 +166,9 @@ public class ProjectsResourceListenerTest {
     @BeforeEach
     void setup() throws Exception, LoginException {
         MockitoAnnotations.initMocks(this);
+        Set<String> runModes = new HashSet<>();
+        runModes.add("stage");
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
         context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
     }
 
