@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import java.util.Collections;
 import java.util.Map;
 
@@ -112,6 +113,7 @@ public class UnpublishDynamicMediaProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("failure");
+        when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
         Assertions.assertThrows(WorkflowException.class, () -> {
             workflowProcess.execute(workItem, workflowSession, metadataMap);
         });
