@@ -128,4 +128,6 @@ public class BnpConstants {
     public static final String P_LIMIT = "p.limit";
 
     public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
+    public static final String AFTER_VALUE = "afterValue";
+    public static final String BEFORE_VALUE = "beforeValue";
 }
