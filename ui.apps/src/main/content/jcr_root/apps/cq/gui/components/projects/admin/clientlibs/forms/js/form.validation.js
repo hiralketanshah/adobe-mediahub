@@ -88,6 +88,13 @@
                 return Granite.I18n.get("Due Date cannot be in the past");
             }
 
+            var plusone = new Date();
+            plusone.setFullYear(plusone.getFullYear() + 1);
+            if(setDateObj > plusone) {
+                errorDisableSubmit();
+                return Granite.I18n.get("Due Date cannot be more than 1 year from Current Date");
+            }
+
             var setStartDate = getDateFromCollection($('.project-startdate.coral-InputGroup'));
             if (setStartDate == null) {
                 // start date is not mandatory so return no error if it is null
@@ -98,13 +105,6 @@
             if (setDateObj < setStartDateObj) {
                 errorDisableSubmit();
                 return Granite.I18n.get("Due Date must be newer than Start Date");
-            }
-
-            var plusone = new Date();
-        	plusone.setFullYear(plusone.getFullYear() + 1);
-            if(setDateObj > plusone) {
-                errorDisableSubmit();
-                return Granite.I18n.get("Due Date cannot be more than 1 year from Current Date");
             }
 
             // wait for the ui to remove error icons before checking if there are any still displaying
