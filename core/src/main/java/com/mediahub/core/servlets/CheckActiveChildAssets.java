@@ -129,7 +129,7 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         try {
             if ((!metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || StringUtils
                     .equals(metadata.get(BnpConstants.BNPP_INTERNAL_FILE_URL).toString(), StringUtils.EMPTY)) &&
-                    (!metadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_EXTERNAL_FILE_URL).toString(), StringUtils.EMPTY))) {
+                    (!metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL).toString(), StringUtils.EMPTY))) {
                 // Do nothing - for future requirements
             } else {
                 Map<String, Object> responseMap = new HashMap<>();

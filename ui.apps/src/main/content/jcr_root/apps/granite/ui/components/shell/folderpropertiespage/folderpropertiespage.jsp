@@ -404,7 +404,7 @@ try {
                                     Asset subAsset = subAssets.next();
                                     if(subAsset.adaptTo(Resource.class).getChild("jcr:content") != null && subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata") != null){
                                       ValueMap metadata =  subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata").getValueMap();
-                                      if(metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)){
+                                      if(metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)){
                                           isChildAssetActive = true;
                                           break;
                                       }

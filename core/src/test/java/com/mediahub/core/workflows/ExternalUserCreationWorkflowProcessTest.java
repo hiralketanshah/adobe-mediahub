@@ -29,6 +29,7 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -131,6 +132,9 @@ public class ExternalUserCreationWorkflowProcessTest {
     @Mock
     Collection<ProjectMember> collectionOfProjectMember;
 
+    @Mock
+    ModifiableValueMap modifiableValueMap;
+
     MetaDataMap metadataMap;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
@@ -152,6 +156,8 @@ public class ExternalUserCreationWorkflowProcessTest {
         metadataMap.put("city", "Bangalore");
         metadataMap.put("country", "India");
         when(workItem.getWorkflowData()).thenReturn(workflowData);
+        when(user.getPath()).thenReturn("Mediahub");
+        when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
 
     }
 

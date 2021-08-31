@@ -1,6 +1,8 @@
 package com.mediahub.core.workflows;
 
-
+import com.adobe.acs.commons.i18n.I18nProvider;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.UserUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,19 +21,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
-import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.commons.lang.LocaleUtils;
 import com.adobe.acs.commons.email.EmailService;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectMember;
@@ -43,23 +34,46 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Shipra Arora
- *
- *         Process step to create external user and assign role as External_contributor
+ * <p>
+ * Process step to create external user and assign role as External_contributor
  */
-@Component(service = WorkflowProcess.class, property = { "process.label=External User Creation" })
+@Component(service = WorkflowProcess.class, property = {"process.label=External User Creation"})
 public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 	@Reference
 	ResourceResolverFactory resourceResolverFactory;
-	@Reference 
+
+	@Reference
 	EmailService emailService;	
+
 	@Reference
 	GenericEmailNotification genericEmailNotification;
-    @Reference
-    private Externalizer externalizer;
+
+	@Reference
+  private Externalizer externalizer;
+
+	@Reference
+	private SlingSettingsService slingSettingsService;
+
+	@Reference
+	I18nProvider provider;
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
@@ -176,7 +190,10 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 			      //notification with the expiry date modification if the user already exists and project link...username and pwd
 						String[] emailRecipients = { email };
-						String subject = "Mediahub - Assignment project : " + projectName;
+
+						String language = UserUtils.getUserLanguage(user);
+						Locale locale = LocaleUtils.toLocale(language);
+						String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Assignment project", locale) + " : " + projectName;
 						Map<String, String> emailParams = new HashMap<String, String>();
 						emailParams.put(BnpConstants.SUBJECT, subject);
 						emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
@@ -215,52 +232,51 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
 		logger.info("ExternalUserCreationWorkflowProcess :: exceute method end");
 
-	
-}
+    }
 
-	/**
-	 * @param resourceResolver
-	 * @param user
-	 * @throws javax.jcr.RepositoryException
-	 */
-	private void setUserTokenDetails(ResourceResolver resourceResolver, User user, String token)
-			throws javax.jcr.RepositoryException {
-		Resource userResource = resourceResolver.getResource(user.getPath());
-		ModifiableValueMap modifiableValueMap = userResource.adaptTo(ModifiableValueMap.class);
+    /**
+     * @param resourceResolver
+     * @param user
+     * @throws javax.jcr.RepositoryException
+     */
+    private void setUserTokenDetails(ResourceResolver resourceResolver, User user, String token)
+            throws javax.jcr.RepositoryException {
+        Resource userResource = resourceResolver.getResource(user.getPath());
+        ModifiableValueMap modifiableValueMap = userResource.adaptTo(ModifiableValueMap.class);
 
-		modifiableValueMap.put("userToken", token);
-		Calendar tokenExpiryDate = Calendar.getInstance();
-		tokenExpiryDate.add(Calendar.DATE, 1);
-		modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
-	}
+        modifiableValueMap.put("userToken", token);
+        Calendar tokenExpiryDate = Calendar.getInstance();
+        tokenExpiryDate.add(Calendar.DATE, 1);
+        modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
+    }
 
-	/**
-	 * Set Expiry date for existing user
-	 *
-	 * @param email
-	 * @param expiryDate
-	 * @param userManager
-	 * @param valueFactory
-	 * @return
-	 * @throws javax.jcr.RepositoryException
-	 * @throws ParseException
-	 */
-	protected User setExpiryDateExistingUser(String email, String expiryDate, UserManager userManager,
-			ValueFactory valueFactory) throws javax.jcr.RepositoryException, ParseException {
-		User user;
-		user=(User)userManager.getAuthorizable(email);
-		if(user.getProperty("./profile/expiry")!=null){
-			String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
-			String newExpiryDate = expiryDate.substring(0,10);
-			Date start = new SimpleDateFormat("yyyy/MM/dd").parse(userExpiryDate);
-			Date end = new SimpleDateFormat("yyyy/MM/dd").parse(newExpiryDate);
+    /**
+     * Set Expiry date for existing user
+     *
+     * @param email
+     * @param expiryDate
+     * @param userManager
+     * @param valueFactory
+     * @return
+     * @throws javax.jcr.RepositoryException
+     * @throws ParseException
+     */
+    protected User setExpiryDateExistingUser(String email, String expiryDate, UserManager userManager,
+                                             ValueFactory valueFactory) throws javax.jcr.RepositoryException, ParseException {
+        User user;
+        user = (User) userManager.getAuthorizable(email);
+        if (user.getProperty("./profile/expiry") != null) {
+            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
+            String newExpiryDate = expiryDate.substring(0, 10);
+            Date start = new SimpleDateFormat("yyyy/MM/dd").parse(userExpiryDate);
+            Date end = new SimpleDateFormat("yyyy/MM/dd").parse(newExpiryDate);
 
-			if (start.compareTo(end) < 0){
-				Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-				user.setProperty("./profile/expiry", expiryDateValue);
-			}
+            if (start.compareTo(end) < 0) {
+                Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
+                user.setProperty("./profile/expiry", expiryDateValue);
+            }
 
-	 }
-		return user;
-	}
+        }
+        return user;
+    }
 }

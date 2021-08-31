@@ -1,15 +1,20 @@
 package com.mediahub.core.listeners;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.UserUtils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.jcr.RepositoryException;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.api.security.user.Authorizable;
@@ -23,6 +28,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
@@ -55,6 +61,12 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   @Reference
   ResourceResolverFactory resolverFactory;
 
+  @Reference
+  private SlingSettingsService slingSettingsService;
+
+  @Reference
+  I18nProvider provider;
+
   @Override
   public void onChange(List<ResourceChange> list) {
 
@@ -71,9 +83,11 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
         String resourceType = addedResource.getResourceType();
 
         if(StringUtils.equals(resourceType, DamConstants.NT_DAM_ASSETCONTENT)){
-          String projectPath = DamUtil.getInheritedProperty("projectPath", addedResource, "");
+          // Commenting the code as part of MED-168
+
+         /* String projectPath = DamUtil.getInheritedProperty("projectPath", addedResource, "");
           Resource project = adminResolver.getResource(projectPath);
-          sendNotificationEmail(adminResolver, project);
+          sendNotificationEmail(adminResolver, project);*/
         }
 
         notifyAssetCreaterForComments(adminResolver, addedResource);
@@ -100,13 +114,15 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
 
       if(!user.isGroup()){
         String email = user.getProperty(PROFILE_EMAIL) != null ? user.getProperty(PROFILE_EMAIL)[0].getString() : StringUtils.EMPTY;
+        String language = UserUtils.getUserLanguage(user);
+        Locale locale = LocaleUtils.toLocale(language);
         if(StringUtils.isNotEmpty(email)){
           String[] emailRecipients = {email};
           Map<String, String> emailParams = new HashMap<>();
           String assetName = addedResource.getParent().getParent().getParent() != null ? addedResource.getParent().getParent().getParent().getName() : StringUtils.EMPTY;
           String userName = ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0].getString();
           emailParams.put("firstname", userName);
-          String subject = "Mediahub - Comment added in the asset : " + assetName;
+          String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Comment added in the asset", locale)+ " : " + assetName;
           emailParams.put(BnpConstants.SUBJECT, subject);
           genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/commentsnotificationtemplate.html", emailRecipients, emailParams);
         }
@@ -115,7 +131,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   }
 
   /**
-   * Method to notify users from the project
+   * Method to notify users from the project for added assets
    *
    * @param adminResolver - Resolver Object to get user manager
    * @param project - Project Resource to notify the users from project
@@ -135,13 +151,15 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
       Iterator<Authorizable> userResources = group.getMembers();
       while(userResources.hasNext()){
         Authorizable user = userResources.next();
+        String language = UserUtils.getUserLanguage(user);;
+        Locale locale = LocaleUtils.toLocale(language);
         String email = user.getProperty(PROFILE_EMAIL) != null ? user.getProperty(PROFILE_EMAIL)[0].getString() : StringUtils.EMPTY;
         String[] emailRecipients = {email};
         Map<String, String> emailParams = new HashMap<>();
         String title = project.getChild(JcrConstants.JCR_CONTENT) != null ? project.getChild(JcrConstants.JCR_CONTENT).getValueMap().get(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE, StringUtils.EMPTY) : StringUtils.EMPTY;
         String userName = ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME) != null ? ((User)user).getProperty(BnpConstants.PROFILE_GIVEN_NAME)[0].getString() : StringUtils.EMPTY;
         emailParams.put("firstname", userName);
-        String subject = "Mediahub - Asset Added in the Project : " + title;
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Asset Added in the Project", locale) + " : " + title;
         emailParams.put(BnpConstants.SUBJECT, subject);
         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/addassetnotificationtemplate.html", emailRecipients, emailParams);
       }

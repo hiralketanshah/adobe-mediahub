@@ -1,6 +1,7 @@
 package com.mediahub.core.listeners;
 
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.UserUtils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,12 +46,14 @@ public class UserResourceListener implements EventHandler {
       try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
         String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
         Resource user = resolver.getResource(path);
+
         if(null != user.getChild(BnpConstants.PROFILE)){
           Resource profile = user.getChild(BnpConstants.PROFILE);
           ValueMap profileProperties = profile.getValueMap();
           final Map<String, Object> properties = new HashMap<>();
-          properties.put(BnpConstants.FIRST_NAME,profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
-          properties.put(BnpConstants.EMAIL,profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY));
+          properties.put(BnpConstants.FIRST_NAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
+          properties.put(BnpConstants.EMAIL, profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY));
+          properties.put(BnpConstants.LANGUAGE, UserUtils.getUserLanguage(user));
           jobManager.addJob("user/welcome/email", properties);
         }
       } catch (LoginException e) {
@@ -60,5 +63,7 @@ public class UserResourceListener implements EventHandler {
 
     logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
   }
+
+
 
 }

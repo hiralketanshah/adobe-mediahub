@@ -36,54 +36,33 @@ public class AssetDeactivateWorkflowProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
         if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
-            throw new WorkflowException("Impossible de recupérer le PayLoad");
+            throw new WorkflowException("Unable to get the payload");
         }
 
         ResourceResolver resourceResolver = null;
         try {
-            final Map<String, Object> authInfo = Collections
-                    .singletonMap(ResourceResolverFactory.SUBSERVICE,
-                            BnpConstants.WRITE_SERVICE);
+            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
             resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
-            if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null
-                    && payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata") != null) {
-
-                ModifiableValueMap modifiableProperties = payload.getChild(JcrConstants.JCR_CONTENT)
-                        .getChild("metadata").adaptTo(ModifiableValueMap.class);
-
-                if (modifiableProperties.containsKey("dam:scene7ID") && StringUtils
-                        .isNotBlank(modifiableProperties.get("dam:scene7ID",
-                                StringUtils.EMPTY))) {
+            if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
+                ValueMap valueMap = payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
+                if (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
                     String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
                     WorkflowModel wfModel = workflowSession.getModel(workflowName);
-                    WorkflowData wfData = workflowSession
-                            .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+                    WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                     workflowSession.startWorkflow(wfModel, wfData);
                 }
-
-                if (modifiableProperties.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL) && StringUtils
-                        .isNotBlank(modifiableProperties.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL,
-                                StringUtils.EMPTY))) {
+                if (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, String.class))) {
                     String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
                     WorkflowModel wfModel = workflowSession.getModel(workflowName);
-                    WorkflowData wfData = workflowSession
-                            .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+                    WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                     workflowSession.startWorkflow(wfModel, wfData);
                 }
 
-                if (modifiableProperties.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
-                    modifiableProperties.remove(BnpConstants.BNPP_BROADCAST_STATUS);
-                    resourceResolver.commit();
-                }
             }
-        } catch (LoginException e) {
-            log.error("LoginException occured : {}", e.getMessage());
-            throw new WorkflowException("Login exception", e);
         } catch (Exception e) {
-            log.error("Exception occured : {}", e.getMessage());
-            throw new WorkflowException("Login exception", e);
+            throw new WorkflowException("Error while unpublishing asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();

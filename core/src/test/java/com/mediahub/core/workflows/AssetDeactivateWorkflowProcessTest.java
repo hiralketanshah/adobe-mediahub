@@ -69,6 +69,7 @@ public class AssetDeactivateWorkflowProcessTest {
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        when(resource.getValueMap()).thenReturn(modifiableValueMap);
     }
 
     @Test
