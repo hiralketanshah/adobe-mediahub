@@ -96,10 +96,9 @@
             }
 
             var setStartDate = getDateFromCollection($('.project-startdate.coral-InputGroup'));
-            if (setStartDate == null) {
-                // start date is not mandatory so return no error if it is null
+            /*if (setStartDate == null) {
                 return "";
-            }
+            }*/
 
             var setStartDateObj = new Date(setStartDate);
             if (setDateObj < setStartDateObj) {
