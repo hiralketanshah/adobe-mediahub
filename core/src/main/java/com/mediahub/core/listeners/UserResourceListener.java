@@ -45,7 +45,7 @@ public class UserResourceListener implements EventHandler {
       try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
         String path = event.getProperty(SlingConstants.PROPERTY_PATH).toString();
         Resource user = resolver.getResource(path);
-        if(null != user.getChild(BnpConstants.PROFILE)){
+        if(null!= user && null != user.getChild(BnpConstants.PROFILE)){
           Resource profile = user.getChild(BnpConstants.PROFILE);
           ValueMap profileProperties = profile.getValueMap();
           final Map<String, Object> properties = new HashMap<>();

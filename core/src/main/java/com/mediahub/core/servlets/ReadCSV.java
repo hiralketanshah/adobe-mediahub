@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -21,6 +25,7 @@ import javax.jcr.ValueFormatException;
 import javax.servlet.Servlet;
 import org.osgi.framework.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -59,6 +64,7 @@ public class ReadCSV extends SlingAllMethodsServlet {
 
 			String remove = request.getParameter("remove");
 			if (null != remove && remove.equalsIgnoreCase("true")) {
+				log.info("removing all users");
 				removeUsers(request);
 				response.getWriter().write("Removed users");
 			} else {
@@ -81,6 +87,8 @@ public class ReadCSV extends SlingAllMethodsServlet {
 				brUserInfo.close();
 
 
+				
+				
 				UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 				Session session = resourceResolver.adaptTo(Session.class);
 				createAndSaveUsers(inputUserMap, userInfoMap, userManager, session);
@@ -114,27 +122,37 @@ public class ReadCSV extends SlingAllMethodsServlet {
 
 	private void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap, UserManager userManager, Session session)
 			throws RepositoryException {
-
+		int value = 0;
+		int count = 0;
 		for (Map.Entry<String, User> entry : inputUserMap.entrySet()) {
 			Principal principal = new Principal() {
 				public String getName() {
 					return entry.getKey();
 				}
 			};
+			count++;
+			if(count>=10000) {
+				count=0;
+				value++;
+				session.save();
+			}
 			
 			User userObject = entry.getValue();
 			if(StringUtils.isNotBlank(userObject.getUoId()) && userInfoMap.containsKey(userObject.getUoId())) {
 				UserInfo userInfo = userInfoMap.get(userObject.getUoId());
 				 userObject.setBusiness(userInfo.getBusiness());
 			}
-			createAEMUser(userManager, session, principal, entry.getKey(), entry.getValue());
-			session.save();
+			createAEMUser(userManager, session, principal, entry.getKey(), entry.getValue(), value);
+			
+		         //session.save();
+		     
 		}
+		session.save();
 
 	}
 
 	private void createAEMUser(UserManager userManager, Session session, Principal principal, String userId,
-			User userInfo) {
+			User userInfo, int value) {
 		if (null != userManager) {
 			try {
 				if (null != userManager.getAuthorizable(userId)) {
@@ -144,8 +162,11 @@ public class ReadCSV extends SlingAllMethodsServlet {
 					
 				}
 				else {
+					
+					String hashed = encryptThisString(userId);
+					
 					org.apache.jackrabbit.api.security.user.User user = userManager.createUser(userId, userId, principal,
-							USER_PATH);
+							USER_PATH+"/"+hashed.substring(0, 2));
 					updateUserInfo(user, userInfo, session);
 					/*user.setProperty("./profile/givenName",
 							session.getValueFactory().createValue(userInfo.getGivenName(), PropertyType.STRING));
@@ -159,17 +180,50 @@ public class ReadCSV extends SlingAllMethodsServlet {
 							session.getValueFactory().createValue(userInfo.getUoId(), PropertyType.STRING));
 					user.setProperty("./profile/business",
 							session.getValueFactory().createValue(userInfo.getBusiness(), PropertyType.STRING));*/
-					user.setProperty("./profile/company",
+					/*user.setProperty("./profile/company",
 							session.getValueFactory().createValue("BNP Paribas", PropertyType.STRING));
 					user.setProperty("./profile/type",
-							session.getValueFactory().createValue("internal", PropertyType.STRING));
-					log.info("User is created successfuly");
+							session.getValueFactory().createValue("internal", PropertyType.STRING));*/
+					log.info("User is created successfully with userId : {}",userId);
 				}
 			} catch (RepositoryException e) {
 				LOGGER.error("Error while accessing repository : {0}", e);
 			}
 		}
 	}
+	
+	
+	public static String encryptThisString(String input)
+    {
+        try {
+            // getInstance() method is called with algorithm SHA-1
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+  
+            // digest() method is called
+            // to calculate message digest of the input string
+            // returned as array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+  
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+  
+            // Convert message digest into hex value
+            String hashtext = no.toString(16);
+  
+            // Add preceding 0s to make it 32 bit
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+  
+            // return the HashText
+            return hashtext;
+        }
+  
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private void updateUserInfo(Authorizable user, User userInfo, Session session) throws ValueFormatException, UnsupportedRepositoryOperationException, RepositoryException {
 		if(!checkExistance(user,"givenName", userInfo.getGivenName())) {
@@ -214,19 +268,19 @@ public class ReadCSV extends SlingAllMethodsServlet {
 		
 	}
 
-	private Map<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
+	private LinkedHashMap<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
 		int skip = skipLine ? 1 : 0;
 		List<UserInfo> inputList;
 		inputList = br.lines().skip(skip).map(mapToUserInfo).collect(Collectors.toList());
-		return inputList.stream().collect(Collectors.toMap(UserInfo::getUoId, Function.identity()));
+		return inputList.stream().collect(Collectors.toMap(UserInfo::getUoId, Function.identity(), (v1,v2)-> v1, LinkedHashMap :: new));		
+		
 	}
 
-	private Map<String, User> convertStreamToHashMap(BufferedReader br, boolean skipLine) {
+	private LinkedHashMap<String, User> convertStreamToHashMap(BufferedReader br, boolean skipLine) {
 		int skip = skipLine ? 1 : 0;
 		List<User> inputList;
 		inputList = br.lines().skip(skip).map(mapToItem).collect(Collectors.toList());
-		Map<String, User> inputUserMap = inputList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
-		return inputUserMap;
+		return inputList.stream().collect(Collectors.toMap(User::getId, Function.identity(), (v1,v2)-> v1, LinkedHashMap :: new));
 	}
 
 	private Function<String, User> mapToItem = line -> {
@@ -236,11 +290,11 @@ public class ReadCSV extends SlingAllMethodsServlet {
 			user = new User();
 			
 			user.setId(p[0]);
-			user.setFamilyName(p.length>=1 ? p[1] : null);
-			user.setGivenName(p.length>=2 ? p[2] : null);
-			user.setEmailId(p.length>=4 ? p[4] : null);
-			user.setJobTitle(p.length>=11 ? p[11] : null);
-			user.setUoId(p.length>=5 ? p[5] : null);
+			user.setFamilyName(p.length>1 ? p[1] : null);
+			user.setGivenName(p.length>2 ? p[2] : null);
+			user.setEmailId(p.length>4 ? p[4] : null);
+			user.setJobTitle(p.length>11 ? p[11] : null);
+			user.setUoId(p.length>5 ? p[5] : null);
 			user.setBusiness(null);
 			
 		}
