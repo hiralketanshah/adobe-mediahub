@@ -710,7 +710,9 @@
 
         - path: /content/dam/technique/mediahub/privacy-policy
           permission: deny
-          actions: delete
+          actions:
+          privileges: jcr:removeNode
+          repGlob:
 
         - path: /content/projects
           permission: allow
