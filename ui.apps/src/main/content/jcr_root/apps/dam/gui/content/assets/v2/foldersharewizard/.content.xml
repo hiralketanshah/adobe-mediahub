@@ -369,6 +369,17 @@
                                                                     </field>
                                                                 </users>
                                                             </items>
+                                                            <granite:rendercondition
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <isProjects
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                  expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                                                <isMedia
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/simple/media"/>
+                                                            </granite:rendercondition>
                                                         </InternalUsers>
                                                         <assetcontribution
                                                             granite:id="asset-contribution-checkbox"
@@ -399,8 +410,15 @@
                                                           value="true">
                                                             <granite:rendercondition
                                                               jcr:primaryType="nt:unstructured"
-                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                                              feature="com.adobe.dam.asset.autotag.feature.flag"/>
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <isProjects
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                  expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                                                <isMedia
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/simple/media"/>
+                                                            </granite:rendercondition>
                                                             <granite:data
                                                               jcr:primaryType="nt:unstructured"
                                                               cq-msm-lockable="rep:policy"
