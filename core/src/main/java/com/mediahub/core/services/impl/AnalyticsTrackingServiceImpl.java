@@ -2,7 +2,9 @@ package com.mediahub.core.services.impl;
 
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.filters.GlobalFilter;
 import com.mediahub.core.services.AnalyticsTrackingService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
@@ -68,15 +70,15 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
     }
 
     @Override
-    public void trackExternal(Resource asset, String format) {
+    public void trackExternal(Resource asset, String format, Map<String, String> properties) {
         Map<String, String> parameters = initParameters(asset);
-        sendRequest(parameters);
+        sendRequest(parameters, properties);
     }
 
     @Override
-    public void trackInternal(Resource asset, String format) {
+    public void trackInternal(Resource asset, String format, Map<String, String> properties) {
         Map<String, String> parameters = initParameters(asset);
-        sendRequest(parameters);
+        sendRequest(parameters, properties);
     }
 
     private Map<String, String> initParameters(Resource asset) {
@@ -86,8 +88,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         parameters.put("c.a.assets.idlist", asset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
         parameters.put("pe", "o");
         parameters.put("pev2", "Asset Insight Event");
-        parameters.put("vid", "1234567890123456-6543210987654321");
-
+        parameters.put("events", "event1");
 
         //Fill in assets properties
         if (metadata.containsKey(BnpConstants.BNPP_CONFIDENTIALITY)) {
@@ -144,7 +145,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         return String.join(",", Arrays.asList(array));
     }
 
-    private void sendRequest(Map<String, String> parameters) {
+    private void sendRequest(Map<String, String> parameters, Map<String, String> properties) {
         this.executorService.execute(() -> {
             try {
 
@@ -156,6 +157,19 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 con.setDoOutput(true);
                 con.setConnectTimeout(5000);
                 con.setReadTimeout(5000);
+
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.IP_ADDRESS_PROPERTY))) {
+                    con.setRequestProperty("X-Forwarded-For", properties.get(GlobalFilter.IP_ADDRESS_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.LANGUAGE_PROPERTY))) {
+                    con.setRequestProperty("Accept-Language", properties.get(GlobalFilter.LANGUAGE_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.USER_AGENT_PROPERTY))) {
+                    con.setRequestProperty("User-Agent", properties.get(GlobalFilter.USER_AGENT_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
+                    parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
+                }
 
                 //Setting parameters
                 DataOutputStream out = new DataOutputStream(con.getOutputStream());
