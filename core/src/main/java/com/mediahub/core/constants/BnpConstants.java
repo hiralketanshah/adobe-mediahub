@@ -127,15 +127,26 @@ public class BnpConstants {
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
 
+    public static final String S7_DOMAIN_PROPERTY = "dam:scene7Domain";
     public static final String S7_FILE_STATUS_PROPERTY = "dam:scene7FileStatus";
     public static final String S7_FILE_STATUS_NOT_SUPPORTED = "NotSupported";
+    public static final String S7_FILE_STATUS_COMPLETE = "PublishComplete";
+    public static final String S7_FILE_STATUS_INCOMPLETE = "PublishIncomplete";
+    public static final String S7_TYPE = "dam:scene7Type";
+    public static final String S7_FILE = "dam:scene7File";
 
     public static final String BROADCAST_VALUE_EXTERNAL = "external";
     public static final String BROADCAST_VALUE_INTERNAL = "internal";
+    public static final String BROADCAST_VALUE_NOT_BROADCAST = "not-broadcast";
 
     public static final String DAM_PATH = "/content/dam";
     public static final String USER_PROFILE_EMAIL = "./profile/email";
     public static final String P_LIMIT = "p.limit";
 
     public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
+    public static final String LANGUAGE = "language";
+    public static final String PREFERENCES = "preferences";
+    public static final String PREFERENCES_LANGUAGE_PROPERTY = "./preferences/language";
+    public static final String AFTER_VALUE = "afterValue";
+    public static final String BEFORE_VALUE = "beforeValue";
 }

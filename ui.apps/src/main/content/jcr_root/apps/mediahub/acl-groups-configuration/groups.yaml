@@ -672,6 +672,11 @@
           permission: allow
           actions: read
 
+        - path: /etc/languages
+          permission: allow
+          actions: read
+          repGlob:
+
     - mediahub-reader-medialibrary:
         - path: /content/dam/medialibrary
           permission: allow
@@ -691,6 +696,24 @@
           privileges: jcr:all
           repGlob:
 
+        - path: /content/dam/technique
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/technique/mediahub
+          permission: allow
+          actions:
+          privileges: jcr:all
+          repGlob:
+
+        - path: /content/dam/technique/mediahub/privacy-policy
+          permission: deny
+          actions:
+          privileges: jcr:removeNode
+          repGlob:
+
         - path: /content/projects
           permission: allow
           actions:
@@ -702,8 +725,6 @@
           actions:
           privileges: jcr:all
           repGlob:
-
-
 
         - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
           permission: allow
@@ -769,13 +790,6 @@
           actions: read
           repGlob:
 
-        - path: /etc/languages
-          permission: allow
-          actions: read
-          repGlob:
-
-
-
     - mediahub-super-administrators:
 
         - path: /conf/global/settings/dam/search/facets
@@ -809,6 +823,10 @@
           actions: read
           repGlob:
 
+        - path: /apps/wcm/core
+          permission: allow
+          actions: modify
+          repGlob:
 
 
     - mediahub-basic-entity-manager:

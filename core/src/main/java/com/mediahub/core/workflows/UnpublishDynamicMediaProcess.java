@@ -6,12 +6,11 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
-import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import com.mediahub.core.utils.AssetUtils;
+import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.JobManager;
@@ -20,8 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Abuthahir Ibrahim
@@ -62,31 +60,31 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                     throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
                 }
 
-                String scene7ID = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap().get("dam:scene7ID", StringUtils.EMPTY);
+                ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
 
-                if (StringUtils.isNotBlank(scene7ID)) {
-                    AssetUtils.slingJobForActivateOrDeactiveAsset(resourceResolver, damResource, scene7DeactivationService,
-                        jobManager, scene7Service, "Deactivate");
-                    ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
-                    workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
-                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
-                    properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
-                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
-                    properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
-                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
-                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
-                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
-                    properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
-                    //properties.remove("dam:scene7ID");
-                    resourceResolver.commit();
+                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
+                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
+                    if (jobSuccess) {
+                        ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
+                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
+                        List<String> status = new ArrayList<>(Arrays.asList(properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
+                        status.remove(BnpConstants.BROADCAST_VALUE_EXTERNAL);
+                        properties.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());
+                        resourceResolver.commit();
+                    }
                 }
             }
 
-        } catch (LoginException e) {
-            throw new WorkflowException("Login exception", e);
         } catch (Exception e) {
-            log.error("Exception while deleting asset in scene 7", e);
-            throw new WorkflowException("Exception while deleting asset in scene 7", e);
+            throw new WorkflowException("Error while deactivating asset from S7", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();
