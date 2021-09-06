@@ -122,4 +122,5 @@ public class BnpConstants {
     public static final String P_LIMIT = "p.limit";
 
     public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
+    public static final String WELCOME_EMAIL_SENT = "welcomeEmailSent";
 }
