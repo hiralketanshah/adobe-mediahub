@@ -144,6 +144,7 @@ public class BnpConstants {
     public static final String P_LIMIT = "p.limit";
 
     public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
+    public static final String WELCOME_EMAIL_SENT = "welcomeEmailSent";
     public static final String LANGUAGE = "language";
     public static final String PREFERENCES = "preferences";
     public static final String PREFERENCES_LANGUAGE_PROPERTY = "./preferences/language";
