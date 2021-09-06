@@ -48,10 +48,10 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap args) throws WorkflowException {
 
         if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
-            throw new WorkflowException("Impossible de recupérer le PayLoad");
+            throw new WorkflowException("Unable to get the payload");
         }
 
-        String initiator =  workItem.getWorkflow() == null ?  StringUtils.EMPTY : workItem.getWorkflow().getInitiator();
+        String initiator = workItem.getWorkflow() == null ? StringUtils.EMPTY : workItem.getWorkflow().getInitiator();
 
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
         ResourceResolver resourceResolver = null;
@@ -60,7 +60,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
             resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
             session = resourceResolver.adaptTo(Session.class);
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
-            log.info("payloadPath : {}", payloadPath);
+            log.debug("payloadPath : {}", payloadPath);
             Resource payload = resourceResolver.getResource(payloadPath);
 
             if (payload == null) {
@@ -89,7 +89,6 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     }
                 }
 
-
                 session.save();
                 resourceResolver.commit();
 
@@ -98,10 +97,8 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     resourceResolver.commit();
                 }
             }
-        } catch (LoginException e) {
-            throw new WorkflowException("Login exception", e);
-        } catch (PersistenceException | RepositoryException e) {
-            throw new WorkflowException("Persistence exception", e);
+        } catch (Exception e) {
+            throw new WorkflowException("Error while moving asset from Projects", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();
@@ -238,7 +235,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     resourceResolver.commit();
                     Resource contentResource = media.getChild(JcrConstants.JCR_CONTENT);
                     setMetadata(resourceResolver, session, initiator, desitnationMedia,
-                        contentResource);
+                            contentResource);
                 }
                 newPath = desitnationMedia.getPath() + "/" + payload.getName();
                 session.move(payload.getPath(), newPath);
@@ -251,7 +248,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
     }
 
     /**
-     * @param resourceResolver 
+     * @param resourceResolver
      * @param session
      * @param initiator
      * @param desitnationMedia
@@ -260,12 +257,12 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
      * @throws PersistenceException
      */
     private void setMetadata(ResourceResolver resourceResolver, Session session, String initiator,
-        Resource desitnationMedia, Resource contentResource)
-        throws RepositoryException, PersistenceException {
+                             Resource desitnationMedia, Resource contentResource)
+            throws RepositoryException, PersistenceException {
         if (null != contentResource) {
             session.getWorkspace().copy(contentResource.getPath(), desitnationMedia.getPath() + "/" + JcrConstants.JCR_CONTENT);
             if (null != contentResource.getChild(BnpConstants.METADATA) && null != desitnationMedia.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA)) {
-                ValueMap sourceMetadataValues =contentResource.getChild(BnpConstants.METADATA).getValueMap();
+                ValueMap sourceMetadataValues = contentResource.getChild(BnpConstants.METADATA).getValueMap();
                 ModifiableValueMap metadataValues = desitnationMedia.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                 metadataValues.put(BNPP_STATUS, "validated");
                 metadataValues.put(JcrConstants.JCR_CREATED_BY, sourceMetadataValues.get(JcrConstants.JCR_CREATED_BY, USER_DEACTIVATION_SERVICE));

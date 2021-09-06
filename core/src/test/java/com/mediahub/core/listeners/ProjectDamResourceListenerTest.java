@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.day.cq.dam.api.DamConstants;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
@@ -13,9 +14,12 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 
@@ -34,6 +38,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChange.ChangeType;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +52,7 @@ import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 @ExtendWith({AemContextExtension.class})
 class ProjectDamResourceListenerTest {
 
-	@InjectMocks
+	  @InjectMocks
     private ProjectDamResourceListener fixture = new ProjectDamResourceListener();
 
     @InjectMocks
@@ -94,12 +99,20 @@ class ProjectDamResourceListenerTest {
     @Mock
     User user;
 
+    @Mock
+    SlingSettingsService slingSettingsService;
+
+    @Mock
+    I18nProvider provider;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     void setup() throws LoginException {
     	MockitoAnnotations.initMocks(this);
+        Set<String> runModes = new HashSet<>();
+        runModes.add("stage");
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
         context.registerService(ResourceResolverFactory.class, resourceResolverFactory);
         context.registerService(GenericEmailNotification.class, genericEmailNotification);
     }
@@ -120,6 +133,7 @@ class ProjectDamResourceListenerTest {
         when(resolver.copy(any(),any())).thenReturn(resource);
         when(resolver.create(any(),any(),any())).thenReturn(resource);
         when(resource.listChildren()).thenReturn(iterator);
+        //when(provider.translate("Asset Added in the Project", LocaleUtils.toLocale(job.getProperty(BnpConstants.LANGUAGE, "en")))).thenReturn("Welcome Email");
 
         List<ResourceChange> list = new ArrayList<>();
         list.add(resourceChanged);
@@ -156,9 +170,12 @@ class ProjectDamResourceListenerTest {
         when(value.getString()).thenReturn("test@gmail.com");
         Value[] valueArray = { value };
         when(value1.getString()).thenReturn("Test");
-        Value[] valueArray1 = { value1 };
         when(authorizableUser.getProperty("./profile/email")).thenReturn(valueArray);
+        Value[] valueArray1 = { value1 };
         when(authorizableUser.getProperty(BnpConstants.PROFILE_GIVEN_NAME)).thenReturn(valueArray1);
+        when(value2.getString()).thenReturn("en");
+        Value[] valueArray2 = { value2 };
+        when(authorizableUser.getProperty(BnpConstants.PREFERENCES_LANGUAGE_PROPERTY)).thenReturn(valueArray2);
 
         fixture.onChange(list);
     }
@@ -192,10 +209,16 @@ class ProjectDamResourceListenerTest {
         when(valueMap.get(BnpConstants.ROLE_OWNER, org.apache.commons.lang3.StringUtils.EMPTY)).thenReturn("admin");
         when(authorizable.isGroup()).thenReturn(Boolean.TRUE);
         when(value.getString()).thenReturn("test@gmail.com");
+
+
+        when(value2.getString()).thenReturn("en");
+        Value[] valueArray2 = { value2 };
         final List<Authorizable> groups = new ArrayList<>();
         user.setProperty("./profile/email", value);
-		groups.add(user);
+        user.setProperty(BnpConstants.PREFERENCES_LANGUAGE_PROPERTY, valueArray2);
+		    groups.add(user);
         when(authorizable.getMembers()).thenReturn(groups.iterator());
+
 
         fixture.sendNotificationEmail(resolver, resource);
     }

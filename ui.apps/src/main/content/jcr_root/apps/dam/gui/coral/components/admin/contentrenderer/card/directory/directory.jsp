@@ -18,13 +18,13 @@
 <%@page import="org.apache.jackrabbit.util.Text"%><%
 %><%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/base/init/directoryBase.jsp"%><%
 
-String thumbnailUrl = "";
+    String thumbnailUrl = "";
 
-String directoryActionRels = StringUtils.join(getDirectoryActionRels(hasJcrRead, hasModifyAccessControl, hasJcrWrite, hasReplicate, isMACShared, isCCShared, isRootMACShared, isMPShared, isRootMPShared), " ");
+    String directoryActionRels = StringUtils.join(UIHelper.getDirectoryActionRels(hasJcrRead, hasModifyAccessControl, hasJcrWrite, hasReplicate, isMACShared, isCCShared, isRootMACShared, isMPShared, isRootMPShared, isLiveCopy, hasAddChild, hasRemoveNode, hasModifyProperties), " ");
 
-request.setAttribute("actionRels", actionRels.concat(" " + directoryActionRels));
+    request.setAttribute("actionRels", actionRels.concat(" " + directoryActionRels));
 
-     boolean manualThumnailExists = false;
+    boolean manualThumnailExists = false;
     // Path at which the manual thumbnail(if present) exists
     String manualThumbnailPath = resource.getPath() + "/jcr:content/manualThumbnail.jpg";
     Resource manualThumbnail = resourceResolver.getResource(manualThumbnailPath);
@@ -40,61 +40,64 @@ request.setAttribute("actionRels", actionRels.concat(" " + directoryActionRels))
         thumbnailUrl = requestPrefix + Text.escapePath(resourcePath) + ".folderthumbnail.jpg?width=280&height=240&ch_ck=" + ck + requestSuffix;
     }
 
-attrs.add("variant", "inverted");
-attrs.addClass("foundation-collection-navigator");
+    attrs.add("variant", "inverted");
+    attrs.addClass("foundation-collection-navigator");
 %>
 <cq:include script="link.jsp"/>
 <%
     if (request.getAttribute("com.adobe.directory.card.nav")!=null){
         navigationHref =  (String) request.getAttribute("com.adobe.directory.card.nav");
-    //navigationHref = Text.escapePath(navigationHref);
-    navigationHref = navigationHref;
-    attrs.add("data-foundation-collection-navigator-href", xssAPI.getValidHref(navigationHref));
+        //navigationHref = Text.escapePath(navigationHref);
+        navigationHref = navigationHref;
+        attrs.add("data-foundation-collection-navigator-href", xssAPI.getValidHref(navigationHref));
     }
 
 
-request.setAttribute("com.adobe.assets.meta.attributes", metaAttrs);
-request.setAttribute("com.adobe.cq.assets.contentrenderer.directory.profileTitleList", profileTitleList);
+    request.setAttribute("com.adobe.assets.meta.attributes", metaAttrs);
+    request.setAttribute("com.adobe.cq.assets.contentrenderer.directory.profileTitleList", profileTitleList);
 
 %>
 <cq:include script = "meta.jsp"/>
 <coral-card <%= attrs %>>
     <coral-card-asset >
-       <img src="<%= xssAPI.getValidHref(thumbnailUrl) %>" alt="<%=xssAPI.encodeForHTMLAttr(resourceTitle)%>">
+        <img src="<%= xssAPI.getValidHref(thumbnailUrl) %>" alt="<%=xssAPI.encodeForHTMLAttr(resourceTitle)%>">
     </coral-card-asset>
-	<coral-card-content>
-	        <%
-              if (resource.getChild("jcr:content") != null && resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
-          %>
-            <coral-card-context><%= i18n.get("MEDIA") %></coral-card-context>
-          <% }  else { %>
-        <coral-card-context><%= xssAPI.encodeForHTML(context) %></coral-card-context>
-          <% } %>
-         <coral-card-title class="foundation-collection-item-title"><%= xssAPI.encodeForHTML(resourceTitle) %></coral-card-title>
+    <coral-card-content>
+        <%
+            if (resource.getChild("jcr:content") != null && resource.getChild("jcr:content").getChild("metadata") != null && resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media") != null && "true".equalsIgnoreCase(resource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-media", String.class))) {
+        %>
+        <coral-card-context><%= i18n.get("MEDIA") %></coral-card-context>
+        <% }  else { %>
+        <coral-card-context>
+            <%= xssAPI.encodeForHTML(context) %>
+            <% if (isLiveCopy) { %><%= xssAPI.encodeForHTML(i18n.get("Live Copy")) %><% } %>
+        </coral-card-context>
+        <% } %>
+        <coral-card-title class="foundation-collection-item-title"><%= xssAPI.encodeForHTML(resourceTitle) %></coral-card-title>
         <%@page import="org.apache.jackrabbit.api.security.user.User" %>
         <%@page import="org.apache.jackrabbit.api.security.user.UserManager" %>
         <%@page import="org.apache.sling.jcr.base.util.AccessControlUtil" %>
         <%@page import="org.apache.jackrabbit.api.security.user.Authorizable" %>
-        <%@page import="org.apache.jackrabbit.api.security.user.Group" %>  
+        <%@page import="org.apache.jackrabbit.api.security.user.Group" %>
 
-        <%        
-        UserManager userManager;
-        userManager = AccessControlUtil.getUserManager(session);
-		boolean isAdmin = false;
+        <%
+            UserManager userManager;
+            userManager = AccessControlUtil.getUserManager(session);
+            boolean isAdmin = false;
 
-        if(userManager != null){
-            User currentUser = (User) userManager.getAuthorizable(session.getUserID());
-			Group group = (Group)userManager.getAuthorizable("administrators");
-            if(currentUser != null && group != null){
-                isAdmin = group.isMember(currentUser) || "admin".equals(session.getUserID());
+            if(userManager != null){
+                User currentUser = (User) userManager.getAuthorizable(session.getUserID());
+                Group group = (Group)userManager.getAuthorizable("administrators");
+                if(currentUser != null && group != null){
+                    isAdmin = group.isMember(currentUser) || "admin".equals(session.getUserID());
+                }
             }
-        }
 
         %>
 
-         <% if (!resource.getName().equalsIgnoreCase(resourceTitle) && isAdmin) { %>
-         <coral-card-subtitle class="foundation-collection-item-subtitle"><%= xssAPI.encodeForHTML(resource.getName()) %></coral-card-subtitle>
-         <% } %>
+        <% if (!resource.getName().equalsIgnoreCase(resourceTitle) && isAdmin) { %>
+        <coral-card-subtitle class="foundation-collection-item-subtitle"><%= xssAPI.encodeForHTML(resource.getName()) %></coral-card-subtitle>
+        <% } %>
         <cq:include script = "propertyList.jsp"/>
     </coral-card-content>
     <cq:include script = "applicableRelationships.jsp"/>

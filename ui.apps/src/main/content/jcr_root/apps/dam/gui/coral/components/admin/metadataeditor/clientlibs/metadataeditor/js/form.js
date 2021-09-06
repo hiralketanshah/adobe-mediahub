@@ -16,7 +16,7 @@
  *
  */
 
-(function (document, $, _g) {
+(function(document, $, _g, Dam) {
     "use strict";
 
     // For cross browser support - CQ-37914
@@ -306,24 +306,10 @@
             if (simpleSave) {
                 successModalForBulkEdit();
             } else {
-                form.trigger("foundation-form-submitted", [true, xhr]);
+                form.trigger("foundation-form-submitted", [ true, xhr ]);
             }
         } else {
-            var url = $("[data-selfurl]").data("selfurl");
-            if (!url) {
-                // Fallback
-                url = "/mnt/overlay/dam/gui/content/assets/metadataeditor.html";
-            }
-            var assetPath = $articles.data("path");
-            assetPath = encodeURI(assetPath);
-            url += assetPath;
-            $.ajax({
-                type: "GET",
-                cache: false,
-                url: url
-            }).success(function (response) {
-                form.trigger("foundation-form-submitted", [true, xhr]);
-            });
+            form.trigger("foundation-form-submitted", [ true, xhr ]);
         }
     }
 
@@ -429,13 +415,34 @@
     }
 
     // showing spinner after bulk metadata edit success and reloading the window
-    $(document).on("coral-overlay:close", "#aem-assets-metadataedit-success", function () {
+    $(document).on("coral-overlay:close", "#aem-assets-metadataedit-success", function() {
         var ui = $(window).adaptTo("foundation-ui");
         if (ui !== undefined) {
             ui.wait();
         }
         if (simpleSave) {
-            window.location.reload();
+            if (Dam.Util.openWithFormPost !== undefined) {
+                var patharr = [];
+                var items = $(".foundation-selections-item");
+                var viewPropertiesWizardURL =
+                    Granite.HTTP.externalize("/mnt/overlay/dam/gui/content/assets/metadataeditor.external.html");
+                if (items.length) {
+                    items.each(function(i) {
+                        var item = $(this);
+                        var itemPath = item.data("foundation-collection-item-id");
+                        patharr.push(itemPath);
+                    });
+                    // POST Request
+                    var data = {
+                        "item": patharr,
+                        "_charset_": "utf-8"
+                    };
+                    Dam.Util.openWithFormPost(viewPropertiesWizardURL, data);
+                }
+            } else {
+                // for backwards compatibility
+                window.location.reload();
+            }
         } else if (location.search === undefined || location.search === "") {
             // Send user back to last page if its a POST request
             window.location = $("#shell-propertiespage-closeactivator")[0].href;
@@ -471,14 +478,13 @@
         var assets = new Array();
         var articleMarkup = new Array();
 
-        var collectionItems = $(collectionItemRel);
         var selectionItems = $(selectionItemRel);
 
         var multiAssets = true;
         if (selectionItems.length === 1) {
             multiAssets = false;
         }
-        selectionItems.each(function (index, value) {
+        selectionItems.each(function(index, value) {
             articleMarkup[index] = $(value);
             assets[index] = articleMarkup[index].data("path");
         });
@@ -490,29 +496,31 @@
             charset = "utf-8";
         }
 
-        var contentPath = collectionItems.data("path");
+        var contentPath = selectionItems.data("path");
 
         if (!multiAssets) {
             basePath = contentPath;
         }
 
-        var contentType = collectionItems.data("type");
+        var contentType = selectionItems.data("type");
         var isCollection = contentType ? contentType.toLowerCase() === "collection" : false;
         var hintFields = createHintFields(multiAssets, isCollection);
 
         var data = [];
-        data.push({"name": "_charset_", "value": charset});
-        data.push({"name": "dam:bulkUpdate", "value": "true"});
+        data.push({ "name": "_charset_", "value": charset });
+        data.push({ "name": "dam:bulkUpdate", "value": "true" });
 
         if (isCollection) {
-            data.push({"name": contentPath + "/jcr:lastModified", "value": ""});
-            data.push({"name": contentPath + "/jcr:lastModifiedBy", "value": ""});
+            selectionItems.each(function(index, value) {
+                data.push({ "name": $(value).data("path") + "/jcr:lastModified", "value": "" });
+                data.push({ "name": $(value).data("path") + "/jcr:lastModifiedBy", "value": "" });
+            });
         }
 
         var checked = $("#soft-submit-popover input:checkbox").prop("checked");
-        data.push(checked ? {"name": "mode", "value": "soft"} : {"name": "mode", "value": "hard"});
+        data.push(checked ? { "name": "mode", "value": "soft" } : { "name": "mode", "value": "hard" });
         if (checked) {
-            selectionItems.each(function (index, value) {
+            selectionItems.each(function(index, value) {
                 var cvm = $(value).data("contentvm");
                 var mdvm = $(value).data("metadatavm");
                 var collvm = $(value).data("collectionvm");
@@ -522,7 +530,7 @@
                 p["mdvm"] = mdvm;
                 p["collvm"] = collvm;
 
-                data.push({"name": "asset", "value": JSON.stringify(p)});
+                data.push({ "name": "asset", "value": JSON.stringify(p) });
             });
         }
 
@@ -557,7 +565,7 @@
                 // publish all subassets if it is a s7 set
                 if (name === "./jcr:content/onTime" &&
                     articleMarkup[i].data("is-s7set") === true) {
-                    articleMarkup[i].data("s7set-subassets-path-list").split(":").forEach(function (val) {
+                    articleMarkup[i].data("s7set-subassets-path-list").split(":").forEach(function(val) {
                         data.push({
                             "name": "." + val.substring(basePath.length) + name.substring(1),
                             "value": value
@@ -565,16 +573,14 @@
                     });
                 }
                 if (value || assets.length === 1) {
-                    data.push({"name": name, "value": value});
+                    data.push({ "name": name, "value": value });
                 }
             }
 
             // If asset mimetype is application/pdf then pdf:Keywords and dc:subject has to be in sync
             if (pdfAsset) {
-                data.push({
-                    "name": "." + assets[i].substring(basePath.length) +
-                        "/jcr:content/metadata/pdf:Keywords@Delete"
-                });
+                data.push({ "name": "." + assets[i].substring(basePath.length) +
+                        "/jcr:content/metadata/pdf:Keywords@Delete" });
                 data.push({
                     "name": "." + assets[i].substring(basePath.length) + "/jcr:content/metadata/pdf:Keywords",
                     "value": pdfKeywords.join(",")
@@ -741,4 +747,4 @@
                 return $(html).find("#Path").text();
             });
     }
-})(document, Granite.$, _g);
+})(document, Granite.$, _g, Dam);

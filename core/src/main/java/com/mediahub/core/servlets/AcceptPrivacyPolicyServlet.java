@@ -16,6 +16,7 @@
 package com.mediahub.core.servlets;
 
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.UserUtils;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Calendar;
@@ -80,6 +81,7 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
                 if(StringUtils.equals(welcomeEmailSent, Boolean.FALSE.toString())){
                     modifiableValueMap.put(BnpConstants.WELCOME_EMAIL_SENT, Boolean.TRUE.toString());
                     final Map<String, Object> properties = new HashMap<>();
+                    properties.put(BnpConstants.LANGUAGE, UserUtils.getUserLanguage(user));
                     properties.put(BnpConstants.FIRST_NAME,userPrincipal.getName());
                     Resource profile = user.getChild(BnpConstants.PROFILE);
                     if(null != profile && StringUtils.equals(profile.getValueMap().get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL) ){

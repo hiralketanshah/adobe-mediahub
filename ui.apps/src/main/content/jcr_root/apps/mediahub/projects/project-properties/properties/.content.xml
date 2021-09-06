@@ -95,7 +95,7 @@
                                             fieldLabel="Due Date"
                                             minDate="today"
                                             name="project.dueDate"
-                                            required="{Boolean}false"
+                                            required="{Boolean}true"
                                             type="datetime"/>
                                         <path
                                             jcr:primaryType="nt:unstructured"
