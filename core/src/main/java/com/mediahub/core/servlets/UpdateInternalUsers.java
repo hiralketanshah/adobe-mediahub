@@ -15,6 +15,7 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.UpdateInternalUsersService;
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Create/Update Internal Users",
@@ -44,7 +45,7 @@ public class UpdateInternalUsers extends SlingAllMethodsServlet {
 				log.debug("Reading the data from the csv file");
 				String responseString = "Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file";
 				response.getWriter().write(responseString);
-				updateInternalUsers.createAndUpdateUsers();
+				updateInternalUsers.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO);
 
 			}
 

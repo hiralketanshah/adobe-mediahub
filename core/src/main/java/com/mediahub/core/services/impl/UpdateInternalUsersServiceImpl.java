@@ -3,6 +3,7 @@ package com.mediahub.core.services.impl;
 import com.adobe.granite.asset.api.Asset;
 import com.adobe.granite.jmx.annotation.AnnotatedStandardMBean;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
@@ -23,7 +24,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,19 +53,19 @@ import javax.jcr.Value;
 import javax.management.DynamicMBean;
 import javax.management.NotCompliantMBeanException;
 
-@Component(service = { DynamicMBean.class }, immediate = true, property = {"jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users"})
+@Component(service = { DynamicMBean.class }, immediate = true, property = {
+		"jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users", "propertyPrivate = true" })
 
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
-	
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateInternalUsersServiceImpl.class);
 
 	@Reference
 	private ResourceResolverFactory resolverFactory;
-	
+
 	@Reference
 	private QueryBuilder builder;
-	
+
 	public UpdateInternalUsersServiceImpl() throws NotCompliantMBeanException {
 		super(UpdateInternalUsersService.class);
 	}
@@ -74,36 +74,41 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			BnpConstants.WRITE_SERVICE);
 
 	@Override
-	public String createAndUpdateUsers() {
+	public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo) {
+		StringBuilder returnValue = new StringBuilder();
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
+			if(StringUtils.isNotBlank(csvUserInfo) && StringUtils.isNotBlank(csvAdditionalInfo)) {
+				Resource csvResource = resourceResolver.getResource(csvUserInfo);
+				Resource userInfoResource = resourceResolver.getResource(csvAdditionalInfo);
+				Map<String, User> inputUserMap = new LinkedHashMap<>();
+				Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
 
-			Resource csvResource = resourceResolver.getResource(BnpConstants.CSV_FILE_PATH);
-			Resource userInfoResource = resourceResolver.getResource(BnpConstants.CSV_USER_INFO);
-			Map<String, User> inputUserMap = new LinkedHashMap<>();
-			Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
-
-			if (null != csvResource) {
-				InputStream userInputStream = csvResource.adaptTo(Asset.class)
-						.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
-				BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
-				inputUserMap = convertStreamToHashMap(brUser, true);
-				brUser.close();
+				if (null != csvResource && DamUtil.isAsset(csvResource)) {
+					InputStream userInputStream = csvResource.adaptTo(Asset.class)
+							.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
+					BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
+					inputUserMap = convertStreamToHashMap(brUser, true);
+					brUser.close();
+				}
+				if (null != userInfoResource && DamUtil.isAsset(userInfoResource)) {
+					InputStream userInfoInputStream = userInfoResource.adaptTo(Asset.class)
+							.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
+					BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
+					userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, true);
+					brUserInfo.close();
+				}
+				UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+				Session session = resourceResolver.adaptTo(Session.class);
+				createAndSaveUsers(inputUserMap, userInfoMap, userManager, session);
+				deletedUnwantedUsers(resourceResolver, inputUserMap);
+				if (resourceResolver.hasChanges()) {
+					resourceResolver.commit();
+				}
+				returnValue.append("Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
 			}
-			if (null != userInfoResource) {
-				InputStream userInfoInputStream = userInfoResource.adaptTo(Asset.class)
-						.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
-				BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
-				userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, true);
-				brUserInfo.close();
+			else {
+				returnValue.append("Kindly add CSV files for User Info and Addition Info and try again!");
 			}
-			UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-			Session session = resourceResolver.adaptTo(Session.class);
-			createAndSaveUsers(inputUserMap, userInfoMap, userManager, session);
-			deletedUnwantedUsers(resourceResolver, inputUserMap);
-			if (resourceResolver.hasChanges()) {
-				resourceResolver.commit();
-			}
-
 		} catch (LoginException e) {
 			LOGGER.error("Error while Logging into the repository : {0}", e);
 		} catch (IOException e) {
@@ -111,7 +116,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		} catch (RepositoryException e) {
 			LOGGER.error("Error while accessing repository : {0}", e);
 		}
-		return "Done";
+		return returnValue.toString();
 	}
 
 	@Override
@@ -138,7 +143,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			throws PersistenceException, RepositoryException {
 		boolean hasUsers = true;
 		int offset = 0;
-		while (hasUsers) {
+		while (hasUsers && !inputUserMap.isEmpty()) {
 			Map<String, String> parameters = new HashMap<>();
 			parameters.put("path", BnpConstants.USER_PATH);
 			parameters.put("1_property", JcrConstants.JCR_PRIMARYTYPE);

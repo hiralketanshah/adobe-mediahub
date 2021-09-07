@@ -1,11 +1,11 @@
 package com.mediahub.core.services;
 
-import org.apache.sling.api.resource.Resource;
+import com.adobe.granite.jmx.annotation.Name;
 
 
 public interface UpdateInternalUsersService {
 
-    String createAndUpdateUsers();
+    String createAndUpdateUsers(@Name("CSV User Info") String csvUserInfo, @Name("CSV Additional Info") String csvAdditionalInfo);
 
     void removeAllUsers();
 
