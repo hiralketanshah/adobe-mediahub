@@ -70,7 +70,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
 
               emailParams.put(BnpConstants.FIRSTNAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
               emailParams.put(BnpConstants.EXPIRY, profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY));
-              genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html", emailRecipients, emailParams);
+              genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistingusers.html", emailRecipients, emailParams);
             }
           }
         }
