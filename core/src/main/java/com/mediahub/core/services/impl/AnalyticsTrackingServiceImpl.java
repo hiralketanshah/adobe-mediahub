@@ -97,8 +97,8 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         if (metadata.containsKey(BnpConstants.BNPP_LANGUAGE)) {
             parameters.put("prop2", convertArrayToString((String[]) metadata.get(BnpConstants.BNPP_LANGUAGE)));
         }
-        if (metadata.containsKey(BnpConstants.DAM_MIME_TYPE)) {
-            parameters.put("prop3", metadata.get(BnpConstants.DAM_MIME_TYPE, String.class));
+        if (metadata.containsKey(BnpConstants.DAM_FILE_FORMAT)) {
+            parameters.put("prop3", metadata.get(BnpConstants.DAM_FILE_FORMAT, String.class));
         }
         if (metadata.containsKey(BnpConstants.BNPP_SUBTITLES)) {
             parameters.put("prop4", metadata.get(BnpConstants.BNPP_SUBTITLES, String.class));
@@ -177,10 +177,9 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 out.flush();
                 out.close();
 
+                log.trace("Sending hit to {} with parameters {}", url, getParamsString(parameters));
                 int status = con.getResponseCode();
-                if (status == HttpURLConnection.HTTP_OK) {
-                    log.trace("Request to {} done", url);
-                } else {
+                if (status != HttpURLConnection.HTTP_OK) {
                     log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
                 }
 

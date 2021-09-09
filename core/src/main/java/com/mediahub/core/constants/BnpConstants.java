@@ -104,7 +104,7 @@ public class BnpConstants {
 
 
 
-    public static final String DAM_MIME_TYPE = "dam:MIMEtype";
+    public static final String DAM_FILE_FORMAT = "dc:format";
     public static final String DAM_SLING_FOLDER = "sling:Folder";
 
 
