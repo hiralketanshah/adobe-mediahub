@@ -16,6 +16,7 @@ import com.mediahub.core.services.UpdateInternalUsersService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
@@ -36,7 +37,9 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,8 +56,8 @@ import javax.jcr.Value;
 import javax.management.DynamicMBean;
 import javax.management.NotCompliantMBeanException;
 
-@Component(service = { DynamicMBean.class }, immediate = true, property = {
-		"jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users", "propertyPrivate = true" })
+@Component(service = { DynamicMBean.class, UpdateInternalUsersService.class }, property = {
+		"jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users" })
 
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
 
@@ -66,6 +69,10 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 	@Reference
 	private QueryBuilder builder;
 
+	int countOfCreatedUser;
+	int countOfUpdatedUser;
+	int countOfDeletedUser;
+
 	public UpdateInternalUsersServiceImpl() throws NotCompliantMBeanException {
 		super(UpdateInternalUsersService.class);
 	}
@@ -75,9 +82,15 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 
 	@Override
 	public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo) {
+		countOfCreatedUser = 0;
+		countOfUpdatedUser = 0;
+		countOfDeletedUser = 0;
 		StringBuilder returnValue = new StringBuilder();
+		StringBuilder summary = new StringBuilder();
+		summary.append('\n');
+		summary.append("Start time : "+new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-			if(StringUtils.isNotBlank(csvUserInfo) && StringUtils.isNotBlank(csvAdditionalInfo)) {
+			if (StringUtils.isNotBlank(csvUserInfo) && StringUtils.isNotBlank(csvAdditionalInfo)) {
 				Resource csvResource = resourceResolver.getResource(csvUserInfo);
 				Resource userInfoResource = resourceResolver.getResource(csvAdditionalInfo);
 				Map<String, User> inputUserMap = new LinkedHashMap<>();
@@ -104,9 +117,9 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 				if (resourceResolver.hasChanges()) {
 					resourceResolver.commit();
 				}
-				returnValue.append("Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
-			}
-			else {
+				returnValue.append(
+						"Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
+			} else {
 				returnValue.append("Kindly add CSV files for User Info and Addition Info and try again!");
 			}
 		} catch (LoginException e) {
@@ -116,11 +129,21 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		} catch (RepositoryException e) {
 			LOGGER.error("Error while accessing repository : {0}", e);
 		}
+		summary.append('\n');
+		summary.append("End time : "+new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
+		summary.append('\n');
+		summary.append("Count of users created : " + countOfCreatedUser);
+		summary.append('\n');
+		summary.append("Count of users updated : " + countOfUpdatedUser);
+		summary.append('\n');
+		summary.append("Count of users deleted : " + countOfDeletedUser);
+		LOGGER.info(summary.toString());
+
 		return returnValue.toString();
 	}
 
 	@Override
-	public void removeAllUsers() {
+	public String removeAllUsers() {
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 			Session session = resourceResolver.adaptTo(Session.class);
 			Node node;
@@ -136,7 +159,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		} catch (RepositoryException e) {
 			LOGGER.error("Error while accessing repository : {0}", e);
 		}
-
+		return "Successfully removed all the internal users!";
 	}
 
 	private void deletedUnwantedUsers(ResourceResolver resourceResolver, Map<String, User> inputUserMap)
@@ -150,7 +173,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			parameters.put("1_property.value", "rep:User");
 			parameters.put("2_property", "profile/type");
 			parameters.put("2_property.value", "internal");
-			parameters.put("p.limit", "1000");
+			parameters.put("p.limit", "10000");
 			parameters.put("p.offset", String.valueOf(offset));
 
 			Query query = builder.createQuery(PredicateGroup.create(parameters),
@@ -164,10 +187,11 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 				if (!inputUserMap.containsKey(userID)) {
 					LOGGER.debug("Removing unwanted user : {}", userID);
 					resourceResolver.delete(res);
+					countOfDeletedUser++;
 				}
 
 			}
-			offset += 1000;
+			offset += 10000;
 			if (offset > result.getTotalMatches()) {
 				LOGGER.debug("Completed checking all the internal users!");
 				hasUsers = false;
@@ -179,8 +203,8 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 
 	private void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
 			UserManager userManager, Session session) throws RepositoryException {
-		int value = 0;
 		int count = 0;
+		Group mediahubBasicGroup = (Group) (userManager.getAuthorizable("mediahub-basic"));
 		for (Map.Entry<String, User> entry : inputUserMap.entrySet()) {
 			Principal principal = new Principal() {
 				public String getName() {
@@ -190,7 +214,6 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			count++;
 			if (count >= 10000) {
 				count = 0;
-				value++;
 				session.save();
 			}
 
@@ -199,27 +222,30 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 				UserInfo userInfo = userInfoMap.get(userObject.getUoId());
 				userObject.setBusiness(userInfo.getBusiness());
 			}
-			createAEMUser(userManager, session, principal, entry.getKey(), entry.getValue(), value);
-
+			createAEMUser(userManager, session, principal, entry.getKey(), entry.getValue(), mediahubBasicGroup);
 		}
 		session.save();
 
 	}
 
 	private void createAEMUser(UserManager userManager, Session session, Principal principal, String userId,
-			User userInfo, int value) {
+			User userInfo, Group mediahubBasicGroup) {
 		if (null != userManager) {
 			try {
 				if (null != userManager.getAuthorizable(userId)) {
 					LOGGER.debug("User {} is already present", userId);
 					Authorizable user = userManager.getAuthorizable(userId);
-					updateUserInfo(user, userInfo, session);
-
+					if (updateUserInfo(user, userInfo, session)) {
+						countOfUpdatedUser++;
+					}
 				} else {
 					String hashedUserId = encryptThisString(userId);
 					org.apache.jackrabbit.api.security.user.User user = userManager.createUser(userId, userId,
-							principal, BnpConstants.USER_PATH + "/" + hashedUserId.substring(0, 2));
+							principal, BnpConstants.USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
+									+ hashedUserId.substring(2, 4));
 					updateUserInfo(user, userInfo, session);
+					mediahubBasicGroup.addMember(user);
+					countOfCreatedUser++;
 					LOGGER.debug("User is created successfully with userId : {}", userId);
 				}
 			} catch (RepositoryException e) {
@@ -244,48 +270,59 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		return hashtext;
 	}
 
-	private void updateUserInfo(Authorizable user, User userInfo, Session session) throws RepositoryException {
+	private boolean updateUserInfo(Authorizable user, User userInfo, Session session) throws RepositoryException {
+		boolean updated = false;
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_GIVENNAME, userInfo.getGivenName())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_GIVENNAME),
 					session.getValueFactory().createValue(userInfo.getGivenName(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_FAMILYNAME, userInfo.getFamilyName())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_FAMILYNAME),
 					session.getValueFactory().createValue(userInfo.getFamilyName(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_EMAIL, userInfo.getEmailId())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_EMAIL),
 					session.getValueFactory().createValue(userInfo.getEmailId(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_JOBTITLE, userInfo.getJobTitle())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_JOBTITLE),
 					session.getValueFactory().createValue(userInfo.getJobTitle(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_CITY, userInfo.getCity())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_CITY),
 					session.getValueFactory().createValue(userInfo.getCity(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_COUNTRY, userInfo.getCountry())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_COUNTRY),
 					session.getValueFactory().createValue(userInfo.getCountry(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_UOID, userInfo.getUoId())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_UOID),
 					session.getValueFactory().createValue(userInfo.getUoId(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_BUSINESS, userInfo.getBusiness())) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_BUSINESS),
 					session.getValueFactory().createValue(userInfo.getBusiness(), PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_TYPE, BnpConstants.VAL_USER_PROFILE_TYPE)) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_TYPE),
 					session.getValueFactory().createValue(BnpConstants.VAL_USER_PROFILE_TYPE, PropertyType.STRING));
+			updated = true;
 		}
 		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_COMPANY, BnpConstants.VAL_USER_PROFILE_COMPANY)) {
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_COMPANY),
 					session.getValueFactory().createValue(BnpConstants.VAL_USER_PROFILE_COMPANY, PropertyType.STRING));
+			updated = true;
 		}
-
+		return updated;
 	}
 
 	private boolean checkExistance(Authorizable user, String property, String updatedPropertyValue)
@@ -295,13 +332,11 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			user.removeProperty(BnpConstants.USER_PROFILE + property);
 			return true;
 		}
-
 		if (null != propertyValue) {
 			String propertyString = propertyValue[0].getString();
 			return updatedPropertyValue.equals(propertyString);
 		}
 		return false;
-
 	}
 
 	private LinkedHashMap<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
@@ -326,7 +361,6 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		User user = null;
 		if (null != p) {
 			user = new User();
-
 			user.setId(p[0]);
 			user.setFamilyName(p.length > 1 ? p[1] : null);
 			user.setGivenName(p.length > 2 ? p[2] : null);
@@ -336,7 +370,6 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			user.setCountry(p.length > 9 ? p[9] : null);
 			user.setUoId(p.length > 5 ? p[5] : null);
 			user.setBusiness(null);
-
 		}
 		return user;
 	};
@@ -346,12 +379,9 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		UserInfo userInfo = null;
 		if (null != p) {
 			userInfo = new UserInfo();
-
 			userInfo.setUoId(p[0]);
 			userInfo.setBusiness(p.length >= 5 ? p[5] : null);
-
 		}
 		return userInfo;
 	};
-
 }

@@ -127,7 +127,7 @@ public class BnpConstants {
      * User Profile Details
      */
     public static final String COMMA = ",";
-    public static final String USER_PATH = "/home/users/mediahub";
+    public static final String USER_PATH = "/home/users/mediahub/internal";
     public static final String CSV_FILE_PATH = "/content/dam/bnp/users-list.csv";
     public static final String CSV_USER_INFO = "/content/dam/bnp/user-info.csv";
     public static final String ASSET_RENDITION_ORIGINAL = "original";
