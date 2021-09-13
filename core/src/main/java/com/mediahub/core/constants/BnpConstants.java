@@ -130,6 +130,7 @@ public class BnpConstants {
     public static final String USER_PATH = "/home/users/mediahub/internal";
     public static final String CSV_FILE_PATH = "/content/dam/bnp/users-list.csv";
     public static final String CSV_USER_INFO = "/content/dam/bnp/user-info.csv";
+    public static final String CSV_USER_STATUS = "/content/dam/bnp/user-status.csv";
     public static final String ASSET_RENDITION_ORIGINAL = "original";
     public static final String USER_PROFILE = "./profile/";
     public static final String PN_USER_PROFILE_GIVENNAME = "givenName";
@@ -139,9 +140,12 @@ public class BnpConstants {
     public static final String PN_USER_PROFILE_CITY = "city";
     public static final String PN_USER_PROFILE_COUNTRY = "country";
     public static final String PN_USER_PROFILE_UOID = "uoId";
-    public static final String PN_USER_PROFILE_BUSINESS = "business";
+    public static final String PN_USER_PROFILE_BUSINESS = "pole";
     public static final String PN_USER_PROFILE_TYPE = "type";
     public static final String PN_USER_PROFILE_COMPANY = "company";
+    public static final String PN_USER_PROFILE_ORGANIZATION_UNIT = "uo";
+    public static final String PN_USER_PROFILE_STATUS_ID = "statusId";
+    public static final String PN_USER_PROFILE_STATUS = "status";
     public static final String VAL_USER_PROFILE_TYPE = "internal";
     public static final String VAL_USER_PROFILE_COMPANY = "BNP Paribas";
     public static final String PN_PRINCIPAL_NAME = "rep:principalName";

@@ -12,6 +12,7 @@ import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.data.User;
 import com.mediahub.core.data.UserInfo;
+import com.mediahub.core.data.UserStatus;
 import com.mediahub.core.services.UpdateInternalUsersService;
 
 import org.apache.commons.lang.StringUtils;
@@ -81,38 +82,45 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			BnpConstants.WRITE_SERVICE);
 
 	@Override
-	public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo) {
+	public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo, String csvStatusInfo) {
 		countOfCreatedUser = 0;
 		countOfUpdatedUser = 0;
 		countOfDeletedUser = 0;
 		StringBuilder returnValue = new StringBuilder();
 		StringBuilder summary = new StringBuilder();
-		summary.append('\n');
-		summary.append("Start time : "+new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
+		LOGGER.info("Start time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 			if (StringUtils.isNotBlank(csvUserInfo) && StringUtils.isNotBlank(csvAdditionalInfo)) {
 				Resource csvResource = resourceResolver.getResource(csvUserInfo);
 				Resource userInfoResource = resourceResolver.getResource(csvAdditionalInfo);
+				Resource userStatusResource = resourceResolver.getResource(csvStatusInfo);
 				Map<String, User> inputUserMap = new LinkedHashMap<>();
 				Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
-
+				Map<String, UserStatus> userStatusMap = new LinkedHashMap<>();
 				if (null != csvResource && DamUtil.isAsset(csvResource)) {
 					InputStream userInputStream = csvResource.adaptTo(Asset.class)
 							.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
 					BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
-					inputUserMap = convertStreamToHashMap(brUser, true);
+					inputUserMap = convertStreamToHashMap(brUser, false);
 					brUser.close();
 				}
 				if (null != userInfoResource && DamUtil.isAsset(userInfoResource)) {
 					InputStream userInfoInputStream = userInfoResource.adaptTo(Asset.class)
 							.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
 					BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
-					userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, true);
+					userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, false);
+					brUserInfo.close();
+				}
+				if (null != userStatusResource && DamUtil.isAsset(userStatusResource)) {
+					InputStream userStatusInputStream = userStatusResource.adaptTo(Asset.class)
+							.getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream();
+					BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userStatusInputStream));
+					userStatusMap = convertStreamToHashMapUserStatus(brUserInfo, false);
 					brUserInfo.close();
 				}
 				UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 				Session session = resourceResolver.adaptTo(Session.class);
-				createAndSaveUsers(inputUserMap, userInfoMap, userManager, session);
+				createAndSaveUsers(inputUserMap, userInfoMap, userStatusMap, userManager, session);
 				deletedUnwantedUsers(resourceResolver, inputUserMap);
 				if (resourceResolver.hasChanges()) {
 					resourceResolver.commit();
@@ -129,8 +137,8 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		} catch (RepositoryException e) {
 			LOGGER.error("Error while accessing repository : {0}", e);
 		}
-		summary.append('\n');
-		summary.append("End time : "+new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
+
+		LOGGER.info("End time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
 		summary.append('\n');
 		summary.append("Count of users created : " + countOfCreatedUser);
 		summary.append('\n');
@@ -162,7 +170,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		return "Successfully removed all the internal users!";
 	}
 
-	private void deletedUnwantedUsers(ResourceResolver resourceResolver, Map<String, User> inputUserMap)
+	public void deletedUnwantedUsers(ResourceResolver resourceResolver, Map<String, User> inputUserMap)
 			throws PersistenceException, RepositoryException {
 		boolean hasUsers = true;
 		int offset = 0;
@@ -201,8 +209,9 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 
 	}
 
-	private void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
-			UserManager userManager, Session session) throws RepositoryException {
+	public void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
+			Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
+			throws RepositoryException {
 		int count = 0;
 		Group mediahubBasicGroup = (Group) (userManager.getAuthorizable("mediahub-basic"));
 		for (Map.Entry<String, User> entry : inputUserMap.entrySet()) {
@@ -221,7 +230,14 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			if (StringUtils.isNotBlank(userObject.getUoId()) && userInfoMap.containsKey(userObject.getUoId())) {
 				UserInfo userInfo = userInfoMap.get(userObject.getUoId());
 				userObject.setBusiness(userInfo.getBusiness());
+				userObject.setOrganizationUnit(userInfo.getOrganizationUnit());
 			}
+			if (StringUtils.isNotBlank(userObject.getStatusId())
+					&& userStatusMap.containsKey(userObject.getStatusId())) {
+				UserStatus userStatus = userStatusMap.get(userObject.getStatusId());
+				userObject.setStatus(userStatus.getStatus());
+			}
+
 			createAEMUser(userManager, session, principal, entry.getKey(), entry.getValue(), mediahubBasicGroup);
 		}
 		session.save();
@@ -322,6 +338,22 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 					session.getValueFactory().createValue(BnpConstants.VAL_USER_PROFILE_COMPANY, PropertyType.STRING));
 			updated = true;
 		}
+		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_ORGANIZATION_UNIT, userInfo.getOrganizationUnit())) {
+			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_ORGANIZATION_UNIT),
+					session.getValueFactory().createValue(userInfo.getOrganizationUnit(), PropertyType.STRING));
+			updated = true;
+		}
+		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_STATUS, userInfo.getStatus())) {
+			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_STATUS),
+					session.getValueFactory().createValue(userInfo.getStatus(), PropertyType.STRING));
+			updated = true;
+		}
+		if (!checkExistance(user, BnpConstants.PN_USER_PROFILE_STATUS_ID, userInfo.getStatusId())) {
+			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_STATUS_ID),
+					session.getValueFactory().createValue(userInfo.getStatusId(), PropertyType.STRING));
+			updated = true;
+			
+		}
 		return updated;
 	}
 
@@ -339,7 +371,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		return false;
 	}
 
-	private LinkedHashMap<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
+	private Map<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
 		int skip = skipLine ? 1 : 0;
 		List<UserInfo> inputList;
 		inputList = br.lines().skip(skip).map(mapToUserInfo).collect(Collectors.toList());
@@ -348,12 +380,20 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 
 	}
 
-	private LinkedHashMap<String, User> convertStreamToHashMap(BufferedReader br, boolean skipLine) {
+	public Map<String, User> convertStreamToHashMap(BufferedReader br, boolean skipLine) {
 		int skip = skipLine ? 1 : 0;
 		List<User> inputList;
 		inputList = br.lines().skip(skip).map(mapToItem).collect(Collectors.toList());
 		return inputList.stream()
 				.collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
+	}
+
+	public Map<String, UserStatus> convertStreamToHashMapUserStatus(BufferedReader br, boolean skipLine) {
+		int skip = skipLine ? 1 : 0;
+		List<UserStatus> inputList;
+		inputList = br.lines().skip(skip).map(mapToUserStatus).collect(Collectors.toList());
+		return inputList.stream()
+				.collect(Collectors.toMap(UserStatus::getId, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
 	}
 
 	private Function<String, User> mapToItem = line -> {
@@ -364,12 +404,14 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			user.setId(p[0]);
 			user.setFamilyName(p.length > 1 ? p[1] : null);
 			user.setGivenName(p.length > 2 ? p[2] : null);
-			user.setEmailId(p.length > 4 ? p[4] : null);
-			user.setJobTitle(p.length > 11 ? p[11] : null);
+			user.setEmailId(p.length > 3 ? p[3] : null);
+			user.setJobTitle(p.length > 12 ? p[12] : null);
 			user.setCity(p.length > 7 ? p[7] : null);
 			user.setCountry(p.length > 9 ? p[9] : null);
-			user.setUoId(p.length > 5 ? p[5] : null);
+			user.setStatusId(p.length > 10 ? p[10] : null);
+			user.setUoId(p.length > 4 ? p[4] : null);
 			user.setBusiness(null);
+			user.setStatus(null);
 		}
 		return user;
 	};
@@ -381,7 +423,19 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			userInfo = new UserInfo();
 			userInfo.setUoId(p[0]);
 			userInfo.setBusiness(p.length >= 5 ? p[5] : null);
+			userInfo.setOrganizationUnit(p.length > 2 ? p[2] : null);
 		}
 		return userInfo;
+	};
+
+	private Function<String, UserStatus> mapToUserStatus = line -> {
+		String[] p = line.split(BnpConstants.COMMA);
+		UserStatus userStatus = null;
+		if (null != p) {
+			userStatus = new UserStatus();
+			userStatus.setId(p[0]);
+			userStatus.setStatus(p.length > 2 ? p[2] : null);
+		}
+		return userStatus;
 	};
 }

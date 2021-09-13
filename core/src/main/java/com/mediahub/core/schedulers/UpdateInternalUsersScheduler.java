@@ -32,6 +32,7 @@ public class UpdateInternalUsersScheduler implements Runnable {
 	private String schedulerName;
 	private String csvUserInfo;
 	private String csvAdditionalInfo;
+	private String csvStatusInfo;
 	private boolean isEnabled;
 
 	/** LOGGER */
@@ -72,6 +73,7 @@ public class UpdateInternalUsersScheduler implements Runnable {
 			schedulerName = config.schedulerName();
 			cronExpression = config.cronExpression();
 			csvUserInfo = config.csvUserInfo();
+			csvStatusInfo = config.csvStatusInfo();
 			csvAdditionalInfo = config.csvAdditionalInfo();
 			ScheduleOptions scheduleOptions = scheduler.EXPR(cronExpression);
 			scheduleOptions.canRunConcurrently(false);
@@ -86,7 +88,7 @@ public class UpdateInternalUsersScheduler implements Runnable {
 	public void run() {
 		LOGGER.debug("In run method"+updateInternalUsersService);
 		if (isEnabled) {
-			updateInternalUsersService.createAndUpdateUsers(csvUserInfo, csvAdditionalInfo);
+			updateInternalUsersService.createAndUpdateUsers(csvUserInfo, csvAdditionalInfo, csvStatusInfo);
 			LOGGER.debug(
 					"Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
 
@@ -110,6 +112,9 @@ public class UpdateInternalUsersScheduler implements Runnable {
 
 		@AttributeDefinition(name = "CSV File Path For Additional Info", description = "CSV File Path For Additional Info", type = AttributeType.STRING)
 		public String csvAdditionalInfo();
+		
+		@AttributeDefinition(name = "CSV File Path For Status Info", description = "CSV File Path For Status Info", type = AttributeType.STRING)
+		public String csvStatusInfo();
 
 	}
 

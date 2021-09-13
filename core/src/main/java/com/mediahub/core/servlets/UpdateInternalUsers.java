@@ -45,7 +45,8 @@ public class UpdateInternalUsers extends SlingAllMethodsServlet {
 				log.debug("Reading the data from the csv file");
 				String responseString = "Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file";
 				response.getWriter().write(responseString);
-				updateInternalUsers.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO);
+				updateInternalUsers.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO,
+						BnpConstants.CSV_USER_STATUS);
 
 			}
 

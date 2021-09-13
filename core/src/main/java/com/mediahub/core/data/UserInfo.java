@@ -3,14 +3,16 @@ package com.mediahub.core.data;
 public class UserInfo {
     private String uoId;
     private String business;
+    private String organizationUnit;
 
     public UserInfo() {
 		super();
 	}
 
-	public UserInfo(String uoId,String business) {
+	public UserInfo(String uoId,String business, String organizationUnit) {
         this.uoId = uoId;
         this.business=business;
+        this.organizationUnit = organizationUnit;
     }
 
 	public String getUoId() {
@@ -28,5 +30,14 @@ public class UserInfo {
 	public void setBusiness(String business) {
 		this.business = business;
 	}
+
+	public String getOrganizationUnit() {
+		return organizationUnit;
+	}
+
+	public void setOrganizationUnit(String organizationUnit) {
+		this.organizationUnit = organizationUnit;
+	}
+	
 }
 

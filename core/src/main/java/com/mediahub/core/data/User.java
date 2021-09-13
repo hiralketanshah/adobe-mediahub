@@ -10,12 +10,15 @@ public class User {
     private String country;    
     private String uoId;
     private String business;
+    private String statusId;
+    private String status;
+    private String organizationUnit;
 
     public User() {
 		super();
 	}
 
-	public User(String id, String familyName, String givenName, String emailId, String jobTitle,String uoId,String business) {
+	public User(String id, String familyName, String givenName, String emailId, String jobTitle,String uoId,String business, String statusId, String status, String organizationUnit) {
         this.id = id;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -23,6 +26,7 @@ public class User {
         this.jobTitle = jobTitle;
         this.uoId = uoId;
         this.business=business;
+        this.organizationUnit = organizationUnit;
     }
 
     public String getId() {
@@ -96,6 +100,30 @@ public class User {
 	public void setBusiness(String business) {
 		this.business = business;
 	}
-    
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getStatusId() {
+		return statusId;
+	}
+
+	public void setStatusId(String statusId) {
+		this.statusId = statusId;
+	}
+	
+	public String getOrganizationUnit() {
+		return organizationUnit;
+	}
+
+	public void setOrganizationUnit(String organizationUnit) {
+		this.organizationUnit = organizationUnit;
+	}
+
 }
 
