@@ -362,7 +362,7 @@
                                                                 granite:class="country"
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Country/Region"
+                                                                fieldLabel="Country"
                                                                 name="./profile/country">
                                                                 <datasource
                                                                     jcr:primaryType="nt:unstructured"

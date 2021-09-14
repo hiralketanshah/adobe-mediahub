@@ -90,7 +90,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		StringBuilder summary = new StringBuilder();
 		LOGGER.info("Start time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-			if (StringUtils.isNotBlank(csvUserInfo) && StringUtils.isNotBlank(csvAdditionalInfo)) {
+			if (StringUtils.isNotBlank(csvUserInfo) && null != csvAdditionalInfo && null != csvStatusInfo) {
 				Resource csvResource = resourceResolver.getResource(csvUserInfo);
 				Resource userInfoResource = resourceResolver.getResource(csvAdditionalInfo);
 				Resource userStatusResource = resourceResolver.getResource(csvStatusInfo);
@@ -128,7 +128,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 				returnValue.append(
 						"Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
 			} else {
-				returnValue.append("Kindly add CSV files for User Info and Addition Info and try again!");
+				returnValue.append("Kindly add CSV file path for User Info and try again!");
 			}
 		} catch (LoginException e) {
 			LOGGER.error("Error while Logging into the repository : {0}", e);
@@ -352,7 +352,6 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 			user.setProperty(BnpConstants.USER_PROFILE.concat(BnpConstants.PN_USER_PROFILE_STATUS_ID),
 					session.getValueFactory().createValue(userInfo.getStatusId(), PropertyType.STRING));
 			updated = true;
-			
 		}
 		return updated;
 	}
