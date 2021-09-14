@@ -29,7 +29,15 @@
                   com.adobe.granite.ui.components.Tag,
                   org.apache.sling.api.resource.ValueMap,
                   java.util.Map,
-                  org.apache.sling.api.resource.ResourceResolver" %><%--###
+                  java.util.Arrays,
+                  org.apache.jackrabbit.api.security.user.UserManager,
+                  org.apache.jackrabbit.api.security.user.Authorizable,
+                  org.apache.sling.api.resource.ResourceResolver,
+                  org.apache.sling.jcr.base.util.AccessControlUtil,
+                  org.apache.jackrabbit.api.security.user.User,
+                  org.apache.jackrabbit.api.security.user.UserManager,
+                  org.apache.jackrabbit.api.security.user.Group,
+                  javax.jcr.Session" %><%--###
 Masonry
 =======
 
@@ -436,6 +444,17 @@ Masonry
 
     boolean isEmpty = !items.hasNext();
 
+    Boolean internalUser = false;
+    if(StringUtils.contains(path, "/content/dam/projects") ){
+      if( StringUtils.isNotBlank(resourceResolver.getUserID()) && null != resourceResolver.getResource( resourceResolver.adaptTo(UserManager.class).getAuthorizable(resourceResolver.getUserID()).getPath())){
+        Resource user = resourceResolver.getResource(resourceResolver.adaptTo(UserManager.class).getAuthorizable(resourceResolver.getUserID()).getPath());
+        if(null != user.getChild("profile")){
+          Resource profile = user.getChild("profile");
+          internalUser = StringUtils.equals("internal", profile.getValueMap().get("type","external"));
+        }
+      }
+    }
+
     Tag tag = cmp.consumeTag();
     AttrBuilder attrs = tag.getAttrs();
     cmp.populateCommonAttrs(attrs);
@@ -475,9 +494,41 @@ Masonry
 %><coral-masonry <%= attrs %>><%
     for (long index = 0; items.hasNext(); index++) {
         Resource item = items.next();
-
         AttrBuilder itemAttrs = new AttrBuilder(request, xssAPI);
         itemAttrs.addClass("foundation-collection-item");
+
+
+        if(StringUtils.contains(path, "/content/dam/projects") && item.getChild("jcr:content") != null && item.getChild("jcr:content").getChild("metadata") != null) {
+          ValueMap metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
+          UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
+          boolean isAdmin = false;
+
+          if(userManager != null){
+              User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
+              Group group = (Group)userManager.getAuthorizable("administrators");
+              if(currentUser != null){
+                  if(group != null){
+                    isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
+                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+                    isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+                    isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+                  }
+              }
+          }
+          if( metadata.containsKey("internalfolder") && !(isAdmin || internalUser) ){
+            if(metadata.containsKey("internaluserpicker")){
+              if( (metadata.get("internaluserpicker") instanceof String) && !StringUtils.equals( metadata.get("internaluserpicker", ""), resourceResolver.getUserID() ) ){
+                itemAttrs.add("hidden", "true");
+              } else if( !Arrays.asList(metadata.get("internaluserpicker", String[].class)).contains(resourceResolver.getUserID())){
+                itemAttrs.add("hidden", "true");
+              }
+            } else {
+              itemAttrs.add("hidden", "true");
+            }
+          }
+        }
+
         itemAttrs.add("data-foundation-collection-item-id", item.getPath());
         itemAttrs.add("data-granite-collection-item-id", item.getPath());
         itemAttrs.add("data-datasource-index", "" + (index + offset));

@@ -7,12 +7,14 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Abuthahir Ibrahim
@@ -31,7 +33,6 @@ public class DeleteInternalActivationData implements WorkflowProcess {
 
         ResourceResolver resourceResolver = null;
 
-
         try {
             final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                     BnpConstants.WRITE_SERVICE);
@@ -45,11 +46,14 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_BROADCAST_URL);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_URL);
+                List<String> status = new ArrayList<>(Arrays.asList(modifiableValueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
+                status.remove(BnpConstants.BROADCAST_VALUE_INTERNAL);
+                modifiableValueMap.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());
                 resourceResolver.commit();
             }
 
-        } catch (LoginException | PersistenceException e) {
-            throw new WorkflowException("Login exception", e);
+        } catch (Exception e) {
+            throw new WorkflowException("Error while removing attributes for internal asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();

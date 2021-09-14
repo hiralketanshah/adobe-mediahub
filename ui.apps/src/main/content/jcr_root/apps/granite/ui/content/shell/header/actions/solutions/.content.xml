@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    granite:class="foundation-toggleable-control"
+    granite:title="Solutions"
+    jcr:primaryType="nt:unstructured"
+    sling:hideResource="{Boolean}true"
+    sling:resourceType="granite/ui/components/shell/header/action"
+    icon="apps"
+    trackingFeature="shell">
+    <granite:data
+        jcr:primaryType="nt:unstructured"
+        foundation-toggleable-control-src="${granite:url(&quot;/mnt/overlay/granite/ui/content/shell/solutionswitcher.html&quot;)}"/>
+</jcr:root>

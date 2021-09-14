@@ -76,6 +76,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             SearchResult result = query.getResult();
             Iterator<Resource> userResources = result.getResources();
 
+            Map<String, String> globalProperties = GlobalFilter.getGlobalProperties();
 
             if (userResources.hasNext()) {
                 asset = userResources.next();
@@ -86,7 +87,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                         switch (status) {
                             case BnpConstants.BROADCAST_VALUE_EXTERNAL:
                                 if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
-                                    trackingService.trackExternal(asset, format);
+                                    trackingService.trackExternal(asset, format, globalProperties);
                                     if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
                                         return processInternalUrl(asset, path, format);
                                     } else {
@@ -96,7 +97,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                                 break;
                             case BnpConstants.BROADCAST_VALUE_INTERNAL:
                                 if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
-                                    trackingService.trackInternal(asset, format);
+                                    trackingService.trackInternal(asset, format, globalProperties);
                                     return processInternalUrl(asset, path, format);
                                 }
                                 break;

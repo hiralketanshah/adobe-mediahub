@@ -16,27 +16,33 @@
 package com.mediahub.core.servlets;
 
 import com.mediahub.core.constants.BnpConstants;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.*;
-import org.apache.sling.api.servlets.HttpConstants;
-import org.apache.sling.api.servlets.SlingAllMethodsServlet;
-import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
+import com.mediahub.core.utils.UserUtils;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.servlets.HttpConstants;
+import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Servlet that writes some sample content into the response. It is mounted for
@@ -53,31 +59,45 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
 
     private static final long serialVersionUID = 1L;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-            BnpConstants.WRITE_SERVICE);
-
     @Reference
     private transient ResourceResolverFactory resolverFactory;
+
+    @Reference
+    private transient JobManager jobManager;
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,
                           final SlingHttpServletResponse response) throws ServletException, IOException {
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             Principal userPrincipal = request.getUserPrincipal();
             String userPath = resolver.adaptTo(UserManager.class).getAuthorizable(userPrincipal).getPath();
             Resource user = resolver.getResource(userPath);
             if (null != user) {
                 ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
-                modifiableValueMap.put("privacyAcceptedDate", Calendar.getInstance());
+                modifiableValueMap.put(BnpConstants.PRIVACY_ACCEPTED_DATE, Calendar.getInstance());
+                String welcomeEmailSent = modifiableValueMap.get(BnpConstants.WELCOME_EMAIL_SENT, Boolean.FALSE.toString());
+                if(StringUtils.equals(welcomeEmailSent, Boolean.FALSE.toString())){
+                    modifiableValueMap.put(BnpConstants.WELCOME_EMAIL_SENT, Boolean.TRUE.toString());
+                    final Map<String, Object> properties = new HashMap<>();
+                    properties.put(BnpConstants.LANGUAGE, UserUtils.getUserLanguage(user));
+                    properties.put(BnpConstants.FIRST_NAME,userPrincipal.getName());
+                    Resource profile = user.getChild(BnpConstants.PROFILE);
+                    if(null != profile && StringUtils.equals(profile.getValueMap().get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL) ){
+                        if(profile.getValueMap().containsKey(BnpConstants.EMAIL)){
+                            properties.put(BnpConstants.EMAIL,user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, StringUtils.EMPTY));
+                        } else {
+                            properties.put(BnpConstants.EMAIL,user.getValueMap().get("rep:authorizableId", StringUtils.EMPTY));
+                        }
+                        jobManager.addJob("user/welcome/email", properties);
+                    }
+
+                }
             }
             resolver.commit();
-        } catch (LoginException e) {
-            LOGGER.error("Error while fecthing system user : {0}", e);
-        } catch (UnsupportedRepositoryOperationException e) {
-            LOGGER.error("Error while fecthing system user : {0}", e);
-        } catch (RepositoryException e) {
+        } catch (LoginException | RepositoryException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
         }
-
     }
 }

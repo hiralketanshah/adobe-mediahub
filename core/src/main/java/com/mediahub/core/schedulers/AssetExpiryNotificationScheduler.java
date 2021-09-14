@@ -1,5 +1,6 @@
 package com.mediahub.core.schedulers;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.DamConstants;
 import com.day.cq.search.PredicateGroup;
@@ -8,13 +9,17 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
+import com.mediahub.core.utils.ProjectExpireNotificationUtil;
+import com.mediahub.core.utils.UserUtils;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -25,6 +30,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,6 +56,12 @@ public class AssetExpiryNotificationScheduler implements Runnable {
 
     @Reference
     private GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private SlingSettingsService slingSettingsService;
+
+    @Reference
+    I18nProvider provider;
 
     @ObjectClassDefinition(
             name = "MediaHub Asset Expiry Notification Scheduler",
@@ -160,7 +172,9 @@ public class AssetExpiryNotificationScheduler implements Runnable {
      * @param expiredAsset - Expired asset resource
      */
     protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath, Resource expiredAsset) {
-        String subject = "Mediahub - Image is past expiry and will be deactivated";
+        String language = UserUtils.getUserLanguage(user);
+        Locale locale = LocaleUtils.toLocale(language);
+        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Image is past expiry and will be deactivated", locale);
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         emailParams.put("assetPath", expiredAsset.getPath());

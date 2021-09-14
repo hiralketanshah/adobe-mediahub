@@ -90,6 +90,22 @@ public class BnpConstants {
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
+    public static final String BNPP_CONFIDENTIALITY = "bnpp-confidentiality";
+    public static final String BNPP_LANGUAGE = "bnpp-language";
+    public static final String BNPP_SUBTITLES = "bnpp-subtitles";
+    public static final String BNPP_SUBTITLE_LANGUAGES = "bnpp-subtitlelanguage";
+    public static final String BNPP_MEDIA_TYPE = "bnpp-media-type";
+    public static final String BNPP_MEDIA_CATEGORY = "bnpp-category";
+    public static final String BNPP_MEDIA_THEME = "bnpp-theme";
+    public static final String BNPP_MEDIA_ENTITIES = "bnpp-identified-entities";
+    public static final String BNPP_MEDIA_GEOGRAPHICAL = "bnpp-geographicalarea";
+    public static final String BNPP_MEDIA_COUNTRY = "bnpp-country-prod";
+    public static final String BNPP_MEDIA_SPONSOR = "bnpp-sponsor-entities";
+
+
+
+    public static final String DAM_FILE_FORMAT = "dc:format";
+    public static final String DAM_SLING_FOLDER = "sling:Folder";
 
 
     /**
@@ -111,17 +127,29 @@ public class BnpConstants {
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
 
+    public static final String S7_DOMAIN_PROPERTY = "dam:scene7Domain";
     public static final String S7_FILE_STATUS_PROPERTY = "dam:scene7FileStatus";
     public static final String S7_FILE_STATUS_NOT_SUPPORTED = "NotSupported";
+    public static final String S7_FILE_STATUS_COMPLETE = "PublishComplete";
+    public static final String S7_FILE_STATUS_INCOMPLETE = "PublishIncomplete";
+    public static final String S7_TYPE = "dam:scene7Type";
+    public static final String S7_FILE = "dam:scene7File";
 
     public static final String BROADCAST_VALUE_EXTERNAL = "external";
     public static final String BROADCAST_VALUE_INTERNAL = "internal";
+    public static final String BROADCAST_VALUE_NOT_BROADCAST = "not-broadcast";
 
     public static final String DAM_PATH = "/content/dam";
     public static final String USER_PROFILE_EMAIL = "./profile/email";
     public static final String P_LIMIT = "p.limit";
 
     public static final String PRIVACY_ACCEPTED_DATE = "privacyAcceptedDate";
+    public static final String WELCOME_EMAIL_SENT = "welcomeEmailSent";
+    public static final String LANGUAGE = "language";
+    public static final String PREFERENCES = "preferences";
+    public static final String PREFERENCES_LANGUAGE_PROPERTY = "./preferences/language";
+    public static final String AFTER_VALUE = "afterValue";
+    public static final String BEFORE_VALUE = "beforeValue";
     
     /**
      * User Profile Details
@@ -149,4 +177,5 @@ public class BnpConstants {
     public static final String VAL_USER_PROFILE_TYPE = "internal";
     public static final String VAL_USER_PROFILE_COMPANY = "BNP Paribas";
     public static final String PN_PRINCIPAL_NAME = "rep:principalName";
+
 }

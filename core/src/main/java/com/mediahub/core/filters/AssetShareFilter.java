@@ -1,11 +1,5 @@
 package com.mediahub.core.filters;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -22,20 +16,27 @@ import org.osgi.service.component.propertytypes.ServiceVendor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+
 /**
  * Servlet filter to handle the share asset request.
  */
 
 
 @Component(service = {AuthenticationHandler.class},
-           property = {
+        property = {
                 AuthenticationHandler.PATH_PROPERTY + "=" + AssetShareFilter.SHARE_PAGE_PATH_VANITY,
                 EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
                 EngineConstants.SLING_FILTER_PATTERN + "=" + "/linkshare.*",
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=" + "html",
                 EngineConstants.SLING_FILTER_METHODS + "=" + "GET",
-               "service.ranking" + "=" + Integer.MAX_VALUE
-           })
+                "service.ranking" + "=" + Integer.MAX_VALUE
+        })
 @ServiceDescription("To filter incoming share asset requests")
 @ServiceRanking(Integer.MAX_VALUE)
 @ServiceVendor("Adobe")
@@ -53,23 +54,25 @@ public class AssetShareFilter implements AuthenticationHandler {
 
     @Override
     public AuthenticationInfo extractCredentials(HttpServletRequest request,
-        HttpServletResponse response) {
+                                                 HttpServletResponse response) {
         final Map<String, Object> authInfo = Collections
-            .singletonMap(ResourceResolverFactory.SUBSERVICE, "writeService");
+                .singletonMap(ResourceResolverFactory.SUBSERVICE, "writeService");
         String sh = request.getParameterMap().get("sh")[0];
-        try(ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             Resource resource = resolver.getResource("/var/dam/share/" + sh.split("\\.")[0]);
             boolean isSecured = resource.getValueMap().get("secured", Boolean.FALSE);
             boolean isLogged = Boolean.FALSE;
             Cookie[] cookies = request.getCookies();
-            for(Cookie cookie : cookies){
-                if(StringUtils.equals(cookie.getName(), "login-token")){
-                    isLogged = Boolean.TRUE;
-                    break;
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (StringUtils.equals(cookie.getName(), "login-token")) {
+                        isLogged = Boolean.TRUE;
+                        break;
+                    }
                 }
             }
-            if(isSecured && !isLogged){
-                String newURI = "/apps/granite/core/content/login.html" + "?resource=%2Flinkshare.html%3Fsh=" + sh +"%26redirected%3Dtrue";
+            if (isSecured && !isLogged) {
+                String newURI = "/apps/granite/core/content/login.html" + "?resource=%2Flinkshare.html%3Fsh=" + sh + "%26redirected%3Dtrue";
                 response.sendRedirect(newURI);
             }
         } catch (LoginException ex) {
@@ -83,13 +86,13 @@ public class AssetShareFilter implements AuthenticationHandler {
 
     @Override
     public boolean requestCredentials(HttpServletRequest httpServletRequest,
-        HttpServletResponse httpServletResponse) throws IOException {
+                                      HttpServletResponse httpServletResponse) throws IOException {
         return false;
     }
 
     @Override
     public void dropCredentials(HttpServletRequest httpServletRequest,
-        HttpServletResponse httpServletResponse) throws IOException {
+                                HttpServletResponse httpServletResponse) throws IOException {
         // Methods to be implemented for the  Authentication handler interface
     }
 }

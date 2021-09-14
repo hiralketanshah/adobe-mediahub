@@ -3,7 +3,7 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:designPath="/libs/settings/wcm/designs/default"
-        cq:lastModified="{Date}2020-12-01T13:14:10.132+01:00"
+        cq:lastModified="{Date}2021-08-13T14:59:48.999+02:00"
         cq:lastModifiedBy="admin"
         cq:template="/libs/cq/workflow/templates/model"
         jcr:primaryType="cq:PageContent"
@@ -12,67 +12,39 @@
         <flow
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
-            <dmimageprocess_copy
-                jcr:description="Processes assets for use with Dynamic Media Image Services"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Dynamic Media Process Image Assets"
-                sling:resourceType="dam/components/s7imaging/dmimageprocess">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    CONFIGS="[140:100:false,48:48:false,319:319:false]"
-                    HEIGHT="1280"
-                    MIME_TYPE="image/jpeg"
-                    PROCESS="com.adobe.cq.dam.dm.process.workflow.DMImageProcess"
-                    PROCESS_AUTO_ADVANCE="true"
-                    QUALITY="90"
-                    WIDTH="1280"/>
-            </dmimageprocess_copy>
-            <scene7upload_copy
-                jcr:description="Upload assets to configured remote Scene7 service for Dynamic Media delivery"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Scene7"
-                sling:resourceType="dam/components/scene7/scene7upload">
-                <metaData
-                    jcr:primaryType="nt:unstructured"
-                    advanceOnTimeout="true"
-                    EXTERNAL_PROCESS="com.day.cq.dam.scene7.impl.process.Scene7UploadProcess"
-                    period="30"
-                    PROCESS_AUTO_ADVANCE="true"
-                    timeout="3600"/>
-            </scene7upload_copy>
             <process_1607596535
-              jcr:primaryType="nt:unstructured"
-              jcr:title="Scene7 Asset Metadata"
-              sling:resourceType="cq/workflow/components/model/process">
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Scene7 Asset Metadata"
+                sling:resourceType="cq/workflow/components/model/process">
                 <metaData
-                  jcr:primaryType="nt:unstructured"
-                  PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
-                  PROCESS_AUTO_ADVANCE="true"/>
-            </process_1607596535>
-            <process
-              jcr:description="CDN Cache Invalidation"
-              jcr:primaryType="nt:unstructured"
-              jcr:title="CDN Cache Invalidation"
-              sling:resourceType="cq/workflow/components/model/process">
-                <metaData
-                  jcr:primaryType="nt:unstructured"
-                  PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
-                  PROCESS_AUTO_ADVANCE="true"/>
-            </process>
-            <activateresourceproc
-                    jcr:created="{Date}2020-11-24T10:00:44.800Z"
-                    jcr:createdBy="arnaud-test"
-                    jcr:description="A process to activate a page or asset"
-                    jcr:lastModified="{Date}2020-11-24T10:00:50.539Z"
-                    jcr:lastModifiedBy="arnaud-test"
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Activate Page/Asset"
-                    sling:resourceType="wcm/workflow/components/workflow/activateresourceprocess">
+                    PROCESS="com.mediahub.core.workflows.SaveScene7MetadataProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process_1607596535>
+            <activateresourceproc
+                jcr:created="{Date}2020-11-24T10:00:44.800Z"
+                jcr:createdBy="arnaud-test"
+                jcr:description="A process to activate a page or asset"
+                jcr:lastModified="{Date}2020-11-24T10:00:50.539Z"
+                jcr:lastModifiedBy="arnaud-test"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Activate Page/Asset"
+                sling:resourceType="wcm/workflow/components/workflow/activateresourceprocess">
                 <metaData
-                        jcr:primaryType="nt:unstructured"
-                        PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
-                        PROCESS_AUTO_ADVANCE="true"/>
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
             </activateresourceproc>
+            <process
+                jcr:description="CDN Cache Invalidation"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="CDN Cache Invalidation"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.mediahub.core.workflows.CdnInvalidateCacheWorkflowProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process>
         </flow>
     </jcr:content>
 </jcr:root>

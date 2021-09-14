@@ -10,7 +10,10 @@ import com.adobe.granite.workflow.model.WorkflowModel;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -37,7 +40,7 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
         if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
-            throw new WorkflowException("Impossible de recupérer le PayLoad");
+            throw new WorkflowException("Unable to get the payload");
         }
 
         ResourceResolver resourceResolver = null;
@@ -47,23 +50,23 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
             resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
-            if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata") != null) {
-                ValueMap properties = payload.getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
+            if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
+                ValueMap properties = payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
                 if (properties.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
-                    String[] stasus = properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{});
+                    String[] status = properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{});
 
-                    if (Arrays.asList(stasus).contains("not-broadcast")) {
+                    if (Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_NOT_BROADCAST)) {
                         // for future requirement
                     } else {
 
-                        if (Arrays.asList(stasus).contains("external")) {
+                        if (Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
                             String workflowName = "/var/workflow/models/mediahub/mediahub---external-publish";
                             WorkflowModel wfModel = workflowSession.getModel(workflowName);
                             WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                             workflowSession.startWorkflow(wfModel, wfData);
                         }
 
-                        if (Arrays.asList(stasus).contains("internal")) {
+                        if (Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
                             String workflowName = "/var/workflow/models/mediahub/mediahub---internal-publish";
                             WorkflowModel wfModel = workflowSession.getModel(workflowName);
                             WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
@@ -74,31 +77,25 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
                             }
                         }
 
-                        if ((!Arrays.asList(stasus).contains("external")) && properties.containsKey("dam:scene7ID") && StringUtils.isNotBlank(properties.get("dam:scene7ID", StringUtils.EMPTY))) {
+                        if ((!Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) && !StringUtils.isEmpty(properties.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
                             String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
                             WorkflowModel wfModel = workflowSession.getModel(workflowName);
-                            WorkflowData wfData = workflowSession
-                                    .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+                            WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                             workflowSession.startWorkflow(wfModel, wfData);
                         }
 
-                        if ((!Arrays.asList(stasus).contains("internal")) && properties.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL) && StringUtils.isNotBlank(properties.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, StringUtils.EMPTY))) {
+                        if ((!Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) && !StringUtils.isEmpty(properties.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, String.class))) {
                             String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
                             WorkflowModel wfModel = workflowSession.getModel(workflowName);
-                            WorkflowData wfData = workflowSession
-                                    .newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
+                            WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                             workflowSession.startWorkflow(wfModel, wfData);
                         }
 
                     }
                 }
             }
-        } catch (LoginException e) {
-            log.error("LoginException occured : {}", e.getMessage());
-            throw new WorkflowException("Login exception", e);
         } catch (Exception e) {
-            log.error("Exception occured : {}", e.getMessage());
-            throw new WorkflowException("Login exception", e);
+            throw new WorkflowException("Error while publishing asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();

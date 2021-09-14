@@ -5,16 +5,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
+import com.mediahub.core.utils.UserUtils;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -25,6 +30,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +46,7 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.osgi.service.component.annotations.Reference;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 @ExtendWith({ AemContextExtension.class })
@@ -84,12 +91,21 @@ public class UserDeactivationScheduledTaskTest {
     @Mock
     Authorizable authorizable;
 
+    @Mock
+    SlingSettingsService slingSettingsService;
+
+    @Mock
+    I18nProvider provider;
+
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
+        Set<String> runModes = new HashSet<>();
+        runModes.add("stage");
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
         TestLoggerFactory.clear();
     }
 
@@ -134,19 +150,23 @@ public class UserDeactivationScheduledTaskTest {
     }
 
     @Test
-    void sendWarningMail() {
+    void sendWarningMail() throws RepositoryException {
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        when(provider.translate("User will be Deactivated in 30 days", LocaleUtils
+            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated in 30 days");
         fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
     }
 
     @Test
-    void sendDeactivationgMail() {
+    void sendDeactivationgMail() throws RepositoryException {
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
+        when(provider.translate("User will be Deactivated", LocaleUtils
+            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated");
         fixture.sendDeactivationgMail(resource, new String[] { "abibrahi@adobe.com" },
                 "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
     }
