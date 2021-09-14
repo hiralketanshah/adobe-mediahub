@@ -278,6 +278,24 @@
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                 fieldLabel="Company"
                                                                 name="./profile/company"/>
+                                                            <employmentStatus
+                                                                granite:class="status"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                fieldLabel="Employment Status"
+                                                                name="./profile/status"/>
+                                                            <business
+                                                                granite:class="business"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                fieldLabel="Core Business"
+                                                                name="./profile/pole"/>
+                                                            <organizationalUnit
+                                                                granite:class="organizational-unit"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                fieldLabel="Organizational Unit"
+                                                                name="./profile/uo"/>
                                                             <gender
                                                                 granite:class="gender"
                                                                 jcr:primaryType="nt:unstructured"
@@ -344,7 +362,7 @@
                                                                 granite:class="country"
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Country/Region"
+                                                                fieldLabel="Country"
                                                                 name="./profile/country">
                                                                 <datasource
                                                                     jcr:primaryType="nt:unstructured"
