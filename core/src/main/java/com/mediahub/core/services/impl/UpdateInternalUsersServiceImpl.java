@@ -270,6 +270,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 		}
 	}
 
+	@SuppressWarnings("squid:S2070")
 	public static String encryptThisString(String input) {
 		String hashtext = input;
 		try {
