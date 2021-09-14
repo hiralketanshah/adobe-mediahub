@@ -1374,7 +1374,7 @@ registry.register("foundation.collection.action.activecondition", {
                     asset = asset.getParent();
                 }
             }
-            return asset.getValueMap().get("projectPath", String[].class)[0];
+            return asset.getValueMap().get("projectPath", new String[]{""})[0];
         }
         return null;
     }
