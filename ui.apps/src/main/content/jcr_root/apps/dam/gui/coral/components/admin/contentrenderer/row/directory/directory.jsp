@@ -16,7 +16,14 @@
 --%>
 <%
 %><%@page import="java.util.Collections,
-                  org.apache.sling.api.resource.Resource"%><%
+                  java.util.Arrays,
+                  org.apache.sling.api.resource.Resource,
+                  org.apache.sling.api.resource.ResourceResolver,
+                  org.apache.sling.jcr.base.util.AccessControlUtil,
+                  org.apache.jackrabbit.api.security.user.User,
+                  org.apache.jackrabbit.api.security.user.UserManager,
+                  org.apache.jackrabbit.api.security.user.Group,
+                  javax.jcr.Session"%><%
 %><%@taglib prefix="cq" uri="http://www.day.com/taglibs/cq/1.0"%><%
 %><%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/base/init/directoryBase.jsp"%>
 <%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/row/common/common.jsp"%><%
@@ -35,9 +42,52 @@ attrs.add("is", "coral-table-row");
 attrs.add("data-item-title", resourceTitle);
 attrs.add("data-item-type", type);
 
+String path = resource.getPath();
 
 request.setAttribute("com.adobe.assets.meta.attributes", metaAttrs);
 PublicationStatus publicationStatus = getPublicationStatus(request, i18n);
+
+Boolean internalUser = false;
+if(StringUtils.contains(path, "/content/dam/projects") ){
+  if( StringUtils.isNotBlank(resourceResolver.getUserID()) && null != resourceResolver.getResource( resourceResolver.adaptTo(UserManager.class).getAuthorizable(resourceResolver.getUserID()).getPath())){
+    Resource user = resourceResolver.getResource(resourceResolver.adaptTo(UserManager.class).getAuthorizable(resourceResolver.getUserID()).getPath());
+    if(null != user.getChild("profile")){
+      Resource profile = user.getChild("profile");
+      internalUser = StringUtils.equals("internal", profile.getValueMap().get("type","external"));
+    }
+  }
+}
+
+if(StringUtils.contains(path, "/content/dam/projects") && resource.getChild("jcr:content") != null && resource.getChild("jcr:content").getChild("metadata") != null) {
+  ValueMap metadata = resource.getChild("jcr:content").getChild("metadata").getValueMap();
+  UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
+  boolean isAdmin = false;
+
+  if(userManager != null){
+      User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
+      Group group = (Group)userManager.getAuthorizable("administrators");
+      if(currentUser != null){
+          if(group != null){
+            isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
+          } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+            isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+          } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+            isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+          }
+      }
+  }
+  if( metadata.containsKey("internalfolder") && !(isAdmin || internalUser) ){
+    if(metadata.containsKey("internaluserpicker")){
+      if( (metadata.get("internaluserpicker") instanceof String) && !StringUtils.equals( metadata.get("internaluserpicker", ""), resourceResolver.getUserID() ) ){
+        attrs.add("hidden", "true");
+      } else if( !Arrays.asList(metadata.get("internaluserpicker", String[].class)).contains(resourceResolver.getUserID())){
+        attrs.add("hidden", "true");
+      }
+    } else {
+      attrs.add("hidden", "true");
+    }
+  }
+}
 
 %><tr <%= attrs %>>
     <td is="coral-table-cell" coral-table-rowselect>
