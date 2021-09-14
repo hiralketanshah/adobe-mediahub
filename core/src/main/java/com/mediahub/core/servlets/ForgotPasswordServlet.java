@@ -64,9 +64,6 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
 
     private static final long serialVersionUID = 1L;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-            BnpConstants.WRITE_SERVICE);
-
     @Reference
     private Externalizer externalizer;
 
@@ -85,6 +82,8 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
     @Override
     protected void doPost(final SlingHttpServletRequest request,
                           final SlingHttpServletResponse response) throws ServletException, IOException {
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+                BnpConstants.WRITE_SERVICE);
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 
             String userName = request.getRequestParameterMap().getValue("j_username").getString();

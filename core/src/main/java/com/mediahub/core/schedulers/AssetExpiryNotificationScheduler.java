@@ -11,25 +11,11 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.UserUtils;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -39,6 +25,11 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Scheduler class to send Project Expire Email Notification to project group users.
@@ -85,9 +76,7 @@ public class AssetExpiryNotificationScheduler implements Runnable {
     @Override
     public void run() {
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, "writeService");
-        final ResourceResolver resolver;
-        try {
-            resolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
             Map<String, String> map = getPredicateMap(damPath, LocalDateTime.now().toString());
             Query query = builder.createQuery(PredicateGroup.create(map), resolver.adaptTo(Session.class));
@@ -100,7 +89,7 @@ public class AssetExpiryNotificationScheduler implements Runnable {
                 logger.info("Expired Asset {}", expiredAsset.getPath());
             });
 
-            if(resolver.hasChanges()){
+            if (resolver.hasChanges()) {
                 resolver.commit();
             }
 
@@ -114,23 +103,23 @@ public class AssetExpiryNotificationScheduler implements Runnable {
     /**
      * Method to notify the author who created asset
      *
-     * @param resolver - resource resolver object
-     * @param userManager - user manager to fetch user who created asset
+     * @param resolver     - resource resolver object
+     * @param userManager  - user manager to fetch user who created asset
      * @param expiredAsset - expired asset resource
      */
     private void notifyAssetAuthor(ResourceResolver resolver, UserManager userManager,
-        Resource expiredAsset) {
+                                   Resource expiredAsset) {
         ValueMap assetProperties = expiredAsset.getValueMap();
         String createdBy = assetProperties.get(JcrConstants.JCR_CREATED_BY, StringUtils.EMPTY);
 
         Resource contentResource = expiredAsset.getChild(JcrConstants.JCR_CONTENT);
 
-        if(contentResource != null){
+        if (contentResource != null) {
             ModifiableValueMap assetContent = contentResource.adaptTo(ModifiableValueMap.class);
-            if(StringUtils.isNotBlank(createdBy) && Boolean.FALSE.equals(assetContent.get("notified", Boolean.FALSE)) ){
+            if (StringUtils.isNotBlank(createdBy) && Boolean.FALSE.equals(assetContent.get("notified", Boolean.FALSE))) {
                 try {
-                    Authorizable user  = userManager.getAuthorizable(createdBy);
-                    if(user != null && user.getProperty(BnpConstants.USER_PROFILE_EMAIL) != null && user.getProperty(BnpConstants.USER_PROFILE_EMAIL).length > 0){
+                    Authorizable user = userManager.getAuthorizable(createdBy);
+                    if (user != null && user.getProperty(BnpConstants.USER_PROFILE_EMAIL) != null && user.getProperty(BnpConstants.USER_PROFILE_EMAIL).length > 0) {
                         String email = user.getProperty(BnpConstants.USER_PROFILE_EMAIL)[0].getString();
                         String[] emailRecipients = {email};
                         Resource userResource = resolver.getResource(user.getPath());
@@ -166,10 +155,10 @@ public class AssetExpiryNotificationScheduler implements Runnable {
     /**
      * Method to send user deactivation within 30 days notice
      *
-     * @param user - AEM user
+     * @param user            - AEM user
      * @param emailRecipients - Email recipient to which mail to be sent
-     * @param templatePath - template path to create email
-     * @param expiredAsset - Expired asset resource
+     * @param templatePath    - template path to create email
+     * @param expiredAsset    - Expired asset resource
      */
     protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath, Resource expiredAsset) {
         String language = UserUtils.getUserLanguage(user);
@@ -179,9 +168,9 @@ public class AssetExpiryNotificationScheduler implements Runnable {
         emailParams.put(BnpConstants.SUBJECT, subject);
         emailParams.put("assetPath", expiredAsset.getPath());
         Resource profile = user.getChild(BnpConstants.PROFILE);
-        if(profile != null){
-            emailParams.put(BnpConstants.FIRSTNAME,profile.getValueMap().get(BnpConstants.FIRST_NAME,
-                org.apache.commons.lang3.StringUtils.EMPTY));
+        if (profile != null) {
+            emailParams.put(BnpConstants.FIRSTNAME, profile.getValueMap().get(BnpConstants.FIRST_NAME,
+                    org.apache.commons.lang3.StringUtils.EMPTY));
         } else {
             emailParams.put(BnpConstants.FIRSTNAME, org.apache.commons.lang3.StringUtils.EMPTY);
         }

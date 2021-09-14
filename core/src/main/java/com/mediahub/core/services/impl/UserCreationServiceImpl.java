@@ -1,20 +1,10 @@
 package com.mediahub.core.services.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.Rendition;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.models.UserData;
+import com.mediahub.core.services.UserCreationService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -29,114 +19,116 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.dam.api.Asset;
-import com.day.cq.dam.api.Rendition;
-import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.models.UserData;
-import com.mediahub.core.services.UserCreationService;
+import javax.jcr.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Component(service = UserCreationService.class, immediate = true)
 public class UserCreationServiceImpl implements UserCreationService {
-	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Reference
-	private ResourceResolverFactory resourceResolverFactory;
-	
-	@Override
-	public void createUsers(List<UserData> users, ResourceResolver resourceResolver) {
-		Session session;
-		try {
-			session = resourceResolver.adaptTo(Session.class);
-			JackrabbitSession js = (JackrabbitSession) session;
-			UserManager userManager = js.getUserManager();
-			ValueFactory valueFactory = session.getValueFactory();
-			User user;
-			int countUsers =0;
-			for (UserData us : users) {
-				if (userManager.getAuthorizable(us.getEmail()) == null) {
-					user = userManager.createUser(us.getEmail(), StringUtils.EMPTY);
-					countUsers++;
-					Value firstNameValue = valueFactory.createValue(us.getFirstName(), PropertyType.STRING);
-					user.setProperty("./profile/givenName", firstNameValue);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-					Value lastNameValue = valueFactory.createValue(us.getLastName(), PropertyType.STRING);
-					user.setProperty("./profile/familyName", lastNameValue);
+    @Reference
+    private ResourceResolverFactory resourceResolverFactory;
 
-					Value emailValue = valueFactory.createValue(us.getEmail(), PropertyType.STRING);
-					user.setProperty("./profile/email", emailValue);
+    @Override
+    public void createUsers(List<UserData> users, ResourceResolver resourceResolver) {
+        Session session;
+        try {
+            session = resourceResolver.adaptTo(Session.class);
+            JackrabbitSession js = (JackrabbitSession) session;
+            UserManager userManager = js.getUserManager();
+            ValueFactory valueFactory = session.getValueFactory();
+            User user;
+            int countUsers = 0;
+            for (UserData us : users) {
+                if (userManager.getAuthorizable(us.getEmail()) == null) {
+                    user = userManager.createUser(us.getEmail(), StringUtils.EMPTY);
+                    countUsers++;
+                    Value firstNameValue = valueFactory.createValue(us.getFirstName(), PropertyType.STRING);
+                    user.setProperty("./profile/givenName", firstNameValue);
 
-					Group addUserToGroup = (Group) (userManager.getAuthorizable(BnpConstants.BASIC_GROUP));
-					if (null != addUserToGroup) {
-						addUserToGroup.addMember(user);
-					}
-				}
-			}
-			log.info("Users created from CSV file is {}", countUsers);
-			if (!userManager.isAutoSave()) {
-				js.save();
-				session.save();
+                    Value lastNameValue = valueFactory.createValue(us.getLastName(), PropertyType.STRING);
+                    user.setProperty("./profile/familyName", lastNameValue);
 
-			}
-		} catch (RepositoryException e) {
-			log.info("Error while creating user", e);
-		}
-	}
+                    Value emailValue = valueFactory.createValue(us.getEmail(), PropertyType.STRING);
+                    user.setProperty("./profile/email", emailValue);
 
-	@Override
-	public void readCsv(String filePath) {
-		Resource resource = null;
-		ResourceResolver resourceResolver=null;
-		List<UserData> users;
-		Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-				BnpConstants.WRITE_SERVICE);
-		try {
-			resourceResolver = resourceResolverFactory.getServiceResourceResolver(authInfo);
-			resource = resourceResolver.getResource(filePath);
-			Asset asset = resource.adaptTo(Asset.class);
-			Rendition rend = asset.getOriginal();
-			InputStream is = rend.getStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			String line = "";
-			String splitBy = ",";
-			int count=0;
-			UserData user = null;
-			users = new LinkedList<>();
-			while ((line = br.readLine()) != null) {
-				if(count >0) {
-					user = new UserData();
-					String[] csvdata = line.split(splitBy);
-					String id= csvdata[0];
-					if(null!= id && !id.isEmpty()) {
-						user.setId(id);
-					}
-					
-					String email = csvdata[1];
-					if (email != null && !email.isEmpty()) {
-						user.setEmail(email);
-					}
-					
-					String firstName = csvdata[2];
-					if (firstName != null && !firstName.isEmpty()) {
-						user.setFirstName(firstName);
-					}
+                    Group addUserToGroup = (Group) (userManager.getAuthorizable(BnpConstants.BASIC_GROUP));
+                    if (null != addUserToGroup) {
+                        addUserToGroup.addMember(user);
+                    }
+                }
+            }
+            log.info("Users created from CSV file is {}", countUsers);
+            if (!userManager.isAutoSave()) {
+                js.save();
+                session.save();
 
-					String lastName = csvdata[3];
-					if (lastName != null && !lastName.isEmpty()) {
-						user.setLastName(lastName);
-					}
-					users.add(user);
-				}
-				count++;
+            }
+        } catch (RepositoryException e) {
+            log.info("Error while creating user", e);
+        }
+    }
 
-			}
-			createUsers(users,resourceResolver);
-			
-			br.close();
-			
-		} catch (IOException | LoginException e) {
-			log.info("Error while reading CSV", e);
-		}
-	}
+    @Override
+    public void readCsv(String filePath) {
+        Resource resource = null;
+        List<UserData> users;
+        Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+                BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
+            resource = resourceResolver.getResource(filePath);
+            Asset asset = resource.adaptTo(Asset.class);
+            Rendition rend = asset.getOriginal();
+            InputStream is = rend.getStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = "";
+            String splitBy = ",";
+            int count = 0;
+            UserData user = null;
+            users = new LinkedList<>();
+            while ((line = br.readLine()) != null) {
+                if (count > 0) {
+                    user = new UserData();
+                    String[] csvdata = line.split(splitBy);
+                    String id = csvdata[0];
+                    if (null != id && !id.isEmpty()) {
+                        user.setId(id);
+                    }
+
+                    String email = csvdata[1];
+                    if (email != null && !email.isEmpty()) {
+                        user.setEmail(email);
+                    }
+
+                    String firstName = csvdata[2];
+                    if (firstName != null && !firstName.isEmpty()) {
+                        user.setFirstName(firstName);
+                    }
+
+                    String lastName = csvdata[3];
+                    if (lastName != null && !lastName.isEmpty()) {
+                        user.setLastName(lastName);
+                    }
+                    users.add(user);
+                }
+                count++;
+
+            }
+            createUsers(users, resourceResolver);
+
+            br.close();
+
+        } catch (IOException | LoginException e) {
+            log.info("Error while reading CSV", e);
+        }
+    }
 
 }

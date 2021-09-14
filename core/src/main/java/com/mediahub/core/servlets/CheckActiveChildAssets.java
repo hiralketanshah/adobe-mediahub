@@ -46,11 +46,8 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
                          final SlingHttpServletResponse response) throws IOException {
         LOGGER.debug("Check Active Asset...");
         response.setContentType("application/json");
-        ResourceResolver adminResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             boolean hasAdminPrivileges = hasAdminPrivileges(request, adminResolver);
             Resource resource = adminResolver.getResource(request.getRequestParameter("paths").toString());
             if (resource != null && resource.hasChildren()) {

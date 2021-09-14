@@ -14,15 +14,6 @@ import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.QueryUtils;
 import com.mediahub.core.utils.UserUtils;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Locale;
-import java.util.Map;
-import javax.jcr.Node;
-import javax.jcr.Session;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
@@ -40,6 +31,10 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+import java.util.*;
 
 /**
  * Scheduler class to send Project Expire Email Notification to project group users.
@@ -91,9 +86,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
         logger.debug("MediaHub Project Expiry Notification Scheduler");
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                 "writeService");
-        ResourceResolver resolver = null;
-        try {
-            resolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 
             QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
             Map<String, String> map = QueryUtils.getPredicateMapProjectDueDate(projectPath);
@@ -117,8 +110,8 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                 Project project = resolver.getResource(projectpath).adaptTo(Project.class);
                 logger.debug("Projecs due date : {}", projectactualDueDate);
                 Date actualDueDate = DateUtils.parseDate(projectactualDueDate, new String[]{
-                    YYYY_MM_DD});
-                Date crrentDate = DateUtils.parseDate(DateUtils.formatDate(Calendar.getInstance().getTime(),YYYY_MM_DD), new String[]{YYYY_MM_DD});
+                        YYYY_MM_DD});
+                Date crrentDate = DateUtils.parseDate(DateUtils.formatDate(Calendar.getInstance().getTime(), YYYY_MM_DD), new String[]{YYYY_MM_DD});
                 int differenceInDays = (int) ((actualDueDate.getTime() - crrentDate.getTime()) / (1000 * 60 * 60 * 24));
                 logger.debug("difference jour : {}", differenceInDays);
                 if (differenceInDays == 30 || differenceInDays == 0 || differenceInDays <= -31) {
@@ -134,7 +127,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
                     emailParams.put("projecturl", externalizer.authorLink(resolver, "/projects/details.html" + projectpath));
 
                     sendProjectExpiryNotification(jcrContentNode, differenceInDays, userManager,
-                        itr, emailParams);
+                            itr, emailParams);
                     if (differenceInDays <= -31) {
                         logger.debug(" deletion");
                         projectManager.deleteProject(project);
@@ -144,15 +137,14 @@ public class ProjectExpireNotificationScheduler implements Runnable {
             if (resolver.hasChanges()) {
                 resolver.commit();
             }
-            resolver.close();
         } catch (Exception e) {
             logger.error("Error while project expire notification  {}", e.getMessage());
         }
     }
 
     private void sendProjectExpiryNotification(Node jcrContentNode, int differenceInDays,
-        UserManager userManager, Iterator<Authorizable> itr, Map<String, String> emailParams)
-        throws javax.jcr.RepositoryException {
+                                               UserManager userManager, Iterator<Authorizable> itr, Map<String, String> emailParams)
+            throws javax.jcr.RepositoryException {
         while (itr.hasNext()) {
             Object obj = itr.next();
             if (obj instanceof User) {

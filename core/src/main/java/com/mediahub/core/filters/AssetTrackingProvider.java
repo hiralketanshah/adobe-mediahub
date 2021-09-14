@@ -101,6 +101,9 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                                     return processInternalUrl(asset, path, format);
                                 }
                                 break;
+                            default:
+                                log.info("No broadcast status found");
+                                break;
                         }
                     }
 
@@ -155,6 +158,9 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                 break;
             case "md":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL_MD, String.class);
+                break;
+            default:
+                log.info("No format found");
                 break;
         }
 
