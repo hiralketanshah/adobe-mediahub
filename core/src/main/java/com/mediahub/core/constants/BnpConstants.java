@@ -118,6 +118,8 @@ public class BnpConstants {
 
     public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
+    public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
+    public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
 
     /**
      * Assets Tracking URLs
@@ -150,6 +152,7 @@ public class BnpConstants {
     public static final String PREFERENCES_LANGUAGE_PROPERTY = "./preferences/language";
     public static final String AFTER_VALUE = "afterValue";
     public static final String BEFORE_VALUE = "beforeValue";
+    public static final String IS_CONTENT = "is/content/";
     
     /**
      * User Profile Details
