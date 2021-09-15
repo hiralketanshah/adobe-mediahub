@@ -73,6 +73,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
     @Reference
     private transient GenericEmailNotification genericEmailNotification;
 
+    @SuppressWarnings("CQRules:AMSCORE-553")
     @Reference
     private transient SlingSettingsService slingSettingsService;
 
@@ -113,8 +114,8 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                     String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Forgot password link", locale);
                     emailParams.put(BnpConstants.SUBJECT, subject);
                     emailParams.put("firstname", firstname[0].getString());
-                    emailParams.put("link", externalizer.authorLink(resolver, "/apps/granite/core/content/login.changepassword.html?token=" + userToken));
-                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/forgotpasswordemailtemplate.html", emailRecipients, emailParams);
+                    emailParams.put("link", externalizer.authorLink(resolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
+                    genericEmailNotification.sendEmail(BnpConstants.CHANGE_PASSWORD_EMAIL_TEMPLATE, emailRecipients, emailParams);
                 }
                 resolver.commit();
             } else {

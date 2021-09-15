@@ -1,6 +1,8 @@
 package com.mediahub.core.servlets;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -59,7 +61,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 Node jcrContentNode = getJcrContentNode(metaDataResource);
                 Node metaDataNode = jcrContentNode.getNode("metadata");
 
-                String mimeType = metaDataNode.getProperty("dc:format").getString();
+                String mimeType = metaDataNode.getProperty(DamConstants.DC_FORMAT).getString();
                 int index = mimeType.lastIndexOf("/");
                 String imageVideo = null;
                 imageVideo = mimeType.substring(0, index);
@@ -86,7 +88,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 }
             }
         } catch (LoginException | RepositoryException e) {
-            logger.debug("Error when getting resource", e);
+            logger.error("Error when getting resource", e);
         }
 
     }
@@ -96,10 +98,10 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
         try {
 
             Node node = resource.adaptTo(Node.class);
-            titleNode = node.getNode("jcr:content");
+            titleNode = node.getNode(JcrConstants.JCR_CONTENT);
 
         } catch (RepositoryException e) {
-            logger.debug("Error when getting jcr content", e);
+            logger.error("Error when getting jcr content", e);
         }
 
         return titleNode;

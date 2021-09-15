@@ -9,6 +9,7 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsTrackingService;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.apache.sling.spi.resource.provider.ResolveContext;
 import org.apache.sling.spi.resource.provider.ResourceContext;
 import org.apache.sling.spi.resource.provider.ResourceProvider;
@@ -115,7 +116,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
         ResourceMetadata resourceMetaData = new ResourceMetadata();
         // Set the resolution path
         resourceMetaData.setResolutionPath(path);
-        return new SyntheticResource(resourceResolver, path, "sling:Folder");
+        return new SyntheticResource(resourceResolver, path, JcrResourceConstants.NT_SLING_FOLDER);
 
 
     }

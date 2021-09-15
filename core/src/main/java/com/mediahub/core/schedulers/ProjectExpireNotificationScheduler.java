@@ -44,6 +44,7 @@ import java.util.*;
  * <p>
  * Scheduler runs every day 2am.
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Designate(ocd = ProjectExpireNotificationScheduler.Config.class)
 @Component(service = Runnable.class)
 public class ProjectExpireNotificationScheduler implements Runnable {

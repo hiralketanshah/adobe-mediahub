@@ -16,9 +16,9 @@ public class SlingJobUtils {
 
     private static Logger logger = LoggerFactory.getLogger(SlingJobUtils.class);
 
-    public static String S7_ACTIVATE_VALUE = "Activate";
-    public static String S7_DEACTIVATE_VALUE = "Deactivate";
-    private static long JOB_TIMEOUT = 30 * 60 * 1000; //Timeout is set to 30min
+    public static final String S7_ACTIVATE_VALUE = "Activate";
+    public static final String S7_DEACTIVATE_VALUE = "Deactivate";
+    private static long JOB_TIMEOUT = 30 * 60 * (long)1000; //Timeout is set to 30min
 
     public static boolean startS7ActivationJob(Resource asset, ResourceResolver resourceResolver, JobManager jobManager, String action) {
         try {

@@ -41,6 +41,7 @@ import java.util.*;
  * Cron Job for Deactivating external user with past expiry date.
  * Currently runs every day at mid night
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Designate(ocd = UserDeactivationScheduledTask.Config.class)
 @Component(service = Runnable.class)
 public class UserDeactivationScheduledTask implements Runnable {
@@ -105,7 +106,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                 resolver.commit();
             }
         } catch (LoginException | PersistenceException | ParseException | RepositoryException e) {
-            logger.info("Error while deactivating user {}", e.getMessage());
+            logger.error("Error while deactivating user {}", e.getMessage());
         }
 
     }

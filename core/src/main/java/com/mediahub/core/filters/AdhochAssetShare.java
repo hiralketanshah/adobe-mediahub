@@ -39,6 +39,7 @@ import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -55,7 +56,7 @@ import org.slf4j.LoggerFactory;
            property = {
                 EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
                 EngineConstants.SLING_FILTER_SELECTORS + "=" + "adhocassetshare",
-                EngineConstants.SLING_FILTER_METHODS + "=" +  "POST",
+                EngineConstants.SLING_FILTER_METHODS + "=" +  HttpConstants.METHOD_POST,
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=" + "html"
            })
 @ServiceDescription("To filter incoming share asset requests")

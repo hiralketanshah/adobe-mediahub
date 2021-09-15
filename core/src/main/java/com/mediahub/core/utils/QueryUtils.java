@@ -1,5 +1,6 @@
 package com.mediahub.core.utils;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,7 +39,7 @@ public class QueryUtils {
 
   public static Map<String, String> getPredicateMapProjectRole(String value) {
     Map<String, String> map = new HashMap<>();
-    map.put("type", "nt:unstructured");
+    map.put("type", JcrConstants.NT_UNSTRUCTURED);
     map.put(BnpConstants.PATH, "/content/projects");
     map.put(BnpConstants.FIRST_PROPERTY, BnpConstants.SLING_RESOURCETYPE);
     map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);

@@ -161,7 +161,7 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     }
 
-    @SuppressWarnings("unchecked")
+    
     @Test
     public void execute() throws Exception {
         when(workflowData.getPayload()).thenReturn(PATH);

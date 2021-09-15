@@ -92,7 +92,7 @@ public class ProjectGroupResourceListener implements EventListener {
           Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, null, false);
 
     } catch (LoginException | RepositoryException e) {
-      log.error(e.getMessage(), e);
+      log.error("Error while accessing repository : {}", e);
     } finally {
         if (null != resolver && resolver.isLive()) {
         	resolver.close();

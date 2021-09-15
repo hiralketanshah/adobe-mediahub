@@ -30,6 +30,7 @@ public class UserWelcomeEmail implements JobConsumer {
   @Reference
   GenericEmailNotification genericEmailNotification;
 
+  @SuppressWarnings("CQRules:AMSCORE-553")
   @Reference
   private SlingSettingsService slingSettingsService;
 

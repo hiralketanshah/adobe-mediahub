@@ -105,7 +105,7 @@ public class ProjectExternalContributor extends SlingAllMethodsServlet {
         } catch (LoginException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+        	LOGGER.error("Error while fecthing user and user info : {0}", e);
         }
 
     }

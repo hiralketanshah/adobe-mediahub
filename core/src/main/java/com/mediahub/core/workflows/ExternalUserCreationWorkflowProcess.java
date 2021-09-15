@@ -68,8 +68,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 	GenericEmailNotification genericEmailNotification;
 
 	@Reference
-  private Externalizer externalizer;
+    private Externalizer externalizer;
 
+	@SuppressWarnings("CQRules:AMSCORE-553")
 	@Reference
 	private SlingSettingsService slingSettingsService;
 
@@ -196,14 +197,14 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 						String language = UserUtils.getUserLanguage(user);
 						Locale locale = LocaleUtils.toLocale(language);
 						String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Assignment project", locale) + " : " + projectName;
-						Map<String, String> emailParams = new HashMap<String, String>();
+						Map<String, String> emailParams = new HashMap<>();
 						emailParams.put(BnpConstants.SUBJECT, subject);
-						emailParams.put("firstname",user.getProperty("./profile/givenName")[0].toString());
+						emailParams.put("firstname",user.getProperty(BnpConstants.EXT_USER_PROPERTY_GIVENNAME)[0].toString());
 						emailParams.put("projectitle",project.getTitle());
 						emailParams.put("login",email);
-						emailParams.put("resetlink",externalizer.authorLink(resourceResolver, "/apps/granite/core/content/login.changepassword.html?token=" + userToken));
+						emailParams.put("resetlink",externalizer.authorLink(resourceResolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
 						emailParams.put("password",password);
-						emailParams.put("expiry",user.getProperty("./profile/expiry")[0].toString().substring(0,10));
+						emailParams.put("expiry",user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].toString().substring(0,10));
 						emailParams.put("projecturl",externalizer.authorLink(resourceResolver,"/projects/details.html"+payloadPath.replace("/dam", "") ));
 						emailParams.put("projectowner",item.getWorkflow().getInitiator());
 

@@ -103,7 +103,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
                 }
                 Node myNode = asset.adaptTo(Node.class);
                 try {
-                    myNode.setProperty("jcr:createdBy", "365994");
+                    myNode.setProperty(JcrConstants.JCR_CREATED_BY, "365994");
                 } catch ( RepositoryException e) {
                     LOGGER.error("Error when changing createdBy", e);
                 }
