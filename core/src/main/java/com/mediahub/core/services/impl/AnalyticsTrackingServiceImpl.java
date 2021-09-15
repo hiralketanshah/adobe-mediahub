@@ -92,22 +92,22 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
 
         //Fill in assets properties
         if (metadata.containsKey(BnpConstants.BNPP_CONFIDENTIALITY)) {
-            parameters.put("prop1", convertArrayToString((String[]) metadata.get(BnpConstants.BNPP_CONFIDENTIALITY)));
+            parameters.put("prop1", formatMetadata(metadata.get(BnpConstants.BNPP_CONFIDENTIALITY)));
         }
         if (metadata.containsKey(BnpConstants.BNPP_LANGUAGE)) {
-            parameters.put("prop2", convertArrayToString((String[]) metadata.get(BnpConstants.BNPP_LANGUAGE)));
+            parameters.put("prop2", formatMetadata(metadata.get(BnpConstants.BNPP_LANGUAGE)));
         }
         if (metadata.containsKey(BnpConstants.DAM_FILE_FORMAT)) {
-            parameters.put("prop3", metadata.get(BnpConstants.DAM_FILE_FORMAT, String.class));
+            parameters.put("prop3", formatMetadata(metadata.get(BnpConstants.DAM_FILE_FORMAT)));
         }
         if (metadata.containsKey(BnpConstants.BNPP_SUBTITLES)) {
-            parameters.put("prop4", metadata.get(BnpConstants.BNPP_SUBTITLES, String.class));
+            parameters.put("prop4", formatMetadata(metadata.get(BnpConstants.BNPP_SUBTITLES)));
         }
         if (metadata.containsKey(BnpConstants.BNPP_SUBTITLE_LANGUAGES)) {
-            parameters.put("prop5", convertArrayToString((String[]) metadata.get(BnpConstants.BNPP_SUBTITLE_LANGUAGES)));
+            parameters.put("prop5", formatMetadata(metadata.get(BnpConstants.BNPP_SUBTITLE_LANGUAGES)));
         }
         if (metadata.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
-            parameters.put("prop13", convertArrayToString((String[]) metadata.get(BnpConstants.BNPP_BROADCAST_STATUS)));
+            parameters.put("prop13", formatMetadata(metadata.get(BnpConstants.BNPP_BROADCAST_STATUS)));
         }
 
         //Fill in media properties
@@ -115,25 +115,25 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         if (media.isResourceType(BnpConstants.DAM_SLING_FOLDER)) {
             ValueMap mediaMetadata = media.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_TYPE)) {
-                parameters.put("prop6", mediaMetadata.get(BnpConstants.BNPP_MEDIA_TYPE, String.class));
+                parameters.put("prop6", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_TYPE)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_CATEGORY)) {
-                parameters.put("prop7", mediaMetadata.get(BnpConstants.BNPP_MEDIA_CATEGORY, String.class));
+                parameters.put("prop7", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_CATEGORY)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_THEME)) {
-                parameters.put("prop8", convertArrayToString((String[]) mediaMetadata.get(BnpConstants.BNPP_MEDIA_THEME)));
+                parameters.put("prop8", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_THEME)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_ENTITIES)) {
-                parameters.put("prop9", convertArrayToString((String[]) mediaMetadata.get(BnpConstants.BNPP_MEDIA_ENTITIES)));
+                parameters.put("prop9", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_ENTITIES)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_GEOGRAPHICAL)) {
-                parameters.put("prop10", convertArrayToString((String[]) mediaMetadata.get(BnpConstants.BNPP_MEDIA_GEOGRAPHICAL)));
+                parameters.put("prop10", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_GEOGRAPHICAL)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_COUNTRY)) {
-                parameters.put("prop11", convertArrayToString((String[]) mediaMetadata.get(BnpConstants.BNPP_MEDIA_COUNTRY)));
+                parameters.put("prop11", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_COUNTRY)));
             }
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_SPONSOR)) {
-                parameters.put("prop12", convertArrayToString((String[]) mediaMetadata.get(BnpConstants.BNPP_MEDIA_SPONSOR)));
+                parameters.put("prop12", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_SPONSOR)));
             }
 
         }
@@ -141,7 +141,15 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         return parameters;
     }
 
-    String convertArrayToString(String[] array) {
+    private String formatMetadata(Object metadata) {
+        if (metadata.getClass().isArray()) {
+            return convertArrayToString((String[]) metadata);
+        } else {
+            return (String) metadata;
+        }
+    }
+
+    private String convertArrayToString(String[] array) {
         return String.join(",", Arrays.asList(array));
     }
 
