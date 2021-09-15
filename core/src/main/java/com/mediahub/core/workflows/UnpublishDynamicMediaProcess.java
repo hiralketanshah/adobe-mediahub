@@ -59,9 +59,8 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 if (s7Config == null) {
                     throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
                 }
-
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
-
+                
                 if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {

@@ -154,7 +154,6 @@ public class UserDeactivationScheduledTask implements Runnable {
 
                 logger.info(user.getPath());
                 ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
-
                 Iterator<Group> groupIterator = authorizable.memberOf();
                 String groupName = getProjectGroupFromUser(groupIterator);
                 if (StringUtils.isNotEmpty(groupName)) {

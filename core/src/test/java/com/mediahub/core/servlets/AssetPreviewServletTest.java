@@ -3,12 +3,16 @@ package com.mediahub.core.servlets;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.servlet.ServletOutputStream;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -21,6 +25,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.Rendition;
 import com.mediahub.core.constants.BnpConstants;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -54,6 +61,15 @@ public class AssetPreviewServletTest {
 
     @Mock
     Node node;
+    
+    @Mock
+    Asset asset;
+    
+    @Mock
+    Rendition rendition;
+    
+    @Mock
+    ServletOutputStream outputStream;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -66,9 +82,14 @@ public class AssetPreviewServletTest {
     @Test
     public void testDoGet() throws Exception {
         testDoGetTwo();
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream is = classloader.getResourceAsStream("users-list.csv");
         when(property.getString()).thenReturn("image/jpeg");
         when(resp.getWriter()).thenReturn(printWriter);
-
+        when(resource.adaptTo(Asset.class)).thenReturn(asset);
+        when(asset.getOriginal()).thenReturn(rendition);
+        when(rendition.getStream()).thenReturn(is);
+        when(resp.getOutputStream()).thenReturn(outputStream);
         assetPreviewServlet.doGet(req, resp);
         assertNotNull(resp.getWriter());
 

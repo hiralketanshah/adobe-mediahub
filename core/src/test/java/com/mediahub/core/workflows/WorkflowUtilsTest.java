@@ -2,6 +2,7 @@ package com.mediahub.core.workflows;
 
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.mediahub.core.constants.BnpConstants;
@@ -49,7 +51,10 @@ public class WorkflowUtilsTest {
 
     @Mock
     MetaDataMap metadataMap;
-
+    
+    @Mock
+    Workflow workflow;
+    
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
@@ -60,9 +65,10 @@ public class WorkflowUtilsTest {
 
     @Test
     public void updateWrkflowPayloadTest() throws Exception {
-        when(workflowSession.newWorkflowData(Mockito.anyString(), Mockito.anyString())).thenReturn(workflowData);
+        when(workflowSession.newWorkflowData(Mockito.any(String.class), Mockito.any())).thenReturn(workflowData);
         when(workItem.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
+        when(workItem.getWorkflow()).thenReturn(workflow);
         Assertions.assertThrows(WorkflowException.class, () -> {
             workflowUtil.updateWorkflowPayload(workItem, workflowSession, "Test-content-path");
         });
