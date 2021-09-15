@@ -5,6 +5,7 @@ import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/player",
@@ -82,7 +85,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                     resp.getOutputStream().write(bytes);
                 }
             }
-        } catch (Exception e) {
+        } catch (LoginException | RepositoryException e) {
             logger.debug("Error when getting resource", e);
         }
 
@@ -95,7 +98,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
             Node node = resource.adaptTo(Node.class);
             titleNode = node.getNode("jcr:content");
 
-        } catch (Exception e) {
+        } catch (RepositoryException e) {
             logger.debug("Error when getting jcr content", e);
         }
 

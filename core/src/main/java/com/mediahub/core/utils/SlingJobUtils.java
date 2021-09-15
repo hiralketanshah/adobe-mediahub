@@ -54,7 +54,7 @@ public class SlingJobUtils {
                 }
             }
             return false;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             logger.error("Error with S7 activation job", e);
             return false;
         }

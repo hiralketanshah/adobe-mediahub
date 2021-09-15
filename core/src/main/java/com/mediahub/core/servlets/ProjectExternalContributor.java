@@ -70,7 +70,7 @@ public class ProjectExternalContributor extends SlingAllMethodsServlet {
 
     private static final long serialVersionUID = 1L;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+    final transient Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
     @Reference

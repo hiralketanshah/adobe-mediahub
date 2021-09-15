@@ -1,7 +1,6 @@
 package com.mediahub.core.listeners;
 
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.services.GenericEmailNotification;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,8 @@ import javax.jcr.Value;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
+
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.JobManager;
@@ -43,21 +44,13 @@ public class ProjectGroupResourceListener implements EventListener {
   @Reference
   private ResourceResolverFactory resolverFactory;
 
-  /**
-   * Resource Resolver
-   */
-  private ResourceResolver resolver;
-
   @Reference
   private SlingRepository repository;
 
-  /**
-   * Session object
-   */
-  private Session session;
-
   @Reference
   JobManager jobManager;
+  
+  private Session session;
 
   /**
    * Activate method to initialize stuff
@@ -66,6 +59,7 @@ public class ProjectGroupResourceListener implements EventListener {
   protected void activate(ComponentContext componentContext) {
 
     log.info("Activating the observation");
+    ResourceResolver resolver = null;
 
     try {
 
@@ -97,8 +91,12 @@ public class ProjectGroupResourceListener implements EventListener {
       session.getWorkspace().getObservationManager().addEventListener(this,
           Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, null, false);
 
-    } catch (Exception e) {
+    } catch (LoginException | RepositoryException e) {
       log.error(e.getMessage(), e);
+    } finally {
+        if (null != resolver && resolver.isLive()) {
+        	resolver.close();
+        }
     }
   }
 
@@ -122,7 +120,7 @@ public class ProjectGroupResourceListener implements EventListener {
         jobManager.addJob("user/project/access/email", properties);
         log.debug("Something has been added: {} ", event.getPath() );
       }
-    } catch (Exception e) {
+    } catch (RepositoryException e) {
       log.error("Error while sending user notification mail", e);
     }
   }

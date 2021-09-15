@@ -17,6 +17,7 @@ import java.util.Set;
 
 import java.util.UUID;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
@@ -38,6 +39,7 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -219,9 +221,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			       
 		    }
 			
-			
 			}
-		catch (Exception e) {
+		catch (LoginException | RepositoryException | ParseException e) {
 			logger.error("Exception in ExternalUserCreationWorkflowProcess", e);
 		} finally {
 			if (resourceResolver != null) {

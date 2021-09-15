@@ -7,6 +7,8 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +36,8 @@ public class WorkflowUtils {
             if (method != null) {
                 method.invoke(instance, data);
             }
-        } catch (Exception e) {
-            throw new WorkflowException("failed to update in-memory payload", e);
+        } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            throw new WorkflowException("Failed to update in-memory payload", e);
         }
 
     }

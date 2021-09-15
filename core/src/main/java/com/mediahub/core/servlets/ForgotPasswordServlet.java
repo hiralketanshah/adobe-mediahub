@@ -65,19 +65,19 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
     private static final long serialVersionUID = 1L;
 
     @Reference
-    private Externalizer externalizer;
+    private transient Externalizer externalizer;
 
     @Reference
     private transient ResourceResolverFactory resolverFactory;
 
     @Reference
-    GenericEmailNotification genericEmailNotification;
+    private transient GenericEmailNotification genericEmailNotification;
 
     @Reference
-    private SlingSettingsService slingSettingsService;
+    private transient SlingSettingsService slingSettingsService;
 
     @Reference
-    I18nProvider provider;
+    private transient I18nProvider provider;
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,
@@ -121,13 +121,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                 setErrorResponse(response, "User ID not found");
             }
 
-        } catch (LoginException e) {
-            LOGGER.error("Error while fecthing system user : {0}", e);
-            setErrorResponse(response, "Error which accessing repository");
-        } catch (UnsupportedRepositoryOperationException e) {
-            LOGGER.error("Error while fecthing system user : {0}", e);
-            setErrorResponse(response, "Error which accessing repository");
-        } catch (RepositoryException e) {
+        } catch (LoginException | RepositoryException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
             setErrorResponse(response, "Error which accessing repository");
         }

@@ -16,6 +16,8 @@ import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -102,7 +104,7 @@ public class UserDeactivationScheduledTask implements Runnable {
             if (resolver.hasChanges()) {
                 resolver.commit();
             }
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException | ParseException | RepositoryException e) {
             logger.info("Error while deactivating user {}", e.getMessage());
         }
 

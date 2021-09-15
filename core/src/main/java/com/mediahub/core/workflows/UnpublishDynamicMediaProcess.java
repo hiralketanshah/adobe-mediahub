@@ -83,7 +83,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while deactivating asset from S7", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

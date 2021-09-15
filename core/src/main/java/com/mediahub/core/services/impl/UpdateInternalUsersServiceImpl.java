@@ -146,7 +146,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
 
         } catch (LoginException e) {
             LOGGER.error("Error while Logging into the repository : {0}", e);
-        } catch (Exception e) {
+        } catch (RepositoryException e) {
             LOGGER.error("Error while accessing repository : {0}", e);
         }
         return "Successfully removed all the internal users!";
