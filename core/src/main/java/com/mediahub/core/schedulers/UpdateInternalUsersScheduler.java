@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mediahub.core.services.UpdateInternalUsersService;
 
+@SuppressWarnings("CQRules:AMSCORE-553, CQRules:AMSCORE-554")
 @Component(immediate = true, service = Runnable.class)
 @Designate(ocd = UpdateInternalUsersScheduler.SchedulerConfig.class)
 public class UpdateInternalUsersScheduler implements Runnable {

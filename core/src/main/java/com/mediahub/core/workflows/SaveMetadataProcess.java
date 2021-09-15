@@ -54,7 +54,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while adding attributes for internal asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

@@ -9,6 +9,7 @@ import com.day.cq.workflow.exec.WorkflowData;
 import com.day.cq.workflow.model.WorkflowModel;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -82,7 +83,7 @@ public class UnpublishMediaFolder implements JobConsumer {
 
             }
 
-        } catch (Exception e) {
+        } catch (LoginException e) {
             LOGGER.error("Error while unpublishing media", e);
             return JobResult.FAILED;
         }

@@ -112,6 +112,8 @@ public class UserDeactivationScheduledTaskTest {
     @Test
     void run() throws LoginException {
         try {
+        	List<Group> listOfGroups = new ArrayList<>();
+            when(user.memberOf()).thenReturn(listOfGroups.listIterator());
             UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
             when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
             when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");

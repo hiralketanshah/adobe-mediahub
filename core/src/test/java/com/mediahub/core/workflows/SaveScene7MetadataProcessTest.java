@@ -18,14 +18,19 @@ import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.event.jobs.Job;
+import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -81,6 +86,15 @@ public class SaveScene7MetadataProcessTest {
 
     @Mock
     Externalizer externalizer;
+    
+    @Mock
+    JobManager jobManager;
+    
+    @Mock
+    Job job;
+    
+    @Mock
+    Calendar cal;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -102,6 +116,10 @@ public class SaveScene7MetadataProcessTest {
         when(resolver.getResource("/conf/global/settings/cloudconfigs/dmscene7")).thenReturn(s7Configresource);
         when(s7Configresource.adaptTo(S7Config.class)).thenReturn(s7Config);
         when(scene7Service.getAssets(any(), any(), any(), any())).thenReturn(Collections.EMPTY_LIST);
+        when(jobManager.addJob(Mockito.anyString(), Mockito.any())).thenReturn(job);
+        when(job.getFinishedDate()).thenReturn(cal);
+        when(job.getJobState()).thenReturn(Job.JobState.SUCCEEDED);
+        when(resource.getPath()).thenReturn("/content/dam/projects/");
     }
 
     @Test

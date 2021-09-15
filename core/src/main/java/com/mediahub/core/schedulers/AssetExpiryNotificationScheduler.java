@@ -48,6 +48,7 @@ public class AssetExpiryNotificationScheduler implements Runnable {
     @Reference
     private GenericEmailNotification genericEmailNotification;
 
+    @SuppressWarnings("CQRules:AMSCORE-553")
     @Reference
     private SlingSettingsService slingSettingsService;
 

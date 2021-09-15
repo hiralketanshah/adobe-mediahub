@@ -9,6 +9,7 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsTrackingService;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.apache.sling.spi.resource.provider.ResolveContext;
 import org.apache.sling.spi.resource.provider.ResourceContext;
 import org.apache.sling.spi.resource.provider.ResourceProvider;
@@ -17,6 +18,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,34 +84,29 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                 asset = userResources.next();
                 Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
                 String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
-                try {
-                    if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
-                        switch (status) {
-                            case BnpConstants.BROADCAST_VALUE_EXTERNAL:
-                                if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
-                                    trackingService.trackExternal(asset, format, globalProperties);
-                                    if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
-                                        return processInternalUrl(asset, path, format);
-                                    } else {
-                                        return processExternalUrl(asset, path, format);
-                                    }
-                                }
-                                break;
-                            case BnpConstants.BROADCAST_VALUE_INTERNAL:
-                                if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
-                                    trackingService.trackInternal(asset, format, globalProperties);
-                                    return processInternalUrl(asset, path, format);
-                                }
-                                break;
-                            default:
-                                log.info("No broadcast status found");
-                                break;
-                        }
-                    }
-
-                } catch (Exception e) {
-                    log.error("Error when processing asset", e);
-                }
+                if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
+				    switch (status) {
+				        case BnpConstants.BROADCAST_VALUE_EXTERNAL:
+				            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
+				                trackingService.trackExternal(asset, format, globalProperties);
+				                if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
+				                    return processInternalUrl(asset, path, format);
+				                } else {
+				                    return processExternalUrl(asset, path, format);
+				                }
+				            }
+				            break;
+				        case BnpConstants.BROADCAST_VALUE_INTERNAL:
+				            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+				                trackingService.trackInternal(asset, format, globalProperties);
+				                return processInternalUrl(asset, path, format);
+				            }
+				            break;
+				        default:
+				            log.info("No broadcast status found");
+				            break;
+				    }
+				}
             }
 
         }
@@ -119,7 +116,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
         ResourceMetadata resourceMetaData = new ResourceMetadata();
         // Set the resolution path
         resourceMetaData.setResolutionPath(path);
-        return new SyntheticResource(resourceResolver, path, "sling:Folder");
+        return new SyntheticResource(resourceResolver, path, JcrResourceConstants.NT_SLING_FOLDER);
 
 
     }

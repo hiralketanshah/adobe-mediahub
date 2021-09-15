@@ -16,7 +16,6 @@
 package com.mediahub.core.servlets;
 
 import com.day.cq.commons.Externalizer;
-import com.day.cq.dam.api.DamConstants;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
@@ -29,21 +28,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.Value;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -75,17 +69,17 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
 
     private static final long serialVersionUID = 1L;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+    final transient Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
         BnpConstants.WRITE_SERVICE);
 
     @Reference
-    private Externalizer externalizer;
+    private transient Externalizer externalizer;
 
     @Reference
     private transient ResourceResolverFactory resolverFactory;
 
     @Reference
-    GenericEmailNotification genericEmailNotification;
+    private transient GenericEmailNotification genericEmailNotification;
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,

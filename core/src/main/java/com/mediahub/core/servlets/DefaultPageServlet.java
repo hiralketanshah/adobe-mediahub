@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service=Servlet.class,
 property={
         Constants.SERVICE_DESCRIPTION + "=Default Page Servlet",

@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mediahub.core.services.UpdateInternalUsersService;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Create/Update Internal Users",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/internalusers" })
 @ServiceDescription("Create/Update Internal Users")
@@ -32,7 +33,7 @@ public class UpdateInternalUsers extends SlingAllMethodsServlet {
 	protected static final Logger log = LoggerFactory.getLogger(UpdateInternalUsers.class);
 
 	@Reference
-	private UpdateInternalUsersService updateInternalUsers;
+	private transient UpdateInternalUsersService updateInternalUsers;
 
 	String csvUserFile;
 	String csvUserInfo;

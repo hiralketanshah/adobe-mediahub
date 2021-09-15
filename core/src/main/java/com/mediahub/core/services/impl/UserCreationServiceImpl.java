@@ -73,7 +73,7 @@ public class UserCreationServiceImpl implements UserCreationService {
 
             }
         } catch (RepositoryException e) {
-            log.info("Error while creating user", e);
+            log.error("Error while creating user", e);
         }
     }
 
@@ -127,7 +127,7 @@ public class UserCreationServiceImpl implements UserCreationService {
             br.close();
 
         } catch (IOException | LoginException e) {
-            log.info("Error while reading CSV", e);
+            log.error("Error while reading CSV", e);
         }
     }
 

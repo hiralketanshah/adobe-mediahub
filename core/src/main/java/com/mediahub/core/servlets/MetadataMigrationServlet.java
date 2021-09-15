@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
 import javax.servlet.Servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
         for (String assetPath : assets.keySet()) {
             try {
                 migrateMetadataDetails(request, assets, propertyNames, folderMetadataSchema, assetPath);
-            } catch (Exception e) {
+            } catch (PersistenceException e) {
                 LOGGER.error("Error while migrating metadata of the asset : ", e);
             }
         }
@@ -93,19 +95,20 @@ public class MetadataMigrationServlet extends SlingAllMethodsServlet {
                 contentValueMap.put(BnpConstants.FOLDER_METADATA_SCHEMA, folderMetadataSchema);
                 asset = createOrGetMetadata(resourceResolver, content);
             }
-            ModifiableValueMap ModifiableValueMap = null;
+            ModifiableValueMap modifiableValueMap = null;
             if (null != asset) {
-                ModifiableValueMap = asset.adaptTo(ModifiableValueMap.class);
+            	modifiableValueMap = asset.adaptTo(ModifiableValueMap.class);
+                if (modifiableValueMap != null) {
+                    setResourceMetadata(resourceResolver, assets, propertyNames, assetPath, modifiableValueMap, contentValueMap);
+                }
+                Node myNode = asset.adaptTo(Node.class);
+                try {
+                    myNode.setProperty(JcrConstants.JCR_CREATED_BY, "365994");
+                } catch ( RepositoryException e) {
+                    LOGGER.error("Error when changing createdBy", e);
+                }
             }
-            if (ModifiableValueMap != null) {
-                setResourceMetadata(resourceResolver, assets, propertyNames, assetPath, ModifiableValueMap, contentValueMap);
-            }
-            Node myNode = asset.adaptTo(Node.class);
-            try {
-                myNode.setProperty("jcr:createdBy", "365994");
-            } catch (Exception e) {
-                LOGGER.error("Error when changing createdBy", e);
-            }
+            
             resourceResolver.commit();
         }
     }

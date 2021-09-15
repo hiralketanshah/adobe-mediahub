@@ -22,6 +22,7 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
         property = {
                 EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
                 EngineConstants.SLING_FILTER_PATTERN + "=" + "/.*.html.*",
-                EngineConstants.SLING_FILTER_METHODS + "=" + "GET"
+                EngineConstants.SLING_FILTER_METHODS + "=" + HttpConstants.METHOD_GET
         })
 @ServiceDescription("To filter incoming asset or page requests")
 @ServiceRanking(-700)
@@ -58,7 +59,7 @@ public class LoginPageFilter implements Filter {
         Principal userPrincipal = slingRequest.getUserPrincipal();
 
         try {
-            if (null != userPrincipal && !StringUtils.contains(requestURI, "/apps/mediahub/content/privacypolicy.html") && !StringUtils.contains(requestURI, "/apps/granite/core/content/login.html")) {
+            if (null != userPrincipal && !StringUtils.contains(requestURI, BnpConstants.PRIVACY_POLICY_PATH) && !StringUtils.contains(requestURI, BnpConstants.LOGIN_PAGE_PATH)) {
                 UserManager userManager = slingRequest.getResourceResolver().adaptTo(UserManager.class);
                 Authorizable authorizable = userManager.getAuthorizable(userPrincipal);
                 // mediahub-administrators group
@@ -113,7 +114,7 @@ public class LoginPageFilter implements Filter {
      * @throws IOException
      */
     private void redirectUser(SlingHttpServletResponse slingResponse) throws IOException {
-        String newURI = "/apps/mediahub/content/privacypolicy.html";
+        String newURI = BnpConstants.PRIVACY_POLICY_PATH;
         slingResponse.sendRedirect(newURI);
     }
 
