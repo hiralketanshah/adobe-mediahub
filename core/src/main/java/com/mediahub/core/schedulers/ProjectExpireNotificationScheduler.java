@@ -19,6 +19,8 @@ import org.apache.http.client.utils.DateUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -33,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.*;
 
@@ -41,6 +44,7 @@ import java.util.*;
  * <p>
  * Scheduler runs every day 2am.
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Designate(ocd = ProjectExpireNotificationScheduler.Config.class)
 @Component(service = Runnable.class)
 public class ProjectExpireNotificationScheduler implements Runnable {
@@ -137,7 +141,7 @@ public class ProjectExpireNotificationScheduler implements Runnable {
             if (resolver.hasChanges()) {
                 resolver.commit();
             }
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException | RepositoryException e) {
             logger.error("Error while project expire notification  {}", e.getMessage());
         }
     }

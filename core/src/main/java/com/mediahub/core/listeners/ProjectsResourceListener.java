@@ -1,5 +1,6 @@
 package com.mediahub.core.listeners;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.google.common.collect.ImmutableMap;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
@@ -132,7 +133,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
 
                         }
 
-                        String damPath = adminResolver.getResource(projectPath).getChild("jcr:content").getValueMap().get("project.path", String.class);
+                        String damPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", String.class);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damPath, groupOwnerPrincipal, Privilege.JCR_ALL);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damPath, groupOwnerProjectPublisher, Privilege.JCR_ALL);
                         adminResource = adminResolver.getResource(damPath);
@@ -143,7 +144,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         }
 
 
-                        String damFolderPath = adminResolver.getResource(projectPath).getChild("jcr:content").getValueMap().get("damFolderPath", String.class);
+                        String damFolderPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("damFolderPath", String.class);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectInternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectExternalGroup.getPrincipal(), false, null, Privilege.JCR_REMOVE_NODE, Privilege.JCR_REMOVE_CHILD_NODES);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectExternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
@@ -163,7 +164,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                             try {
                                 return g.getID();
                             } catch (RepositoryException e) {
-                                e.printStackTrace();
+                                log.error("Error while fetching authorizable ID : {}",e );
                             }
                             return null;
                         }).filter(i -> i != null).collect(Collectors.toList());

@@ -1,5 +1,11 @@
 package com.mediahub.core.constants;
 
+import org.apache.sling.jcr.resource.api.JcrResourceConstants;
+
+import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.api.DamConstants;
+
+@SuppressWarnings("CQRules:CQBP-71")
 public class BnpConstants {
 
     private BnpConstants() {
@@ -9,8 +15,8 @@ public class BnpConstants {
     public static final String METADATA = "metadata";
     public static final String WRITE_SERVICE = "writeService";
     public static final String USER_ID = "userid";
-    public static final String SLING_FOLDER = "sling:Folder";
-    public static final String SLING_ORDERED_FOLDER = "sling:OrderedFolder";
+    public static final String SLING_FOLDER = JcrResourceConstants.NT_SLING_FOLDER;
+    public static final String SLING_ORDERED_FOLDER = JcrResourceConstants.NT_SLING_ORDERED_FOLDER;
     public static final String DAM_ASSET = com.day.cq.dam.api.DamConstants.NT_DAM_ASSET;
     public static final String TOPIC_RESOURCE_ADDED = "org/apache/sling/api/resource/Resource/ADDED";
     public static final String TOPIC_RESOURCE_CHANGED = "org/apache/sling/api/resource/Resource/CHANGED";
@@ -56,14 +62,14 @@ public class BnpConstants {
     public static final String ROLE_OWNER = "role_owner";
     public static final String ROLE_PROJECTPUBLISHER = "role_project-publisher";
     public static final String ROLE_EXTERNALCONTRIBUTEUR = "role_external-contributor";
-    public static final String SLING_RESOURCETYPE = "sling:resourceType";
+    public static final String SLING_RESOURCETYPE = JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
     public static final String PROJECT_RESOURCE = "cq/gui/components/projects/admin/card/projectcontent";
     public final static String PROJECT_READER_GROUP = "mediahub-basic-project-reader";
     public final static String PROJECT_MANAGER_GROUP = "mediahub-basic-project-manager";
     public final static String PROJECT_INTERNAL_CONTRIBUTOR_GROUP = "mediahub-basic-project-internal-contributor";
     public final static String PROJECT_EXTERNAL_CONTRIBUTOR_GROUP = "mediahub-basic-project-external-contributor";
     public final static String PROJECT_PUBLISHER_GROUP = "mediahub-basic-project-publisher";
-    public static final String JCR_TITLE = "jcr:title";
+    public static final String JCR_TITLE = JcrConstants.JCR_TITLE;
     public static final String PROJECT_DUEDATE = "project.dueDate";
     public static final String PEOFILE_EMAIL = "profile/email";
     public static final String PROFILE_GIVEN_NAME = "profile/givenName";
@@ -101,11 +107,15 @@ public class BnpConstants {
     public static final String BNPP_MEDIA_GEOGRAPHICAL = "bnpp-geographicalarea";
     public static final String BNPP_MEDIA_COUNTRY = "bnpp-country-prod";
     public static final String BNPP_MEDIA_SPONSOR = "bnpp-sponsor-entities";
+    public static final String CHANGE_PASSWORD_RESOURCE_PATH = "/apps/granite/core/content/login.changepassword.html?token=";
+    public static final String CHANGE_PASSWORD_EMAIL_TEMPLATE = "/etc/mediahub/mailtemplates/forgotpasswordemailtemplate.html";
+    public static final String SCHEMA_TABS_ITEMS_WTAB_2 = "/apps/dam/temp/mediahub-medias-schema/tabs/items/wtab2";
+    public static final String PRIVACY_POLICY_PATH = "/apps/mediahub/content/privacypolicy.html";
+    public static final String LOGIN_PAGE_PATH = "/apps/granite/core/content/login.html";
 
 
-
-    public static final String DAM_FILE_FORMAT = "dc:format";
-    public static final String DAM_SLING_FOLDER = "sling:Folder";
+    public static final String DAM_FILE_FORMAT = DamConstants.DC_FORMAT;
+    public static final String DAM_SLING_FOLDER = JcrResourceConstants.NT_SLING_FOLDER;
 
 
     /**
@@ -118,6 +128,10 @@ public class BnpConstants {
 
     public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
+    public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
+    public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_MD = "bnpp-internal-file-master-url-md";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_HD = "bnpp-internal-file-master-url-hd";
 
     /**
      * Assets Tracking URLs
@@ -150,6 +164,7 @@ public class BnpConstants {
     public static final String PREFERENCES_LANGUAGE_PROPERTY = "./preferences/language";
     public static final String AFTER_VALUE = "afterValue";
     public static final String BEFORE_VALUE = "beforeValue";
+    public static final String IS_CONTENT = "is/content/";
     
     /**
      * User Profile Details
@@ -177,5 +192,8 @@ public class BnpConstants {
     public static final String VAL_USER_PROFILE_TYPE = "internal";
     public static final String VAL_USER_PROFILE_COMPANY = "BNP Paribas";
     public static final String PN_PRINCIPAL_NAME = "rep:principalName";
+    
+    public static final String EXT_USER_PROPERTY_GIVENNAME = "./profile/givenName";
+    public static final String EXT_USER_PROPERTY_EXPIRY = "./profile/expiry";
 
 }

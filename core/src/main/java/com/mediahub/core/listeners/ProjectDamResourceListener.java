@@ -61,6 +61,7 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   @Reference
   ResourceResolverFactory resolverFactory;
 
+  @SuppressWarnings("CQRules:AMSCORE-553")
   @Reference
   private SlingSettingsService slingSettingsService;
 

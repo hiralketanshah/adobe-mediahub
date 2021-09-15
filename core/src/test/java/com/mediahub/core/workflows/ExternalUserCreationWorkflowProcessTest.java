@@ -34,6 +34,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectMember;
 import com.adobe.cq.projects.api.ProjectMemberRole;
@@ -134,6 +136,12 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     @Mock
     ModifiableValueMap modifiableValueMap;
+    
+    @Mock
+    SlingSettingsService slingSettingsService;
+    
+    @Mock
+    I18nProvider provider;
 
     MetaDataMap metadataMap;
 
@@ -158,10 +166,13 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(workItem.getWorkflowData()).thenReturn(workflowData);
         when(user.getPath()).thenReturn("Mediahub");
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
+        Set<String> runModes = new HashSet<>();
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
+        
 
     }
 
-    @SuppressWarnings("unchecked")
+    
     @Test
     public void execute() throws Exception {
         when(workflowData.getPayload()).thenReturn(PATH);

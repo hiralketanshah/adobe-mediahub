@@ -1,8 +1,12 @@
 package com.mediahub.core.listeners;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.tagging.TagConstants;
 import com.mediahub.core.constants.BnpConstants;
+
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -67,22 +71,21 @@ public class TagListener implements ResourceChangeListener {
             for (ResourceChange my : arg0) {
                 String tagPath = my.getPath().substring(DEFAULT_TAGS.length());
                 if (tagPath.split("/").length == 2) {
-                    System.out.println(tagPath);
 
                     Resource contentResourse = masterAsset.getChild(JcrConstants.JCR_CONTENT);
                     if (contentResourse != null) {
                         Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
                         ModifiableValueMap mvp = metadata.adaptTo(ModifiableValueMap.class);
-                        List<String> tags = new ArrayList<>(Arrays.asList((String[]) mvp.get("cq:tags")));
+                        List<String> tags = new ArrayList<>(Arrays.asList((String[]) mvp.get(TagConstants.PN_TAGS)));
                         tags.add(tagPath);
-                        mvp.put("cq:tags", tags.toArray());
+                        mvp.put(TagConstants.PN_TAGS, tags.toArray());
                         adminResolver.commit();
                     }
                 }
 
 
             }
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             log.error("RepositoryException while Executing events", e);
         } finally {
             if (adminSession != null) {

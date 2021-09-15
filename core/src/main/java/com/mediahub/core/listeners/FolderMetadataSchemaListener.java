@@ -30,7 +30,6 @@ import java.util.Map;
 public class FolderMetadataSchemaListener implements EventHandler {
 
     public static final String TABS_ITEMS = "/tabs/items";
-    public static final String SCHEMA_TABS_ITEMS_WTAB_2 = "/apps/dam/temp/mediahub-medias-schema/tabs/items/wtab2";
     public static final String WTAB_2 = "wtab2";
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -87,7 +86,7 @@ public class FolderMetadataSchemaListener implements EventHandler {
 
                 Resource tab = resolver.copy(sourceTab.getPath(), schemaHolder.getPath() + TABS_ITEMS);
                 resolver.commit();
-                if (resolver.getResource(SCHEMA_TABS_ITEMS_WTAB_2) != null) {
+                if (resolver.getResource(BnpConstants.SCHEMA_TABS_ITEMS_WTAB_2) != null) {
                     tab.adaptTo(Node.class).getParent().orderBefore(tab.getName(), WTAB_2);
                 }
 

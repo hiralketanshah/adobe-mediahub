@@ -16,6 +16,8 @@ import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -39,6 +41,7 @@ import java.util.*;
  * Cron Job for Deactivating external user with past expiry date.
  * Currently runs every day at mid night
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Designate(ocd = UserDeactivationScheduledTask.Config.class)
 @Component(service = Runnable.class)
 public class UserDeactivationScheduledTask implements Runnable {
@@ -102,8 +105,8 @@ public class UserDeactivationScheduledTask implements Runnable {
             if (resolver.hasChanges()) {
                 resolver.commit();
             }
-        } catch (Exception e) {
-            logger.info("Error while deactivating user {}", e.getMessage());
+        } catch (LoginException | PersistenceException | ParseException | RepositoryException e) {
+            logger.error("Error while deactivating user {}", e.getMessage());
         }
 
     }
@@ -151,7 +154,6 @@ public class UserDeactivationScheduledTask implements Runnable {
 
                 logger.info(user.getPath());
                 ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
-
                 Iterator<Group> groupIterator = authorizable.memberOf();
                 String groupName = getProjectGroupFromUser(groupIterator);
                 if (StringUtils.isNotEmpty(groupName)) {

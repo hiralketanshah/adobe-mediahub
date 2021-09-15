@@ -15,7 +15,9 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -101,7 +103,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while activating asset in S7", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

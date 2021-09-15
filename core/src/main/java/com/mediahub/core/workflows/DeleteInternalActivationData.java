@@ -7,7 +7,10 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -52,7 +55,7 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while removing attributes for internal asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
