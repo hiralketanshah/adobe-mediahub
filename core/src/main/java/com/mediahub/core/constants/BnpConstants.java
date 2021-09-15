@@ -1,11 +1,10 @@
 package com.mediahub.core.constants;
 
-import org.apache.sling.jcr.resource.api.JcrResourceConstants;
-
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.DamConstants;
+import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 
-@SuppressWarnings("CQRules:CQBP-71")
+@SuppressWarnings({"CQRules:CQBP-71", "CQRules:AMSCORE-553"})
 public class BnpConstants {
 
     private BnpConstants() {
@@ -165,7 +164,7 @@ public class BnpConstants {
     public static final String AFTER_VALUE = "afterValue";
     public static final String BEFORE_VALUE = "beforeValue";
     public static final String IS_CONTENT = "is/content/";
-    
+
     /**
      * User Profile Details
      */
@@ -192,7 +191,7 @@ public class BnpConstants {
     public static final String VAL_USER_PROFILE_TYPE = "internal";
     public static final String VAL_USER_PROFILE_COMPANY = "BNP Paribas";
     public static final String PN_PRINCIPAL_NAME = "rep:principalName";
-    
+
     public static final String EXT_USER_PROPERTY_GIVENNAME = "./profile/givenName";
     public static final String EXT_USER_PROPERTY_EXPIRY = "./profile/expiry";
 

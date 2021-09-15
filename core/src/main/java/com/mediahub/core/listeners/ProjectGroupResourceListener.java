@@ -1,17 +1,6 @@
 package com.mediahub.core.listeners;
 
 import com.mediahub.core.constants.BnpConstants;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-import javax.jcr.observation.EventListener;
-
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -25,118 +14,115 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import javax.jcr.observation.EventListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Abuthahir Ibrahim
- *
+ * <p>
  * Event Listener that listens to JCR events
  */
 @Component(service = EventListener.class, immediate = true)
 public class ProjectGroupResourceListener implements EventListener {
 
-  /**
-   * Logger
-   */
-  private static final Logger log = LoggerFactory.getLogger(ProjectGroupResourceListener.class);
+    /**
+     * Logger
+     */
+    private static final Logger log = LoggerFactory.getLogger(ProjectGroupResourceListener.class);
 
-  /**
-   * Resource Resolver Factory
-   */
-  @Reference
-  private ResourceResolverFactory resolverFactory;
+    /**
+     * Resource Resolver Factory
+     */
+    @Reference
+    private ResourceResolverFactory resolverFactory;
 
-  @Reference
-  private SlingRepository repository;
+    @Reference
+    private SlingRepository repository;
 
-  @Reference
-  JobManager jobManager;
-  
-  private Session session;
+    @Reference
+    JobManager jobManager;
 
-  /**
-   * Activate method to initialize stuff
-   */
-  @Activate
-  protected void activate(ComponentContext componentContext) {
+    /**
+     * Activate method to initialize stuff
+     */
+    @Activate
+    protected void activate(ComponentContext componentContext) {
 
-    log.info("Activating the observation");
-    ResourceResolver resolver = null;
+        /**
+         * This map will be used to get session via getServiceResourceResolver() method
+         */
+        Map<String, Object> params = new HashMap<>();
 
-    try {
+        /**
+         * Adding the subservice name in the param map
+         */
+        params.put(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
-      /**
-       * This map will be used to get session via getServiceResourceResolver() method
-       */
-      Map<String, Object> params = new HashMap<>();
+        log.info("Activating the observation");
 
-      /**
-       * Adding the subservice name in the param map
-       */
-      params.put(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
 
-      /**
-       * Getting resource resolver from the service factory
-       */
-      resolver = resolverFactory.getServiceResourceResolver(params);
+            /**
+             * Adapting the resource resolver to session object
+             */
+            Session session = resolver.adaptTo(Session.class);
 
-      /**
-       * Adapting the resource resolver to session object
-       */
-      session = resolver.adaptTo(Session.class);
+            log.info("Session created");
 
-      log.info("Session created");
+            /**
+             * Adding the event listener
+             */
+            session.getWorkspace().getObservationManager().addEventListener(this,
+                    Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, null, false);
 
-      /**
-       * Adding the event listener
-       */
-      session.getWorkspace().getObservationManager().addEventListener(this,
-          Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, null, false);
-
-    } catch (LoginException | RepositoryException e) {
-      log.error("Error while accessing repository : {}", e);
-    } finally {
-        if (null != resolver && resolver.isLive()) {
-        	resolver.close();
+        } catch (LoginException | RepositoryException e) {
+            log.error("Error while accessing repository : {}", e);
         }
     }
-  }
 
-  @Deactivate
-  protected void deactivate() {
-    if(session != null) {
-      session.logout();
+    @Deactivate
+    protected void deactivate() {
+
     }
-  }
 
-  @Override
-  public void onEvent(EventIterator events) {
-    try {
-      while(events.hasNext()) {
-        Event event = events.nextEvent();
-        final Map<String, Object> properties = new HashMap<>();
-        properties.put("userID", event.getUserID());
-        properties.put(BnpConstants.AFTER_VALUE, convertArrayToList((Value[])event.getInfo().get(BnpConstants.AFTER_VALUE)));
-        properties.put(BnpConstants.BEFORE_VALUE, convertArrayToList((Value[])event.getInfo().get(BnpConstants.BEFORE_VALUE)));
-        properties.put(BnpConstants.PATH, event.getPath());
-        jobManager.addJob("user/project/access/email", properties);
-        log.debug("Something has been added: {} ", event.getPath() );
-      }
-    } catch (RepositoryException e) {
-      log.error("Error while sending user notification mail", e);
-    }
-  }
-
-  private List<String> convertArrayToList(Value[] values){
-    List<String> valueList = new ArrayList<>();
-    if(null != values){
-      for(Value value : values){
+    @Override
+    public void onEvent(EventIterator events) {
         try {
-          valueList.add(value.getString());
+            while (events.hasNext()) {
+                Event event = events.nextEvent();
+                final Map<String, Object> properties = new HashMap<>();
+                properties.put("userID", event.getUserID());
+                properties.put(BnpConstants.AFTER_VALUE, convertArrayToList((Value[]) event.getInfo().get(BnpConstants.AFTER_VALUE)));
+                properties.put(BnpConstants.BEFORE_VALUE, convertArrayToList((Value[]) event.getInfo().get(BnpConstants.BEFORE_VALUE)));
+                properties.put(BnpConstants.PATH, event.getPath());
+                jobManager.addJob("user/project/access/email", properties);
+                log.debug("Something has been added: {} ", event.getPath());
+            }
         } catch (RepositoryException e) {
-          log.error("Error while sending user notification mail", e);
+            log.error("Error while sending user notification mail", e);
         }
-      }
     }
-    return valueList;
-  }
+
+    private List<String> convertArrayToList(Value[] values) {
+        List<String> valueList = new ArrayList<>();
+        if (null != values) {
+            for (Value value : values) {
+                try {
+                    valueList.add(value.getString());
+                } catch (RepositoryException e) {
+                    log.error("Error while sending user notification mail", e);
+                }
+            }
+        }
+        return valueList;
+    }
 
 }
