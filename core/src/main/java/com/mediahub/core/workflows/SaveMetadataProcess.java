@@ -13,17 +13,15 @@ import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Abuthahir Ibrahim
@@ -49,11 +47,9 @@ public class SaveMetadataProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
 
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+                BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource movedAsset = resourceResolver.getResource(payloadPath);
             if (null != movedAsset) {
@@ -69,22 +65,18 @@ public class SaveMetadataProcess implements WorkflowProcess {
         } catch (LoginException | PersistenceException e) {
 
             throw new WorkflowException("Error while adding attributes for internal asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }
 
     /**
-     * @param resourceResolver - Resolver object
+     * @param resourceResolver   - Resolver object
      * @param movedAsset
      * @param modifiableValueMap - value map containing properties
      */
     private void setVideoAssetMetadata(ResourceResolver resourceResolver, Resource movedAsset,
-        ModifiableValueMap modifiableValueMap) {
-        if(DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))){
+                                       ModifiableValueMap modifiableValueMap) {
+        if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
             S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
             List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
             if (scene7Assets != null && !scene7Assets.isEmpty()) {
@@ -107,7 +99,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
         }
 
         Scene7Asset associatedAsset = scene7Service.getAssociatedAssets(scene7Assets.get(0), s7Config);
-        if(null == associatedAsset){
+        if (null == associatedAsset) {
             return;
         }
 
