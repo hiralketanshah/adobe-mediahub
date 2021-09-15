@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -183,7 +184,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                     log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
                 }
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 log.error("An error occurred when sending tracking to Analytics", e);
             }
         });

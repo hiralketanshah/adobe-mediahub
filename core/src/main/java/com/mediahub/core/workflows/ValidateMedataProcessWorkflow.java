@@ -13,6 +13,7 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -97,7 +98,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
                 throw new WorkflowException(String.format("Missing Metadata Fields : %s", sb.toString()));
 
             }
-        } catch (Exception e) {
+        } catch (LoginException e) {
             throw new WorkflowException("Error while validating asset metadata", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

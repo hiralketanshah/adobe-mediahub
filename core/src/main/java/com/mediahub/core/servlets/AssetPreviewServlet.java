@@ -1,10 +1,13 @@
 package com.mediahub.core.servlets;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -17,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -25,6 +29,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/player",
@@ -56,7 +61,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                 Node jcrContentNode = getJcrContentNode(metaDataResource);
                 Node metaDataNode = jcrContentNode.getNode("metadata");
 
-                String mimeType = metaDataNode.getProperty("dc:format").getString();
+                String mimeType = metaDataNode.getProperty(DamConstants.DC_FORMAT).getString();
                 int index = mimeType.lastIndexOf("/");
                 String imageVideo = null;
                 imageVideo = mimeType.substring(0, index);
@@ -82,8 +87,8 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                     resp.getOutputStream().write(bytes);
                 }
             }
-        } catch (Exception e) {
-            logger.debug("Error when getting resource", e);
+        } catch (LoginException | RepositoryException e) {
+            logger.error("Error when getting resource", e);
         }
 
     }
@@ -93,10 +98,10 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
         try {
 
             Node node = resource.adaptTo(Node.class);
-            titleNode = node.getNode("jcr:content");
+            titleNode = node.getNode(JcrConstants.JCR_CONTENT);
 
-        } catch (Exception e) {
-            logger.debug("Error when getting jcr content", e);
+        } catch (RepositoryException e) {
+            logger.error("Error when getting jcr content", e);
         }
 
         return titleNode;

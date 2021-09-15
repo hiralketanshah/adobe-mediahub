@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.settings.SlingSettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +23,12 @@ public class ProjectExpireNotificationUtil {
         try {
             crrentDate = dateFormat.parse(strDate);
         } catch (ParseException e) {
-            logger.debug("Eception occured while Parsing the Date : {} ", e.getMessage());
+            logger.error("Eception occured while Parsing the Date : {} ", e.getMessage());
         }
         return crrentDate;
     }
 
+    @SuppressWarnings("CQRules:AMSCORE-553")
     public static String getRunmodeText(SlingSettingsService slingSettingsService){
         if(slingSettingsService.getRunModes().contains("stage")){
             return "Mediahub Stage";

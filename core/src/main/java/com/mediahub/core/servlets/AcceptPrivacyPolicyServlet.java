@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/privacy"})

@@ -61,7 +61,7 @@ public class AssetDeactivateWorkflowProcess implements WorkflowProcess {
                 }
 
             }
-        } catch (Exception e) {
+        } catch (LoginException e) {
             throw new WorkflowException("Error while unpublishing asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

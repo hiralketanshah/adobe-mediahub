@@ -5,9 +5,11 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.auth.core.spi.AuthenticationHandler;
 import org.apache.sling.auth.core.spi.AuthenticationInfo;
 import org.apache.sling.engine.EngineConstants;
+import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
@@ -15,6 +17,8 @@ import org.osgi.service.component.propertytypes.ServiceRanking;
 import org.osgi.service.component.propertytypes.ServiceVendor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mediahub.core.constants.BnpConstants;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +38,8 @@ import java.util.Map;
                 EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
                 EngineConstants.SLING_FILTER_PATTERN + "=" + "/linkshare.*",
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=" + "html",
-                EngineConstants.SLING_FILTER_METHODS + "=" + "GET",
-                "service.ranking" + "=" + Integer.MAX_VALUE
+                EngineConstants.SLING_FILTER_METHODS + "=" + HttpConstants.METHOD_GET,
+                Constants.SERVICE_RANKING + "=" + Integer.MAX_VALUE
         })
 @ServiceDescription("To filter incoming share asset requests")
 @ServiceRanking(Integer.MAX_VALUE)
@@ -72,7 +76,7 @@ public class AssetShareFilter implements AuthenticationHandler {
                 }
             }
             if (isSecured && !isLogged) {
-                String newURI = "/apps/granite/core/content/login.html" + "?resource=%2Flinkshare.html%3Fsh=" + sh + "%26redirected%3Dtrue";
+                String newURI = BnpConstants.LOGIN_PAGE_PATH+ "?resource=%2Flinkshare.html%3Fsh=" + sh + "%26redirected%3Dtrue";
                 response.sendRedirect(newURI);
             }
         } catch (LoginException ex) {

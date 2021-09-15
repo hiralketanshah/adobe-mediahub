@@ -135,7 +135,7 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
                 return true;
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("Exception while setting JSON response : {}",e);
         }
         return false;
     }

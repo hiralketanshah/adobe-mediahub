@@ -4,6 +4,7 @@ import com.adobe.granite.security.user.UserProperties;
 import com.adobe.granite.security.user.UserPropertiesManager;
 import com.adobe.granite.security.user.UserPropertiesService;
 import com.adobe.granite.security.user.util.AuthorizableUtil;
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.i18n.I18n;
 import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.ReplicationStatus;
@@ -17,6 +18,7 @@ import org.apache.sling.api.resource.SyntheticResource;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.Default;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.InjectionStrategy;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.slf4j.Logger;
@@ -36,7 +38,7 @@ public class AuthorizableModelImpl implements AuthorizableModel {
   @Self
   protected SlingHttpServletRequest request;
 
-  @OSGiService(optional = true)
+  @OSGiService(injectionStrategy = InjectionStrategy.OPTIONAL)
   protected UserPropertiesService upService;
 
   @Inject @Default(intValues = 24)
@@ -122,8 +124,8 @@ public class AuthorizableModelImpl implements AuthorizableModel {
 
   @Override
   public boolean isNew() {
-    Calendar created = authorizableProps.get("jcr:created", Calendar.class);
-    Calendar lastModified = authorizableProps.get("jcr:lastModified", Calendar.class);
+    Calendar created = authorizableProps.get(JcrConstants.JCR_CREATED, Calendar.class);
+    Calendar lastModified = authorizableProps.get(JcrConstants.JCR_LASTMODIFIED, Calendar.class);
 
     Calendar hoursLimitAgo = Calendar.getInstance();
     hoursLimitAgo.add(Calendar.HOUR_OF_DAY, -hoursLimit);
@@ -137,7 +139,7 @@ public class AuthorizableModelImpl implements AuthorizableModel {
 
   @Override
   public String getLastModified() {
-    Calendar lastModified = authorizableProps.get("jcr:lastModified", Calendar.class);
+    Calendar lastModified = authorizableProps.get(JcrConstants.JCR_LASTMODIFIED, Calendar.class);
     if (lastModified != null) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       return sdf.format(lastModified.getTime());
@@ -147,7 +149,7 @@ public class AuthorizableModelImpl implements AuthorizableModel {
 
   @Override
   public String getLastModifiedBy() {
-    return AuthorizableUtil.getFormattedName(resolver, authorizableProps.get("jcr:lastModifiedBy", String.class));
+    return AuthorizableUtil.getFormattedName(resolver, authorizableProps.get(JcrConstants.JCR_LAST_MODIFIED_BY, String.class));
   }
 
   @Override

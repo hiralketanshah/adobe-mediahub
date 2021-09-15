@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -28,6 +30,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +38,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectManager;
 import com.day.cq.commons.Externalizer;
@@ -174,12 +178,20 @@ public class ProjectExpireNotificationSchedulerTest {
 
     @Mock
     User user;
+    
+    @Mock
+    SlingSettingsService slingSettingsService;
+    
+    @Mock
+    I18nProvider provider;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
         TestLoggerFactory.clear();
         context.registerAdapter(ResourceResolver.class, QueryBuilder.class, queryBuilder);
+        Set<String> runModes = new HashSet<>();
+        when(slingSettingsService.getRunModes()).thenReturn(runModes);
     }
 
     @Test

@@ -65,7 +65,9 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 resourceResolver.commit();
             }
-        } catch (Exception e) {
+
+        } catch (LoginException | PersistenceException e) {
+
             throw new WorkflowException("Error while adding attributes for internal asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {

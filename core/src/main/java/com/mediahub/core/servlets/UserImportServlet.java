@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.UserCreationService;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service=Servlet.class,
 property={
         Constants.SERVICE_DESCRIPTION + "=User Import Servlet",

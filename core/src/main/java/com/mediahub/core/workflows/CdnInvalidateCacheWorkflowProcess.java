@@ -11,6 +11,7 @@ import com.day.cq.wcm.api.WCMMode;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.engine.SlingRequestProcessor;
@@ -19,9 +20,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +88,7 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
             String html = out.toString();
             log.debug("Cdn cache response : " + html);
 
-        } catch (Exception e) {
+        } catch (LoginException | ServletException | IOException e) {
             throw new WorkflowException("Error while invalidating S7 CDN", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
