@@ -120,6 +120,8 @@ public class BnpConstants {
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
     public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
     public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_MD = "bnpp-internal-file-master-url-md";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_HD = "bnpp-internal-file-master-url-hd";
 
     /**
      * Assets Tracking URLs

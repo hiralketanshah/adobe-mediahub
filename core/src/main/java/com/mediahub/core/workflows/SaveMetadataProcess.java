@@ -113,10 +113,10 @@ public class SaveMetadataProcess implements WorkflowProcess {
         for (Scene7Asset asset : subAssets) {
             if (asset != null && asset.getHeight() != null) {
                 if (asset.getHeight() == 540L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
                 }
                 if (asset.getHeight() == 720L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
                 }
             }
         }
