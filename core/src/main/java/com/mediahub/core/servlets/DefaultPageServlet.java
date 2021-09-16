@@ -46,24 +46,10 @@ public class DefaultPageServlet extends SlingSafeMethodsServlet {
 		} catch (RepositoryException e) {
 			 log.error("repo error :",e);
 		}
-		List<String> listGroup = new ArrayList<>();
+
 		if(currentUserGroups != null) {
-			while (currentUserGroups.hasNext()) {
-				Group grp = currentUserGroups.next();
-				try {
-					final String groupID = grp.getID();
-					listGroup.add(groupID);
-			  } catch (RepositoryException e) {
-			 		log.error("repo error :",e);
-			  }
-			}
-			if(listGroup.contains(BnpConstants.MEDIAHUB_BASIC_CONTRIBUTOR) || listGroup.contains(BnpConstants.MEDIAHUB_ADMINISTRATOR) || listGroup.contains(BnpConstants.MEDIAHUB_BASIC_READER) || listGroup.contains(BnpConstants.MEDIAHUB_BASIC_ENTITY_MANAGER) || listGroup.contains(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY)) {
 				response.sendRedirect(MEDIA_LIBRARY_ASSET_PATH);
 				return;
-			} else {
-				response.sendRedirect(PROJECTS_PATH);
-				return;
-			}
 		}
 
 		response.sendRedirect("/aem/start.html");
