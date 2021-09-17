@@ -114,7 +114,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                     String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Forgot password link", locale);
                     emailParams.put(BnpConstants.SUBJECT, subject);
                     emailParams.put("firstname", firstname[0].getString());
-                    emailParams.put("link", externalizer.authorLink(resolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
+                    emailParams.put(BnpConstants.LINK, externalizer.authorLink(resolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
                     genericEmailNotification.sendEmail(BnpConstants.CHANGE_PASSWORD_EMAIL_TEMPLATE, emailRecipients, emailParams);
                 }
                 resolver.commit();

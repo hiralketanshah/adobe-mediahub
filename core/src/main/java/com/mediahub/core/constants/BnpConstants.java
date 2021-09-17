@@ -194,5 +194,7 @@ public class BnpConstants {
 
     public static final String EXT_USER_PROPERTY_GIVENNAME = "./profile/givenName";
     public static final String EXT_USER_PROPERTY_EXPIRY = "./profile/expiry";
+    public static final String USER_TOKEN = "userToken";
+    public static final String LINK = "link";
 
 }
