@@ -5,6 +5,7 @@ import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
+import com.google.common.collect.Iterators;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsTrackingService;
 import org.apache.sling.api.resource.*;
@@ -18,7 +19,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,12 +60,15 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
         final ResourceResolver resourceResolver = resolveContext.getResourceResolver();
 
         String[] segments = path.split("/");
-
-        Resource asset = null;
+        log.debug("Incoming request is {}", path);
+        Resource asset;
         if (segments.length == 5) {
             String uuid = segments[4];
+            log.debug("uuid is {}", uuid);
             String status = segments[2];
+            log.debug("status is {}", status);
             String format = segments[3];
+            log.debug("format is {}", format);
 
             QueryBuilder builder = resourceResolver.adaptTo(QueryBuilder.class);
             Map<String, String> map = new HashMap<>();
@@ -77,47 +80,52 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
             SearchResult result = query.getResult();
             Iterator<Resource> userResources = result.getResources();
+            log.debug("Number of results from QueryBuilder {}", Iterators.size(userResources));
 
             Map<String, String> globalProperties = GlobalFilter.getGlobalProperties();
 
             if (userResources.hasNext()) {
                 asset = userResources.next();
+                log.debug("Mapped resource is {}", asset.getPath());
                 Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+                log.debug("Mapped metadata is {}", metadata.getPath());
                 String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
+                log.debug("Broadcast Status is {}", Arrays.toString(broadcastStatus));
                 if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
-				    switch (status) {
-				        case BnpConstants.BROADCAST_VALUE_EXTERNAL:
-				            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
-				                trackingService.trackExternal(asset, format, globalProperties);
-				                if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
-				                    return processInternalUrl(asset, path, format);
-				                } else {
-				                    return processExternalUrl(asset, path, format);
-				                }
-				            }
-				            break;
-				        case BnpConstants.BROADCAST_VALUE_INTERNAL:
-				            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
-				                trackingService.trackInternal(asset, format, globalProperties);
-				                return processInternalUrl(asset, path, format);
-				            }
-				            break;
-				        default:
-				            log.info("No broadcast status found");
-				            break;
-				    }
-				}
+                    switch (status) {
+                        case BnpConstants.BROADCAST_VALUE_EXTERNAL:
+                            log.debug("Matching external broadcast");
+                            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
+                                trackingService.trackExternal(asset, format, globalProperties);
+                                log.debug("S7 status is {}", metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class));
+                                if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
+                                    return processInternalUrl(asset, path, format);
+                                } else {
+                                    return processExternalUrl(asset, path, format);
+                                }
+                            }
+                            break;
+                        case BnpConstants.BROADCAST_VALUE_INTERNAL:
+                            log.debug("Matching internal broadcast");
+                            if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+                                trackingService.trackInternal(asset, format, globalProperties);
+                                return processInternalUrl(asset, path, format);
+                            }
+                            break;
+                        default:
+                            log.debug("No broadcast status found");
+                            break;
+                    }
+                }
             }
 
         }
-
 
         // Note that ResourceMetadata is NOT the data that populates a resources ValueMap; that is done below via the ProvidedResourceWrapper
         ResourceMetadata resourceMetaData = new ResourceMetadata();
         // Set the resolution path
         resourceMetaData.setResolutionPath(path);
         return new SyntheticResource(resourceResolver, path, JcrResourceConstants.NT_SLING_FOLDER);
-
 
     }
 

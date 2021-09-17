@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Component(
         service = {AnalyticsTrackingService.class},
@@ -180,13 +181,17 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                     parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
                 }
 
+                if (log.isDebugEnabled()) {
+                    con.getHeaderFields().entrySet().stream().forEach(e -> log.debug("Header {} contains {}", e.getKey(), e.getValue().stream().collect(Collectors.joining(","))));
+                }
+
                 //Setting parameters
                 DataOutputStream out = new DataOutputStream(con.getOutputStream());
                 out.writeBytes(getParamsString(parameters));
                 out.flush();
                 out.close();
 
-                log.trace("Sending hit to {} with parameters {}", url, getParamsString(parameters));
+                log.debug("Sending hit to {} with parameters {}", url, getParamsString(parameters));
                 int status = con.getResponseCode();
                 if (status != HttpURLConnection.HTTP_OK) {
                     log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
