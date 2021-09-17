@@ -3,13 +3,7 @@ package com.mediahub.core.listeners;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.tagging.TagConstants;
 import com.mediahub.core.constants.BnpConstants;
-
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -48,26 +42,14 @@ public class TagListener implements ResourceChangeListener {
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    /**
-     * The repository.
-     */
-    @Reference
-    org.apache.sling.jcr.api.SlingRepository repository;
-    @Reference
-    private ConfigurationAdmin configAdmin;
-    List<Principal> principalNameList;
-
-
     @Override
     public void onChange(List<ResourceChange> arg0) {
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                 BnpConstants.WRITE_SERVICE);
-        Session adminSession = null;
         try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 
             Resource masterAsset = adminResolver.getResource("/content/dam/technique/do-not-delete.png");
             // getting session of System User
-            adminSession = adminResolver.adaptTo(Session.class);
             for (ResourceChange my : arg0) {
                 String tagPath = my.getPath().substring(DEFAULT_TAGS.length());
                 if (tagPath.split("/").length == 2) {
@@ -76,7 +58,12 @@ public class TagListener implements ResourceChangeListener {
                     if (contentResourse != null) {
                         Resource metadata = contentResourse.getChild(BnpConstants.METADATA);
                         ModifiableValueMap mvp = metadata.adaptTo(ModifiableValueMap.class);
-                        List<String> tags = new ArrayList<>(Arrays.asList((String[]) mvp.get(TagConstants.PN_TAGS)));
+                        List<String> tags;
+                        if (mvp.containsKey(TagConstants.PN_TAGS)) {
+                            tags = new ArrayList<>(Arrays.asList((String[]) mvp.get(TagConstants.PN_TAGS)));
+                        } else {
+                            tags = new ArrayList<>();
+                        }
                         tags.add(tagPath);
                         mvp.put(TagConstants.PN_TAGS, tags.toArray());
                         adminResolver.commit();
@@ -87,10 +74,6 @@ public class TagListener implements ResourceChangeListener {
             }
         } catch (LoginException | PersistenceException e) {
             log.error("RepositoryException while Executing events", e);
-        } finally {
-            if (adminSession != null) {
-                adminSession.logout();
-            }
         }
 
     }
