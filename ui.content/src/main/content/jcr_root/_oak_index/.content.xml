@@ -315,6 +315,7 @@
                     <predictedTags
                             jcr:primaryType="nt:unstructured"
                             isRegexp="{Boolean}true"
+                            similarityTags="{Boolean}true"
                             name="jcr:content/metadata/predictedTags/*/name"/>
                     <predictedTagsConfidence
                             jcr:primaryType="nt:unstructured"
@@ -378,6 +379,12 @@
                             propertyIndex="{Boolean}true"
                             useInSpellcheck="{Boolean}true"
                             useInSuggest="{Boolean}true"/>
+                    <imageFeatures
+                            jcr:primaryType="nt:unstructured"
+                            name="jcr:content/metadata/imageFeatures/haystack0"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            useInSimilarity="{Boolean}true"/>
                 </properties>
             </dam:Asset>
         </indexRules>
@@ -390,7 +397,23 @@
     <reference/>
     <principalName/>
     <cqTagLucene/>
-    <lucene/>
+    <lucene
+        jcr:primaryType="oak:QueryIndexDefinition"
+        async="[fulltext-async]"
+        codec="Lucene46"
+        compatVersion="{Long}2"
+        costPerEntry="{Long}10"
+        costPerExecution="{Long}2"
+        deprecated="{Boolean}true"
+        excludedPaths="[/var,/etc/replication,/etc/workflow/instances,/jcr:system]"
+        reindex="{Boolean}false"
+        refresh="{Boolean}true"
+        reindexCount="{Long}1"
+        seed="{Long}8469586601147715183"
+        type="lucene">
+            <aggregates/>
+            <indexRules/>
+    </lucene>
     <repTokenIndex/>
     <externalId/>
     <authorizableId/>
