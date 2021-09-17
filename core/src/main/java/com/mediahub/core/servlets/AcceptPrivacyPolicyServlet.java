@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -74,6 +75,7 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             Principal userPrincipal = request.getUserPrincipal();
             String userPath = resolver.adaptTo(UserManager.class).getAuthorizable(userPrincipal).getPath();
+            String userToken = UUID.randomUUID().toString();
             Resource user = resolver.getResource(userPath);
             if (null != user) {
                 ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
@@ -81,7 +83,15 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
                 String welcomeEmailSent = modifiableValueMap.get(BnpConstants.WELCOME_EMAIL_SENT, Boolean.FALSE.toString());
                 if(StringUtils.equals(welcomeEmailSent, Boolean.FALSE.toString())){
                     modifiableValueMap.put(BnpConstants.WELCOME_EMAIL_SENT, Boolean.TRUE.toString());
+
+                    // Adding user token and Token Expiry date
+                    modifiableValueMap.put(BnpConstants.USER_TOKEN, userToken);
+                    Calendar tokenExpiryDate = Calendar.getInstance();
+                    tokenExpiryDate.add(Calendar.DATE, 1);
+                    modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
+
                     final Map<String, Object> properties = new HashMap<>();
+                    properties.put(BnpConstants.USER_TOKEN, userToken);
                     properties.put(BnpConstants.LANGUAGE, UserUtils.getUserLanguage(user));
                     properties.put(BnpConstants.FIRST_NAME,userPrincipal.getName());
                     Resource profile = user.getChild(BnpConstants.PROFILE);
