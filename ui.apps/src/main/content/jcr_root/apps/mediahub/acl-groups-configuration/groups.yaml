@@ -682,6 +682,10 @@
           permission: allow
           privileges: jcr:read
 
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
+
     - mediahub-administrators:
 
         - path: /content/dam
@@ -790,6 +794,10 @@
           actions: read
           repGlob:
 
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
+
     - mediahub-super-administrators:
 
         - path: /conf/global/settings/dam/search/facets
@@ -879,6 +887,10 @@
           actions: read
           repGlob:
 
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
+
 
     - mediahub-basic-reader:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
@@ -891,6 +903,10 @@
           privileges: jcr:read,jcr:readAccessControl
           repGlob: ""
 
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
+
     - mediahub-basic-contributor:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
           permission: deny
@@ -899,6 +915,10 @@
         - path: /content/dam/medialibrary
           permission: allow
           privileges: jcr:read
+
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
 
     - mediahub-projects-users:
         - path: /etc/cloudservices
@@ -952,6 +972,10 @@
           permission: allow
           privileges: jcr:read
           repGlob:
+
+        - path: /content/dam/collections
+          permission: allow
+          privileges: jcr:all
 
     - mediahub-basic-project-manager:
         - path: /var/workflow/models
