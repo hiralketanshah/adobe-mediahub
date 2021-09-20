@@ -73,14 +73,22 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
 
     @Override
     public void trackExternal(Resource asset, String format, Map<String, String> properties) {
-        Map<String, String> parameters = initParameters(asset);
-        sendRequest(parameters, properties);
+        try {
+            Map<String, String> parameters = initParameters(asset);
+            sendRequest(parameters, properties);
+        } catch (Exception e) {
+            log.error("An error occurred when sending tracking to Analytics", e);
+        }
     }
 
     @Override
     public void trackInternal(Resource asset, String format, Map<String, String> properties) {
-        Map<String, String> parameters = initParameters(asset);
-        sendRequest(parameters, properties);
+        try {
+            Map<String, String> parameters = initParameters(asset);
+            sendRequest(parameters, properties);
+        } catch (Exception e) {
+            log.error("An error occurred when sending tracking to Analytics", e);
+        }
     }
 
     private Map<String, String> initParameters(Resource asset) {
@@ -198,7 +206,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 }
 
             } catch (IOException e) {
-                log.error("An error occurred when sending tracking to Analytics", e);
+                log.error("An error occurred when sending request to AA", e);
             }
         });
     }
