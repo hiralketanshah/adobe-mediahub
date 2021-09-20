@@ -140,7 +140,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             Session session = resourceResolver.adaptTo(Session.class);
             Node node;
 
-            node = session.getNode(BnpConstants.USER_PATH);
+            node = session.getNode(BnpConstants.INTERNAL_USER_PATH);
             node.remove();
             session.save();
 
@@ -158,7 +158,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         int offset = 0;
         while (hasUsers && !inputUserMap.isEmpty()) {
             Map<String, String> parameters = new HashMap<>();
-            parameters.put("path", BnpConstants.USER_PATH);
+            parameters.put("path", BnpConstants.INTERNAL_USER_PATH);
             parameters.put("1_property", JcrConstants.JCR_PRIMARYTYPE);
             parameters.put("1_property.value", "rep:User");
             parameters.put("2_property", "profile/type");
@@ -239,7 +239,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 } else {
                     String hashedUserId = encryptThisString(userId);
                     org.apache.jackrabbit.api.security.user.User user = userManager.createUser(userId, userId,
-                            principal, BnpConstants.USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
+                            principal, BnpConstants.INTERNAL_USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
                                     + hashedUserId.substring(2, 4));
                     updateUserInfo(user, userInfo, session);
                     mediahubBasicGroup.addMember(user);
