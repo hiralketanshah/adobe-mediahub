@@ -80,7 +80,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             Query query = builder.createQuery(PredicateGroup.create(map), resourceResolver.adaptTo(Session.class));
             SearchResult result = query.getResult();
             Iterator<Resource> userResources = result.getResources();
-            log.debug("Number of results from QueryBuilder {}", Iterators.size(userResources));
+            log.debug("Number of results from QueryBuilder {}", Iterators.size(result.getResources()));
 
             Map<String, String> globalProperties = GlobalFilter.getGlobalProperties();
 
