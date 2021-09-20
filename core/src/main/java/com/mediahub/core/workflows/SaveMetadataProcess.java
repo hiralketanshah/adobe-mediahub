@@ -68,7 +68,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
-                if(StringUtils.contains(payloadPath, "/content/dam/medialibrary")){
+                if(StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)){
                     ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
                 }
                 resourceResolver.commit();

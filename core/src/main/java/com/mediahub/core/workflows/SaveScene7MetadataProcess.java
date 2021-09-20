@@ -7,6 +7,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
@@ -103,7 +104,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                         if (file != null) {
                             workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
                         }
-                        if(StringUtils.contains(payloadPath, "/content/dam/medialibrary")){
+                        if(StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)){
                             ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
                         }
                         resourceResolver.commit();

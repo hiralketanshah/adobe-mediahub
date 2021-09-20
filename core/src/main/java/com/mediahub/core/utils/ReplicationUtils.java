@@ -38,10 +38,10 @@ public class ReplicationUtils {
       // Do NOT suppress status update of resource (set replication properties accordingly)
       options.setSuppressStatusUpdate(false);
 
-      log.debug("**** ABOUT TO REPLICATE" ) ;
+      log.debug("**** ABOUT TO REPLICATE : {}", path ) ;
       //Rep the content   replicate(Session session, ReplicationActionType type, String path)
       replicator.replicate(resourceResolver.adaptTo(Session.class), ReplicationActionType.ACTIVATE,path);
-      log.debug("**** REPLICATED" ) ;
+      log.debug("**** REPLICATED : {} ", path) ;
     } catch(Exception e) {
       log.error("**** Error while replicating Node : {} ", e.getMessage()) ;
     }
