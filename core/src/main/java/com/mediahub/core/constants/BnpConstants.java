@@ -191,6 +191,7 @@ public class BnpConstants {
     public static final String VAL_USER_PROFILE_TYPE = "internal";
     public static final String VAL_USER_PROFILE_COMPANY = "BNP Paribas";
     public static final String PN_PRINCIPAL_NAME = "rep:principalName";
+    public static final String RANDOM_PASSWORD = "G2I@+B#g{{]H]luf";
 
     public static final String EXT_USER_PROPERTY_GIVENNAME = "./profile/givenName";
     public static final String EXT_USER_PROPERTY_EXPIRY = "./profile/expiry";
