@@ -353,7 +353,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         return false;
     }
 
-    private Map<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
+    public Map<String, UserInfo> convertStreamToHashMapUserInfo(BufferedReader br, boolean skipLine) {
         int skip = skipLine ? 1 : 0;
         List<UserInfo> inputList;
         inputList = br.lines().skip(skip).map(mapToUserInfo).collect(Collectors.toList());

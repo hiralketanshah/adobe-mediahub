@@ -9,12 +9,6 @@ public class UserInfo {
 		super();
 	}
 
-	public UserInfo(String uoId,String business, String organizationUnit) {
-        this.uoId = uoId;
-        this.business=business;
-        this.organizationUnit = organizationUnit;
-    }
-
 	public String getUoId() {
 		return uoId;
 	}
