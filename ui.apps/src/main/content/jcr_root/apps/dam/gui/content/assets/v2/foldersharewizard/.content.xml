@@ -397,9 +397,6 @@
                                                                   jcr:primaryType="nt:unstructured"
                                                                   sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                   expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                                                                <isMedia
-                                                                  jcr:primaryType="nt:unstructured"
-                                                                  sling:resourceType="utils/granite/rendercondition/simple/media"/>
                                                             </granite:rendercondition>
                                                         </InternalUsers>
                                                         <assetcontribution
@@ -436,9 +433,6 @@
                                                                   jcr:primaryType="nt:unstructured"
                                                                   sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                   expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                                                                <isMedia
-                                                                  jcr:primaryType="nt:unstructured"
-                                                                  sling:resourceType="utils/granite/rendercondition/simple/media"/>
                                                             </granite:rendercondition>
                                                             <granite:data
                                                               jcr:primaryType="nt:unstructured"
