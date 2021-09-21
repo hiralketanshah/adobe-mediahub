@@ -119,8 +119,15 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                                           Resource media) {
         Resource project;
         if (media != null) {
-            project = resourceResolver.getResource(
-                    StringUtils.replace(media.getParent().getPath(), "/dam", StringUtils.EMPTY));
+            // Changing the logic to accommodate folder/media/asset as part of MED-231
+            String folders = StringUtils.replace(media.getPath(), CONTENT_DAM_PROJECTS, StringUtils.EMPTY);
+            String projectName;
+            if(StringUtils.isNotBlank(folders) && StringUtils.contains(folders, "/")){
+                projectName = folders.split("/")[0];
+            } else {
+                projectName =  folders;
+            }
+            project = resourceResolver.getResource("/content/projects/" + projectName);
         } else {
             project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(), "/dam", StringUtils.EMPTY));
         }
