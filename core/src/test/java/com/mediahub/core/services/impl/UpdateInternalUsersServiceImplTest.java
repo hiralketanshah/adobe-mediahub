@@ -41,6 +41,8 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.data.UserInfo;
+import com.mediahub.core.data.UserStatus;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -66,6 +68,12 @@ public class UpdateInternalUsersServiceImplTest {
 	Asset resource;
 
 	@Mock
+	Asset resourceInfo;
+
+	@Mock
+	Asset resourceStatus;
+
+	@Mock
 	User user;
 
 	@Mock
@@ -79,6 +87,18 @@ public class UpdateInternalUsersServiceImplTest {
 
 	@Mock
 	Rendition rendition;
+	
+	@Mock
+	Asset assetInfo;
+
+	@Mock
+	Rendition renditionInfo;
+	
+	@Mock
+	Asset assetStatus;
+
+	@Mock
+	Rendition renditionStatus;
 
 	@Mock
 	Query query;
@@ -97,6 +117,10 @@ public class UpdateInternalUsersServiceImplTest {
 
 	@Mock
 	Node node;
+	
+	InputStream isList;
+	InputStream isInfo;
+	InputStream isStatus;
 
 	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 			BnpConstants.WRITE_SERVICE);
@@ -106,20 +130,33 @@ public class UpdateInternalUsersServiceImplTest {
 	public void setup() throws NotCompliantMBeanException, org.apache.sling.api.resource.LoginException {
 		MockitoAnnotations.initMocks(this);
 		when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+		
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		isList = classloader.getResourceAsStream("users-list.csv");
+		isInfo = classloader.getResourceAsStream("user-info.csv");
+		isStatus = classloader.getResourceAsStream("user-status.csv");
 
 	}
 
 	@Test
 	public void testRun() throws AuthorizableExistsException, RepositoryException, PersistenceException {
 		Value[] propertyValue = new Value[] { val };
-		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-		InputStream is = classloader.getResourceAsStream("users-list.csv");
-		BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(is));
+		
+		
+		BufferedReader brUserList = new BufferedReader(new InputStreamReader(isList));
+		Map<String, com.mediahub.core.data.User> inputMap = fetchPrice.convertStreamToHashMap(brUserList, false);
+		
+		BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(isInfo));
+		Map<String, UserInfo> infoMap = fetchPrice.convertStreamToHashMapUserInfo(brUserInfo, false);
+		
+		BufferedReader brUserStatus = new BufferedReader(new InputStreamReader(isStatus));
+		Map<String, UserStatus> statusMap = fetchPrice.convertStreamToHashMapUserStatus(brUserStatus, false);
+		
 		when(resolver.adaptTo(Session.class)).thenReturn(session);
 		when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
 		when(resolver.getResource(BnpConstants.CSV_FILE_PATH)).thenReturn(resource);
-		when(resolver.getResource(BnpConstants.CSV_USER_INFO)).thenReturn(null);
-		when(resolver.getResource(BnpConstants.CSV_USER_STATUS)).thenReturn(null);
+		when(resolver.getResource(BnpConstants.CSV_USER_INFO)).thenReturn(resourceInfo);
+		when(resolver.getResource(BnpConstants.CSV_USER_STATUS)).thenReturn(resourceStatus);
 		when(session.getValueFactory()).thenReturn(valFactory);
 		when(userManager.createUser(Mockito.anyString(), Mockito.anyString(), Mockito.any(Principal.class),
 				Mockito.anyString())).thenReturn(user);
@@ -128,14 +165,21 @@ public class UpdateInternalUsersServiceImplTest {
 		when(user.getProperty(Mockito.anyString())).thenReturn(propertyValue);
 		when(resource.adaptTo(Asset.class)).thenReturn(asset);
 		when(asset.getRendition(Mockito.anyString())).thenReturn(rendition);
-		when(rendition.getStream()).thenReturn(is);
+		when(rendition.getStream()).thenReturn(isList);
+		
+		when(resourceInfo.adaptTo(Asset.class)).thenReturn(assetInfo);
+		when(assetInfo.getRendition(Mockito.anyString())).thenReturn(renditionInfo);
+		when(renditionInfo.getStream()).thenReturn(isInfo);
+		
+		when(resourceStatus.adaptTo(Asset.class)).thenReturn(assetStatus);
+		when(assetStatus.getRendition(Mockito.anyString())).thenReturn(renditionStatus);
+		when(renditionStatus.getStream()).thenReturn(isStatus);
 
 		when(builder.createQuery(Mockito.any(), Mockito.any())).thenReturn(query);
 		when(query.getResult()).thenReturn(result);
-		Map<String, com.mediahub.core.data.User> inputMap = fetchPrice.convertStreamToHashMap(brUserInfo, true);
 		assertAll(() -> fetchPrice.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO,
 				BnpConstants.CSV_USER_STATUS));
-		assertAll(() -> fetchPrice.createAndSaveUsers(inputMap, new LinkedHashMap<>(), new LinkedHashMap<>(),
+		assertAll(() -> fetchPrice.createAndSaveUsers(inputMap, infoMap,statusMap,
 				userManager, session));
 		assertAll(() -> fetchPrice.deletedUnwantedUsers(resolver, inputMap));
 		assertAll(() -> fetchPrice.removeAllUsers());

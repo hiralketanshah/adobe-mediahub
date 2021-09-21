@@ -18,17 +18,6 @@ public class User {
 		super();
 	}
 
-	public User(String id, String familyName, String givenName, String emailId, String jobTitle,String uoId,String business, String statusId, String status, String organizationUnit) {
-        this.id = id;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.emailId = emailId;
-        this.jobTitle = jobTitle;
-        this.uoId = uoId;
-        this.business=business;
-        this.organizationUnit = organizationUnit;
-    }
-
     public String getId() {
         return id;
     }
