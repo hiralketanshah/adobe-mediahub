@@ -265,6 +265,7 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/collection/action"
                         action="foundation.link"
+                        sling:orderAfter="download"
                         actionConfigName="granite/ui/shell/actions/properties"
                         activeCondition="media.bulk.edit.active.condition"
                         text="Properties"

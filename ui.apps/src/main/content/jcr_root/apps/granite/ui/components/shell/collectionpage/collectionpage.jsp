@@ -1100,7 +1100,12 @@ registry.register("foundation.collection.action.activecondition", {
   name: "media.bulk.edit.active.condition",
 	handler: function (name, el, config, collection, selections) {
 		if (( selections.length  > 1)) {
-			return true;
+		  if(selections[0].getElementsByClassName("foundation-collection-assets-meta")){
+		    if(selections[0].getElementsByClassName("foundation-collection-assets-meta").length > 0 && selections[0].getElementsByClassName("foundation-collection-assets-meta")[0].getAttribute("data-foundation-collection-meta-folder")){
+		      return true;
+		    }
+		  }
+		  return false;
 		} else {
 			return false;
 		}
