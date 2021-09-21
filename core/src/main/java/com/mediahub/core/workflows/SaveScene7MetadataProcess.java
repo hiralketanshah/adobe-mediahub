@@ -7,13 +7,19 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
+import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
@@ -25,10 +31,6 @@ import org.apache.sling.event.jobs.JobManager;
 import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Abuthahir Ibrahim
@@ -55,6 +57,9 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     @Reference
     JobManager jobManager;
+
+    @Reference
+    private Replicator replicator;
 
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) throws WorkflowException {
@@ -98,6 +103,9 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                         modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         if (file != null) {
                             workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                        }
+                        if(StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)){
+                            ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
                         }
                         resourceResolver.commit();
                     }

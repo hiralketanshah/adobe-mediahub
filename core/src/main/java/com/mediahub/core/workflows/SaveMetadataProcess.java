@@ -11,17 +11,23 @@ import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
+import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
-import org.eclipse.jetty.util.URIUtil;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
+import com.mediahub.core.utils.ReplicationUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.eclipse.jetty.util.URIUtil;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Abuthahir Ibrahim
@@ -43,6 +49,9 @@ public class SaveMetadataProcess implements WorkflowProcess {
     @Reference
     Scene7DeactivationService scene7DeactivationService;
 
+    @Reference
+    private Replicator replicator;
+
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
@@ -59,11 +68,13 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                if(StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)){
+                    ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
+                }
                 resourceResolver.commit();
             }
 
         } catch (LoginException | PersistenceException e) {
-
             throw new WorkflowException("Error while adding attributes for internal asset", e);
         }
 
