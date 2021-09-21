@@ -468,7 +468,7 @@ login
                 <h1 class="coral-Heading coral-Heading--1"><%= printProperty(cfg, i18n, xssAPI, "box/title", i18n.get("Welcome to BNP Paribas")) %></h1>
             </div>
             <p>
-                <%= i18n.get("An Adobe Experience Cloud solution: All the tools you need to solve these complex digital business challenges.")%>
+                <%= i18n.get("BNP login page box text")%>
 
             </p>
         </div>
