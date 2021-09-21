@@ -562,7 +562,11 @@
                 } else {
                     var parsedResponse = _g.HTTP.buildPostResponseFromHTML(data);
                     if (parsedResponse && parsedResponse.headers.Message) {
-                        message = parsedResponse.headers.Message;
+                        if(parsedResponse.headers.Message.indexOf("Password violates password constraint") != -1){
+                            message = Granite.I18n.get("BNP Paribas Password Constrain Message");
+                        } else{
+                        	message = parsedResponse.headers.Message;
+                        }
                     }
                 }
             }
