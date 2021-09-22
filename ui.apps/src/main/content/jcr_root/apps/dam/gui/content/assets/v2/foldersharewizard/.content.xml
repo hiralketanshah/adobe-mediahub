@@ -397,6 +397,10 @@
                                                                   jcr:primaryType="nt:unstructured"
                                                                   sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                   expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/exclude/groups"
+                                                                  groups="[mediahub-basic-project-external-contributor]"/>
                                                             </granite:rendercondition>
                                                         </InternalUsers>
                                                         <assetcontribution
@@ -433,6 +437,10 @@
                                                                   jcr:primaryType="nt:unstructured"
                                                                   sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                   expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/exclude/groups"
+                                                                  groups="[mediahub-basic-project-external-contributor]"/>
                                                             </granite:rendercondition>
                                                             <granite:data
                                                               jcr:primaryType="nt:unstructured"
