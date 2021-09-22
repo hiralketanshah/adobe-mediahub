@@ -547,7 +547,7 @@ PropertiesPage
                         String saveBtnVariant = "primary";
 
                         AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
-                        if (StringUtils.contains(assetId, "/content/dam")) {
+                        if (StringUtils.contains(assetId, "/content/dam") && !StringUtils.contains(assetId, "/content/dam/collections")) {
                             doneAttrs.add("isChildrenDeactivated", isChildrenDeactivated);
                             doneAttrs.add("id", "shell-propertiespage-mediaactivator");
                         } else {
@@ -573,7 +573,7 @@ PropertiesPage
 
                         AttrBuilder saveAttrs = new AttrBuilder(request, xssAPI);
 
-                        if (StringUtils.contains(assetId, "/content/dam")) {
+                        if (StringUtils.contains(assetId, "/content/dam") && !StringUtils.contains(assetId, "/content/dam/collections")) {
                             saveAttrs.add("isChildrenDeactivated", isChildrenDeactivated);
                             saveAttrs.add("id", "shell-propertiespage-saveactivator-media");
                         } else {

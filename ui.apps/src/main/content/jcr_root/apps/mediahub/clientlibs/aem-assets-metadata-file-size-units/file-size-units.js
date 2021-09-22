@@ -18,7 +18,7 @@
     function convertFileSize() {
         var $damSize = document.getElementsByName(FILE_SIZE_NAME);
         var $formattedAssetSize = document.getElementsByName(FORMATTED_ASSET_SIZE);
-        if ($damSize === undefined || $damSize.length < 0) {
+        if ($damSize === undefined || $damSize.length <= 0) {
             return;
         }
 
