@@ -6,10 +6,14 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
+import com.day.cq.replication.ReplicationActionType;
+import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
@@ -20,6 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED;
+import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_PROPERTY;
 
 /**
  * @author Abuthahir Ibrahim
@@ -43,6 +50,9 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
     @Reference
     JobManager jobManager;
 
+    @Reference
+    private Replicator replicator;
+
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
@@ -60,7 +70,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                     throw new WorkflowException("No Scene 7 Clould Configuration for the Asset");
                 }
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
-                
+
                 if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {
@@ -78,6 +88,10 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                         status.remove(BnpConstants.BROADCAST_VALUE_EXTERNAL);
                         properties.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());
                         resourceResolver.commit();
+
+                        if (S7_FILE_STATUS_NOT_SUPPORTED.equals(properties.get(S7_FILE_STATUS_PROPERTY, String.class)) && StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(damResource)) {
+                            ReplicationUtils.replicateContent(payloadPath, resourceResolver, replicator, ReplicationActionType.DEACTIVATE);
+                        }
                     }
                 }
             }
