@@ -866,7 +866,7 @@ PropertiesPage
 <script>
     data.push({
         name: 'payload',
-        value: '<%= child.getPath() %>'
+        value: "<%= child.getPath() %>"
     });
 </script>
 <%
@@ -877,7 +877,7 @@ PropertiesPage
 <script>
     data.push({
         name: 'payload',
-        value: '<%= assetId %>'
+        value: "<%= assetId %>"
     });
 </script>
 <%
@@ -892,7 +892,7 @@ PropertiesPage
     data.push({name: 'payloadType', value: 'JCR_PATH'});
     data.push({name: 'model@Delete', value: ''});
     data.push({name: 'workflowTitle', value: 'Internal Publish'});
-    var asset = '<%= request.getParameter("item") %>';
+    var asset = "<%= request.getParameter("item") %>";
 
     function deactivateChildren() {
         var ui = $(window).adaptTo("foundation-ui");
