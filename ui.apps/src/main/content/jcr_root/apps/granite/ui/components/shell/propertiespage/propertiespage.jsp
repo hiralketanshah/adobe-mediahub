@@ -888,6 +888,10 @@ PropertiesPage
 
 <script type="text/javascript">
 
+	if($(".foundation-content-path").data("is-bulk-mode")){
+	document.getElementById("shell-propertiespage-save-publish").style.display = 'none';
+	}
+
     data.push({name: '_charset_', value: 'UTF-8'});
     data.push({name: 'payloadType', value: 'JCR_PATH'});
     data.push({name: 'model@Delete', value: ''});
