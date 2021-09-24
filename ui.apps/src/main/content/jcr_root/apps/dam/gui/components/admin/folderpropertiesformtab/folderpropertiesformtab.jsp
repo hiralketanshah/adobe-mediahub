@@ -26,10 +26,6 @@
 
     String suffix = slingRequest.getRequestPathInfo().getSuffix();
 
-    if(StringUtils.contains(suffix, ",")){
-        suffix = suffix.split(",")[0];
-    }
-
     Resource contentNode = resourceResolver.getResource(suffix).getChild("jcr:content");
 
     // do not honor inheritance (change to getInherited if inheritance is needed)
