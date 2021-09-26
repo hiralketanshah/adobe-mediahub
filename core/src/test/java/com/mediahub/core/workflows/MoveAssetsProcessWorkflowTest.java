@@ -5,6 +5,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
+import com.adobe.granite.workflow.WorkflowException;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
+import com.adobe.granite.workflow.exec.WorkflowData;
+import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
+import com.mediahub.core.constants.BnpConstants;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,19 +25,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.Privilege;
-
+import mockit.MockUp;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
@@ -41,19 +52,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
-import com.adobe.granite.workflow.WorkflowException;
-import com.adobe.granite.workflow.WorkflowSession;
-import com.adobe.granite.workflow.exec.WorkItem;
-import com.adobe.granite.workflow.exec.Workflow;
-import com.adobe.granite.workflow.exec.WorkflowData;
-import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.day.cq.commons.jcr.JcrConstants;
-import com.mediahub.core.constants.BnpConstants;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import mockit.MockUp;
 
 @ExtendWith({ AemContextExtension.class })
 public class MoveAssetsProcessWorkflowTest {
@@ -146,6 +144,9 @@ public class MoveAssetsProcessWorkflowTest {
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
+    private MockUp<DamUtil> damUtil;
+
+
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -154,6 +155,12 @@ public class MoveAssetsProcessWorkflowTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
         when(workflowData.getPayload()).thenReturn(payload);
         when(payload.toString()).thenReturn("/content/dam/projects/");
+        damUtil = new MockUp<DamUtil>() {
+            @mockit.Mock
+            String getInheritedProperty(String str, Resource resource,Class<T> type) {
+                return "";
+            }
+        };
     }
 
     @Test
