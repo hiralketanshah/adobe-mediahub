@@ -1,11 +1,11 @@
 package com.mediahub.core.filters;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
-import com.google.common.collect.Iterators;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsTrackingService;
 import org.apache.sling.api.resource.*;
@@ -174,7 +174,28 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
     }
 
     private Resource processInternalUrl(Resource asset, String path, String format) {
-        return new InternalResource(asset, asset.getPath());
+        if (DamUtil.isVideo(DamUtil.resolveToAsset(asset))) {
+            Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+            String externalUrl = null;
+            switch (format) {
+                case "master":
+                    return new InternalResource(asset, asset.getPath());
+                case "hd":
+                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_HD, String.class);
+                    break;
+                case "md":
+                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_MD, String.class);
+                    break;
+                default:
+                    log.info("No format found");
+                    break;
+            }
+            ValueMap vm = new ValueMapDecorator(new HashMap<>());
+            vm.put("redirectTarget", externalUrl);
+            return new ExternalResource(asset, path, vm);
+        } else {
+            return new InternalResource(asset, asset.getPath());
+        }
 
     }
 

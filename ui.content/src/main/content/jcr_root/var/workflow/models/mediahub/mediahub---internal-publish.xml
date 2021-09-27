@@ -8,7 +8,7 @@
     title="Mediahub - Internal publish">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/mediahub/mediahub---internal-publish/jcr:content"
-        cq:lastModified="{Long}1606815092304"
+        cq:lastModified="{Long}1632484979003"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"/>
     <nodes jcr:primaryType="nt:unstructured">
@@ -20,6 +20,15 @@
         </node0>
         <node1
             jcr:primaryType="cq:WorkflowNode"
+            title="Save Metadata in Moved Asset"
+            type="PROCESS">
+            <metaData
+                jcr:primaryType="nt:unstructured"
+                PROCESS="com.mediahub.core.workflows.SaveMetadataProcess"
+                PROCESS_AUTO_ADVANCE="true"/>
+        </node1>
+        <node2
+            jcr:primaryType="cq:WorkflowNode"
             description="A process to activate a page or asset"
             title="Activate Page/Asset"
             type="PROCESS">
@@ -27,16 +36,6 @@
                 jcr:primaryType="nt:unstructured"
                 PROCESS="com.day.cq.wcm.workflow.process.ActivatePageProcess"
                 PROCESS_AUTO_ADVANCE="true"/>
-        </node1>
-        <node2
-          jcr:primaryType="cq:WorkflowNode"
-          description="A process to save metadata in Moved Asset"
-          title="Activate Page/Asset"
-          type="PROCESS">
-            <metaData
-              jcr:primaryType="nt:unstructured"
-              PROCESS="com.mediahub.core.workflows.SaveMetadataProcess"
-              PROCESS_AUTO_ADVANCE="true"/>
         </node2>
         <node3
             jcr:primaryType="cq:WorkflowNode"
@@ -61,10 +60,9 @@
             <metaData jcr:primaryType="nt:unstructured"/>
         </node1_x0023_node2>
         <node2_x0023_node3
-          jcr:primaryType="cq:WorkflowTransition"
-          from="node2"
-          rule=""
-          to="node3">
+            jcr:primaryType="cq:WorkflowTransition"
+            from="node2"
+            to="node3">
             <metaData jcr:primaryType="nt:unstructured"/>
         </node2_x0023_node3>
     </transitions>
