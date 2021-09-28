@@ -1101,7 +1101,7 @@ registry.register("foundation.collection.action.activecondition", {
 	handler: function (name, el, config, collection, selections) {
 		if (( selections.length  > 1)) {
 		  if(selections[0].getElementsByClassName("foundation-collection-assets-meta")){
-		    if(selections[0].getElementsByClassName("foundation-collection-assets-meta").length > 0 && selections[0].getElementsByClassName("foundation-collection-assets-meta")[0].getAttribute("data-foundation-collection-meta-folder")){
+		    if(selections[0].getElementsByClassName("foundation-collection-assets-meta").length > 0 && selections[0].getElementsByClassName("foundation-collection-assets-meta")[0].getAttribute("data-foundation-collection-meta-folder") === 'true'){
 		      return true;
 		    }
 		  }

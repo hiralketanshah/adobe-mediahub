@@ -47,7 +47,7 @@ public class ExcludeGroupRenderConditionServlet extends SlingSafeMethodsServlet 
       if(groups != null && groups.length > 0){
         UserManager userManager = adminResolver.adaptTo(UserManager.class);
         for (String group : groups) {
-          if( userManager.getAuthorizable(group).isGroup() && ((Group)userManager.getAuthorizable(group)).isMember((User)userManager.getAuthorizable(request.getResourceResolver().getUserID())) ){
+          if( userManager.getAuthorizable(group) != null && userManager.getAuthorizable(group).isGroup() && ((Group)userManager.getAuthorizable(group)).isMember((User)userManager.getAuthorizable(request.getResourceResolver().getUserID())) ){
             render = false;
           }
         }

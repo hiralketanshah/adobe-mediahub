@@ -634,7 +634,7 @@ PropertiesPage
                             doneAttrs1.add("isMediaValidated", isMediaValidated);
                         %>
                         <%
-                            if (StringUtils.contains(assetId, "/content/dam/projects") && !isAsset && canSavePublishForProjects) {
+                            if (StringUtils.contains(assetId, "/content/dam/projects") && isMedia && !isAsset && canSavePublishForProjects) {
                         %>
                         <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
                         </button>
@@ -887,6 +887,10 @@ PropertiesPage
 %>
 
 <script type="text/javascript">
+
+	if($(".foundation-content-path").data("is-bulk-mode")){
+	document.getElementById("shell-propertiespage-save-publish").style.display = 'none';
+	}
 
     data.push({name: '_charset_', value: 'UTF-8'});
     data.push({name: 'payloadType', value: 'JCR_PATH'});
