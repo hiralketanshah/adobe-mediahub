@@ -217,6 +217,7 @@
         if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
             saveMediaMetadataChanges(e);
         }
+		saveMediaMetadataChanges(e);
         return false;
     });
 
@@ -265,6 +266,7 @@
         if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
             saveMediaMetadataChanges(e);
         }
+		saveMediaMetadataChanges(e);
         return false;
     });
 
