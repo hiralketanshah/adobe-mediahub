@@ -16,10 +16,9 @@
 package com.mediahub.core.servlets;
 
 import com.adobe.cq.commerce.common.ValueMapDecorator;
-import com.adobe.granite.ui.components.ds.DataSource;
-import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-            ServletResolverConstants.SLING_SERVLET_RESOURCE_TYPES + "=" + "/bin/project/external"
+            ServletResolverConstants.SLING_SERVLET_PATHS + "=" + "/bin/project/external"
         })
 public class ProjectExternalContributor extends SlingAllMethodsServlet {
 
@@ -84,20 +83,24 @@ public class ProjectExternalContributor extends SlingAllMethodsServlet {
             String media = request.getRequestPathInfo().getSuffix();
             if(StringUtils.isNotBlank(media)){
                 Resource asset = resolver.getResource(media);
-                if(asset.getParent().getValueMap().containsKey("projectPath")){
-                    String projectPath = asset.getParent().getValueMap().get("projectPath", StringUtils.EMPTY);
+                String projectPath = DamUtil.getInheritedProperty(BnpConstants.PROJECT_PATH, asset, StringUtils.EMPTY);
+                response.setContentType("text/html;charset=UTF-8");
+                response.setCharacterEncoding("UTF-8");
+                if(StringUtils.isNotBlank(projectPath)){
                     Resource project = resolver.getResource(projectPath);
-                    if(null != project && project.getValueMap().containsKey("role_external-contributor")){
-                        String groupName = project.getValueMap().get("role_external-contributor", StringUtils.EMPTY);
+                    if(null != project && project.getValueMap().containsKey(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR)){
+                        String groupName = project.getValueMap().get(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR, StringUtils.EMPTY);
                         UserManager userManager = resolver.adaptTo(UserManager.class);
                         Authorizable authorizable = userManager.getAuthorizable(groupName);
                         if(null != authorizable && authorizable.isGroup()){
                             Group group = (Group)authorizable;
                             Iterator<Authorizable> externalUsers = group.getMembers();
-                            List<Resource> optionResourceList = setDropDownValuesInValueMap(resolver, externalUsers);
-                            DataSource dataSource = new SimpleDataSource(optionResourceList.iterator());
-                            request.setAttribute(DataSource.class.getName(), dataSource);
-
+                            StringBuilder sb = new StringBuilder();
+                            while(externalUsers.hasNext()) {
+                                Authorizable owner = externalUsers.next();
+                                sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + owner.getID() +"'>" + owner.getID() + "</li>");
+                            }
+                            response.getWriter().write(sb.toString());
                         }
                     }
                 }
@@ -108,25 +111,5 @@ public class ProjectExternalContributor extends SlingAllMethodsServlet {
         	LOGGER.error("Error while fecthing user and user info : {0}", e);
         }
 
-    }
-
-    /**
-     * Method to fetch list with value map options to be displayed in dropdown
-     *
-     * @param resolver - Resolver object to create value map resource for dropdown
-     * @param externalUsers - user iterator
-     * @return resources list with value map drop down resources
-     */
-    private List<Resource> setDropDownValuesInValueMap(ResourceResolver resolver,
-        Iterator<Authorizable> externalUsers) throws RepositoryException {
-        List<Resource> optionResourceList = new ArrayList<>();
-        while(externalUsers.hasNext()) {
-            Authorizable owner = externalUsers.next();
-            ValueMap valueMap = new ValueMapDecorator(new HashMap<String, Object>());
-            valueMap.put("value", owner.getID());
-            valueMap.put("text", owner.getID());
-            optionResourceList.add(new ValueMapResource(resolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
-        }
-        return optionResourceList;
     }
 }
