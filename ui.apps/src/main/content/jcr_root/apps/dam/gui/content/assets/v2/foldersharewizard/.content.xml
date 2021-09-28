@@ -375,18 +375,10 @@
                                                                   fieldLabel="Users to access private folder"
                                                                   renderReadOnly="{Boolean}true">
                                                                     <field
-                                                                      granite:id="foldershare-settings-userpicker-cug"
                                                                       jcr:primaryType="nt:unstructured"
-                                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                      sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
                                                                       name="./jcr:content/metadata/internaluserpicker"
-                                                                      showDeclaraedGroupMembersOnly="{Boolean}false"
-                                                                      sortOn="profile/@givenName"
-                                                                      sortOrder="ASCENDING"
-                                                                      userGroup="everyone">
-                                                                        <datasource
-                                                                          jcr:primaryType="nt:unstructured"
-                                                                          sling:resourceType="/bin/project/external"
-                                                                          addNone="{Boolean}true"/>
+                                                                      src="/bin/project/external.html${requestPathInfo.suffix}">
                                                                     </field>
                                                                 </users>
                                                             </items>
