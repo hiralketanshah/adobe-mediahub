@@ -34,6 +34,9 @@
                                     feature="com.adobe.acs.commons.dam.impl.copyassetpublishurlfeature.feature.flag"/>
                             </granite:rendercondition>
                         </copypublishurl>
+                        <getembedcode
+                          granite:hidden="{Boolean}true"
+                          jcr:primaryType="nt:unstructured"/>
                     </items>
                 </col1>
                 <dialogpublishurl
