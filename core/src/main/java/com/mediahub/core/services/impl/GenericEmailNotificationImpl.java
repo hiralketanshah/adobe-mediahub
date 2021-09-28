@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.adobe.acs.commons.email.EmailService;
+import com.adobe.acs.commons.email.EmailServiceConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 
 /**
@@ -28,6 +29,9 @@ public class GenericEmailNotificationImpl implements GenericEmailNotification {
 	public void sendEmail(String templatePath,String[] emailRecipients, Map<String, String> emailParams) {
 
 		List<String> failureList = null;
+		emailParams.put(EmailServiceConstants.SENDER_EMAIL_ADDRESS,"noreply@service.mediahub.bnpparibas");
+		emailParams.put(EmailServiceConstants.SENDER_NAME, "Mediahub");
+
 		failureList = emailService.sendEmail(templatePath, emailParams, emailRecipients);
 
 		if (failureList.isEmpty()) {
