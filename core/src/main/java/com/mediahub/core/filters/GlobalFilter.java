@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +49,13 @@ public class GlobalFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         try {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
+            if (logger.isDebugEnabled()) {
+                Enumeration<String> headers = request.getHeaderNames();
+                while (headers.hasMoreElements()) {
+                    String name = headers.nextElement();
+                    logger.debug("Header '{}' has value '{}'", name, request.getHeader(name));
+                }
+            }
             Map<String, String> globalProperties = new HashMap<>();
             String ipAddress = request.getHeader("X-Forwarded-For");
             if (ipAddress == null) {
