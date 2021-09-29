@@ -238,7 +238,11 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                     }
                 } else {
                     String hashedUserId = encryptThisString(userId);
-                    org.apache.jackrabbit.api.security.user.User user = userManager.createUser(userId, UUID.randomUUID().toString(),
+                    String password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
+                    while (password.matches(BnpConstants.P_CONSTRAINT) == false) {
+                        password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
+                    }
+                    org.apache.jackrabbit.api.security.user.User user = userManager.createUser(userId, password,
                             principal, BnpConstants.INTERNAL_USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
                                     + hashedUserId.substring(2, 4));
                     updateUserInfo(user, userInfo, session);
