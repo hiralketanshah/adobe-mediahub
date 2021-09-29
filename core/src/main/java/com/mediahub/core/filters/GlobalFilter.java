@@ -51,9 +51,11 @@ public class GlobalFilter implements Filter {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             if (logger.isDebugEnabled()) {
                 Enumeration<String> headers = request.getHeaderNames();
-                while (headers.hasMoreElements()) {
-                    String name = headers.nextElement();
-                    logger.debug("Header '{}' has value '{}'", name, request.getHeader(name));
+                if (headers != null) {
+                    while (headers.hasMoreElements()) {
+                        String name = headers.nextElement();
+                        logger.debug("Header '{}' has value '{}'", name, request.getHeader(name));
+                    }
                 }
             }
             Map<String, String> globalProperties = new HashMap<>();
