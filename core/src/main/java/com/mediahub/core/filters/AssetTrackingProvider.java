@@ -89,6 +89,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                 log.debug("Mapped metadata is {}", metadata.getPath());
                 String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
                 log.debug("Broadcast Status is {}", Arrays.toString(broadcastStatus));
+                AssetTrackingproviderFilter.set(asset.getName());
                 if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
                     switch (status) {
                         case BnpConstants.BROADCAST_VALUE_EXTERNAL:
