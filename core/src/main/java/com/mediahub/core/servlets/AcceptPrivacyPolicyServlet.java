@@ -93,7 +93,6 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
                     final Map<String, Object> properties = new HashMap<>();
                     properties.put(BnpConstants.USER_TOKEN, userToken);
                     properties.put(BnpConstants.LANGUAGE, UserUtils.getUserLanguage(user));
-                    properties.put(BnpConstants.FIRST_NAME,userPrincipal.getName());
                     Resource profile = user.getChild(BnpConstants.PROFILE);
                     if(null != profile && StringUtils.equals(profile.getValueMap().get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL) ){
                         if(profile.getValueMap().containsKey(BnpConstants.EMAIL)){
@@ -101,6 +100,7 @@ public class AcceptPrivacyPolicyServlet extends SlingAllMethodsServlet {
                         } else {
                             properties.put(BnpConstants.EMAIL,user.getValueMap().get("rep:authorizableId", StringUtils.EMPTY));
                         }
+                        properties.put(BnpConstants.FIRST_NAME,profile.getValueMap().get(BnpConstants.PN_USER_PROFILE_GIVENNAME, userPrincipal.getName()));
                         jobManager.addJob("user/welcome/email", properties);
                     }
 
