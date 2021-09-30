@@ -58,7 +58,6 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                                 final Resource parentResource) {
 
         final ResourceResolver resourceResolver = resolveContext.getResourceResolver();
-
         String[] segments = path.split("/");
         log.debug("Incoming request is {}", path);
         Resource asset;
@@ -89,7 +88,6 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                 log.debug("Mapped metadata is {}", metadata.getPath());
                 String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
                 log.debug("Broadcast Status is {}", Arrays.toString(broadcastStatus));
-                AssetTrackingProviderFilter.set(asset.getName());
                 if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
                     switch (status) {
                         case BnpConstants.BROADCAST_VALUE_EXTERNAL:
@@ -107,6 +105,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                         case BnpConstants.BROADCAST_VALUE_INTERNAL:
                             log.debug("Matching internal broadcast");
                             if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+                                AssetTrackingProviderFilter.set(asset.getName());
                                 trackingService.trackInternal(asset, format, globalProperties);
                                 return processInternalUrl(asset, path, format);
                             }

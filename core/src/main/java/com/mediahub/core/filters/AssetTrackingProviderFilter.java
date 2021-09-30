@@ -17,7 +17,7 @@ import org.osgi.service.component.propertytypes.ServiceVendor;
 
 @Component(service = Filter.class, property = {
 		EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
-		EngineConstants.SLING_FILTER_PATTERN + "=" + "/mh.*",
+		EngineConstants.SLING_FILTER_PATTERN + "=" + "/mh/internal/.*",
 		EngineConstants.SLING_FILTER_METHODS + "=" + HttpConstants.METHOD_GET })
 @ServiceRanking(-700)
 @ServiceVendor("Adobe")
@@ -28,13 +28,14 @@ public class AssetTrackingProviderFilter implements Filter {
 	@Override
 	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
 			throws IOException, ServletException {
-
-		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
-		final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
-		slingResponse.setHeader("Content-disposition", "attachment; filename=" + get());
-		remove();
-
-		filterChain.doFilter(slingRequest, slingResponse);
+		try {
+			final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
+			final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
+			slingResponse.setHeader("Content-disposition", "attachment; filename=" + threadLocal.get());
+			filterChain.doFilter(slingRequest, slingResponse);
+		} finally {
+			remove();
+		}
 	}
 
 	@Override
@@ -45,16 +46,11 @@ public class AssetTrackingProviderFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 	}
 
-	public static void set(String user) {
-		threadLocal.set(user);
+	public static void set(String filename) {
+		threadLocal.set(filename);
 	}
 
 	public static void remove() {
 		threadLocal.remove();
 	}
-
-	public static String get() {
-		return threadLocal.get();
-	}
-
 }
