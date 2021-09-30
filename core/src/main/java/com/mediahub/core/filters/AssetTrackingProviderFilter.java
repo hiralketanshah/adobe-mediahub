@@ -21,7 +21,7 @@ import org.osgi.service.component.propertytypes.ServiceVendor;
 		EngineConstants.SLING_FILTER_METHODS + "=" + HttpConstants.METHOD_GET })
 @ServiceRanking(-700)
 @ServiceVendor("Adobe")
-public class AssetTrackingproviderFilter implements Filter {
+public class AssetTrackingProviderFilter implements Filter {
 
 	private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
@@ -31,7 +31,6 @@ public class AssetTrackingproviderFilter implements Filter {
 
 		final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
 		final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
-
 		slingResponse.setHeader("Content-disposition", "attachment; filename=" + get());
 		remove();
 
