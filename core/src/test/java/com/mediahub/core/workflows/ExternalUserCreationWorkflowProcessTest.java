@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Collection;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.adobe.acs.commons.i18n.I18nProvider;
@@ -187,7 +189,8 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jackrabbitSession);
         when(jackrabbitSession.getUserManager()).thenReturn(userManager);
         when(jackrabbitSession.getValueFactory()).thenReturn(valueFactory);
-        when(userManager.createUser(any(String.class), any(String.class))).thenReturn(user);
+        when(userManager.createUser(Mockito.anyString(), Mockito.anyString(), Mockito.any(Principal.class),
+				Mockito.anyString())).thenReturn(user);
         when(valueFactory.createValue(any(String.class), any(int.class))).thenReturn(value);
         when(userManager.getAuthorizable(BnpConstants.BASIC_GROUP)).thenReturn(group);
         when(group.addMember(user)).thenReturn(true);
