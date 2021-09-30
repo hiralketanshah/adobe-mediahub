@@ -6,10 +6,13 @@ import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.wcm.api.WCMMode;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.workflows.WorkflowUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,13 +73,16 @@ public class InvalidateScene7Cache implements JobConsumer {
         BnpConstants.WRITE_SERVICE);
     try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
       Resource payloadResource = resourceResolver.resolve(payload);
-
       Asset asset = DamUtil.resolveToAsset(payloadResource);
-      String scene7Path = asset.getMetadata().getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+      Map<String, Object> metadata = asset.getMetadata();
+      String scene7Path = metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
       if(StringUtils.isNotBlank(scene7Path)){
         Map<String, Object> params = new HashMap<>();
-        params.put("urls", scene7Path);
-
+        List<String> urlList = new ArrayList<>();
+        urlList.add(scene7Path);
+        WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+        WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+        params.put("urls", urlList.toArray(new String[urlList.size()]));
         HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
         WCMMode.DISABLED.toRequest(req);
 

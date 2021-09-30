@@ -76,6 +76,8 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                     if (jobSuccess) {
                         ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, StringUtils.EMPTY));
+                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, StringUtils.EMPTY));
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
