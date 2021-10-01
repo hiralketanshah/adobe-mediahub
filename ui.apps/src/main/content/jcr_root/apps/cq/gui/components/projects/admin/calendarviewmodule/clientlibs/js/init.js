@@ -50,14 +50,15 @@
         var startDate = $.cookie("aeon-cal-project-start");
         if(startDate == null || !isDate(startDate)) {
             var interimDate = moment(new Date());
-            interimDate.subtract(7, "days");  //display 7 days prior to today
+            interimDate.subtract(365, "days");  //display 365 days prior to today
             startDate = interimDate.format("YYYY-MM-DD");
         }
 
         var endDate = $.cookie("aeon-cal-project-end")
         if(endDate == null || !isDate(endDate)) {
-            interimDate.add(21, "days");
-            var endDate = interimDate.format("YYYY-MM-DD");  //display 21 days after today
+            var currentDate = moment(new Date());
+            currentDate.add(21, "days");
+            var endDate = currentDate.format("YYYY-MM-DD");  //display 21 days after today
         }
 
          aeon.set({
