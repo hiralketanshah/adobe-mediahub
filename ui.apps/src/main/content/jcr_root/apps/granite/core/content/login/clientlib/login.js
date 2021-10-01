@@ -38,8 +38,25 @@
     function displayError(message) {
         // Timeout of 150ms is required for screen reader to notice text changes
         setTimeout(function() {
+            document.getElementById("success").style.display = "none";
             var el = document.getElementById("error");
             // Display the error
+            el.hidden = false;
+            // adds the text inside the coral-Alert-message
+            el.content.innerHTML = message;
+        }, 150);
+    }
+
+    /**
+     * Display success.
+     *
+     * @param {String} message - Message to display. It accepts HTML.
+     */
+    function displaySuccess(message) {
+        // Timeout of 150ms is required for screen reader to notice text changes
+        setTimeout(function() {
+            var el = document.getElementById("success");
+            // Display the success
             el.hidden = false;
             // adds the text inside the coral-Alert-message
             el.content.innerHTML = message;
@@ -146,6 +163,7 @@
         return parts.join("&");
     }
 
+
     // Bind an event listener on login form to make an ajax call
     document.addEventListener("DOMContentLoaded", function(event) {
         // IMS login handler
@@ -210,6 +228,7 @@
                 } else {
                     // passwords match: add new password to data
                     data["j_newpassword"] = document.getElementById("new_password").value;
+
                 }
             }
 
@@ -308,7 +327,6 @@
         });
         }
 
-
         // Change Password
         if(document.getElementById("changePassword")){
             document.getElementById("changePassword").addEventListener("submit", function(event) {
@@ -344,6 +362,7 @@
                     // passwords match: add new password to data
                     data["j_newpassword"] = document.getElementById("new_password").value;
                     data["userToken"] = document.getElementById("userToken").value;
+
                 }
             }
 
@@ -354,7 +373,8 @@
             xhr.onload = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        redirect();
+                        displaySuccess(document.getElementById("confirming-password-reset").value);
+                       document.getElementById("login-link").style.display = "block";
                     } else {
                         var reason = xhr.getResponseHeader("X-Reason-Code");
                         var messageId = reason;
@@ -369,6 +389,8 @@
             return true;
             });
         }
+
+
 
 
     });
