@@ -3,6 +3,9 @@ package com.mediahub.core.workflows;
 import com.adobe.acs.commons.i18n.I18nProvider;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.UserUtils;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,9 +134,16 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 			        	password = org.apache.commons.lang.RandomStringUtils.random(14, BnpConstants.P_CHARACTER);
 
 			        }
-		            user = userManager.createUser(email, password);
-								setUserTokenDetails(resourceResolver, user, userToken);
-								Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
+		              Principal principal = new Principal() {
+		                  public String getName() {
+		                      return email;
+		                  }
+		              };
+		            String hashedUserId = UserUtils.encryptThisString(email);
+		            user = userManager.createUser(email, password, principal, BnpConstants.EXTERNAL_USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
+                            + hashedUserId.substring(2, 4));
+					setUserTokenDetails(resourceResolver, user, userToken);
+					Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
 		            user.setProperty("./profile/givenName", firstNameValue);
 
 		            Value lastNameValue = valueFactory.createValue(lastName, PropertyType.STRING);
@@ -223,7 +233,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 		    }
 			
 			}
-		catch (LoginException | RepositoryException | ParseException e) {
+		catch (LoginException | RepositoryException | ParseException | NoSuchAlgorithmException e) {
 			logger.error("Exception in ExternalUserCreationWorkflowProcess", e);
 		} finally {
 			if (resourceResolver != null) {
