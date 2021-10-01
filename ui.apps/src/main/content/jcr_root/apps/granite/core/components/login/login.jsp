@@ -582,7 +582,7 @@ login
                     <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="changePassword" action="/apps/granite/core/content/login.changePassword.json" novalidate="novalidate">
                         <input type="hidden" name="_charset_" value="UTF-8">
                         <input type="hidden" name="errorMessage" value="Unable to change password now, Kindly try after sometime.">
-                        <input type="hidden" name="resourceChangePassword" id="resourceChangePassword" value="/apps/granite/core/content/login.html">
+                        <input type="hidden" name="resource" id="resource" value="/apps/granite/core/content/login.html">
                         <input type="hidden" name="userToken" id="userToken" value="<%= xssAPI.encodeForHTMLAttr(token) %>">
 
                         <div class="coral-Form-fieldwrapper">
@@ -597,13 +597,13 @@ login
                         <coral-alert id="success" style="background-color:#00915a;" variant="success" <%= reason.length() > 0 ? "" : "hidden" %>>
                             <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
                         </coral-alert>
-                         <input id="confirming-password-rest" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("User password changed successfully.")) %>"/>
+                         <input id="confirming-password-reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("User password changed successfully.")) %>"/>
                         <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= xssAPI.encodeForHTML(i18n.get("Reset Password"))%></button>
 
 
                     </form>
-                <button is="coral-button" id="login-button" variant="primary" type="submit" style="display: none;"><%= xssAPI.encodeForHTML(i18n.get("Login"))%></button>
 
+                <br><a href="/apps/granite/core/content/login.html" id="login-link" style="display: none;"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
 
                 <% } else {%>
                     <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="login" action="<%= xssAPI.getValidHref(urlLogin) %>" novalidate="novalidate">

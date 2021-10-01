@@ -47,7 +47,7 @@
         }, 150);
     }
 
-	/**
+    /**
      * Display success.
      *
      * @param {String} message - Message to display. It accepts HTML.
@@ -56,7 +56,7 @@
         // Timeout of 150ms is required for screen reader to notice text changes
         setTimeout(function() {
             var el = document.getElementById("success");
-            // Display the success message
+            // Display the success
             el.hidden = false;
             // adds the text inside the coral-Alert-message
             el.content.innerHTML = message;
@@ -129,17 +129,6 @@
      */
     function redirect() {
         var u = document.getElementById("resource").value;
-        if (window.location.hash && u.indexOf("#") < 0) {
-            u = u + window.location.hash;
-        }
-        document.location = u;
-    }
-
-	/**
-     * Redirects after clicking Login button after password change.
-     */
-    function redirectLogin() {
-        var u = document.getElementById("resourceChangePassword").value;
         if (window.location.hash && u.indexOf("#") < 0) {
             u = u + window.location.hash;
         }
@@ -338,12 +327,6 @@
         });
         }
 
-        if(document.getElementById("login-button")){
-            document.getElementById("login-button").addEventListener("click", function(event) {
-            redirectLogin();
-            });
-        }
-
         // Change Password
         if(document.getElementById("changePassword")){
             document.getElementById("changePassword").addEventListener("submit", function(event) {
@@ -390,8 +373,8 @@
             xhr.onload = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        displaySuccess(document.getElementById("confirming-password-rest").value);
-                        document.getElementById("login-button").style.display = "block";
+                        displaySuccess(document.getElementById("confirming-password-reset").value);
+                       document.getElementById("login-link").style.display = "block";
                     } else {
                         var reason = xhr.getResponseHeader("X-Reason-Code");
                         var messageId = reason;
