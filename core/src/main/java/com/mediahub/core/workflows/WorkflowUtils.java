@@ -10,6 +10,9 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +54,14 @@ public class WorkflowUtils {
         }
 
         return result;
+    }
+
+    public static void appendExternalUrl(Map<String, Object> metadata, List<String> urlList,
+        String propertyName) {
+        if (metadata.containsKey(propertyName) && StringUtils
+            .isNotBlank(metadata.getOrDefault(propertyName, StringUtils.EMPTY).toString())) {
+            urlList.add(metadata.getOrDefault(propertyName, StringUtils.EMPTY).toString());
+        }
     }
 
 }

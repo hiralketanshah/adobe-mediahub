@@ -10,6 +10,8 @@ import com.day.cq.contentsync.handler.util.RequestResponseFactory;
 import com.day.cq.wcm.api.WCMMode;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -73,7 +75,11 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
             MetaDataMap dataMap = workItem.getWorkflow().getWorkflowData().getMetaDataMap();
             if (dataMap.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)) {
                 log.debug("Cdn invalidation url : " + dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
-                params.put("urls", dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+                List<String> urlList = new ArrayList<>();
+                urlList.add(dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
+                WorkflowUtils.appendExternalUrl(dataMap, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+                WorkflowUtils.appendExternalUrl(dataMap, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                params.put("urls", urlList.toArray(new String[urlList.size()]));
             }
 
             HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
@@ -97,5 +103,4 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
         }
 
     }
-
 }
