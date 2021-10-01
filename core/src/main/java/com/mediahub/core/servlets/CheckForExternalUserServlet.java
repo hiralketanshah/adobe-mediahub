@@ -30,9 +30,7 @@ public class CheckForExternalUserServlet extends SlingAllMethodsServlet {
 
 	@Override
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-
 		try {
-
 			ResourceResolver resolver = request.getResourceResolver();
 			UserManager userManager = resolver.adaptTo(UserManager.class);
 			Session session = resolver.adaptTo(Session.class);
@@ -43,11 +41,9 @@ public class CheckForExternalUserServlet extends SlingAllMethodsServlet {
 			} else {
 				response.getWriter().write("false");
 			}
-
 		} catch (IOException | RepositoryException e) {
 			log.error("Error while checking if current user is external : {0}", e);
 		}
-
 	}
 
 	private boolean isExternal(Authorizable user) throws RepositoryException {
@@ -57,5 +53,4 @@ public class CheckForExternalUserServlet extends SlingAllMethodsServlet {
 		}
 		return false;
 	}
-
 }
