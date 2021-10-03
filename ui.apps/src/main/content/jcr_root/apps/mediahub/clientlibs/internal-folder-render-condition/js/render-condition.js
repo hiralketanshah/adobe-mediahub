@@ -2,7 +2,6 @@
     $document.on("foundation-contentloaded", init);
 
     function init() {
-       alert("init");
        var privateCheckbox = $("#addprivaterestriction");
 
         if(privateCheckbox) {
