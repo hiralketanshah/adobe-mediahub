@@ -3,43 +3,52 @@
 
     function init() {
        var privateCheckbox = $("#addprivaterestriction");
+       var internalfolderCheckbox = $("#internalfolder");
 
         if(privateCheckbox) {
-            if(privateCheckbox.value == "true"){
-				document.getElementById("internalfolder").hidden = true;
-            	document.getElementById("internalusersection").hidden = true;
+
+            if($("#addprivaterestriction")[0] && $("#addprivaterestriction")[0].getAttribute("checked") === ''){
+                document.getElementById("internalfolder").hidden = true;
+                document.getElementById("internaluserselection").hidden = true;
+            } else {
+                document.getElementById("internalfolder").hidden = false;
+                document.getElementById("internaluserselection").hidden = false;
             }
 
             privateCheckbox.on('change', function handleChanged(event) {
                if(event.currentTarget.checked){
                 document.getElementById("internalfolder").hidden = true;
-                document.getElementById("internalusersection").hidden = true;
+                document.getElementById("internaluserselection").hidden = true;
                } else {
                 document.getElementById("internalfolder").hidden = false;
-                document.getElementById("internalusersection").hidden = false;
+                if(internalfolderCheckbox.checked){
+                  document.getElementById("internaluserselection").hidden = false;
+                }
                }
            });
         } else {
-			document.getElementById("internalfolder").hidden = true;
-            document.getElementById("internalusersection").hidden = true;
+			      document.getElementById("internalfolder").hidden = true;
+            document.getElementById("internaluserselection").hidden = true;
         }
 
-	  	var internalfolderCheckbox = $("#internalfolder");
+
+
 
         if(internalfolderCheckbox) {
-            if(internalfolderCheckbox.value == "true"){
-            	document.getElementById("internalusersection").hidden = false;
+            if($("#internalfolder")[0] && $("#internalfolder")[0].getAttribute("checked") === ''){
+                document.getElementById("internaluserselection").hidden = false;
+            } else {
+                document.getElementById("internaluserselection").hidden = true;
             }
 
             internalfolderCheckbox.on('change', function handleChanged(event) {
                if(event.currentTarget.checked){
-                document.getElementById("internalusersection").hidden = false;
+                document.getElementById("internaluserselection").hidden = false;
                } else {
-                document.getElementById("internalusersection").hidden = true;
+                document.getElementById("internaluserselection").hidden = true;
                }
            });
         }
-
     }
 
 }(jQuery, jQuery(document)));
