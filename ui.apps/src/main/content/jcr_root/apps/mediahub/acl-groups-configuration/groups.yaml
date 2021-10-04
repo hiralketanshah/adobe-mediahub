@@ -798,6 +798,12 @@
           permission: allow
           privileges: jcr:all
 
+        - path: /libs/cq/security/content/admin
+          permission: allow
+          actions: read
+          privileges:
+          repGlob:
+
     - mediahub-super-administrators:
 
         - path: /conf/global/settings/dam/search/facets
