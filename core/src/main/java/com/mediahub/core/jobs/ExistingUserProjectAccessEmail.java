@@ -62,15 +62,26 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
             Resource group = resourceResolver.getResource(path);
             getProjectDetails(job, resourceResolver, emailParams, group);
             Node userNode = resourceResolver.adaptTo(Session.class).getNodeByIdentifier(uuid);
-            if(null != userNode && null != userNode.getNode(BnpConstants.PROFILE) && null != userNode.getNode(BnpConstants.PROFILE).getProperty(BnpConstants.EMAIL)){
+            if(null != userNode && null != userNode.getNode(BnpConstants.PROFILE)){
               Node profile = userNode.getNode(BnpConstants.PROFILE);
               ValueMap profileProperties = resourceResolver.getResource(profile.getPath()).getValueMap();
-              String email = profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY);
+
+              String email = StringUtils.EMPTY;
+              if(profileProperties.containsKey(BnpConstants.EMAIL)){
+                email = profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY);
+              } else {
+                email = resourceResolver.getResource(userNode.getPath()).getValueMap().get("rep:authorizableId", StringUtils.EMPTY);
+              }
               String[] emailRecipients = {email};
 
               emailParams.put(BnpConstants.FIRSTNAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
               emailParams.put(BnpConstants.EXPIRY, profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY));
-              genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistingusers.html", emailRecipients, emailParams);
+
+              if(StringUtils.equals(profileProperties.get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL)){
+                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistinginternalusers.html", emailRecipients, emailParams);
+              } else {
+                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistingexternalusers.html", emailRecipients, emailParams);
+              }
             }
           }
         }

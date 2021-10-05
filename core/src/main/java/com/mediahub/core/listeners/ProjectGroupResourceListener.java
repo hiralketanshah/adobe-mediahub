@@ -1,6 +1,7 @@
 package com.mediahub.core.listeners;
 
 import com.mediahub.core.constants.BnpConstants;
+import javax.jcr.observation.ObservationManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -50,6 +51,10 @@ public class ProjectGroupResourceListener implements EventListener {
     @Reference
     JobManager jobManager;
 
+    private Session session;
+
+    private ObservationManager observationManager;
+
     /**
      * Activate method to initialize stuff
      */
@@ -68,29 +73,39 @@ public class ProjectGroupResourceListener implements EventListener {
 
         log.info("Activating the observation");
 
-        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(params)) {
+        try {
 
-            /**
-             * Adapting the resource resolver to session object
-             */
-            Session session = resolver.adaptTo(Session.class);
-
+            session  = repository.loginService(BnpConstants.WRITE_SERVICE,null);
+            observationManager = session.getWorkspace().getObservationManager();
             log.info("Session created");
-
             /**
              * Adding the event listener
              */
-            session.getWorkspace().getObservationManager().addEventListener(this,
-                    Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, null, false);
+            observationManager.addEventListener(this,
+                Event.NODE_MOVED | Event.PERSIST | Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, new String[]{"rep:Group"}, false);
 
-        } catch (LoginException | RepositoryException e) {
+        } catch (RepositoryException e) {
             log.error("Error while accessing repository : {}", e);
         }
     }
 
     @Deactivate
     protected void deactivate() {
-
+        try {
+            if (observationManager != null) {
+                observationManager.removeEventListener(this);
+                log.info("*************removed JCR event listener");
+            }
+        }
+        catch (RepositoryException re) {
+            log.error("*************error removing the JCR event listener ", re);
+        }
+        finally {
+            if (session != null) {
+                session.logout();
+                session = null;
+            }
+        }
     }
 
     @Override
@@ -99,12 +114,12 @@ public class ProjectGroupResourceListener implements EventListener {
             while (events.hasNext()) {
                 Event event = events.nextEvent();
                 final Map<String, Object> properties = new HashMap<>();
+                log.debug("Something has been added: {} ", event.getPath());
                 properties.put("userID", event.getUserID());
                 properties.put(BnpConstants.AFTER_VALUE, convertArrayToList((Value[]) event.getInfo().get(BnpConstants.AFTER_VALUE)));
                 properties.put(BnpConstants.BEFORE_VALUE, convertArrayToList((Value[]) event.getInfo().get(BnpConstants.BEFORE_VALUE)));
                 properties.put(BnpConstants.PATH, event.getPath());
                 jobManager.addJob("user/project/access/email", properties);
-                log.debug("Something has been added: {} ", event.getPath());
             }
         } catch (RepositoryException e) {
             log.error("Error while sending user notification mail", e);
