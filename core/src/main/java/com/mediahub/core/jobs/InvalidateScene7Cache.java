@@ -1,5 +1,6 @@
 package com.mediahub.core.jobs;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.contentsync.handler.util.RequestResponseFactory;
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.commons.util.DamUtil;
@@ -74,7 +75,7 @@ public class InvalidateScene7Cache implements JobConsumer {
     try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
       Resource payloadResource = resourceResolver.resolve(payload);
       Asset asset = DamUtil.resolveToAsset(payloadResource);
-      Map<String, Object> metadata = asset.getMetadata();
+      Map<String, Object> metadata = resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
       String scene7Path = metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
       if(StringUtils.isNotBlank(scene7Path)){
         Map<String, Object> params = new HashMap<>();
