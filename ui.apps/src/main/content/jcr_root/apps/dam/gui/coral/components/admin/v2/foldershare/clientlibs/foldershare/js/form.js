@@ -142,13 +142,21 @@
 
         var hintFields = createHintFields(false, false);
         var paths;
-        if(folderPath.includes("%2c")){
-          paths = folderPath.split("%2c");
+        if(folderPath.includes("%2c/")){
+          paths = folderPath.split("%2c/");
         } else {
           paths = folderPath;
         }
 
         paths.forEach((path) => {
+          if(path.includes("%2c")){
+            path = path.replace("%2c", ",");
+          }
+
+          if(!path.startsWith("/")){
+            path = "/" + path;
+          }
+
           $.DAM.FolderShare.updateCugToFolder(path, function() {
               // submit the form after cug policy is applied to folder
               $.DAM.FolderShare.bulkSave(wizard, hintFields, path, host);

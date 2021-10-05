@@ -67,6 +67,20 @@
 			
 		
         },
+
+        isExternalUser: function() {
+            var res = $.ajax({
+                url: "/bin/mediahub/checkInternal",
+                type: "get",
+                success: function (data) {},
+                async: false,
+                error: function (err) {
+                    console.log(err);
+                }
+            }).responseText;
+            return res;
+        },
+
         createDialog: function() {
             var self = this;
             var dialogExist = true;
@@ -221,7 +235,11 @@
                 });
                 privateCheckbox.label.innerHTML = Granite.I18n.get("Private");
                 $(privateCheckbox).addClass("private-folder-chkbox");
-                contentForm.appendChild(privateCheckbox);
+
+
+                if(self.isExternalUser() == "false"){
+					contentForm.appendChild(privateCheckbox);
+                }
 
                 var reorderableCheckbox = new Coral.Checkbox().on("change", function(event) {
                     if (this.checked) {
@@ -285,13 +303,16 @@
             // Sync private folder checkbox according to permission on current folder
             var privateCheckbox = $(".private-folder-chkbox", $(dialog))[0];
             var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
-            if (canModifyAccessControl) {
+            if(privateCheckbox != undefined){
+                if (canModifyAccessControl) {
                 privateCheckbox.disabled = false;
                 privateCheckbox.hidden = false;
-            } else {
+           	 } else {
                 privateCheckbox.disabled = true;
                 privateCheckbox.hidden = true;
+             }
             }
+
             // show "Asset Contribution" checkbox based on whether it is sourcing shared folder
             var assetContributionCheckbox = $(".asset-contribution-checkbox", $(dialog))[0];
             if (assetContributionCheckbox !== undefined) {

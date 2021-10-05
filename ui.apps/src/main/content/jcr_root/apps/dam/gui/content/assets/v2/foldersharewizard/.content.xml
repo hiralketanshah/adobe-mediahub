@@ -13,7 +13,7 @@
             <clientlibs
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status]"/>
+                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status,internal.render.condition]"/>
         </head>
         <title
             jcr:primaryType="nt:unstructured"
@@ -363,8 +363,33 @@
                                                                 cq-msm-lockable="rep:policy"
                                                                 metaType="text"/>
                                                         </makeprivatefolder>
+                                                        <internalfolder
+                                                          granite:id="internalfolder"
+                                                          jcr:primaryType="nt:unstructured"
+                                                          sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                          name="./jcr:content/metadata/internalfolder"
+                                                          text="Only to Internal Users"
+                                                          value="true">
+                                                            <granite:rendercondition
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <isProjects
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                  expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/exclude/groups"
+                                                                  groups="[mediahub-basic-project-external-contributor]"/>
+                                                            </granite:rendercondition>
+                                                            <granite:data
+                                                              jcr:primaryType="nt:unstructured"
+                                                              cq-msm-lockable="rep:policy"
+                                                              metaType="internalfolder"/>
+                                                        </internalfolder>
                                                         <InternalUsers
                                                           cq:showOnCreate="{Boolean}false"
+                                                          granite:id="internaluserselection"
                                                           jcr:primaryType="nt:unstructured"
                                                           sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
                                                             <items jcr:primaryType="nt:unstructured">
@@ -415,30 +440,6 @@
                                                                     sling:resourceType="dam/gui/coral/components/commons/renderconditions/issourcing"/>
                                                             </granite:rendercondition>
                                                         </assetcontribution>
-                                                        <internalfolder
-                                                          granite:id="internalfolder"
-                                                          jcr:primaryType="nt:unstructured"
-                                                          sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                          name="./jcr:content/metadata/internalfolder"
-                                                          text="Only to Internal Users"
-                                                          value="true">
-                                                            <granite:rendercondition
-                                                              jcr:primaryType="nt:unstructured"
-                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                <isProjects
-                                                                  jcr:primaryType="nt:unstructured"
-                                                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                                  expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                                                                <groups
-                                                                  jcr:primaryType="nt:unstructured"
-                                                                  sling:resourceType="utils/granite/rendercondition/exclude/groups"
-                                                                  groups="[mediahub-basic-project-external-contributor]"/>
-                                                            </granite:rendercondition>
-                                                            <granite:data
-                                                              jcr:primaryType="nt:unstructured"
-                                                              cq-msm-lockable="rep:policy"
-                                                              metaType="internalfolder"/>
-                                                        </internalfolder>
                                                         <jcrtype
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/form/hidden"

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+    <condition1
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+        expression="${empty paramValues[&quot;item&quot;][1] ? &quot;true&quot; : &quot;false&quot;}"/>
+    <condition2
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+        expression="${!granite:containsIgnoreCase(requestPathInfo.suffix, &quot;/content/dam/collections&quot;) &amp;&amp; (empty paramValues[&quot;item&quot;][0]?&quot;true&quot;:!granite:containsIgnoreCase(paramValues[&quot;item&quot;][0], &quot;/content/dam/collections&quot;))}"/>
+    <condition3
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+        <contentfragment
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="dam/cfm/admin/components/renderconditions/fragment"/>
+    </condition3>
+    <condition4
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+        expression="${!granite:containsIgnoreCase(requestPathInfo.suffix, &quot;/var/dam/reports&quot;) &amp;&amp; (empty paramValues[&quot;item&quot;][0]?&quot;true&quot;:!granite:containsIgnoreCase(paramValues[&quot;item&quot;][0], &quot;/var/dam/reports&quot;))}"/>
+</jcr:root>

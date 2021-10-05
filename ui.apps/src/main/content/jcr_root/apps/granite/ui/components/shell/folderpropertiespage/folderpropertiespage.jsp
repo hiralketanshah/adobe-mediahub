@@ -397,18 +397,23 @@ try {
                         } else {
                             String saveBtnVariant = "primary";
                             boolean isChildAssetActive = false;
-                            String[] assets = assetId.split(",");
+                            String[] assets = assetId.split(",/");
                             for(String asset : assets){
-                                Iterator<Asset> subAssets = DamUtil.getAssets(resourceResolver.getResource(asset));
-                                while(subAssets.hasNext()){
-                                    Asset subAsset = subAssets.next();
-                                    if(subAsset.adaptTo(Resource.class).getChild("jcr:content") != null && subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata") != null){
-                                      ValueMap metadata =  subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata").getValueMap();
-                                      if(metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)){
-                                          isChildAssetActive = true;
-                                          break;
+                                if(!StringUtils.startsWith(asset, "/")){
+                                  asset = "/" + asset;
+                                }
+                                if(null != resourceResolver.getResource(asset)){
+                                  Iterator<Asset> subAssets = DamUtil.getAssets(resourceResolver.getResource(asset));
+                                  while(subAssets.hasNext()){
+                                      Asset subAsset = subAssets.next();
+                                      if(subAsset.adaptTo(Resource.class).getChild("jcr:content") != null && subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata") != null){
+                                        ValueMap metadata =  subAsset.adaptTo(Resource.class).getChild("jcr:content").getChild("metadata").getValueMap();
+                                        if(metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)){
+                                            isChildAssetActive = true;
+                                            break;
+                                        }
                                       }
-                                    }
+                                  }
                                 }
 
                                 if(isChildAssetActive){

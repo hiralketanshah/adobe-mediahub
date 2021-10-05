@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  jcr:primaryType="sling:OsgiConfig"
+  notify.onabort="{Boolean}false"
+  notify.oncomplete="{Boolean}false"
+  notify.oncontainercomplete="{Boolean}false"
+  notify.useronly="{Boolean}false"
+  from.address="noreply@day.com"
+  host.prefix=""
+/>
+ 
