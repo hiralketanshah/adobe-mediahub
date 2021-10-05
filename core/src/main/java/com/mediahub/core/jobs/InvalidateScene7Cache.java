@@ -75,28 +75,30 @@ public class InvalidateScene7Cache implements JobConsumer {
     try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
       Resource payloadResource = resourceResolver.resolve(payload);
       Asset asset = DamUtil.resolveToAsset(payloadResource);
-      Map<String, Object> metadata = resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
-      String scene7Path = metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
-      if(StringUtils.isNotBlank(scene7Path)){
-        Map<String, Object> params = new HashMap<>();
-        List<String> urlList = new ArrayList<>();
-        urlList.add(scene7Path);
-        WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
-        WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
-        params.put("urls", urlList.toArray(new String[urlList.size()]));
-        HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
-        WCMMode.DISABLED.toRequest(req);
 
-        //Setup response
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        HttpServletResponse resp = requestResponseFactory.createResponse(out);
+      if(null != resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT) && null != resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) ){
+        Map<String, Object> metadata = resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
+        String scene7Path = metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+        if(StringUtils.isNotBlank(scene7Path)){
+          Map<String, Object> params = new HashMap<>();
+          List<String> urlList = new ArrayList<>();
+          urlList.add(scene7Path);
+          WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
+          WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+          params.put("urls", urlList.toArray(new String[urlList.size()]));
+          HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
+          WCMMode.DISABLED.toRequest(req);
 
-        //Process request through Sling
-        requestProcessor.processRequest(req, resp, resourceResolver);
-        String html = out.toString();
-        LOGGER.info("Cdn cache response : " + html);
+          //Setup response
+          ByteArrayOutputStream out = new ByteArrayOutputStream();
+          HttpServletResponse resp = requestResponseFactory.createResponse(out);
+
+          //Process request through Sling
+          requestProcessor.processRequest(req, resp, resourceResolver);
+          String html = out.toString();
+          LOGGER.info("Cdn cache response : " + html);
+        }
       }
-
     } catch (LoginException | ServletException | IOException e) {
       LOGGER.error("Error while Scene 7 cache invalidation", e);
       return JobResult.FAILED;
