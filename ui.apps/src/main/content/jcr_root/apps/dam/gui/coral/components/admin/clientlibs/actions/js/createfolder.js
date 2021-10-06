@@ -575,38 +575,11 @@
                 });
 
             // Do validation and add tooltip if required
-            if (self._hasRestrictedChar(enteredText)) {
-                var errorIcon = new Coral.Icon().set({
-                    id: "dam-folder-name-textfield-fielderror",
-                    icon: "infoCircle",
-                    size: "S"
-                });
-                errorIcon.className += " coral-Form-fieldinfo error-info-icon";
-                self.dialog.nameInput.parentElement.appendChild(errorIcon);
+            enteredText = enteredText.toLowerCase();
+            enteredText = enteredText.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            enteredText = enteredText.replace(/[^a-z1-9]/g, "-");
+            self.dialog.nameInput.value = enteredText.replace(/ /g, "-");
 
-                var errorTooltip = new Coral.Tooltip().set({
-                    content: {
-                        innerHTML: Granite.I18n.get("The name contained {0}. These characters are not allowed and were replaced by {1}", // eslint-disable-line max-len
-                            [ self._getInvalidCharSet(), "-" ])
-                    },
-                    variant: "inspect",
-                    target: "#dam-folder-name-textfield-fielderror",
-                    placement: "left",
-                    id: "dam-folder-name-textfield-fielderror-tooltip"
-                });
-                self.dialog.nameInput.parentElement.appendChild(errorTooltip);
-                var validValue;
-                if (Dam.Util.NameValidation !== undefined) {
-                    validValue = Dam.Util.NameValidation.getValidFolderName(enteredText)
-                        .replace(/ /g, "-");
-                } else {
-                    // This block is to support backward compatibility.
-                    validValue = self._replaceRestrictedCodes(enteredText).replace(/ /g, "-");
-                }
-                self.dialog.nameInput.value = validValue;
-            } else {
-                self.dialog.nameInput.value = enteredText.replace(/ /g, "-");
-            }
             if (!self.nameForceChanged) { // if folder name is not force changed, change case to lower
                 self.dialog.nameInput.value = self.dialog.nameInput.value.toLowerCase();
             }
@@ -1232,38 +1205,10 @@
                 });
 
             // Do validation and add tooltip if required
-            if (self._hasRestrictedChar(enteredText)) {
-                var errorIcon = new Coral.Icon().set({
-                    id: "dam-folder-name-textfield-fielderror",
-                    icon: "infoCircle",
-                    size: "S"
-                });
-                errorIcon.className += " coral-Form-fieldinfo error-info-icon";
-                self.dialog.nameInput.parentElement.appendChild(errorIcon);
-
-                var errorTooltip = new Coral.Tooltip().set({
-                    content: {
-                        innerHTML: Granite.I18n.get("The name contained {0}. These characters are not allowed and were replaced by {1}", // eslint-disable-line max-len
-                            [ self._getInvalidCharSet(), "-" ])
-                    },
-                    variant: "inspect",
-                    target: "#dam-folder-name-textfield-fielderror",
-                    placement: "left",
-                    id: "dam-folder-name-textfield-fielderror-tooltip"
-                });
-                self.dialog.nameInput.parentElement.appendChild(errorTooltip);
-                var validValue;
-                if (Dam.Util.NameValidation !== undefined) {
-                    validValue = Dam.Util.NameValidation.getValidFolderName(enteredText.toLowerCase())
-                        .replace(/ /g, "-");
-                } else {
-                    // This block is to support backward compatibility.
-                    validValue = self._replaceRestrictedCodes(enteredText.toLowerCase()).replace(/ /g, "-");
-                }
-                self.dialog.nameInput.value = validValue;
-            } else {
-                self.dialog.nameInput.value = enteredText.toLowerCase().replace(/ /g, "-");
-            }
+            enteredText = enteredText.toLowerCase();
+            enteredText = enteredText.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            enteredText = enteredText.replace(/[^a-z1-9]/g, "-");
+            self.dialog.nameInput.value = enteredText.toLowerCase().replace(/ /g, "-");
 
             self.dialog.submit.disabled = toDisable;
         },
