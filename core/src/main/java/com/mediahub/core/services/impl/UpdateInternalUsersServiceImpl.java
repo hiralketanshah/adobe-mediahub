@@ -195,7 +195,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                                    Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
             throws RepositoryException {
         int count = 0;
-        Group mediahubBasicGroup = (Group) (userManager.getAuthorizable("mediahub-basic"));
+        Group mediahubBasicGroup = (Group) (userManager.getAuthorizable(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY));
         for (Map.Entry<String, User> entry : inputUserMap.entrySet()) {
             Principal principal = new Principal() {
                 public String getName() {

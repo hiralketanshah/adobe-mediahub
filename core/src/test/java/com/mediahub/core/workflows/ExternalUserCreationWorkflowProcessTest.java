@@ -1,49 +1,5 @@
 package com.mediahub.core.workflows;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.security.Principal;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.Binary;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.ValueFormatException;
-
-import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
-import org.apache.sling.settings.SlingSettingsService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import com.adobe.acs.commons.i18n.I18nProvider;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectMember;
@@ -57,10 +13,35 @@ import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.*;
+import org.apache.sling.settings.SlingSettingsService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
-@ExtendWith({ AemContextExtension.class })
+import javax.jcr.*;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.text.ParseException;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith({AemContextExtension.class})
 public class ExternalUserCreationWorkflowProcessTest {
     private static final String PATH = "/content/projects/corporate_institutionalbankingcib";
 
@@ -138,10 +119,10 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     @Mock
     ModifiableValueMap modifiableValueMap;
-    
+
     @Mock
     SlingSettingsService slingSettingsService;
-    
+
     @Mock
     I18nProvider provider;
 
@@ -170,11 +151,11 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
         Set<String> runModes = new HashSet<>();
         when(slingSettingsService.getRunModes()).thenReturn(runModes);
-        
+
 
     }
 
-    
+
     @Test
     public void execute() throws Exception {
         when(workflowData.getPayload()).thenReturn(PATH);
@@ -190,7 +171,7 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(jackrabbitSession.getUserManager()).thenReturn(userManager);
         when(jackrabbitSession.getValueFactory()).thenReturn(valueFactory);
         when(userManager.createUser(Mockito.anyString(), Mockito.anyString(), Mockito.any(Principal.class),
-				Mockito.anyString())).thenReturn(user);
+                Mockito.anyString())).thenReturn(user);
         when(valueFactory.createValue(any(String.class), any(int.class))).thenReturn(value);
         when(userManager.getAuthorizable(BnpConstants.BASIC_GROUP)).thenReturn(group);
         when(group.addMember(user)).thenReturn(true);
@@ -206,8 +187,8 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(projectMemberRole.getId()).thenReturn("RoleID");
         when(value2.getString()).thenReturn("emp123");
         when(value3.getString()).thenReturn("2020-10-12");
-        Value[] valueArray = { value2 };
-        Value[] valueArray1 = { value3 };
+        Value[] valueArray = {value2};
+        Value[] valueArray1 = {value3};
 
         when(user.getProperty("./profile/givenName")).thenReturn(valueArray);
         when(value2.toString()).thenReturn("MediaUserName");
@@ -216,7 +197,7 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(value3.toString()).thenReturn("2020-10-11");
         when(externalizer.authorLink(resolver, "/projects/details.html"
                 + "/content/projects/corporate_institutionalbankingcib".replace("/dam", ""))).thenReturn(
-                        "http://localhost:4502/projects/details.html/content/projects/corporate_institutionalbankingcib");
+                "http://localhost:4502/projects/details.html/content/projects/corporate_institutionalbankingcib");
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getInitiator()).thenReturn("InitiatorUser");
         assertAll(() -> workflowProcess.execute(workItem, wfsession, metadataMap));
@@ -276,7 +257,7 @@ public class ExternalUserCreationWorkflowProcessTest {
                 return 0;
             }
         };
-        Value[] strings = new Value[] { firstValue };
+        Value[] strings = new Value[]{firstValue};
         when(user.getProperty("./profile/expiry")).thenReturn(strings);
         when(value.toString()).thenReturn("2020/10/11");
 

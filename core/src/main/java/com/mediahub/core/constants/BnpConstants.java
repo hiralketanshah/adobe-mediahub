@@ -30,7 +30,7 @@ public class BnpConstants {
     public static final String METADATA_SCHEMA = "metadataSchema";
     public static final String REQUIRED_CASCADING = "requiredCascading";
     public static final String ALWAYS = "always";
-    public static final String BASIC_GROUP = "MEDIAHUB-BASIC";
+    public static final String BASIC_GROUP = "mediahub-basic";
     public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
     public static final String SUBJECT = "subject";
     public static final String P_CONSTRAINT = "(?=.*\\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[@#%\\*\\-+=~\\[\\]{}<>\\?].*).{8,16}";
