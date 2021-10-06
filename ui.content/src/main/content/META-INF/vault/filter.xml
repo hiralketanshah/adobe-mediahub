@@ -34,4 +34,6 @@
     <filter root="/etc/mediahub"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/unpublish-media-folder"/>
     <filter root="/var/workflow/models/mediahub/unpublish-media-folder"/>
+    <filter root="/conf/global/settings/workflow/models/dam/dynamic-media-encode-video"/>
+    <filter root="/var/workflow/models/dam/dynamic-media-encode-video"/>
 </workspaceFilter>

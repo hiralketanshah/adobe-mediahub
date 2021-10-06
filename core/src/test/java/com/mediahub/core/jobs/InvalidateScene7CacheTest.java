@@ -82,6 +82,7 @@ class InvalidateScene7CacheTest {
                 .thenReturn(req);
 
         when(resolver.resolve(Mockito.any(String.class))).thenReturn(res);
+        when(resolver.getResource(Mockito.any(String.class))).thenReturn(res);
         Mockito.when(job.getProperty(Mockito.any(String.class))).thenReturn("/content/test1|xyz");
     }
 
