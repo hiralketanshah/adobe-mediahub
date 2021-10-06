@@ -60,9 +60,11 @@ public class SaveMetadataProcess implements WorkflowProcess {
             if (null != movedAsset) {
                 Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
-                setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
-                String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
-                modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
+                if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
+                    setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
+                    String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
+                }
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 if (StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)) {
                     ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
@@ -83,13 +85,10 @@ public class SaveMetadataProcess implements WorkflowProcess {
      */
     private void setVideoAssetMetadata(ResourceResolver resourceResolver, Resource movedAsset,
                                        ModifiableValueMap modifiableValueMap) {
-        if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
-            S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
-            List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
-            if (scene7Assets != null && !scene7Assets.isEmpty()) {
-                setMediumHighDefinitionAssetUrls(scene7Assets, movedAsset, resourceResolver, modifiableValueMap, s7Config);
-            }
-
+        S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
+        List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
+        if (scene7Assets != null && !scene7Assets.isEmpty()) {
+            setMediumHighDefinitionAssetUrls(scene7Assets, movedAsset, resourceResolver, modifiableValueMap, s7Config);
         }
     }
 

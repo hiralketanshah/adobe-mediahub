@@ -7,13 +7,17 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import mockit.MockUp;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -96,6 +100,8 @@ public class SaveScene7MetadataProcessTest {
     @Mock
     Calendar cal;
 
+    private MockUp<DamUtil> damUtil;
+
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
@@ -120,6 +126,12 @@ public class SaveScene7MetadataProcessTest {
         when(job.getFinishedDate()).thenReturn(cal);
         when(job.getJobState()).thenReturn(Job.JobState.SUCCEEDED);
         when(resource.getPath()).thenReturn("/content/dam/projects/");
+        damUtil = new MockUp<DamUtil>() {
+            @mockit.Mock
+            boolean isVideo(Asset asset) {
+                return true;
+            }
+        };
     }
 
     @Test
