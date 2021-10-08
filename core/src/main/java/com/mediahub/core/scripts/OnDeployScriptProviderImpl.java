@@ -17,7 +17,6 @@ public class OnDeployScriptProviderImpl implements OnDeployScriptProvider {
   public List<OnDeployScript> getScripts() {
     return Arrays.asList(
         // List of script instances - e.g. new MyScript1(), new MyScript2(), new MyScript3()
-        new PermissionTabRenderCondition()
     );
   }
 }
