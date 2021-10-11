@@ -677,6 +677,11 @@
           actions: read
           repGlob:
 
+        - path: /libs/dam/content/schemaeditors/forms/references
+          permission: deny
+          actions: read
+          repGlob:
+
     - mediahub-reader-medialibrary:
         - path: /content/dam/medialibrary
           permission: allow
@@ -802,6 +807,11 @@
           permission: allow
           actions: read
           privileges:
+          repGlob:
+
+        - path: /libs/dam/content/schemaeditors/forms/references
+          permission: allow
+          actions: read
           repGlob:
 
     - mediahub-super-administrators:
