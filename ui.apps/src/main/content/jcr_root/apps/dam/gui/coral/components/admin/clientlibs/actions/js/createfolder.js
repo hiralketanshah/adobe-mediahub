@@ -250,6 +250,14 @@
                 });
                 reorderableCheckbox.label.innerHTML = Granite.I18n.get("Orderable");
                 contentForm.appendChild(reorderableCheckbox);
+                var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+                if (canModifyAccessControl) {
+                    reorderableCheckbox.disabled = false;
+                    reorderableCheckbox.hidden = false;
+                } else {
+                    reorderableCheckbox.disabled = true;
+                    reorderableCheckbox.hidden = true;
+                }
 
                 var assetContributionCheckbox = new Coral.Checkbox().on("change", function(event) {
                     if (this.checked) {
@@ -884,6 +892,14 @@
                 });
                 reorderableCheckbox.label.innerHTML = Granite.I18n.get("Orderable");
                 contentForm.appendChild(reorderableCheckbox);
+                var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+                if (canModifyAccessControl) {
+                    reorderableCheckbox.disabled = false;
+                    reorderableCheckbox.hidden = false;
+                } else {
+                    reorderableCheckbox.disabled = true;
+                    reorderableCheckbox.hidden = true;
+                }
 
                 var assetContributionCheckbox = new Coral.Checkbox().on("change", function(event) {
                     if (this.checked) {
