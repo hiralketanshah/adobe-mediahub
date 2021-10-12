@@ -310,7 +310,7 @@
         return new Promise(function(next, cancel) {
           var hasActiveAssets = false;
           var isAdmin = false;
-          var ajaxUrl = "/content/mediahub/us/en.active.asset.json";
+          var ajaxUrl = "/bin/mediahub/ischild/active";
 
           if(deleteData && deleteData.paths[0] && deleteData.paths[0].includes("content/dam/medialibrary")){
               $.ajax({
