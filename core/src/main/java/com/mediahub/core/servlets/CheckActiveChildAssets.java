@@ -30,8 +30,7 @@ import java.util.Map;
 
 @Component(service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-                "sling.servlet.resourceTypes=" + "cq/Page", "sling.servlet.selectors=" + "active.asset",
-                "sling.servlet.extensions=" + "json"})
+                "sling.servlet.paths=" + "/bin/mediahub/ischild/active"})
 @ServiceDescription("Check Active Child Asset")
 public class CheckActiveChildAssets extends SlingAllMethodsServlet {
 
