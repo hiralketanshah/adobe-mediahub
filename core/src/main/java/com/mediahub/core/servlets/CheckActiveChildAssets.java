@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET,
                 "sling.servlet.paths=" + "/bin/mediahub/ischild/active"})
@@ -134,7 +135,7 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
                 return true;
             }
         } catch (IOException e) {
-            LOGGER.error("Exception while setting JSON response : {}",e);
+            LOGGER.error("Exception while setting JSON response : {}", e);
         }
         return false;
     }
