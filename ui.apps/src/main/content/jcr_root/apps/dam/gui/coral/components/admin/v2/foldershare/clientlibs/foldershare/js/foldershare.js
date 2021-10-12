@@ -472,8 +472,15 @@
         if ($.DAM.FolderShare.FormValidator.validate(data)) {
             var processData = false;
             var contentType = false;
-            successMessage = Granite.I18n.get("Folder properties have been saved");
-            errorMessage = Granite.I18n.get("Failed to save folder properties");
+
+            if($("input[name='isMedia']") && $("input[name='isMedia']").length > 0 && $("input[name='isMedia']")[0].value === 'true'){
+              successMessage = Granite.I18n.get("Media properties have been saved");
+              errorMessage = Granite.I18n.get("Media to save folder properties");
+            } else {
+              successMessage = Granite.I18n.get("Folder properties have been saved");
+              errorMessage = Granite.I18n.get("Failed to save folder properties");
+            }
+
             var ui = $(window).adaptTo("foundation-ui");
 
             $.ajax({
@@ -546,8 +553,14 @@
             if ($.DAM.FolderShare.FormValidator.validate(data)) {
                 var processData = false;
                 var contentType = false;
-                successMessage = Granite.I18n.get("Folder properties have been saved");
-                errorMessage = Granite.I18n.get("Failed to save folder properties");
+
+                if($("input[name='isMedia']") && $("input[name='isMedia']").length > 0 && $("input[name='isMedia']")[0].value === 'true'){
+                  successMessage = Granite.I18n.get("Media properties have been saved");
+                  errorMessage = Granite.I18n.get("Media to save folder properties");
+                } else {
+                  successMessage = Granite.I18n.get("Folder properties have been saved");
+                  errorMessage = Granite.I18n.get("Failed to save folder properties");
+                }
                 var ui = $(window).adaptTo("foundation-ui");
 
                 $.ajax({
@@ -604,8 +617,13 @@
         if ($.DAM.FolderShare.FormValidator.validate(data)) {
             var processData = false;
             var contentType = false;
-            successMessage = Granite.I18n.get("Folder properties have been saved");
-            errorMessage = Granite.I18n.get("Failed to save folder properties");
+            if($("input[name='isMedia']") && $("input[name='isMedia']").length > 0 && $("input[name='isMedia']")[0].value === 'true'){
+              successMessage = Granite.I18n.get("Media properties have been saved");
+              errorMessage = Granite.I18n.get("Media to save folder properties");
+            } else {
+              successMessage = Granite.I18n.get("Folder properties have been saved");
+              errorMessage = Granite.I18n.get("Failed to save folder properties");
+            }
             var ui = $(window).adaptTo("foundation-ui");
 
             $.ajax({

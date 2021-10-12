@@ -523,6 +523,7 @@ PropertiesPage
                     }
                 %>
 
+                <input type="hidden" name="isMedia" value="<%= isMedia %>">
 
                 <%
 
