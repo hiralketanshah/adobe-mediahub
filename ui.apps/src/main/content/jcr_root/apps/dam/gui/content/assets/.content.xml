@@ -274,7 +274,7 @@
                     variant="actionBar">
                     <data
                         jcr:primaryType="nt:unstructured"
-                        href="/mnt/overlay/dam/gui/content/assets/v2/multifoldersharewizard.html{item}"
+                        href="/mnt/overlay/dam/gui/content/assets/v2/multifoldersharewizard.html{+item}"
                         postRequestLimit="{Long}1"/>
                 </customviewproperties>
                 <smartcrop jcr:primaryType="nt:unstructured">
