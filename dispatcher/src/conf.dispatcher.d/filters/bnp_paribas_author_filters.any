@@ -25,3 +25,4 @@
 /0084 { /type "deny" /path "/bin/querybuilder" }
 /0085 { /type "allow" /path "/bin/querybuilder" /query '.*(path=(\/|%2F)content).*' }
 /0086 { /type "allow" /path "/apps/acs-commons/components/utilities/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
+/0087 { /type "allow" /path "/libs/settings/dam/dm/video/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
