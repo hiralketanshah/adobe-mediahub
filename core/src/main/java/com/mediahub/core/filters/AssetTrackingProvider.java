@@ -162,6 +162,9 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
             case "md":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL_MD, String.class);
                 break;
+            case "superhd":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL_SUPER_HD, String.class);
+                break;
             default:
                 log.info("No format found");
                 break;
@@ -185,6 +188,9 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                     break;
                 case "md":
                     externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_MD, String.class);
+                    break;
+                case "superhd":
+                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, String.class);
                     break;
                 default:
                     log.info("No format found");

@@ -112,13 +112,17 @@ public class SaveMetadataProcess implements WorkflowProcess {
         List<Scene7Asset> subAssets = associatedAsset.getSubAssets();
         for (Scene7Asset asset : subAssets) {
             if (asset != null && asset.getHeight() != null) {
-                if (asset.getHeight() == 388L) {
+                if (asset.getHeight() == 540L) {
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/md/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 720L) {
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/hd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                }
+                if (asset.getHeight() == 1080L) {
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/superhd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
             }
         }

@@ -136,13 +136,17 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 List<Scene7Asset> subAssets = associatedAsset.getSubAssets();
                 for (Scene7Asset asset : subAssets) {
                     if (asset != null && asset.getHeight() != null) {
-                        if (asset.getHeight() == 388L) {
+                        if (asset.getHeight() == 540L) {
                             modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/md/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                         if (asset.getHeight() == 720L) {
                             modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/hd/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                        }
+                        if (asset.getHeight() == 1080L) {
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/superhd/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                     }
                 }

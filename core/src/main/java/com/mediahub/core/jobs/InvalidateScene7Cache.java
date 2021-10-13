@@ -85,6 +85,7 @@ public class InvalidateScene7Cache implements JobConsumer {
           urlList.add(scene7Path);
           WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
           WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+          WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD);
           params.put("urls", urlList.toArray(new String[urlList.size()]));
           HttpServletRequest req = requestResponseFactory.createRequest("POST", scene7DeactivationService.getCdnCacheInvalidationPath(), params);
           WCMMode.DISABLED.toRequest(req);

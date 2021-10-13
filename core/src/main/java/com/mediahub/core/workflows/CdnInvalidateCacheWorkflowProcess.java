@@ -10,8 +10,6 @@ import com.day.cq.contentsync.handler.util.RequestResponseFactory;
 import com.day.cq.wcm.api.WCMMode;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -27,9 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : CDN Cache Invalidation"})
@@ -79,6 +75,7 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
                 urlList.add(dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
                 WorkflowUtils.appendExternalUrl(dataMap, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
                 WorkflowUtils.appendExternalUrl(dataMap, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                WorkflowUtils.appendExternalUrl(dataMap, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD);
                 params.put("urls", urlList.toArray(new String[urlList.size()]));
             }
 

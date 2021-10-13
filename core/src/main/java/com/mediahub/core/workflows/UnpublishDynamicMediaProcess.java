@@ -78,13 +78,16 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, StringUtils.EMPTY));
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, StringUtils.EMPTY));
+                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD, StringUtils.EMPTY));
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
                         properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
+                        properties.remove(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
+                        properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
                         List<String> status = new ArrayList<>(Arrays.asList(properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
                         status.remove(BnpConstants.BROADCAST_VALUE_EXTERNAL);

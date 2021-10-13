@@ -123,14 +123,17 @@ public class BnpConstants {
     public static final String BNPP_EXTERNAL_FILE_URL = "bnpp-external-file-master-url";
     public static final String BNPP_EXTERNAL_BROADCAST_URL = "bnpp-external-broadcast-master-url";
     public static final String BNPP_EXTERNAL_FILE_URL_HD = "bnpp-external-file-master-url-hd";
+    public static final String BNPP_EXTERNAL_FILE_URL_SUPER_HD = "bnpp-external-file-master-url-super-hd";
     public static final String BNPP_EXTERNAL_FILE_URL_MD = "bnpp-external-file-master-url-md";
 
     public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
     public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
     public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
+    public static final String BNPP_INTERNAL_FILE_URL_SUPER_HD = "bnpp-internal-file-url-super-hd";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_MD = "bnpp-internal-file-master-url-md";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_HD = "bnpp-internal-file-master-url-hd";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD = "bnpp-internal-file-master-url-super-hd";
 
     /**
      * Assets Tracking URLs
@@ -138,6 +141,7 @@ public class BnpConstants {
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL = "bnpp-external-file-url";
     public static final String BNPP_TRACKING_EXTERNAL_BROADCAST_URL = "bnpp-external-broadcast-url";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
+    public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD = "bnpp-external-file-url-super-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
 
     public static final String S7_DOMAIN_PROPERTY = "dam:scene7Domain";
