@@ -682,6 +682,10 @@
           actions: read
           repGlob:
 
+        - path: /libs/dam/gui/content/nav/navigationlinks/items/assets
+          permission: deny
+          actions: read
+
     - mediahub-reader-medialibrary:
         - path: /content/dam/medialibrary
           permission: allow
@@ -851,6 +855,10 @@
           permission: allow
           actions: modify
           repGlob:
+
+        - path: /libs/dam/gui/content/nav/navigationlinks/items/assets
+          permission: allow
+          actions: read
 
 
     - mediahub-basic-entity-manager:
