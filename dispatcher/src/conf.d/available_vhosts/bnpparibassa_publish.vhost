@@ -31,6 +31,9 @@ PassEnv DISP_ID
         Header always set Referrer-Policy "strict-origin-when-cross-origin"
         Header always set Permissions-Policy "geolocation=(),midi=(),sync-xhr=(self),microphone=(),camera=(),magnetometer=(),gyroscope=(),fullscreen=(self),payment=()"
 
+        SetEnvIf Origin "^http(s)?://(.+\.)?(echonet\.bnpparibas|echonet\.dev\.bnpparibas|echonet\.staging\.bnpparibas)$" origin_is=$0
+        Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
+
 	</IfModule>
 	<Directory />
 		# Update /etc/sysconfig/httpd with setting the PUBLISH_WHITELIST_ENABLED from 0 or 1 to enable or disable ip restriction rules
