@@ -95,7 +95,7 @@
 		<img src="/content/dam/technique/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
 	 </a>
 
-    <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub MVP<%= runmode %></coral-shell-homeanchor-label>
+    <coral-shell-homeanchor-label class="bnp-text-style"> | MediaHub<%= runmode %></coral-shell-homeanchor-label>
 </coral-shell-header-home>
 
 <coral-shell-header-actions>

@@ -38,7 +38,9 @@
     function displayError(message) {
         // Timeout of 150ms is required for screen reader to notice text changes
         setTimeout(function() {
-            document.getElementById("success").style.display = "none";
+            if(document.getElementById("success")){
+              document.getElementById("success").style.display = "none";
+            }
             var el = document.getElementById("error");
             // Display the error
             el.hidden = false;
