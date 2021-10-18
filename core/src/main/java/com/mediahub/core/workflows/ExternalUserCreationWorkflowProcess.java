@@ -188,7 +188,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
                 String language = UserUtils.getUserLanguage(user);
                 Locale locale = LocaleUtils.toLocale(language);
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Assignment project", locale) + " : " + projectName;
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate(" Invitation to join", locale) + " « " + projectName + " » MediaHub project";
                 Map<String, String> emailParams = new HashMap<>();
                 emailParams.put(BnpConstants.SUBJECT, subject);
                 emailParams.put("firstname", user.getProperty(BnpConstants.EXT_USER_PROPERTY_GIVENNAME)[0].toString());
