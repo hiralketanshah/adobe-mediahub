@@ -846,6 +846,15 @@
           actions: read
           repGlob:
 
+        - path: /libs/cq/core/content/nav/tools/assets
+          permission: allow
+          actions: read
+          repGlob:
+
+        - path: /apps/cq/core/content/nav/tools/acs-commons/exporters-tags
+          permission: allow
+          actions: read
+
         - path: /libs/granite/operations
           permission: allow
           actions: read
