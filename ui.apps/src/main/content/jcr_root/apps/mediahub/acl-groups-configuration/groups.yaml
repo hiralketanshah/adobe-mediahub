@@ -818,6 +818,10 @@
           actions: read
           repGlob:
 
+        - path: /content/asset-share-commons
+          permission: allow
+          actions: read
+
     - mediahub-super-administrators:
 
         - path: /conf/global/settings/dam/search/facets
