@@ -966,13 +966,16 @@
             // Sync private folder checkbox according to permission on current folder
             var privateCheckbox = $(".private-folder-chkbox", $(dialog))[0];
             var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
-            if (canModifyAccessControl) {
-                privateCheckbox.disabled = false;
-                privateCheckbox.hidden = false;
-            } else {
-                privateCheckbox.disabled = true;
-                privateCheckbox.hidden = true;
+            if(privateCheckbox){
+              if (canModifyAccessControl) {
+                  privateCheckbox.disabled = false;
+                  privateCheckbox.hidden = false;
+              } else {
+                  privateCheckbox.disabled = true;
+                  privateCheckbox.hidden = true;
+              }
             }
+
             // show "Asset Contribution" checkbox based on whether it is sourcing shared folder
             var assetContributionCheckbox = $(".asset-contribution-checkbox", $(dialog))[0];
             if (assetContributionCheckbox !== undefined) {
