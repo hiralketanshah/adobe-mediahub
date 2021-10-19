@@ -621,26 +621,38 @@ Resource globalHead = resourceResolver.getResource(path);
     var media = document.getElementById("dam-create-folder-1");
     <% if( metadata.containsKey("bnpp-media")){%>
 	    if(typeof folder !== 'undefined'){
-	      folder.style.display = "none";
+	      if(folder){
+	        folder.style.display = "none";
+	      }
 	    }
 	    if(typeof media !== 'undefined'){
-	      media.style.display = "none";
+	      if(media){
+	        media.style.display = "none";
+	      }
 	    }
     <%} else {  %>
       if(typeof folder !== 'undefined'){
-        folder.style.display = "block";
+        if(folder){
+          folder.style.display = "block";
+        }
       }
       if(typeof media !== 'undefined'){
-        media.style.display = "block";
+        if(media){
+          media.style.display = "block";
+        }
       }
     <%
     }
     } else { %>
    	if(typeof folder !== 'undefined'){
-      folder.style.display = "block";
+   	  if(folder){
+        folder.style.display = "block";
+      }
     }
     if(typeof media !== 'undefined'){
-      media.style.display = "block";
+      if(media){
+        media.style.display = "block";
+      }
     }
   <% }
 

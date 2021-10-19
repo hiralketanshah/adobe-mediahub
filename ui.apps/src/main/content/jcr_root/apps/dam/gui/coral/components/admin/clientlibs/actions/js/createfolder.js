@@ -842,16 +842,21 @@
                     dom.value = "UTF-8";
                     return dom;
                 }());
+
+                var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+                var titleLabel = document.createElement("label");
+
+                var select = new Coral.Select().set({
+                    name: "./jcr:content/folderMetadataSchema"
+                });
+
                 if (folderMetadataSchemas.length > 0) {
                     contentForm.appendChild(function() {
                         var fieldDiv = document.createElement("div");
-                        var titleLabel = document.createElement("label");
                         fieldDiv.className += " coral-Form-fieldwrapper";
                         titleLabel.innerHTML = Granite.I18n.get("Folder Metadata Schema");
                         titleLabel.className += " coral-Form-fieldlabel";
-                        var select = new Coral.Select().set({
-                            name: "./jcr:content/folderMetadataSchema"
-                        });
+
                         select.className += " coral-Form-field";
                         dialog.folderMetadataInput = select;
 
@@ -875,6 +880,15 @@
                     }());
                 }
 
+                if(select){
+                  if (canModifyAccessControl) {
+                      titleLabel.hidden = false;
+                      select.hidden = false;
+                  } else {
+                      titleLabel.hidden = true;
+                      select.hidden = true;
+                  }
+                }
 
                 var privateCheckbox = new Coral.Checkbox().on("change", function(event) {
                     dialog.isPrivate = this.checked;
@@ -892,7 +906,7 @@
                 });
                 reorderableCheckbox.label.innerHTML = Granite.I18n.get("Orderable");
                 contentForm.appendChild(reorderableCheckbox);
-                var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+
                 if (canModifyAccessControl) {
                     reorderableCheckbox.disabled = false;
                     reorderableCheckbox.hidden = false;
