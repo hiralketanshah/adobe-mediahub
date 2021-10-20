@@ -1,22 +1,40 @@
 - def rootFolders=[corporate_institutionalbankingcib, domestic_marketsdm, international_financialservicesifs, group_functions, transversal_activities]
 
 - group_config:
+
     - FOR folder IN ${rootFolders}:
-        - FOR groupFolder IN CHILDREN OF /content/dam/medialibrary/${folder}:
-            - mediahub-entity-manager-${folder}-${groupFolder.name}:
-                - name: Entity Manager - ${folder} - ${groupFolder.title}
+
+        - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${folder}:
+            - mediahub-entity-manager-${folder}-${level1.name}:
+                - name: Entity Manager - ${folder} - ${level1.title}
                   isMemberOf: mediahub-basic-entity-manager
                   path: /home/groups/mediahub
 
-            - mediahub-contributor-${folder}-${groupFolder.name}:
-                - name: Contributor - ${folder} - ${groupFolder.title}
+            - mediahub-contributor-${folder}-${level1.name}:
+                - name: Contributor - ${folder} - ${level1.title}
                   isMemberOf: mediahub-basic-reader
                   path: /home/groups/mediahub
 
-            - mediahub-reader-${folder}-${groupFolder.name}:
-                - name: Reader - ${folder} - ${groupFolder.title}
+            - mediahub-reader-${folder}-${level1.name}:
+                - name: Reader - ${folder} - ${level1.title}
                   isMemberOf: mediahub-basic-contributor
                   path: /home/groups/mediahub
+
+            - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level1.name}:
+                - mediahub-entity-manager-${folder}-${groupFolder.name}:
+                    - name: Entity Manager - ${folder} - ${groupFolder.title}
+                      isMemberOf: mediahub-basic-entity-manager
+                      path: /home/groups/mediahub
+
+                - mediahub-contributor-${folder}-${groupFolder.name}:
+                    - name: Contributor - ${folder} - ${groupFolder.title}
+                      isMemberOf: mediahub-basic-reader
+                      path: /home/groups/mediahub
+
+                - mediahub-reader-${folder}-${groupFolder.name}:
+                    - name: Reader - ${folder} - ${groupFolder.title}
+                      isMemberOf: mediahub-basic-contributor
+                      path: /home/groups/mediahub
 
 - ace_config:
     - FOR folder IN ${rootFolders}:
