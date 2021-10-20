@@ -64,7 +64,7 @@
                                 <groups
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor]"/>
+                                    groups="[mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
                             </granite:rendercondition>
                         </fileupload>
                         <folderupload
