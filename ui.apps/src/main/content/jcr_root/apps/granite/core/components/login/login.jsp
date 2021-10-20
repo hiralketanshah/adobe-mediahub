@@ -510,10 +510,10 @@ login
                                     <input is="coral-textfield" aria-label="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" class="coral-Form-field" id="password" name="j_password" type="password"  placeholder="<%= isLogin ? loginPasswordPlaceholder : changePasswordPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>">
                                 </div>
                                 <div class="coral-Form-fieldwrapper">
-                                    <input is="coral-textfield" aria-label="<%= newPasswordPlaceholder %>" class="coral-Form-field" id="new_password" name="<%= isLogin ? "" : "j_newpassword" %>" type="password"  placeholder="<%= newPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
+                                    <input is="coral-textfield" aria-label="<%= newPasswordPlaceholder %>" class="coral-Form-field" id="new_password" name="<%= isLogin ? "" : "j_newpassword" %>" type="password"  placeholder="<%= newPasswordPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>" <%= isLogin ? "hidden" : "" %>>
                                 </div>
                                 <div class="coral-Form-fieldwrapper">
-                                    <input is="coral-textfield" aria-label="<%= confirmPasswordPlaceholder %>" class="coral-Form-field" id="confirm_password" name="" type="password"  placeholder="<%= confirmPasswordPlaceholder %>" spellcheck="false" autocomplete="false" <%= isLogin ? "hidden" : "" %>>
+                                    <input is="coral-textfield" aria-label="<%= confirmPasswordPlaceholder %>" class="coral-Form-field" id="confirm_password" name="" type="password"  placeholder="<%= confirmPasswordPlaceholder %>" spellcheck="false" autocomplete="<%= autocomplete %>" <%= isLogin ? "hidden" : "" %>>
                                 </div>
                                 <coral-alert id="error" style="background-color:#aa0016;" variant="error" <%= reason.length() > 0 ? "" : "hidden" %>>
                                     <coral-alert-content style="color:white;"><%= xssAPI.encodeForHTML(reason) %></coral-alert-content>
