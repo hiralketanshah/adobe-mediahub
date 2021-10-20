@@ -67,6 +67,10 @@
         var shareLinkValue = $("#sharelink").val();
         var shareLinkToken = shareLinkValue.substr(shareLinkValue.indexOf("?sh=") + 4);
 
+        if (shareLinkToken.length > 0) {
+            data += '&shareLinkToken=' + shareLinkToken;
+        }
+
         if ($form.find("input[type=checkbox]").prop("checked")) {
             data += "&allowOriginal=true";
         } else {
