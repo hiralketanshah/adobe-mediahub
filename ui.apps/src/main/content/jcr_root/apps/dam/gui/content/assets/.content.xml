@@ -64,7 +64,7 @@
                                 <groups
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
+                                    groups="[mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
                             </granite:rendercondition>
                         </fileupload>
                         <folderupload
@@ -279,7 +279,7 @@
                                 <groups
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[administrators,mediahub-super-administrators,mediahub-administrators]"/>
+                                    groups="[administrators,mediahub-administrators]"/>
                             </granite:rendercondition>
                         </metadata>
                     </items>
@@ -338,9 +338,29 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </download>
+                <checkout jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
+                    </granite:rendercondition>
+                </checkout>
+                <checkin jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
+                    </granite:rendercondition>
+                </checkin>
                 <viewproperties
                     jcr:primaryType="nt:unstructured"
                     sling:orderAfter="download">
@@ -350,7 +370,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </viewproperties>
                 <customviewproperties
@@ -386,7 +406,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </annotate>
                 <managetags jcr:primaryType="nt:unstructured">
@@ -409,7 +429,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </addtocollection>
                 <createtask jcr:primaryType="nt:unstructured">
@@ -435,7 +455,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </copyasset>
                 <moveasset jcr:primaryType="nt:unstructured">
@@ -448,7 +468,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </moveasset>
                 <quickpublish jcr:primaryType="nt:unstructured">
@@ -518,6 +538,62 @@
                             groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </managepublication>
+                <relate jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                        <ismedialibrary
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                    </granite:rendercondition>
+                </relate>
+                <unrelate jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                        <ismedialibrary
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                    </granite:rendercondition>
+                </unrelate>
+                <relateprojects jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
+                        <isprojects
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                    </granite:rendercondition>
+                </relateprojects>
+                <unrelateprojects jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
+                        <isprojects
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                    </granite:rendercondition>
+                </unrelateprojects>
                 <delete jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
                         jcr:primaryType="nt:unstructured"
@@ -528,7 +604,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </delete>
                 <exportmetadata jcr:primaryType="nt:unstructured">
@@ -538,9 +614,37 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager]"/>
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager]"/>
                     </granite:rendercondition>
                 </exportmetadata>
+                <findsimilar jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-reader,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-reader-medialibrary]"/>
+                        <ismedialibrary
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                    </granite:rendercondition>
+                </findsimilar>
+                <findsimilarprojects jcr:primaryType="nt:unstructured">
+                    <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                        <isprojects
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                    </granite:rendercondition>
+                </findsimilarprojects>
             </selection>
         </actions>
     </jcr:content>

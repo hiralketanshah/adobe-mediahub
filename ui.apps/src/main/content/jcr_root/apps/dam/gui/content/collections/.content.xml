@@ -12,7 +12,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators]"/>
+                            groups="[administrators,mediahub-administrators]"/>
                     </granite:rendercondition>
                 </create>
                 <createtask jcr:primaryType="nt:unstructured">
@@ -22,7 +22,7 @@
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators,mediahub-administrators]"/>
+                            groups="[administrators,mediahub-administrators]"/>
                     </granite:rendercondition>
                 </createtask>
             </selection>
