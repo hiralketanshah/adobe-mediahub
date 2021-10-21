@@ -686,6 +686,10 @@
           permission: deny
           actions: read
 
+        - path: /libs/cq/core/content/projects/details/jcr:content/actions/secondary/create
+          permission: deny
+          actions: read
+
     - mediahub-reader-medialibrary:
         - path: /content/dam/medialibrary
           permission: allow
@@ -822,6 +826,10 @@
           permission: allow
           actions: read
 
+        - path: /libs/cq/core/content/projects/details/jcr:content/actions/secondary/create
+          permission: allow
+          actions: read
+
     - mediahub-super-administrators:
 
         - path: /conf/global/settings/dam/search/facets
@@ -928,6 +936,9 @@
           permission: allow
           privileges: jcr:all
 
+        - path: /libs/cq/core/content/projects/details/jcr:content/actions/secondary/create
+          permission: allow
+          actions: read
 
     - mediahub-basic-reader:
         - path: /libs/dam/gui/content/assets/managetags/jcr:content/body/items/form/items/wizard/items/moderateStep/items/actionbar/primary/promote
@@ -1020,6 +1031,10 @@
           actions: read
           restrictions:
             rep:glob: '/*'
+
+        - path: /libs/cq/core/content/projects/details/jcr:content/actions/secondary/create
+          permission: allow
+          actions: read
 
     - mediahub-basic-project-internal-contributor:
         - path: /var/workflow/models
