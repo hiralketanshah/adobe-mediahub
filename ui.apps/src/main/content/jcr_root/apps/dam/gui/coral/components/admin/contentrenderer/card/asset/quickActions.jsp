@@ -85,7 +85,7 @@ UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adap
      <coral-quickactions-item icon="printPreview" class="dam-asset-desktop-action" data-path="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-href-query="?action=open"><%= xssAPI.encodeForHTML(i18n.get("Open on desktop")) %></coral-quickactions-item><%
         }
      %>
-<% if (isAdminUser) { %>
+
     <coral-quickactions-item icon="infoCircle" class="foundation-anchor" data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/dam/gui/content/assets/metadataeditor.external.html" + "?item=" + escapedResourcePath) + "&_charset_=utf8" %>" data-pageheading = "AEM Assets | Asset Metadata Editor" data-contextpath = "/assetdetails.html"><%= xssAPI.encodeForHTML(i18n.get("Properties")) %></coral-quickactions-item>
     <%   if (canEdit && (isAdmin || (!isAssetExpired && !isSubAssetExpired && canUseRestricedActions))) {
         String assetEditorPath = "/mnt/overlay/dam/gui/content/assets/assetedit.html";
@@ -103,6 +103,7 @@ UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adap
              assetEditorPath = "/mnt/overlay/dam/gui/content/idsprint/templates/edittemplate.html";
         }
 
+        if (isAdminUser) {
     %>
     <coral-quickactions-item icon="edit" class="foundation-anchor" data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + assetEditorPath + escapedResourcePath)%>" data-pageheading="<%= i18n.get("AEM Assets | Asset Editor")%>"><%= xssAPI.encodeForHTML(i18n.get("Edit")) %></coral-quickactions-item>
     <% } }
