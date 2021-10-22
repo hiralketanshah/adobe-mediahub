@@ -418,6 +418,18 @@ Assets' ColumnView
         itemAttrs.add("data-granite-collection-item-id", item.getPath());
         itemAttrs.add("data-datasource-index", "" + (index + offset));
 
+        String itemPath = item.getPath();
+        if(StringUtils.contains(itemPath, "/content/dam/medialibrary") && item.getChild("jcr:content") != null && item.getChild("jcr:content").getChild("metadata") != null) {
+            ValueMap metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
+            if( metadata.containsKey("bnpp-download-auth") && StringUtils.equals( metadata.get("bnpp-download-auth", "no"), "yes") ){
+              itemAttrs.add("bnpp-download-auth", "true");
+            } else {
+              itemAttrs.add("bnpp-download-auth", "false");
+            }
+        } else {
+          itemAttrs.add("bnpp-download-auth", "false");
+        }
+
         if(size != null && size <= index) {
             itemAttrs.addClass("is-lazyLoaded");
             itemAttrs.addClass("foundation-layout-columnview-item-placeholder");
