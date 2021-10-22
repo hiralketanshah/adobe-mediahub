@@ -101,7 +101,7 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
         } catch (LoginException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
         } catch (RepositoryException e) {
-        	LOGGER.error("Error while fecthing user and user info : {0}", e);
+            LOGGER.error("Error while fecthing user and user info : {0}", e);
         }
 
     }

@@ -71,7 +71,7 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-            RequestParameter[] paths = request.getRequestParameterMap().getOrDefault("path", new RequestParameter[]{});
+            RequestParameter[] paths = request.getRequestParameterMap().getOrDefault(BnpConstants.PATH, new RequestParameter[]{});
             for(RequestParameter path : paths){
                 String charset = request.getRequestParameter("_charset_").getString();
                 Resource asset = resolver.getResource(URLDecoder.decode(path.getString(),charset));
@@ -83,20 +83,20 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
                     value.add(getParameterValue(request, charset, "internalUserContact"));
                     value.add(ProjectExpireNotificationUtil.getCurrentDate(new SimpleDateFormat(BnpConstants.DD_MM_YYYY)).toString());
                     String areas = StringUtils.EMPTY;
-                    if(null != request.getRequestParameterMap().getValues("geographicalarea")){
-                        areas = String.join(",", request.getParameterMap().getOrDefault("geographicalarea", new String[]{}));
+                    if(null != request.getRequestParameterMap().getValues(BnpConstants.GEOGRAPHICALAREA)){
+                        areas = String.join(",", request.getParameterMap().getOrDefault(BnpConstants.GEOGRAPHICALAREA, new String[]{}));
                     }
                     value.add(areas);
 
-                    if(values.containsKey("downloadDetails")){
-                        String[] downloadDetails = values.get("downloadDetails", new String[]{});
+                    if(values.containsKey(BnpConstants.DOWNLOAD_DETAILS)){
+                        String[] downloadDetails = values.get(BnpConstants.DOWNLOAD_DETAILS, new String[]{});
                         List<String> list = new ArrayList<>(Arrays.asList(downloadDetails));
                         list.add(String.join("|", value));
-                        values.put("downloadDetails", list.toArray(new String[list.size()]));
+                        values.put(BnpConstants.DOWNLOAD_DETAILS, list.toArray(new String[list.size()]));
                     } else {
-                        values.put("downloadDetails", new String[]{String.join("|", value)});
+                        values.put(BnpConstants.DOWNLOAD_DETAILS, new String[]{String.join("|", value)});
                     }
-                    values.put("downloadCount", (long)values.get("downloadCount", 0) +1);
+                    values.put(BnpConstants.DOWNLOAD_COUNT, (long)values.get(BnpConstants.DOWNLOAD_COUNT, 0) +1);
                 }
             }
             resolver.commit();
