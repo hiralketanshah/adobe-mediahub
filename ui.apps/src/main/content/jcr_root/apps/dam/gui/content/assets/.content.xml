@@ -359,7 +359,7 @@
                   activeCondition="dam.gui.customdownload.activecondition"
                   icon="download"
                   target=".cq-damadmin-admin-childpages"
-                  text="Download C"
+                  text="Download"
                   variant="actionBar">
                     <granite:data
                       jcr:primaryType="nt:unstructured"
@@ -1243,7 +1243,7 @@
                         </granite:rendercondition>
                     </dynamic_renditions>
                     <bnpcustomfields
-                      granite:class="row"
+                      granite:class="row coral-Form--vertical"
                       jcr:primaryType="nt:unstructured"
                       sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
@@ -1266,6 +1266,7 @@
                             </emaillist>
                             <useText
                               jcr:primaryType="nt:unstructured"
+                              granite:class="coral-Form-fieldlabel"
                               sling:resourceType="granite/ui/components/coral/foundation/text"
                               text="Use"/>
                             <use
@@ -1282,6 +1283,7 @@
                             </use>
                             <dateofusetext
                               jcr:primaryType="nt:unstructured"
+                              granite:class="coral-Form-fieldlabel"
                               sling:resourceType="granite/ui/components/coral/foundation/text"
                               text="Date of Use"/>
                             <dateOfUse
@@ -1302,6 +1304,7 @@
                             </dateOfUse>
                             <geographicalareatext
                               jcr:primaryType="nt:unstructured"
+                              granite:class="coral-Form-fieldlabel"
                               sling:resourceType="granite/ui/components/coral/foundation/text"
                               text="Geographical Area"/>
                             <geographicalarea
