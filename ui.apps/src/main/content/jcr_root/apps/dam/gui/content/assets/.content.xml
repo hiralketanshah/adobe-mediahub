@@ -331,10 +331,11 @@
                 </customadhocassetshare>
                 <download
                     jcr:primaryType="nt:unstructured"
+                    activeCondition="dam.gui.download.activecondition"
                     sling:orderBefore="viewproperties">
                     <granite:rendercondition
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                         <groups
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
@@ -355,7 +356,7 @@
                   sling:orderBefore="viewproperties"
                   sling:resourceType="granite/ui/components/coral/foundation/collection/action"
                   activeSelectionCount="multiple"
-                  activeCondition="dam.gui.download.activecondition"
+                  activeCondition="dam.gui.customdownload.activecondition"
                   icon="download"
                   target=".cq-damadmin-admin-childpages"
                   text="Download C"

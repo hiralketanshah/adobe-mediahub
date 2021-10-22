@@ -541,8 +541,6 @@ Masonry
             } else {
               itemAttrs.add("bnpp-download-auth", "false");
             }
-        } else {
-          itemAttrs.add("bnpp-download-auth", "false");
         }
 
         itemAttrs.addBoolean("coral-masonry-draghandle", cfg.get("orderable", false));

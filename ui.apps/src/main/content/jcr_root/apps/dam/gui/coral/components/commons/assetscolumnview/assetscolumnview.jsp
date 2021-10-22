@@ -426,8 +426,6 @@ Assets' ColumnView
             } else {
               itemAttrs.add("bnpp-download-auth", "false");
             }
-        } else {
-          itemAttrs.add("bnpp-download-auth", "false");
         }
 
         if(size != null && size <= index) {

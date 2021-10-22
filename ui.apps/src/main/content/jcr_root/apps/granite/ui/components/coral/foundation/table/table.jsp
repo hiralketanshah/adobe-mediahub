@@ -600,8 +600,6 @@ Table
                 } else {
                   itemAttrs.add("bnpp-download-auth", "false");
                 }
-            } else {
-              itemAttrs.add("bnpp-download-auth", "false");
             }
 
             if (size != null && index >= size) {
