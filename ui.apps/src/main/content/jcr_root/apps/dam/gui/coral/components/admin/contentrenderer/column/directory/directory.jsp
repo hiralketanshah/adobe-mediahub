@@ -65,9 +65,13 @@ if (hasChildren(resource)) {
         if(currentUser != null){
             if(group != null){
               isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
-            } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+            }
+
+            if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
               isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
-            } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+            }
+
+            if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
               isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
             }
         }
