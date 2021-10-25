@@ -21,6 +21,7 @@
     var relDamCreateFolder = "#dam-create-folder";
     var relDamCreateFolder_1 = "#dam-create-folder-1";
     var folderMetadataSchemas = [];
+    var userID = getCurrentUserId();
 
 
     $(document).on("foundation-contentloaded", initCreateDamFolder);
@@ -251,7 +252,8 @@
                 reorderableCheckbox.label.innerHTML = Granite.I18n.get("Orderable");
                 contentForm.appendChild(reorderableCheckbox);
                 var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
-                if (canModifyAccessControl) {
+                var userGroups = getUserGroups();
+                if (userID === "admin" || userGroups.includes("administrators") || userGroups.includes("mediahub-administrators")) {
                     reorderableCheckbox.disabled = false;
                     reorderableCheckbox.hidden = false;
                 } else {
@@ -311,14 +313,15 @@
             // Sync private folder checkbox according to permission on current folder
             var privateCheckbox = $(".private-folder-chkbox", $(dialog))[0];
             var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+            var userGroups = getUserGroups();
             if(privateCheckbox != undefined){
-                if (canModifyAccessControl) {
-                privateCheckbox.disabled = false;
-                privateCheckbox.hidden = false;
-           	 } else {
-                privateCheckbox.disabled = true;
-                privateCheckbox.hidden = true;
-             }
+                if (userID === "admin" || userGroups.includes("administrators") || userGroups.includes("mediahub-administrators")) {
+                  privateCheckbox.disabled = false;
+                  privateCheckbox.hidden = false;
+               } else {
+                  privateCheckbox.disabled = true;
+                  privateCheckbox.hidden = true;
+               }
             }
 
             // show "Asset Contribution" checkbox based on whether it is sourcing shared folder
@@ -844,6 +847,7 @@
                 }());
 
                 var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+                var userGroups = getUserGroups();
                 var titleLabel = document.createElement("label");
 
                 var select = new Coral.Select().set({
@@ -881,7 +885,7 @@
                 }
 
                 if(select){
-                  if (canModifyAccessControl) {
+                  if (userID === "admin" || userGroups.includes("administrators") || userGroups.includes("mediahub-administrators")) {
                       titleLabel.hidden = false;
                       select.hidden = false;
                   } else {
@@ -907,7 +911,7 @@
                 reorderableCheckbox.label.innerHTML = Granite.I18n.get("Orderable");
                 contentForm.appendChild(reorderableCheckbox);
 
-                if (canModifyAccessControl) {
+                if (userID === "admin" || userGroups.includes("administrators") || userGroups.includes("mediahub-administrators")) {
                     reorderableCheckbox.disabled = false;
                     reorderableCheckbox.hidden = false;
                 } else {
@@ -966,8 +970,9 @@
             // Sync private folder checkbox according to permission on current folder
             var privateCheckbox = $(".private-folder-chkbox", $(dialog))[0];
             var canModifyAccessControl = self._checkPermission(contentPath, "jcr:modifyAccessControl");
+            var userGroups = getUserGroups();
             if(privateCheckbox){
-              if (canModifyAccessControl) {
+              if (userID === "admin" || userGroups.includes("administrators") || userGroups.includes("mediahub-administrators")) {
                   privateCheckbox.disabled = false;
                   privateCheckbox.hidden = false;
               } else {
@@ -1320,15 +1325,6 @@
             }
         }
     });
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     $(document).on("foundation-selections-change", function(e) {
         var localName = e.target.localName;
@@ -1384,9 +1380,54 @@
             var damCreateFolder = new DamCreateFolder().set("createFolder", document.querySelector(relDamCreateFolder));
             damCreateFolder.initialize();
         }
-		if (document.querySelector(relDamCreateFolder_1)) {
+		    if (document.querySelector(relDamCreateFolder_1)) {
             var damCreateFolder_1 = new DamCreateFolder1().set("createFolder_1", document.querySelector(relDamCreateFolder_1));
             damCreateFolder_1.initialize();
         }
     }
+
+    function getUserGroups(){
+        var userGroups = [];
+        $.ajax( {
+            url: "/bin/security/authorizables.json?filter=" + userID,
+            async: false
+        } ).done(handler);
+
+        function handler(data){
+            if(!data || !data.authorizables){
+                return userGroups;
+            }
+            data.authorizables.forEach(function(authObj){
+                 if((authObj.id !== userID) || !authObj.memberOf || authObj.memberOf.length == 0){
+                     return userGroups;
+                 }
+                 userGroups = pluck(authObj.memberOf, "id");
+            });
+        }
+
+        return userGroups;
+    }
+
+    function pluck(arr, key) {
+        return arr.reduce(function(p, v) {
+          return p.concat(v[key]);
+        }, []);
+    }
+
+    function getCurrentUserId(){
+        var userID;
+        $.ajax( {
+            url: "/libs/cq/security/userinfo.json",
+            async: false
+        } ).done(handler);
+
+        function handler(data){
+            if(!data || !data.userID){
+                return;
+            }
+            userID = data.userID;
+        }
+        return userID;
+    }
+
 })(document, Class, Granite.$);
