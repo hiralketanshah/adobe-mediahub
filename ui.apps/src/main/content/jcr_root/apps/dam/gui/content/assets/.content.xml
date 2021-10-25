@@ -330,73 +330,84 @@
                         src="/mnt/overlay/dam/gui/content/assets/bnpadhocassetsharedialog.html"/>
                 </customadhocassetshare>
                 <download
-                        jcr:primaryType="nt:unstructured"
-                        activeCondition="dam.gui.download.activecondition"
-                        sling:orderBefore="viewproperties">
+                    jcr:primaryType="nt:unstructured"
+                    sling:orderBefore="viewproperties">
                     <granite:rendercondition
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <condition1
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
-                        <groups
+                            sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                            <ismedialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            <groups
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
-                        <not
+                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                        </condition1>
+                        <condition2
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                            <isprojects
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
-                            <isMedia
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
-                        </not>
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                            <groups
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-reader,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
+                        </condition2>
                     </granite:rendercondition>
                 </download>
                 <customdownload
-                  granite:rel="cq-damadmin-admin-actions-download-activator"
-                  jcr:primaryType="nt:unstructured"
-                  sling:orderBefore="viewproperties"
-                  sling:resourceType="granite/ui/components/coral/foundation/collection/action"
-                  activeSelectionCount="multiple"
-                  activeCondition="dam.gui.customdownload.activecondition"
-                  icon="download"
-                  target=".cq-damadmin-admin-childpages"
-                  text="Download"
-                  variant="actionBar">
+                    granite:rel="cq-damadmin-admin-actions-download-activator"
+                    jcr:primaryType="nt:unstructured"
+                    sling:orderBefore="viewproperties"
+                    sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                    activeCondition="dam.gui.customdownload.activecondition"
+                    activeSelectionCount="multiple"
+                    icon="download"
+                    target=".cq-damadmin-admin-childpages"
+                    text="Download"
+                    variant="actionBar">
                     <granite:data
-                      jcr:primaryType="nt:unstructured"
-                      haslicense-href="/mnt/overlay/dam/gui/content/assets/haslicense.html"
-                      href="/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html"
-                      license-href="/mnt/overlay/dam/gui/content/assets/licensecheck.external.html"/>
+                        jcr:primaryType="nt:unstructured"
+                        haslicense-href="/mnt/overlay/dam/gui/content/assets/haslicense.html"
+                        href="/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html"
+                        license-href="/mnt/overlay/dam/gui/content/assets/licensecheck.external.html"/>
                     <granite:rendercondition
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <groups
-                          jcr:primaryType="nt:unstructured"
-                          sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                          groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
-                        <isMedia
-                          jcr:primaryType="nt:unstructured"
-                          sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                          expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[mediahub-reader-medialibrary,mediahub-basic-contributor,mediahub-basic-reader,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                        <ismedialibrary
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
                     </granite:rendercondition>
                 </customdownload>
                 <checkout jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <groups
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                groups="[administrators,mediahub-super-administrators]"/>
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </checkout>
                 <checkin jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <groups
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                groups="[administrators,mediahub-super-administrators]"/>
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                            groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </checkin>
                 <viewproperties
