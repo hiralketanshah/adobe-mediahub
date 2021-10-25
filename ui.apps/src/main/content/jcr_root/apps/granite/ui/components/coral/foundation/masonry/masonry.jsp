@@ -509,9 +509,13 @@ Masonry
               if(currentUser != null){
                   if(group != null){
                     isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
-                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+                  }
+
+                  if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
                     isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
-                  } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+                  }
+
+                  if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
                     isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
                   }
               }
@@ -532,6 +536,16 @@ Masonry
         itemAttrs.add("data-foundation-collection-item-id", item.getPath());
         itemAttrs.add("data-granite-collection-item-id", item.getPath());
         itemAttrs.add("data-datasource-index", "" + (index + offset));
+
+        String itemPath = item.getPath();
+        if(StringUtils.contains(itemPath, "/content/dam/medialibrary") && item.getChild("jcr:content") != null && item.getChild("jcr:content").getChild("metadata") != null) {
+            ValueMap metadata = item.getChild("jcr:content").getChild("metadata").getValueMap();
+            if( metadata.containsKey("bnpp-download-auth") && StringUtils.equals( metadata.get("bnpp-download-auth", "no"), "yes") ){
+              itemAttrs.add("bnpp-download-auth", "true");
+            } else {
+              itemAttrs.add("bnpp-download-auth", "false");
+            }
+        }
 
         itemAttrs.addBoolean("coral-masonry-draghandle", cfg.get("orderable", false));
 

@@ -1,0 +1,111 @@
+package com.mediahub.core.servlets;
+
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
+
+import com.adobe.granite.workflow.WorkflowException;
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.QueryUtils;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.jcr.Session;
+import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+@ExtendWith(AemContextExtension.class)
+public class BnpInternalUsersTest {
+
+	@InjectMocks
+	BnpInternalUsers bnpInternalUsers;
+
+	@Mock
+	SlingHttpServletRequest req;
+
+	@Mock
+	SlingHttpServletResponse resp;
+
+	@Mock
+	ResourceResolverFactory resourceResolverFactory;
+
+	@Mock
+	ResourceResolver resourceResolver;
+
+	@Mock
+	UserManager userManager;
+
+	@Mock
+	Session session;
+
+	@Mock
+	PrintWriter printWriter;
+
+	@Mock
+	User user;
+
+	@Mock
+	Group group;
+
+	@Mock
+	Query query;
+
+	@Mock
+	QueryBuilder queryBuilder;
+
+	@Mock
+	SearchResult result;
+
+	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+			BnpConstants.WRITE_SERVICE);
+
+	@BeforeEach
+	public void setupMock() {
+		MockitoAnnotations.initMocks(this);
+	}
+
+	@Test
+	public void testDoGet() throws Exception {
+		List<Resource> resources = new ArrayList<>();
+		Iterator<Resource> iterator = resources.iterator();
+
+		Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
+		Mockito.when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+		Mockito.when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+		/*when(session.getUserID()).thenReturn("admin");
+		when(userManager.getAuthorizable("admin")).thenReturn(user);
+		when(user.memberOf()).thenReturn(iterator);
+		when(group.getID()).thenReturn("administrators");*/
+
+		when(resourceResolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+		when(queryBuilder.createQuery(PredicateGroup.create(QueryUtils.getPredicateMapInternalUsers("/home/users")), resourceResolver.adaptTo(Session.class))).thenReturn(query);
+		when(query.getResult()).thenReturn(result);
+		when(result.getResources()).thenReturn(iterator);
+
+		when(resp.getWriter()).thenReturn(printWriter);
+		assertAll(() -> bnpInternalUsers.doGet(req, resp));
+	}
+
+}
