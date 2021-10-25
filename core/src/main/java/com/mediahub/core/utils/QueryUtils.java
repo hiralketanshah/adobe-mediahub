@@ -60,4 +60,16 @@ public class QueryUtils {
     return map;
   }
 
+  public static Map<String, String> getPredicateMapInternalUsers(String path) {
+    Map<String, String> map = new HashMap<>();
+    map.put("type", "rep:User");
+    map.put(BnpConstants.PATH, path);
+    map.put(BnpConstants.FIRST_PROPERTY, "profile/type");
+    //map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
+    map.put(BnpConstants.FIRST_PROPERTY_VALUE, "internal");
+    map.put(BnpConstants.P_LIMIT, "-1");
+
+    return map;
+  }
+
 }
