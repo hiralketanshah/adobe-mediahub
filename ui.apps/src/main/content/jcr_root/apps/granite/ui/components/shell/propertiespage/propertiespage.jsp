@@ -546,6 +546,19 @@ PropertiesPage
                     <%
                     } else {
                         String saveBtnVariant = "primary";
+						String url = slingRequest.getRequestPathInfo().getResourcePath();
+                    	String destinationUrl = "location.href='/libs/cq/core/content/projects/wizard/startwork.html?project=" + assetId + "'";
+
+                    	AttrBuilder inviteTeamAttrs = new AttrBuilder(request, xssAPI);
+
+                        inviteTeamAttrs.add("id", "shell-propertiespage-invite-members");
+
+                        inviteTeamAttrs.add("type", "submit");
+                        inviteTeamAttrs.add("form", formId);
+                        inviteTeamAttrs.add("is", "coral-button");
+                        inviteTeamAttrs.add("variant", saveBtnVariant);
+                        inviteTeamAttrs.add("onclick", destinationUrl);
+
 
                         AttrBuilder doneAttrs = new AttrBuilder(request, xssAPI);
                         if (StringUtils.contains(assetId, "/content/dam") && !StringUtils.contains(assetId, "/content/dam/collections")) {
@@ -589,6 +602,15 @@ PropertiesPage
                         saveAttrs.add("role", "menuitem");
 
                     %>
+                    <% if(StringUtils.contains(assetId, "/content/projects") && StringUtils.contains(url, "/projects/teampage"))
+                    {
+                        %>
+                    <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                        <button <%=inviteTeamAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Invite member")) %>
+                        </button>
+                    </coral-buttongroup>
+                    <%}%>
+
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <button <%= doneAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save & Close")) %>
                         </button>

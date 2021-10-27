@@ -87,6 +87,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String payloadPath = item.getWorkflowData().getPayload().toString();
             String projectName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.length());
             logger.debug("ExternalUserCreationWorkflowProcess :: payloadPath" + payloadPath);
+            
+            boolean addToProject = false;
 
 
             String firstName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
@@ -97,6 +99,11 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String company = item.getWorkflow().getMetaDataMap().get("company").toString();
             String city = item.getWorkflow().getMetaDataMap().get("city").toString();
             String country = item.getWorkflow().getMetaDataMap().get("country").toString();
+            if(item.getWorkflow().getMetaDataMap().containsKey("addToProject")) {
+            	String addToProjectStr = item.getWorkflow().getMetaDataMap().get("addToProject").toString();
+            	addToProject = Boolean.parseBoolean(addToProjectStr);
+            }
+            
             Boolean isUserAlreadyExists = false;
             String password = "";
 
@@ -159,30 +166,30 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                     isUserAlreadyExists = true;
                     logger.debug("---> User already exist..");
                     user = setExpiryDateExistingUser(email, expiryDate, userManager, valueFactory);
-
                 }
 
                 Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
-                Set<ProjectMember> projectMembers = project.getMembers();
-                List<String> usersList = new ArrayList<>();
-                List<String> rolesList = new ArrayList<>();
+                
+                if(addToProject) {
+                	Set<ProjectMember> projectMembers = project.getMembers();
+                    List<String> usersList = new ArrayList<>();
+                    List<String> rolesList = new ArrayList<>();
 
-                for (ProjectMember memberObj : projectMembers) {
-                    logger.debug("---> memberObj.getId()" + memberObj.getId());
-                    usersList.add(memberObj.getId());
-                    Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
-                    for (ProjectMemberRole roleObj : projectRoles) {
-                        logger.debug("---> roleObj.getId()" + roleObj.getId());
+                    for (ProjectMember memberObj : projectMembers) {
+                        logger.debug("---> memberObj.getId()" + memberObj.getId());
+                        usersList.add(memberObj.getId());
+                        Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
+                        for (ProjectMemberRole roleObj : projectRoles) {
+                            logger.debug("---> roleObj.getId()" + roleObj.getId());
 
-                        rolesList.add(roleObj.getId());
+                            rolesList.add(roleObj.getId());
+                        }
                     }
+
+                    usersList.add(email);
+                    rolesList.add("external-contributor");
+                    project.updateMembers(usersList, rolesList);
                 }
-
-                usersList.add(email);
-                rolesList.add("external-contributor");
-                project.updateMembers(usersList, rolesList);
-
-
                 //notification with the expiry date modification if the user already exists and project link...username and pwd
                 String[] emailRecipients = {email};
 

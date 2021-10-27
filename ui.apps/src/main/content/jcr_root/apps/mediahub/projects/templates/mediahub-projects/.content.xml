@@ -21,11 +21,6 @@
             jcr:title="Team"
             sling:resourceType="cq/gui/components/projects/admin/pod/teampod"
             cardWeight="60"/>
-        <work
-            jcr:primaryType="nt:unstructured"
-            jcr:title="Workflows"
-            sling:resourceType="cq/gui/components/projects/admin/pod/workpod"
-            cardWeight="80"/>
         <asset
             jcr:primaryType="nt:unstructured"
             jcr:title="Content"
