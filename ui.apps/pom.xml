@@ -51,11 +51,17 @@
                 <configuration>
                     <validatorsSettings>
                         <jackrabbit-packagetype>
+                            <isDisabled>true</isDisabled>
                             <options>
                                 <allowComplexFilterRulesInApplicationPackages>true
                                 </allowComplexFilterRulesInApplicationPackages>
                             </options>
                         </jackrabbit-packagetype>
+                        <jackrabbit-filter>
+                            <options>
+                                <validRoots>/apps/dam/temp</validRoots>
+                            </options>
+                        </jackrabbit-filter>
                     </validatorsSettings>
                     <group>com.mediahub</group>
                     <name>mediahub.ui.apps</name>

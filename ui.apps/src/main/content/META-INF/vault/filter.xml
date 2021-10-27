@@ -10,6 +10,10 @@
     <filter root="/apps/clientlibs">
         <exclude pattern="/apps/clientlibs/social"/>
     </filter>
+    <filter root="/apps/dam/temp" mode="merge">
+        <exclude pattern="/apps/dam/temp/mediahub-medias-schema"/>
+        <include pattern="/apps/dam/temp/rep:policy"/>
+    </filter>
     <filter root="/apps/dam">
         <exclude pattern="/apps/dam/config"/>
         <exclude pattern="/apps/dam/temp"/>
