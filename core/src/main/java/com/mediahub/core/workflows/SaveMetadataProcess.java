@@ -63,7 +63,8 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
                     setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
                     String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 if (StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)) {
@@ -113,15 +114,15 @@ public class SaveMetadataProcess implements WorkflowProcess {
         for (Scene7Asset asset : subAssets) {
             if (asset != null && asset.getHeight() != null) {
                 if (asset.getHeight() == 540L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/md/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 720L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/hd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 1080L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, Externalizer.PUBLISH, "/" + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName()));
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/superhd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
             }

@@ -7,11 +7,11 @@ import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 @SuppressWarnings({"CQRules:CQBP-71", "CQRules:AMSCORE-553", "squid:S2068"})
 public class BnpConstants {
 
-  public static final String DOWNLOAD_DETAILS = "downloadDetails";
-  public static final String GEOGRAPHICALAREA = "geographicalarea";
-  public static final String DOWNLOAD_COUNT = "downloadCount";
+    public static final String DOWNLOAD_DETAILS = "downloadDetails";
+    public static final String GEOGRAPHICALAREA = "geographicalarea";
+    public static final String DOWNLOAD_COUNT = "downloadCount";
 
-  private BnpConstants() {
+    private BnpConstants() {
 
     }
 
@@ -135,6 +135,7 @@ public class BnpConstants {
     public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
     public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
     public static final String BNPP_INTERNAL_FILE_URL_SUPER_HD = "bnpp-internal-file-url-super-hd";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_PLAYER = "bnpp-internal-file-master-url-player";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_MD = "bnpp-internal-file-master-url-md";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_HD = "bnpp-internal-file-master-url-hd";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD = "bnpp-internal-file-master-url-super-hd";
