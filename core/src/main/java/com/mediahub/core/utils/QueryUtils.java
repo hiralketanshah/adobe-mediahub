@@ -65,7 +65,6 @@ public class QueryUtils {
     map.put("type", "rep:User");
     map.put(BnpConstants.PATH, path);
     map.put(BnpConstants.FIRST_PROPERTY, "profile/type");
-    //map.put(BnpConstants.FIRST_PROPERTY_OPERATION, BnpConstants.LIKE);
     map.put(BnpConstants.FIRST_PROPERTY_VALUE, "internal");
     map.put(BnpConstants.P_LIMIT, "-1");
 

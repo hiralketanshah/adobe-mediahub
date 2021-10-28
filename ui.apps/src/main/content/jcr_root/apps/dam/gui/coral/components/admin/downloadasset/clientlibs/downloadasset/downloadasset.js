@@ -76,8 +76,8 @@
 
 		    // MED-347
 		    if($("#internalUserContact") || $("#useTextArea") || $("#dateOfUse") || $("#geographicalarea")){
-		        if($("#internalUserContact")){
-              params["internalUserContact"] = $("#internalUserContact").find("input[is=coral-textfield]").val();
+		        if($("#internalUserContact") && $("#internalUserContact").length > 0){
+              params["internalUserContact"] = $("#internalUserContact")[0].outerText.split("\n");
             }
 
             if($("#useTextArea")){
@@ -222,6 +222,15 @@
         } else {
             $("#exportBtn").removeAttr("disabled");
         }
+
+        if($("#internalUserContact") && $("#useTextArea") && $("#dateOfUse") && $("#geographicalarea")){
+            if( ($("#geographicalarea").find("coral-tag") && $("#geographicalarea").find("coral-tag").length > 0) && ($("#dateOfUse").find("input[is=coral-textfield]").val() !== "") && ($("#useTextArea").val() !== "") && ($("#internalUserContact")[0].outerText !== "") ){
+                $("#exportBtn").removeAttr("disabled");
+            } else {
+                $("#exportBtn").attr("disabled", "disabled");
+            }
+        }
+
     });
 
     function checkIfAssetLicenseSelectionPage() {

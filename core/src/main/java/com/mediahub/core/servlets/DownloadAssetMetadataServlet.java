@@ -80,7 +80,12 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
                     ModifiableValueMap values = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                     value.add(getParameterValue(request, charset, "dateOfUse"));
                     value.add(getParameterValue(request, charset, "useTextArea"));
-                    value.add(getParameterValue(request, charset, "internalUserContact"));
+                    value.add(request.getResourceResolver().getUserID());
+                    String users = StringUtils.EMPTY;
+                    if(null != request.getRequestParameterMap().getValues("internalUserContact")){
+                        users = String.join(",", request.getParameterMap().getOrDefault("internalUserContact", new String[]{}));
+                    }
+                    value.add(users);
                     value.add(ProjectExpireNotificationUtil.getCurrentDate(new SimpleDateFormat(BnpConstants.DD_MM_YYYY)).toString());
                     String areas = StringUtils.EMPTY;
                     if(null != request.getRequestParameterMap().getValues(BnpConstants.GEOGRAPHICALAREA)){
