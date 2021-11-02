@@ -1,6 +1,7 @@
 package com.mediahub.core.workflows;
 
 import com.adobe.acs.commons.email.EmailService;
+import com.adobe.acs.commons.email.EmailServiceConstants;
 import com.adobe.acs.commons.i18n.I18nProvider;
 import com.adobe.cq.projects.api.Project;
 import com.adobe.cq.projects.api.ProjectMember;
@@ -15,7 +16,6 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.UserUtils;
-import org.apache.commons.lang.LocaleUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -186,11 +186,10 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 //notification with the expiry date modification if the user already exists and project link...username and pwd
                 String[] emailRecipients = {email};
 
-                String language = UserUtils.getUserLanguage(user);
-                Locale locale = LocaleUtils.toLocale(language);
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate(" Invitation to join", locale) + " « " + projectName + " » MediaHub project";
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Invitation to join « projectitle » MediaHub project // Invitation pour rejoindre le projet MediaHub « projectitle »", Locale.ENGLISH);
+                subject = subject.replaceAll("projectitle", project.getTitle());
                 Map<String, String> emailParams = new HashMap<>();
-                emailParams.put(BnpConstants.SUBJECT, subject);
+                emailParams.put(EmailServiceConstants.SUBJECT, subject);
                 emailParams.put("firstname", user.getProperty(BnpConstants.EXT_USER_PROPERTY_GIVENNAME)[0].toString());
                 emailParams.put("projectitle", project.getTitle());
                 emailParams.put("login", email);

@@ -37,8 +37,8 @@ public class BnpConstants {
     public static final String BASIC_GROUP = "mediahub-basic";
     public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
     public static final String SUBJECT = "subject";
-    public static final String P_CONSTRAINT = "(?=.*\\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[@#%\\*\\-+=~\\[\\]{}<>\\?].*).{8,16}";
-    public static final String P_CHARACTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789?=.*[@#%*-+=~[]{}<>?";
+    public static final String P_CONSTRAINT = "(?=^.{8,16}$)(?=.*\\d)(?=.*[!@#$%^&*;-]+)(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+    public static final String P_CHARACTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789!@#$%^&*;-";
     public static final String PATH = "path";
     public static final String TYPE = "type";
     public static final String FIRST_PROPERTY = "1_property";
