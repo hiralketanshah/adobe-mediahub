@@ -3,6 +3,7 @@ package com.mediahub.core.jobs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import com.adobe.acs.commons.i18n.I18nProvider;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
@@ -27,6 +28,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
+import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +80,12 @@ class ExistinguserProjectAccessEmailTest {
 
 	@Mock
 	Property property;
+
+	@Mock
+	I18nProvider provider;
+
+	@Mock
+	SlingSettingsService slingSettingsService;
 
 	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 			BnpConstants.WRITE_SERVICE);
