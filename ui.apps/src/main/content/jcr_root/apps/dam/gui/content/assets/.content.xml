@@ -1373,6 +1373,8 @@
                                       jcr:primaryType="nt:unstructured"
                                       sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
                                       src="/bin/project/internalusers.html"
+                                      required="{Boolean}true"
+                                      multiple="{Boolean}true"
                                       fieldLabel="Contact"
                                       hideServiceUsers="{Boolean}true"
                                       showAllAuthorizables="{Boolean}true"
@@ -1391,6 +1393,7 @@
                                 <items jcr:primaryType="nt:unstructured">
                                     <use
                                       jcr:primaryType="nt:unstructured"
+                                      required="{Boolean}true"
                                       granite:id="useTextArea"
                                       granite:class="row"
                                       sling:resourceType="granite/ui/components/coral/foundation/form/textarea"/>
@@ -1409,6 +1412,7 @@
                                     <dateofuse
                                       granite:id="dateOfUse"
                                       granite:class="row"
+                                      required="{Boolean}true"
                                       jcr:primaryType="nt:unstructured"
                                       sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                       displayedFormat="YYYY-MM-DD HH:mm"
@@ -1431,14 +1435,14 @@
                                       cq:showOnCreate="{Boolean}true"
                                       granite:class="row"
                                       jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="dam/gui/components/admin/schemafield"
                                       cq-msm-lockable="cq:tags"
                                       forceSelection="{Boolean}true"
                                       granite:id="geographicalarea"
                                       metaType="tags"
                                       multiple="true"
+                                      required="{Boolean}true"
                                       name="./jcr:content/metadata/bnpp-geographicalarea"
-                                      resourceType="cq/gui/components/coral/common/form/tagfield"
+                                      sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                       rootPath="/content/cq:tags/mediahub/geography">
                                         <granite:data
                                           jcr:primaryType="nt:unstructured"
@@ -1466,6 +1470,7 @@
               jcr:primaryType="nt:unstructured"
               sling:resourceType="granite/ui/components/coral/foundation/button"
               text="Download"
+              disabled="{Boolean}true"
               trackingFeature="aem:assets:asset:download"
               variant="primary">
                 <parentConfig
