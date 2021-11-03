@@ -73,39 +73,6 @@
             "licenseCheck": encodeURIComponent("true")
         };
 
-
-		    // MED-347
-		    if($("#internalUserContact") || $("#useTextArea") || $("#dateOfUse") || $("#geographicalarea")){
-		        if($("#internalUserContact")){
-              params["internalUserContact"] = $("#internalUserContact").find("input[is=coral-textfield]").val();
-            }
-
-            if($("#useTextArea")){
-              params["useTextArea"] = $("#useTextArea").val();
-            }
-
-            if($("#dateOfUse")){
-              params["dateOfUse"] = $("#dateOfUse").find("input[is=coral-textfield]").val();
-            }
-
-            if($("#geographicalarea") && $("#geographicalarea").find("coral-tag")){
-                if($("#geographicalarea").find("coral-tag").length > 0){
-                    var elements = $("#geographicalarea").find("coral-tag");
-                    var values = [];
-                    for (var i=0; i<elements.length; i++) {
-                      values[i] = elements[i].value;
-                    }
-                    params["geographicalarea"] = values;
-                }
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/bin/mediahub/downloadmetadata",
-                data: params
-            });
-		    }
-
         // s7dam export with dymanic settings
         var s7ExportSettings = $("#downloadasset").data("s7exportsettings");
         if (typeof s7ExportSettings !== "undefined" && s7ExportSettings !== null) {
@@ -192,6 +159,38 @@
                 }
             });
         }
+
+        // MED-347
+        if($("#internalUserContact") || $("#useTextArea") || $("#dateOfUse") || $("#geographicalarea")){
+            if($("#internalUserContact") && $("#internalUserContact").length > 0){
+              params["internalUserContact"] = $("#internalUserContact")[0].outerText.split("\n");
+            }
+
+            if($("#useTextArea")){
+              params["useTextArea"] = $("#useTextArea").val();
+            }
+
+            if($("#dateOfUse")){
+              params["dateOfUse"] = $("#dateOfUse").find("input[is=coral-textfield]").val();
+            }
+
+            if($("#geographicalarea") && $("#geographicalarea").find("coral-tag")){
+                if($("#geographicalarea").find("coral-tag").length > 0){
+                    var elements = $("#geographicalarea").find("coral-tag");
+                    var values = [];
+                    for (var i=0; i<elements.length; i++) {
+                      values[i] = elements[i].value;
+                    }
+                    params["geographicalarea"] = values;
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/bin/mediahub/downloadmetadata",
+                data: params
+            });
+        }
     }
 
     function _sendRequestForAcceptedOrRejectedLicenseEvent(acceptedOrRejectedLicenseAssetPaths, eventName) {
@@ -222,6 +221,15 @@
         } else {
             $("#exportBtn").removeAttr("disabled");
         }
+
+        if($("#internalUserContact") && $("#useTextArea") && $("#dateOfUse") && $("#geographicalarea")){
+            if( ($("#geographicalarea").find("coral-tag") && $("#geographicalarea").find("coral-tag").length > 0) && ($("#dateOfUse").find("input[is=coral-textfield]").val() !== "") && ($("#useTextArea").val() !== "") && ($("#internalUserContact")[0].outerText !== "") ){
+                $("#exportBtn").removeAttr("disabled");
+            } else {
+                $("#exportBtn").attr("disabled", "disabled");
+            }
+        }
+
     });
 
     function checkIfAssetLicenseSelectionPage() {

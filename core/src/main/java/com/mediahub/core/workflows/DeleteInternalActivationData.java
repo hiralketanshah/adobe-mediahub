@@ -49,6 +49,7 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD);
+                modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER);
                 List<String> status = new ArrayList<>(Arrays.asList(modifiableValueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
                 status.remove(BnpConstants.BROADCAST_VALUE_INTERNAL);
                 modifiableValueMap.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());

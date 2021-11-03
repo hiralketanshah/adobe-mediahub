@@ -105,6 +105,8 @@ public class DownloadAssetMetadataServletTest {
 		when(userManager.getAuthorizable("admin")).thenReturn(user);
 		when(user.memberOf()).thenReturn(iterator);
 		when(group.getID()).thenReturn("administrators");
+		when(req.getResourceResolver()).thenReturn(resourceResolver);
+		when(resourceResolver.getUserID()).thenReturn("admin");
 
 		when(req.getRequestParameterMap()).thenReturn(requestParameterMap);
 		when(requestParameterMap.getOrDefault(BnpConstants.PATH, new RequestParameter[]{})).thenReturn(new RequestParameter[]{ requestParameter });

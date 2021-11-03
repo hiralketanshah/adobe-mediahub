@@ -7,11 +7,11 @@ import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 @SuppressWarnings({"CQRules:CQBP-71", "CQRules:AMSCORE-553", "squid:S2068"})
 public class BnpConstants {
 
-  public static final String DOWNLOAD_DETAILS = "downloadDetails";
-  public static final String GEOGRAPHICALAREA = "geographicalarea";
-  public static final String DOWNLOAD_COUNT = "downloadCount";
+    public static final String DOWNLOAD_DETAILS = "downloadDetails";
+    public static final String GEOGRAPHICALAREA = "geographicalarea";
+    public static final String DOWNLOAD_COUNT = "downloadCount";
 
-  private BnpConstants() {
+    private BnpConstants() {
 
     }
 
@@ -37,8 +37,8 @@ public class BnpConstants {
     public static final String BASIC_GROUP = "mediahub-basic";
     public static final String GENERIC_TEMPLATE_PATH = "/etc/mediahub/mailtemplates/genericemailtemplate.html";
     public static final String SUBJECT = "subject";
-    public static final String P_CONSTRAINT = "(?=.*\\d.*)(?=.*[a-z].*)(?=.*[A-Z].*)(?=.*[@#%\\*\\-+=~\\[\\]{}<>\\?].*).{8,16}";
-    public static final String P_CHARACTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789?=.*[@#%*-+=~[]{}<>?";
+    public static final String P_CONSTRAINT = "(?=^.{8,16}$)(?=.*\\d)(?=.*[!@#$%^&*;-]+)(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$";
+    public static final String P_CHARACTER = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789!@#$%^&*;-";
     public static final String PATH = "path";
     public static final String TYPE = "type";
     public static final String FIRST_PROPERTY = "1_property";
@@ -135,6 +135,7 @@ public class BnpConstants {
     public static final String BNPP_INTERNAL_FILE_URL_MD = "bnpp-internal-file-url-md";
     public static final String BNPP_INTERNAL_FILE_URL_HD = "bnpp-internal-file-url-hd";
     public static final String BNPP_INTERNAL_FILE_URL_SUPER_HD = "bnpp-internal-file-url-super-hd";
+    public static final String BNPP_INTERNAL_FILE_MASTER_URL_PLAYER = "bnpp-internal-file-master-url-player";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_MD = "bnpp-internal-file-master-url-md";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_HD = "bnpp-internal-file-master-url-hd";
     public static final String BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD = "bnpp-internal-file-master-url-super-hd";

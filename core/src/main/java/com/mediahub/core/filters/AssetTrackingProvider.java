@@ -179,25 +179,28 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
     private Resource processInternalUrl(Resource asset, String path, String format) {
         if (DamUtil.isVideo(DamUtil.resolveToAsset(asset))) {
             Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
-            String externalUrl = null;
+            String internalUrl = null;
             switch (format) {
+                case "player":
+                    internalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, String.class);
+                    break;
                 case "master":
                     return new InternalResource(asset, asset.getPath());
                 case "hd":
-                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_HD, String.class);
+                    internalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_HD, String.class);
                     break;
                 case "md":
-                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_MD, String.class);
+                    internalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_MD, String.class);
                     break;
                 case "superhd":
-                    externalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, String.class);
+                    internalUrl = metadata.getValueMap().get(BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, String.class);
                     break;
                 default:
                     log.info("No format found");
                     break;
             }
             ValueMap vm = new ValueMapDecorator(new HashMap<>());
-            vm.put("redirectTarget", externalUrl);
+            vm.put("redirectTarget", internalUrl);
             return new ExternalResource(asset, path, vm);
         } else {
             return new InternalResource(asset, asset.getPath());
