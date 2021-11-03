@@ -99,7 +99,6 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String company = item.getWorkflow().getMetaDataMap().get("company").toString();
             String city = item.getWorkflow().getMetaDataMap().get("city").toString();
             String country = item.getWorkflow().getMetaDataMap().get("country").toString();
-            MetaDataMap map  = item.getWorkflow().getMetaDataMap();
             if(item.getWorkflow().getMetaDataMap().containsKey("addToProject")) {
             	String addToProjectStr = item.getWorkflow().getMetaDataMap().get("addToProject").toString();
             	addToProject = Boolean.parseBoolean(addToProjectStr);
@@ -190,6 +189,10 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                     usersList.add(email);
                     rolesList.add("external-contributor");
                     project.updateMembers(usersList, rolesList);
+                    
+                    if (!userManager.isAutoSave()) {
+                        js.save();
+                    }
                 
                 //notification with the expiry date modification if the user already exists and project link...username and pwd
                 String[] emailRecipients = {email};
