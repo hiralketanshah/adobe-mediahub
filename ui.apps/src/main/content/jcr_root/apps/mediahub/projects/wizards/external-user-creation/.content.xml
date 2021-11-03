@@ -25,6 +25,7 @@
                         sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                         fieldLabel="Email"
                         name="email"
+                        granite:rel="project-email"
                         required="{Boolean}true"/>
                     <firstname
                         jcr:primaryType="nt:unstructured"
@@ -88,7 +89,7 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
                         text="Add to Project"
-                        name="./addToProject"
+                        name="addToProject"
                         value="true"
                         checked="true"
                         fieldDescription="Controls whether to add the user to the project"/>
