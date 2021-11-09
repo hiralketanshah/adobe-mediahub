@@ -271,7 +271,7 @@
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                                                 fieldLabel="Expiry Date"
                                                                 name="./profile/expiry"
-                                                                valueFormat="YYYY/MM/DD"/>
+                                                                valueFormat="DD/MM/YYYY"/>
                                                             <Company
                                                                 granite:class="job-title"
                                                                 jcr:primaryType="nt:unstructured"
@@ -385,7 +385,7 @@
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                                                 fieldLabel="Expiry Date"
                                                                 name="./profile/expiry"
-                                                                valueFormat="YYYY/MM/DD"/>
+                                                                valueFormat="DD/MM/YYYY"/>
                                                         </items>
                                                     </profileProps>
                                                 </items>
