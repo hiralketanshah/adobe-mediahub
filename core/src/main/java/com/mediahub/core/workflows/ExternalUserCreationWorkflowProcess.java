@@ -201,7 +201,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 emailParams.put("resetlink", externalizer.authorLink(resourceResolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
                 emailParams.put("password", password);
 
-                emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate()));
+                emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTime()));
                 emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
                 emailParams.put("projectowner", item.getWorkflow().getInitiator());
 
