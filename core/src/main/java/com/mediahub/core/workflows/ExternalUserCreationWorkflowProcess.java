@@ -89,7 +89,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String payloadPath = item.getWorkflowData().getPayload().toString();
             String projectName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.length());
             logger.debug("ExternalUserCreationWorkflowProcess :: payloadPath" + payloadPath);
-            
+
             boolean addToProject = false;
 
 
@@ -106,11 +106,11 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String company = item.getWorkflow().getMetaDataMap().get("company").toString();
             String city = item.getWorkflow().getMetaDataMap().get("city").toString();
             String country = item.getWorkflow().getMetaDataMap().get("country").toString();
-            if(item.getWorkflow().getMetaDataMap().containsKey("addToProject")) {
-            	String addToProjectStr = item.getWorkflow().getMetaDataMap().get("addToProject").toString();
-            	addToProject = Boolean.parseBoolean(addToProjectStr);
+            if (item.getWorkflow().getMetaDataMap().containsKey("addToProject")) {
+                String addToProjectStr = item.getWorkflow().getMetaDataMap().get("addToProject").toString();
+                addToProject = Boolean.parseBoolean(addToProjectStr);
             }
-            
+
             Boolean isUserAlreadyExists = false;
             String password = "";
 
@@ -176,55 +176,56 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 }
 
                 Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
-                  
-                if(addToProject) {
-                  Set<ProjectMember> projectMembers = project.getMembers();
-                  List<String> usersList = new ArrayList<>();
-                  List<String> rolesList = new ArrayList<>();
 
-                for (ProjectMember memberObj : projectMembers) {
-                    logger.debug("---> memberObj.getId()" + memberObj.getId());
-                    usersList.add(memberObj.getId());
-                    Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
-                    for (ProjectMemberRole roleObj : projectRoles) {
-                        logger.debug("---> roleObj.getId()" + roleObj.getId());
-                        rolesList.add(roleObj.getId());
+                if (addToProject) {
+                    Set<ProjectMember> projectMembers = project.getMembers();
+                    List<String> usersList = new ArrayList<>();
+                    List<String> rolesList = new ArrayList<>();
+
+                    for (ProjectMember memberObj : projectMembers) {
+                        logger.debug("---> memberObj.getId()" + memberObj.getId());
+                        usersList.add(memberObj.getId());
+                        Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
+                        for (ProjectMemberRole roleObj : projectRoles) {
+                            logger.debug("---> roleObj.getId()" + roleObj.getId());
+                            rolesList.add(roleObj.getId());
+                        }
                     }
 
                     usersList.add(email);
                     rolesList.add("external-contributor");
                     project.updateMembers(usersList, rolesList);
-                    
+
                     if (!userManager.isAutoSave()) {
                         js.save();
                     }
-                
-                //notification with the expiry date modification if the user already exists and project link...username and pwd
-                String[] emailRecipients = {email};
 
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Invitation to join « projectitle » MediaHub project // Invitation pour rejoindre le projet MediaHub « projectitle »", Locale.ENGLISH);
-                subject = subject.replaceAll("projectitle", project.getTitle());
-                Map<String, String> emailParams = new HashMap<>();
-                emailParams.put(EmailServiceConstants.SUBJECT, subject);
-                emailParams.put("firstname", user.getProperty(BnpConstants.EXT_USER_PROPERTY_GIVENNAME)[0].toString());
-                emailParams.put("projectitle", project.getTitle());
-                emailParams.put("login", email);
-                emailParams.put("resetlink", externalizer.authorLink(resourceResolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
-                emailParams.put("password", password);
+                    //notification with the expiry date modification if the user already exists and project link...username and pwd
+                    String[] emailRecipients = {email};
 
-                emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTime()));
-                emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
-                emailParams.put("projectowner", item.getWorkflow().getInitiator());
+                    String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Invitation to join « projectitle » MediaHub project // Invitation pour rejoindre le projet MediaHub « projectitle »", Locale.ENGLISH);
+                    subject = subject.replaceAll("projectitle", project.getTitle());
+                    Map<String, String> emailParams = new HashMap<>();
+                    emailParams.put(EmailServiceConstants.SUBJECT, subject);
+                    emailParams.put("firstname", user.getProperty(BnpConstants.EXT_USER_PROPERTY_GIVENNAME)[0].toString());
+                    emailParams.put("projectitle", project.getTitle());
+                    emailParams.put("login", email);
+                    emailParams.put("resetlink", externalizer.authorLink(resourceResolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
+                    emailParams.put("password", password);
 
-                if (isUserAlreadyExists) {
-                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html", emailRecipients, emailParams);
+                    emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTime()));
+                    emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
+                    emailParams.put("projectowner", item.getWorkflow().getInitiator());
+
+                    if (isUserAlreadyExists) {
+                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html", emailRecipients, emailParams);
+                    } else {
+                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html", emailRecipients, emailParams);
+                    }
                 } else {
-                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html", emailRecipients, emailParams);
-                }
-                }
-
-                if (!userManager.isAutoSave()) {
-                    js.save();
+                    if (!userManager.isAutoSave()) {
+                        js.save();
+                    }
                 }
 
 
