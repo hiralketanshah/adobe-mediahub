@@ -71,10 +71,16 @@
             data += '&shareLinkToken=' + shareLinkToken;
         }
 
-        if ($form.find("input[type=checkbox]").prop("checked")) {
-            data += "&allowOriginal=true";
+        if($form.find("coral-checkbox[id=adhocassetshare-allowOriginal]")){
+            if ($form.find("coral-checkbox[id=adhocassetshare-allowOriginal]").prop("checked")) {
+                data += "&allowOriginal=true";
+            } else if($form.find("coral-checkbox[id=adhocassetshare-allowOriginal]").prop("checked") === false) {
+                data += "&allowOriginal=false";
+            } else {
+                data += "&allowOriginal=true";
+            }
         } else {
-            data += "&allowOriginal=false";
+            data += "&allowOriginal=true";
         }
 
         if ($form.find("input[id=adhocassetshare-secureSharedLink]").prop("checked")) {

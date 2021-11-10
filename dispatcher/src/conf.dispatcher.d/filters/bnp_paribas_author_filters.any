@@ -27,4 +27,5 @@
 /0086 { /type "allow" /path "/apps/acs-commons/components/utilities/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 /0087 { /type "allow" /path "/libs/settings/dam/dm/video/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 /0088 { /type "allow" /path "/conf/global/settings/dam/dm/presets/video/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
+/0089 { /type "allow" /path "/libs/settings/wcm/designs/*" /selectors '(infinity|tidy|[0-9-]+)' /extension '(json)' }
 

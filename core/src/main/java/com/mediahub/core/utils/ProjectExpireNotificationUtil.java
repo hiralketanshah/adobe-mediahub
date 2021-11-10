@@ -1,5 +1,6 @@
 package com.mediahub.core.utils;
 
+import com.mediahub.core.constants.BnpConstants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,6 +38,22 @@ public class ProjectExpireNotificationUtil {
         } else{
             return "Mediahub";
         }
+    }
+
+    /**
+     * Method to get date format from string value
+     *
+     * @param expiryDate - expiry date in string format
+     * @return SimpleDateFormat object
+     */
+    public static SimpleDateFormat getSimpleDateFormat(String expiryDate) {
+        SimpleDateFormat dateFormat;
+        if (expiryDate.indexOf('/') == 2) {
+            dateFormat = new SimpleDateFormat(BnpConstants.DD_MM_YYYY);
+        } else {
+            dateFormat = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
+        }
+        return dateFormat;
     }
 
 }

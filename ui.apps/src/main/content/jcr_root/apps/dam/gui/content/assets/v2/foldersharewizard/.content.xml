@@ -255,7 +255,30 @@
                                                                     jcr:primaryType="nt:unstructured"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/heading"
                                                                     level="3"
-                                                                    text="Folder Title"/>
+                                                                    text="Folder Title">
+                                                                    <granite:rendercondition
+                                                                      jcr:primaryType="nt:unstructured"
+                                                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                                                                        <isMedia
+                                                                          jcr:primaryType="nt:unstructured"
+                                                                          sling:resourceType="utils/granite/rendercondition/simple/media"
+                                                                          expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '')}"/>
+                                                                    </granite:rendercondition>
+                                                                </titlefieldHeader>
+                                                                <mediaTitlefieldHeader
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                                  level="3"
+                                                                  text="Media Title">
+                                                                    <granite:rendercondition
+                                                                      jcr:primaryType="nt:unstructured"
+                                                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                        <isMedia
+                                                                          jcr:primaryType="nt:unstructured"
+                                                                          sling:resourceType="utils/granite/rendercondition/simple/media"
+                                                                          expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '')}"/>
+                                                                    </granite:rendercondition>
+                                                                </mediaTitlefieldHeader>
                                                                 <titlefieldBody
                                                                     jcr:primaryType="nt:unstructured"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"

@@ -20,7 +20,6 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
@@ -28,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.text.ParseException;
@@ -75,7 +77,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
     @Override
     public void execute(WorkItem item, WorkflowSession wfsession, MetaDataMap args) throws WorkflowException {
 
-        logger.info("ExternalUserCreationWorkflowProcess :: exceute method start");
+        logger.info("ExternalUserCreationWorkflowProcess :: execute method start");
 
         ResourceResolver resourceResolver = null;
 
@@ -94,7 +96,12 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
             String firstName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
             String lastName = item.getWorkflow().getMetaDataMap().get("lastName").toString();
             String email = item.getWorkflow().getMetaDataMap().get("email").toString();
-            String expiryDate = item.getWorkflow().getMetaDataMap().get("expiryDate").toString();
+
+            SimpleDateFormat sdf = new SimpleDateFormat(BnpConstants.DD_MM_YYYY);
+            Date expiryDate = sdf.parse(item.getWorkflow().getMetaDataMap().get("expiryDate").toString());
+            Calendar expiration = Calendar.getInstance();
+            expiration.setTime(expiryDate);
+
             String projectPath = item.getWorkflow().getMetaDataMap().get("project").toString();
             String company = item.getWorkflow().getMetaDataMap().get("company").toString();
             String city = item.getWorkflow().getMetaDataMap().get("city").toString();
@@ -114,7 +121,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
             if (payloadPath != null) {
                 UserManager userManager = js.getUserManager();
-                User user = null;
+                User user;
                 ValueFactory valueFactory = adminSession.getValueFactory();
 
                 if (userManager.getAuthorizable(email) == null) {
@@ -132,28 +139,28 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                     user = userManager.createUser(email, password, principal, BnpConstants.EXTERNAL_USER_PATH + "/" + hashedUserId.substring(0, 2) + "/"
                             + hashedUserId.substring(2, 4));
                     setUserTokenDetails(resourceResolver, user, userToken);
-                    Value firstNameValue = valueFactory.createValue(firstName, PropertyType.STRING);
+                    Value firstNameValue = valueFactory.createValue(firstName);
                     user.setProperty("./profile/givenName", firstNameValue);
 
-                    Value lastNameValue = valueFactory.createValue(lastName, PropertyType.STRING);
+                    Value lastNameValue = valueFactory.createValue(lastName);
                     user.setProperty("./profile/familyName", lastNameValue);
 
-                    Value emailValue = valueFactory.createValue(email, PropertyType.STRING);
+                    Value emailValue = valueFactory.createValue(email);
                     user.setProperty("./profile/email", emailValue);
 
-                    Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-                    user.setProperty("./profile/expiry", expiryDateValue);
+                    Value expiryDateValue = valueFactory.createValue(expiration);
+                    user.setProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY, expiryDateValue);
 
-                    Value typeValue = valueFactory.createValue("external", PropertyType.STRING);
+                    Value typeValue = valueFactory.createValue("external");
                     user.setProperty("./profile/type", typeValue);
 
-                    Value companyValue = valueFactory.createValue(company, PropertyType.STRING);
+                    Value companyValue = valueFactory.createValue(company);
                     user.setProperty("./profile/company", companyValue);
 
-                    Value cityValue = valueFactory.createValue(city, PropertyType.STRING);
+                    Value cityValue = valueFactory.createValue(city);
                     user.setProperty("./profile/city", cityValue);
 
-                    Value countryValue = valueFactory.createValue(country, PropertyType.STRING);
+                    Value countryValue = valueFactory.createValue(country);
                     user.setProperty("./profile/country", countryValue);
                     // Add User to Group
 
@@ -165,25 +172,23 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 } else {
                     isUserAlreadyExists = true;
                     logger.debug("---> User already exist..");
-                    user = setExpiryDateExistingUser(email, expiryDate, userManager, valueFactory);
+                    user = setExpiryDateExistingUser(email, expiration, userManager, valueFactory);
                 }
 
                 Project project = resourceResolver.getResource(projectPath).adaptTo(Project.class);
-                
+                  
                 if(addToProject) {
-                	Set<ProjectMember> projectMembers = project.getMembers();
-                    List<String> usersList = new ArrayList<>();
-                    List<String> rolesList = new ArrayList<>();
+                  Set<ProjectMember> projectMembers = project.getMembers();
+                  List<String> usersList = new ArrayList<>();
+                  List<String> rolesList = new ArrayList<>();
 
-                    for (ProjectMember memberObj : projectMembers) {
-                        logger.debug("---> memberObj.getId()" + memberObj.getId());
-                        usersList.add(memberObj.getId());
-                        Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
-                        for (ProjectMemberRole roleObj : projectRoles) {
-                            logger.debug("---> roleObj.getId()" + roleObj.getId());
-
-                            rolesList.add(roleObj.getId());
-                        }
+                for (ProjectMember memberObj : projectMembers) {
+                    logger.debug("---> memberObj.getId()" + memberObj.getId());
+                    usersList.add(memberObj.getId());
+                    Set<ProjectMemberRole> projectRoles = memberObj.getRoles();
+                    for (ProjectMemberRole roleObj : projectRoles) {
+                        logger.debug("---> roleObj.getId()" + roleObj.getId());
+                        rolesList.add(roleObj.getId());
                     }
 
                     usersList.add(email);
@@ -206,7 +211,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 emailParams.put("login", email);
                 emailParams.put("resetlink", externalizer.authorLink(resourceResolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
                 emailParams.put("password", password);
-                emailParams.put("expiry", user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].toString().substring(0, 10));
+
+                emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTime()));
                 emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
                 emailParams.put("projectowner", item.getWorkflow().getInitiator());
 
@@ -253,30 +259,15 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
         modifiableValueMap.put("tokenExpiryDate", tokenExpiryDate);
     }
 
-    /**
-     * Set Expiry date for existing user
-     *
-     * @param email
-     * @param expiryDate
-     * @param userManager
-     * @param valueFactory
-     * @return
-     * @throws javax.jcr.RepositoryException
-     * @throws ParseException
-     */
-    protected User setExpiryDateExistingUser(String email, String expiryDate, UserManager userManager,
+    protected User setExpiryDateExistingUser(String email, Calendar newExpiryDate, UserManager userManager,
                                              ValueFactory valueFactory) throws javax.jcr.RepositoryException, ParseException {
-        User user;
-        user = (User) userManager.getAuthorizable(email);
-        if (user.getProperty("./profile/expiry") != null) {
-            String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
-            String newExpiryDate = expiryDate.substring(0, 10);
-            Date start = new SimpleDateFormat("yyyy/MM/dd").parse(userExpiryDate);
-            Date end = new SimpleDateFormat("yyyy/MM/dd").parse(newExpiryDate);
+        User user = (User) userManager.getAuthorizable(email);
+        if (user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY) != null) {
+            Calendar userExpiryDate = user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate();
 
-            if (start.compareTo(end) < 0) {
-                Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
-                user.setProperty("./profile/expiry", expiryDateValue);
+            if (userExpiryDate.compareTo(newExpiryDate) < 0) {
+                Value expiryDateValue = valueFactory.createValue(newExpiryDate);
+                user.setProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY, expiryDateValue);
             }
 
         }

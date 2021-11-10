@@ -1,391 +1,375 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-    jcr:mixinTypes="[granite:PublicArea]"
-    jcr:primaryType="nt:unstructured"
-    jcr:title="AEM Security | User Properties"
-    sling:resourceType="granite/ui/components/shell/propertiespage"
-    backHref="${empty header.Referer ? &quot;/security/users.html&quot; : header.Referer}"
-    consoleId="granite-security-users-properties"
-    formId="propertiesform"
-    simpleSave="{Boolean}false">
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0"
+          xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+          jcr:mixinTypes="[granite:PublicArea]"
+          jcr:primaryType="nt:unstructured"
+          jcr:title="AEM Security | User Properties"
+          sling:resourceType="granite/ui/components/shell/propertiespage"
+          backHref="${empty header.Referer ? &quot;/security/users.html&quot; : header.Referer}"
+          consoleId="granite-security-users-properties"
+          formId="propertiesform"
+          simpleSave="{Boolean}false">
     <head jcr:primaryType="nt:unstructured">
         <viewport
-            jcr:primaryType="nt:unstructured"
-            sling:resourceType="granite/ui/components/coral/foundation/admin/page/viewport"/>
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/admin/page/viewport"/>
         <favicon
-            jcr:primaryType="nt:unstructured"
-            sling:resourceType="granite/ui/components/coral/foundation/page/favicon"/>
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/page/favicon"/>
         <clientlibs
-            jcr:primaryType="nt:unstructured"
-            sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-            categories="[granite.security.ui.user.editor.v2,granite.security.ui.user.keystore.v2]"/>
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+                categories="[granite.security.ui.user.editor.v2,granite.security.ui.user.keystore.v2]"/>
     </head>
     <title
-        jcr:primaryType="nt:unstructured"
-        sling:resourceType="granite/security/components/editorTitle"
-        createTitle="Create New User"
-        editTitle="Edit User Settings For {0}"/>
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/security/components/editorTitle"
+            createTitle="Create New User"
+            editTitle="Edit User Settings For {0}"/>
     <content
-        granite:class="authorizable-editor user-editor"
-        jcr:primaryType="nt:unstructured"
-        sling:resourceType="granite/ui/components/coral/foundation/container">
+            granite:class="authorizable-editor user-editor"
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/coral/foundation/container">
         <items jcr:primaryType="nt:unstructured">
             <tabs
-                jcr:primaryType="nt:unstructured"
-                sling:resourceType="granite/ui/components/coral/foundation/tabs"
-                maximized="{Boolean}true"
-                size="L">
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/tabs"
+                    maximized="{Boolean}true"
+                    size="L">
                 <items jcr:primaryType="nt:unstructured">
                     <details
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Details"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                            jcr:primaryType="nt:unstructured"
+                            jcr:title="Details"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <columns
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
-                                margin="{Boolean}true"
-                                maximized="{Boolean}true">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                                    margin="{Boolean}true"
+                                    maximized="{Boolean}true">
                                 <items jcr:primaryType="nt:unstructured">
                                     <col1
-                                        granite:class="photo-column"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            granite:class="photo-column"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <image
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/security/components/photo"/>
-                                            <fileupload
-                                                granite:class="photoupload"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
-                                                async="{Boolean}true"
-                                                autoStart="{Boolean}true"
-                                                mimeTypes="[.jpg,.png,.tif,.gif]"
-                                                multiple="{Boolean}false"
-                                                name="tempImage"
-                                                sizeLimit="100000000"
-                                                text="New Photo"
-                                                uploadUrl="will_be_replaced">
-                                                <granite:rendercondition
                                                     jcr:primaryType="nt:unstructured"
-                                                    sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
+                                                    sling:resourceType="granite/security/components/photo"/>
+                                            <fileupload
+                                                    granite:class="photoupload"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
+                                                    async="{Boolean}true"
+                                                    autoStart="{Boolean}true"
+                                                    mimeTypes="[.jpg,.png,.tif,.gif]"
+                                                    multiple="{Boolean}false"
+                                                    name="tempImage"
+                                                    sizeLimit="100000000"
+                                                    text="New Photo"
+                                                    uploadUrl="will_be_replaced">
+                                                <granite:rendercondition
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
                                             </fileupload>
                                         </items>
                                     </col1>
                                     <col2
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <form
-                                                granite:id="propertiesform"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                action="${requestPathInfo.suffix != null ? requestPathInfo.suffix : &quot;/libs/granite/security/post/authorizables.html&quot;}${requestPathInfo.suffix != null ? &quot;.rw.userprops.html&quot; : &quot;&quot;}"
-                                                dataPath="${requestPathInfo.suffix}"
-                                                method="post"
-                                                style="vertical">
-                                                <granite:data
+                                                    granite:id="propertiesform"
                                                     jcr:primaryType="nt:unstructured"
-                                                    profiles-url="${requestPathInfo.suffix}.userproperties.json"/>
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    action="${requestPathInfo.suffix != null ? requestPathInfo.suffix : &quot;/libs/granite/security/post/authorizables.html&quot;}${requestPathInfo.suffix != null ? &quot;.rw.userprops.html&quot; : &quot;&quot;}"
+                                                    dataPath="${requestPathInfo.suffix}"
+                                                    method="post"
+                                                    style="vertical">
+                                                <granite:data
+                                                        jcr:primaryType="nt:unstructured"
+                                                        profiles-url="${requestPathInfo.suffix}.userproperties.json"/>
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <accountSettingsTitle
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}3"
-                                                        text="Account settings">
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                            level="{Long}3"
+                                                            text="Account settings">
                                                         <granite:rendercondition
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                            expression="${requestPathInfo.suffix != null}"/>
-                                                    </accountSettingsTitle>
-                                                    <changePassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/actionfield">
-                                                        <field
-                                                            granite:id="repDisabled"
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                            fieldLabel="Password"
-                                                            name="rep:disabled"
-                                                            wrapperClass="account-settings"/>
-                                                        <action
-                                                            granite:class="foundation-toggleable-control"
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/anchorbutton"
-                                                            href="#"
-                                                            text="Change Password">
-                                                            <granite:data
-                                                                jcr:primaryType="nt:unstructured"
-                                                                foundation-toggleable-control-target="#changePasswordDialog"/>
-                                                        </action>
-                                                        <granite:rendercondition
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                            <condition1
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                 expression="${requestPathInfo.suffix != null}"/>
-                                                            <condition2
+                                                    </accountSettingsTitle>
+                                                    <changePassword
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/actionfield">
+                                                        <field
+                                                                granite:id="repDisabled"
                                                                 jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                                fieldLabel="Password"
+                                                                name="rep:disabled"
+                                                                wrapperClass="account-settings"/>
+                                                        <action
+                                                                granite:class="foundation-toggleable-control"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/anchorbutton"
+                                                                href="#"
+                                                                text="Change Password">
+                                                            <granite:data
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    foundation-toggleable-control-target="#changePasswordDialog"/>
+                                                        </action>
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                            <condition1
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                    expression="${requestPathInfo.suffix != null}"/>
+                                                            <condition2
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
                                                         </granite:rendercondition>
                                                     </changePassword>
                                                     <userStatus
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/switch"
-                                                        checked="{Boolean}true"
-                                                        fieldLabel="Account Status"
-                                                        ignoreData="{Boolean}true"
-                                                        name="userStatus"
-                                                        offText="Disabled"
-                                                        onText="Enabled"
-                                                        wrapperClass="account-settings">
-                                                        <granite:rendercondition
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                            expression="${requestPathInfo.suffix != null}"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/switch"
+                                                            checked="{Boolean}true"
+                                                            fieldLabel="Account Status"
+                                                            ignoreData="{Boolean}true"
+                                                            name="userStatus"
+                                                            offText="Disabled"
+                                                            onText="Enabled"
+                                                            wrapperClass="account-settings">
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                expression="${requestPathInfo.suffix != null}"/>
                                                     </userStatus>
                                                     <profiletitle
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}3"
-                                                        text="Profile">
-                                                        <granite:rendercondition
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
-                                                            resourcePath="${requestPathInfo.suffix}"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                            level="{Long}3"
+                                                            text="Profile">
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
+                                                                resourcePath="${requestPathInfo.suffix}"/>
                                                     </profiletitle>
                                                     <profileselector
-                                                        granite:class="user-profiles-selector"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                        <granite:rendercondition
+                                                            granite:class="user-profiles-selector"
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
-                                                            resourcePath="${requestPathInfo.suffix}"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
+                                                                resourcePath="${requestPathInfo.suffix}"/>
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <selectProfile
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Select profile"
-                                                                name="selected_profile">
-                                                                <datasource
                                                                     jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="granite/security/components/datasource/profilesdatasource"/>
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                    fieldLabel="Select profile"
+                                                                    name="selected_profile">
+                                                                <datasource
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="granite/security/components/datasource/profilesdatasource"/>
                                                             </selectProfile>
                                                         </items>
                                                     </profileselector>
                                                     <userdetailstitle
-                                                        granite:class="details-title"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}3"
-                                                        text="Details"/>
-                                                    <authorizableId
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/security/components/form/authorizableidtextfield"
-                                                        fieldLabel="ID"
-                                                        graniteResourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                        name="authorizableId"
-                                                        required="{Boolean}true"/>
-                                                    <createUser
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                                        name="createUser"
-                                                        value="1">
-                                                        <granite:rendercondition
+                                                            granite:class="details-title"
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                            expression="${requestPathInfo.suffix == null}"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                            level="{Long}3"
+                                                            text="Details"/>
+                                                    <authorizableId
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/security/components/form/authorizableidtextfield"
+                                                            fieldLabel="ID"
+                                                            graniteResourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            name="authorizableId"
+                                                            required="{Boolean}true"/>
+                                                    <createUser
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                            name="createUser"
+                                                            value="1">
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                expression="${requestPathInfo.suffix == null}"/>
                                                     </createUser>
                                                     <profileProps
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                        <granite:rendercondition
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                        <granite:rendercondition
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <password
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                                fieldLabel="Password"
-                                                                name="rep:password"
-                                                                required="{Boolean}true"
-                                                                retype="rep:re-password">
-                                                                <granite:rendercondition
                                                                     jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                                    expression="${requestPathInfo.suffix == null}"/>
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                                    fieldLabel="Password"
+                                                                    name="rep:password"
+                                                                    required="{Boolean}true"
+                                                                    retype="rep:re-password">
+                                                                <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                        expression="${requestPathInfo.suffix == null}"/>
                                                             </password>
                                                             <re-password
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                                fieldLabel="Retype Password"
-                                                                name="rep:re-password"
-                                                                required="{Boolean}true">
-                                                                <granite:rendercondition
                                                                     jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                                    expression="${requestPathInfo.suffix == null}"/>
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                                    fieldLabel="Retype Password"
+                                                                    name="rep:re-password"
+                                                                    required="{Boolean}true">
+                                                                <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                        expression="${requestPathInfo.suffix == null}"/>
                                                             </re-password>
                                                             <title
-                                                                granite:class="title"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Title"
-                                                                name="./profile/title"/>
-                                                            <firstName
-                                                                granite:class="first-name"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="First Name"
-                                                                name="./profile/givenName"/>
-                                                            <lastName
-                                                                granite:class="last-name"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Last Name"
-                                                                name="./profile/familyName"/>
-                                                            <email
-                                                                granite:class="email"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Email"
-                                                                name="./profile/email"/>
-                                                            <type
-                                                                granite:class="Type"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Type"
-                                                                name="./profile/type">
-                                                                <datasource
+                                                                    granite:class="title"
                                                                     jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="acs-commons/components/utilities/genericlist/datasource"
-                                                                    path="/etc/acs-commons/lists/user-type"/>
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Title"
+                                                                    name="./profile/title"/>
+                                                            <firstName
+                                                                    granite:class="first-name"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="First Name"
+                                                                    name="./profile/givenName"/>
+                                                            <lastName
+                                                                    granite:class="last-name"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Last Name"
+                                                                    name="./profile/familyName"/>
+                                                            <email
+                                                                    granite:class="email"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Email"
+                                                                    name="./profile/email"/>
+                                                            <type
+                                                                    granite:class="Type"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                    fieldLabel="Type"
+                                                                    name="./profile/type">
+                                                                <datasource
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="acs-commons/components/utilities/genericlist/datasource"
+                                                                        path="/etc/acs-commons/lists/user-type"/>
                                                             </type>
                                                             <expiryDate
-                                                                granite:class="date"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
-                                                                fieldLabel="Expiry Date"
-                                                                name="./profile/expiry"
-                                                                valueFormat="YYYY/MM/DD"/>
+                                                                    granite:class="expiration"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                                                    fieldLabel="Expiry Date"
+                                                                    name="./profile/expiry"
+                                                                    displayedFormat="DD/MM/YYYY"
+                                                                    type="date"/>
                                                             <Company
-                                                                granite:class="job-title"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Company"
-                                                                name="./profile/company"/>
+                                                                    granite:class="job-title"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Company"
+                                                                    name="./profile/company"/>
                                                             <employmentStatus
-                                                                granite:class="status"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Employment Status"
-                                                                name="./profile/status"/>
+                                                                    granite:class="status"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Employment Status"
+                                                                    name="./profile/status"/>
                                                             <business
-                                                                granite:class="business"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Core Business"
-                                                                name="./profile/pole"/>
+                                                                    granite:class="business"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Core Business"
+                                                                    name="./profile/pole"/>
                                                             <organizationalUnit
-                                                                granite:class="organizational-unit"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Organizational Unit"
-                                                                name="./profile/uo"/>
+                                                                    granite:class="organizational-unit"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Organizational Unit"
+                                                                    name="./profile/uo"/>
                                                             <gender
-                                                                granite:class="gender"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Gender"
-                                                                name="./profile/gender">
+                                                                    granite:class="gender"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                    fieldLabel="Gender"
+                                                                    name="./profile/gender">
                                                                 <items jcr:primaryType="nt:unstructured">
                                                                     <default
-                                                                        jcr:primaryType="nt:unstructured"
-                                                                        text="Select"
-                                                                        value=""/>
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            text="Select"
+                                                                            value=""/>
                                                                     <male
-                                                                        jcr:primaryType="nt:unstructured"
-                                                                        text="male"
-                                                                        value="male"/>
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            text="male"
+                                                                            value="male"/>
                                                                     <female
-                                                                        jcr:primaryType="nt:unstructured"
-                                                                        text="female"
-                                                                        value="female"/>
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            text="female"
+                                                                            value="female"/>
                                                                 </items>
                                                             </gender>
                                                             <phone
-                                                                granite:class="phone"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Phone Number"
-                                                                name="./profile/phoneNumber"/>
+                                                                    granite:class="phone"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Phone Number"
+                                                                    name="./profile/phoneNumber"/>
                                                             <jobTitle
-                                                                granite:class="job-title"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Job Title"
-                                                                name="./profile/jobTitle"/>
+                                                                    granite:class="job-title"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Job Title"
+                                                                    name="./profile/jobTitle"/>
                                                             <about
-                                                                granite:class="about"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
-                                                                fieldLabel="About"
-                                                                name="./profile/aboutMe"/>
+                                                                    granite:class="about"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
+                                                                    fieldLabel="About"
+                                                                    name="./profile/aboutMe"/>
                                                             <street
-                                                                granite:class="street"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Street"
-                                                                name="./profile/street"/>
+                                                                    granite:class="street"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Street"
+                                                                    name="./profile/street"/>
                                                             <city
-                                                                granite:class="city"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="City"
-                                                                name="./profile/city"/>
+                                                                    granite:class="city"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="City"
+                                                                    name="./profile/city"/>
                                                             <postalCode
-                                                                granite:class="postal-code"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:hideResource="{Boolean}true"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Postal Code"
-                                                                name="./profile/postalCode"/>
+                                                                    granite:class="postal-code"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:hideResource="{Boolean}true"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                    fieldLabel="Postal Code"
+                                                                    name="./profile/postalCode"/>
                                                             <country
-                                                                granite:class="country"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Country"
-                                                                name="./profile/country">
-                                                                <datasource
+                                                                    granite:class="country"
                                                                     jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="granite/security/components/datasource/countrydatasource"/>
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                                    fieldLabel="Country"
+                                                                    name="./profile/country">
+                                                                <datasource
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="/apps/mediahub/components/datasource/countrydatasource"/>
                                                             </country>
-                                                            <type
-                                                                granite:class="Type"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                                fieldLabel="Type"
-                                                                name="./profile/type">
-                                                                <datasource
-                                                                    jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="acs-commons/components/utilities/genericlist/datasource"
-                                                                    path="/etc/acs-commons/lists/user-type"/>
-                                                            </type>
-                                                            <expiryDate
-                                                                granite:class="date"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
-                                                                fieldLabel="Expiry Date"
-                                                                name="./profile/expiry"
-                                                                valueFormat="YYYY/MM/DD"/>
                                                         </items>
                                                     </profileProps>
                                                 </items>
@@ -397,89 +381,89 @@
                         </items>
                     </details>
                     <groups
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Groups"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                        <granite:rendercondition
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
+                            jcr:title="Groups"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                        <granite:rendercondition
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/security/components/rendercondition/serviceuser"/>
                         <items jcr:primaryType="nt:unstructured">
                             <columns
-                                granite:class="groups-container"
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
-                                margin="{Boolean}true"
-                                maximized="{Boolean}true">
+                                    granite:class="groups-container"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                                    margin="{Boolean}true"
+                                    maximized="{Boolean}true">
                                 <items jcr:primaryType="nt:unstructured">
                                     <col1
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <addGroupsTitle
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                level="{Long}3"
-                                                text="Add User to Groups"/>
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                    level="{Long}3"
+                                                    text="Add User to Groups"/>
                                             <newGroupsForm
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                style="vertical">
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    style="vertical">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <newGroups
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/container"
-                                                        margin="{Boolean}true">
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                                                            margin="{Boolean}true">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <addGroups
-                                                                granite:class="add-user-add-groups"
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
-                                                                emptyText="Type Group Name"
-                                                                fieldLabel="Select Group"
-                                                                forceSelection="{Boolean}true"
-                                                                multiple="{Boolean}true"
-                                                                selector="group"
-                                                                valueType="path"/>
+                                                                    granite:class="add-user-add-groups"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
+                                                                    emptyText="Type Group Name"
+                                                                    fieldLabel="Select Group"
+                                                                    forceSelection="{Boolean}true"
+                                                                    multiple="{Boolean}true"
+                                                                    selector="group"
+                                                                    valueType="path"/>
                                                         </items>
                                                     </newGroups>
                                                 </items>
                                             </newGroupsForm>
                                             <groupsTitle
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                level="{Long}3"
-                                                text="Groups that this user is a member of">
-                                                <granite:rendercondition
                                                     jcr:primaryType="nt:unstructured"
-                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                    expression="${requestPathInfo.suffix != null}"/>
+                                                    sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                    level="{Long}3"
+                                                    text="Groups that this user is a member of">
+                                                <granite:rendercondition
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                        expression="${requestPathInfo.suffix != null}"/>
                                             </groupsTitle>
                                             <groupsContainer
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/container"
-                                                margin="{Boolean}true">
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container"
+                                                    margin="{Boolean}true">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <groupTable
-                                                        granite:rel="group-list"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        jcr:title="Group list View"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/table"
-                                                        icon="viewList"
-                                                        layoutId="list"
-                                                        limit="{Long}40"
-                                                        selectionMode="none"
-                                                        src="/mnt/overlay/granite/security/content/v2/usereditor/content/items/tabs/items/groups/items/columns/items/col1/items/groupTable{.offset,limit}.html"
-                                                        stateId="shell.collectionpage">
-                                                        <datasource
+                                                            granite:rel="group-list"
                                                             jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/security/components/datasource/authorizable/membership"
-                                                            itemResourceType="granite/security/components/memberOfRow"/>
+                                                            jcr:title="Group list View"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/table"
+                                                            icon="viewList"
+                                                            layoutId="list"
+                                                            limit="{Long}40"
+                                                            selectionMode="none"
+                                                            src="/mnt/overlay/granite/security/content/v2/usereditor/content/items/tabs/items/groups/items/columns/items/col1/items/groupTable{.offset,limit}.html"
+                                                            stateId="shell.collectionpage">
+                                                        <datasource
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/security/components/datasource/authorizable/membership"
+                                                                itemResourceType="granite/security/components/memberOfRow"/>
                                                     </groupTable>
                                                 </items>
                                                 <granite:rendercondition
-                                                    jcr:primaryType="nt:unstructured"
-                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                    expression="${requestPathInfo.suffix != null}"/>
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                        expression="${requestPathInfo.suffix != null}"/>
                                             </groupsContainer>
                                         </items>
                                     </col1>
@@ -488,47 +472,47 @@
                         </items>
                     </groups>
                     <keystore
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Keystore"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                            jcr:primaryType="nt:unstructured"
+                            jcr:title="Keystore"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <columns
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
-                                margin="{Boolean}true"
-                                maximized="{Boolean}true">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                                    margin="{Boolean}true"
+                                    maximized="{Boolean}true">
                                 <items jcr:primaryType="nt:unstructured">
                                     <col1
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <createContainer
-                                                granite:class="create-store-container"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                    granite:class="create-store-container"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <createText1
-                                                        granite:class="create-store-text"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}5"
-                                                        text="There is no Keystore present for this user."/>
-                                                    <createText2
-                                                        granite:class="create-store-text"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}5"
-                                                        text="Click Create Keystore to create a new one."/>
-                                                    <createKeyStore
-                                                        granite:class="foundation-toggleable-control create-store-button"
-                                                        granite:id="createKeyStoreLink"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/anchorbutton"
-                                                        href="#"
-                                                        text="Create KeyStore">
-                                                        <granite:data
+                                                            granite:class="create-store-text"
                                                             jcr:primaryType="nt:unstructured"
-                                                            foundation-toggleable-control-target="#setKeyStorePasswordDialog"/>
+                                                            sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                            level="{Long}5"
+                                                            text="There is no Keystore present for this user."/>
+                                                    <createText2
+                                                            granite:class="create-store-text"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/heading"
+                                                            level="{Long}5"
+                                                            text="Click Create Keystore to create a new one."/>
+                                                    <createKeyStore
+                                                            granite:class="foundation-toggleable-control create-store-button"
+                                                            granite:id="createKeyStoreLink"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/anchorbutton"
+                                                            href="#"
+                                                            text="Create KeyStore">
+                                                        <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                foundation-toggleable-control-target="#setKeyStorePasswordDialog"/>
                                                     </createKeyStore>
                                                 </items>
                                             </createContainer>
@@ -537,216 +521,216 @@
                                 </items>
                             </columns>
                             <manageContainer
-                                granite:class="manage-store-container keystore-container"
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="manage-store-container keystore-container"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <keystoreForm
-                                        granite:id="keystoreManagementForm"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form"
-                                        action="${requestPathInfo.suffix}.ks.html">
+                                            granite:id="keystoreManagementForm"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form"
+                                            action="${requestPathInfo.suffix}.ks.html">
                                         <items jcr:primaryType="nt:unstructured">
                                             <keystoreEntriesTable
-                                                granite:class="store-data"
-                                                granite:id="keystore"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/security/components/keystore"/>
+                                                    granite:class="store-data"
+                                                    granite:id="keystore"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/security/components/keystore"/>
                                         </items>
                                     </keystoreForm>
                                     <formsAccordion
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/accordion">
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/accordion">
                                         <items jcr:primaryType="nt:unstructured">
                                             <privatekeyForm
-                                                granite:class="horizontal store-foundation-form"
-                                                granite:id="privateKeyForm"
-                                                jcr:primaryType="nt:unstructured"
-                                                jcr:title="Add Private Key from DER file"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                action="${requestPathInfo.suffix}.ks.html"
-                                                enctype="multipart/form-data"
-                                                foundationForm="{Boolean}true"
-                                                loadingMask="{Boolean}false"
-                                                method="post"
-                                                style="vertical"
-                                                ui="none">
+                                                    granite:class="horizontal store-foundation-form"
+                                                    granite:id="privateKeyForm"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    jcr:title="Add Private Key from DER file"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    action="${requestPathInfo.suffix}.ks.html"
+                                                    enctype="multipart/form-data"
+                                                    foundationForm="{Boolean}true"
+                                                    loadingMask="{Boolean}false"
+                                                    method="post"
+                                                    style="vertical"
+                                                    ui="none">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <alias
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                        emptyText="Enter Alias"
-                                                        fieldLabel="Alias"
-                                                        name="alias"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            emptyText="Enter Alias"
+                                                            fieldLabel="Alias"
+                                                            name="alias"
+                                                            required="{Boolean}true"/>
                                                     <privatekey
-                                                        granite:class="pk-upload"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
-                                                        autoStart="{Boolean}false"
-                                                        fieldLabel="Private Key File"
-                                                        multiple="{Boolean}false"
-                                                        name="pk"
-                                                        required="{Boolean}true"
-                                                        sizeLimit="100000000"
-                                                        text="Select Private Key File"
-                                                        uploadUrl="to_be_replaced"
-                                                        wrapperClass="upload-wrapper"/>
+                                                            granite:class="pk-upload"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
+                                                            autoStart="{Boolean}false"
+                                                            fieldLabel="Private Key File"
+                                                            multiple="{Boolean}false"
+                                                            name="pk"
+                                                            required="{Boolean}true"
+                                                            sizeLimit="100000000"
+                                                            text="Select Private Key File"
+                                                            uploadUrl="to_be_replaced"
+                                                            wrapperClass="upload-wrapper"/>
                                                     <certificatechain
-                                                        granite:class="pk-upload"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
-                                                        autoStart="{Boolean}false"
-                                                        fieldLabel="Certificate Chain Files"
-                                                        multiple="{Boolean}true"
-                                                        name="cert-chain"
-                                                        required="{Boolean}true"
-                                                        sizeLimit="100000000"
-                                                        text="Select Certificate Chain Files"
-                                                        uploadUrl="to_be_replaced"
-                                                        wrapperClass="upload-wrapper"/>
+                                                            granite:class="pk-upload"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
+                                                            autoStart="{Boolean}false"
+                                                            fieldLabel="Certificate Chain Files"
+                                                            multiple="{Boolean}true"
+                                                            name="cert-chain"
+                                                            required="{Boolean}true"
+                                                            sizeLimit="100000000"
+                                                            text="Select Certificate Chain Files"
+                                                            uploadUrl="to_be_replaced"
+                                                            wrapperClass="upload-wrapper"/>
                                                     <submit
-                                                        granite:class="foundation-validation-bind"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                                                        disabled="{Boolean}true"
-                                                        formId="privateKeyForm"
-                                                        text="Submit"
-                                                        type="submit"
-                                                        variant="primary"/>
+                                                            granite:class="foundation-validation-bind"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                                                            disabled="{Boolean}true"
+                                                            formId="privateKeyForm"
+                                                            text="Submit"
+                                                            type="submit"
+                                                            variant="primary"/>
                                                 </items>
                                                 <parentConfig
-                                                    jcr:primaryType="nt:unstructured"
-                                                    active="{Boolean}true"/>
+                                                        jcr:primaryType="nt:unstructured"
+                                                        active="{Boolean}true"/>
                                                 <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    alert-for-error="{Boolean}true"
-                                                    error-message="Something went wrong while adding the private key."/>
+                                                        jcr:primaryType="nt:unstructured"
+                                                        alert-for-error="{Boolean}true"
+                                                        error-message="Something went wrong while adding the private key."/>
                                             </privatekeyForm>
                                             <pkFromKeyStoreForm
-                                                granite:class="horizontal store-foundation-form"
-                                                granite:id="pkFromKeyStoreForm"
-                                                jcr:primaryType="nt:unstructured"
-                                                jcr:title="Add Private Key from KeyStore file"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                action="${requestPathInfo.suffix}.ks.html"
-                                                enctype="multipart/form-data"
-                                                foundationForm="{Boolean}true"
-                                                loadingMask="{Boolean}false"
-                                                method="post"
-                                                style="vertical"
-                                                ui="none">
+                                                    granite:class="horizontal store-foundation-form"
+                                                    granite:id="pkFromKeyStoreForm"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    jcr:title="Add Private Key from KeyStore file"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    action="${requestPathInfo.suffix}.ks.html"
+                                                    enctype="multipart/form-data"
+                                                    foundationForm="{Boolean}true"
+                                                    loadingMask="{Boolean}false"
+                                                    method="post"
+                                                    style="vertical"
+                                                    ui="none">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <alias
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                        emptyText="Enter New Alias"
-                                                        fieldLabel="New Alias"
-                                                        name="newAlias"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            emptyText="Enter New Alias"
+                                                            fieldLabel="New Alias"
+                                                            name="newAlias"
+                                                            required="{Boolean}true"/>
                                                     <keyStore
-                                                        granite:class="ks-upload"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
-                                                        autoStart="{Boolean}false"
-                                                        fieldLabel="KeyStore File"
-                                                        multiple="{Boolean}false"
-                                                        name="keyStore"
-                                                        required="{Boolean}true"
-                                                        sizeLimit="100000000"
-                                                        text="Select KeyStore File"
-                                                        uploadUrl="to_be_replaced"
-                                                        wrapperClass="upload-wrapper"/>
+                                                            granite:class="ks-upload"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/fileupload"
+                                                            autoStart="{Boolean}false"
+                                                            fieldLabel="KeyStore File"
+                                                            multiple="{Boolean}false"
+                                                            name="keyStore"
+                                                            required="{Boolean}true"
+                                                            sizeLimit="100000000"
+                                                            text="Select KeyStore File"
+                                                            uploadUrl="to_be_replaced"
+                                                            wrapperClass="upload-wrapper"/>
                                                     <keyStorePassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                        emptyText="Enter KeyStore File Password"
-                                                        fieldLabel="KeyStore File Password"
-                                                        name="keyStorePass"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                            emptyText="Enter KeyStore File Password"
+                                                            fieldLabel="KeyStore File Password"
+                                                            name="keyStorePass"
+                                                            required="{Boolean}true"/>
                                                     <keyAlias
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                        emptyText="Enter Private Key Alias"
-                                                        fieldLabel="Private Key Alias"
-                                                        name="alias"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            emptyText="Enter Private Key Alias"
+                                                            fieldLabel="Private Key Alias"
+                                                            name="alias"
+                                                            required="{Boolean}true"/>
                                                     <keyPassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                        emptyText="Enter Private Key Password"
-                                                        fieldLabel="Private Key Password"
-                                                        name="keyPassword"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                            emptyText="Enter Private Key Password"
+                                                            fieldLabel="Private Key Password"
+                                                            name="keyPassword"
+                                                            required="{Boolean}true"/>
                                                     <submit
-                                                        granite:class="foundation-validation-bind"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                                                        disabled="{Boolean}true"
-                                                        formId="pkFromKeyStoreForm"
-                                                        text="Submit"
-                                                        type="submit"
-                                                        variant="primary"/>
+                                                            granite:class="foundation-validation-bind"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                                                            disabled="{Boolean}true"
+                                                            formId="pkFromKeyStoreForm"
+                                                            text="Submit"
+                                                            type="submit"
+                                                            variant="primary"/>
                                                 </items>
                                                 <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    alert-for-error="{Boolean}true"
-                                                    error-message="Something went wrong while adding the private key"/>
+                                                        jcr:primaryType="nt:unstructured"
+                                                        alert-for-error="{Boolean}true"
+                                                        error-message="Something went wrong while adding the private key"/>
                                             </pkFromKeyStoreForm>
                                             <changePasswordForm
-                                                granite:class="horizontal store-foundation-form"
-                                                granite:id="changeKeyStorePasswordForm"
-                                                jcr:primaryType="nt:unstructured"
-                                                jcr:title="Change KeyStore Password"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                action="${requestPathInfo.suffix}.ks.html"
-                                                foundationForm="{Boolean}true"
-                                                loadingMask="{Boolean}false"
-                                                method="post"
-                                                style="vertical"
-                                                ui="none">
+                                                    granite:class="horizontal store-foundation-form"
+                                                    granite:id="changeKeyStorePasswordForm"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    jcr:title="Change KeyStore Password"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    action="${requestPathInfo.suffix}.ks.html"
+                                                    foundationForm="{Boolean}true"
+                                                    loadingMask="{Boolean}false"
+                                                    method="post"
+                                                    style="vertical"
+                                                    ui="none">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <currentPassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                        emptyText="Enter Current Password"
-                                                        fieldLabel="Current Password"
-                                                        name="currentPassword"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                            emptyText="Enter Current Password"
+                                                            fieldLabel="Current Password"
+                                                            name="currentPassword"
+                                                            required="{Boolean}true"/>
                                                     <newPassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                        emptyText="Enter New Password"
-                                                        fieldLabel="New Password"
-                                                        name="newPassword"
-                                                        required="{Boolean}true"
-                                                        retype="rePassword"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                            emptyText="Enter New Password"
+                                                            fieldLabel="New Password"
+                                                            name="newPassword"
+                                                            required="{Boolean}true"
+                                                            retype="rePassword"/>
                                                     <rePassword
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                                        emptyText="Retype Password"
-                                                        fieldLabel="Retype Password"
-                                                        name="rePassword"
-                                                        required="{Boolean}true"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                                            emptyText="Retype Password"
+                                                            fieldLabel="Retype Password"
+                                                            name="rePassword"
+                                                            required="{Boolean}true"/>
                                                     <operation
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="/libs/granite/ui/components/coral/foundation/form/hidden"
-                                                        name=":operation"
-                                                        value="changePassword"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="/libs/granite/ui/components/coral/foundation/form/hidden"
+                                                            name=":operation"
+                                                            value="changePassword"/>
                                                     <submit
-                                                        granite:class="foundation-validation-bind"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                                                        disabled="{Boolean}true"
-                                                        formId="changeKeyStorePasswordForm"
-                                                        text="Submit"
-                                                        type="submit"
-                                                        variant="primary"/>
+                                                            granite:class="foundation-validation-bind"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                                                            disabled="{Boolean}true"
+                                                            formId="changeKeyStorePasswordForm"
+                                                            text="Submit"
+                                                            type="submit"
+                                                            variant="primary"/>
                                                 </items>
                                                 <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    alert-for-error="{Boolean}true"
-                                                    error-message="Something went wrong while changing the password."/>
+                                                        jcr:primaryType="nt:unstructured"
+                                                        alert-for-error="{Boolean}true"
+                                                        error-message="Something went wrong while changing the password."/>
                                             </changePasswordForm>
                                         </items>
                                     </formsAccordion>
@@ -754,74 +738,74 @@
                             </manageContainer>
                         </items>
                         <granite:rendercondition
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${requestPathInfo.suffix != null}"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                expression="${requestPathInfo.suffix != null}"/>
                     </keystore>
                     <profiles
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Profiles"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                        <granite:rendercondition
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
-                            resourcePath="${requestPathInfo.suffix}"/>
+                            jcr:title="Profiles"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
+                        <granite:rendercondition
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/security/components/userEditor/profiles/rendercondition"
+                                resourcePath="${requestPathInfo.suffix}"/>
                         <items jcr:primaryType="nt:unstructured">
                             <columns
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
-                                margin="{Boolean}true"
-                                maximized="{Boolean}true">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                                    margin="{Boolean}true"
+                                    maximized="{Boolean}true">
                                 <items jcr:primaryType="nt:unstructured">
                                     <centerColumn
-                                        granite:class="profiles-container"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            granite:class="profiles-container"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <createProfile
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="/libs/granite/ui/components/coral/foundation/anchorbutton"
-                                                href="/libs/granite/security/content/profileeditor.html${requestPathInfo.suffix}"
-                                                text="Create new profile"
-                                                title="Create new profile"/>
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="/libs/granite/ui/components/coral/foundation/anchorbutton"
+                                                    href="/libs/granite/security/content/profileeditor.html${requestPathInfo.suffix}"
+                                                    text="Create new profile"
+                                                    title="Create new profile"/>
                                             <form
-                                                granite:id="profilesform"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form"
-                                                action="${requestPathInfo.suffix}.userproperties.html"
-                                                dataPath="${requestPathInfo.suffix}"
-                                                method="post"
-                                                style="vertical">
+                                                    granite:id="profilesform"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form"
+                                                    action="${requestPathInfo.suffix}.userproperties.html"
+                                                    dataPath="${requestPathInfo.suffix}"
+                                                    method="post"
+                                                    style="vertical">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <action
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="/libs/granite/ui/components/coral/foundation/form/hidden"
-                                                        name="reorderProfiles"
-                                                        value="true"/>
-                                                    <profiles
-                                                        granite:class="granite-user-profiles-collection"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/table"
-                                                        itemResourceType="granite/security/components/userEditor/profiles/profile"
-                                                        orderable="true">
-                                                        <granite:data
                                                             jcr:primaryType="nt:unstructured"
-                                                            profile-edit-url="/libs/granite/security/content/profileeditor.html${requestPathInfo.suffix}?editProfile="
-                                                            profiles-table-path="/libs/granite/security/content/v2/usereditor/content/items/tabs/items/profiles/items/columns/items/centerColumn/items/form/items/profiles"/>
+                                                            sling:resourceType="/libs/granite/ui/components/coral/foundation/form/hidden"
+                                                            name="reorderProfiles"
+                                                            value="true"/>
+                                                    <profiles
+                                                            granite:class="granite-user-profiles-collection"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/table"
+                                                            itemResourceType="granite/security/components/userEditor/profiles/profile"
+                                                            orderable="true">
+                                                        <granite:data
+                                                                jcr:primaryType="nt:unstructured"
+                                                                profile-edit-url="/libs/granite/security/content/profileeditor.html${requestPathInfo.suffix}?editProfile="
+                                                                profiles-table-path="/libs/granite/security/content/v2/usereditor/content/items/tabs/items/profiles/items/columns/items/centerColumn/items/form/items/profiles"/>
                                                         <columns jcr:primaryType="nt:unstructured">
                                                             <image jcr:primaryType="nt:unstructured"/>
                                                             <name
-                                                                jcr:primaryType="nt:unstructured"
-                                                                jcr:title="Name"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Name"/>
                                                             <visibility
-                                                                jcr:primaryType="nt:unstructured"
-                                                                jcr:title="Visibility"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    jcr:title="Visibility"/>
                                                             <editDelete jcr:primaryType="nt:unstructured"/>
                                                             <reorder jcr:primaryType="nt:unstructured"/>
                                                         </columns>
                                                         <datasource
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/security/components/datasource/profilesdatasource"/>
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/security/components/datasource/profilesdatasource"/>
                                                     </profiles>
                                                 </items>
                                             </form>
@@ -834,124 +818,124 @@
                 </items>
             </tabs>
             <changePasswordDialog
-                granite:id="changePasswordDialog"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Change Password"
-                sling:resourceType="granite/ui/components/coral/foundation/dialog"
-                closable="{Boolean}true">
+                    granite:id="changePasswordDialog"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Change Password"
+                    sling:resourceType="granite/ui/components/coral/foundation/dialog"
+                    closable="{Boolean}true">
                 <items jcr:primaryType="nt:unstructured">
                     <form
-                        granite:id="changeUserPasswordForm"
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/form"
-                        action="${requestPathInfo.suffix}.rw.userprops.html"
-                        style="aligned">
+                            granite:id="changeUserPasswordForm"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form"
+                            action="${requestPathInfo.suffix}.rw.userprops.html"
+                            style="aligned">
                         <items jcr:primaryType="nt:unstructured">
                             <password
-                                granite:class="change-user-password"
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                fieldLabel="New password"
-                                name="rep:password"
-                                required="{Boolean}true"
-                                retype="rep:re-password"/>
+                                    granite:class="change-user-password"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                    fieldLabel="New password"
+                                    name="rep:password"
+                                    required="{Boolean}true"
+                                    retype="rep:re-password"/>
                             <re-password
-                                granite:class="change-user-password"
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                fieldLabel="Retype Password"
-                                name="rep:re-password"
-                                required="{Boolean}true"/>
+                                    granite:class="change-user-password"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                    fieldLabel="Retype Password"
+                                    name="rep:re-password"
+                                    required="{Boolean}true"/>
                             <adminPassword
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                fieldLabel="Your Password"
-                                name=":currentPassword"
-                                required="{Boolean}true"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                    fieldLabel="Your Password"
+                                    name=":currentPassword"
+                                    required="{Boolean}true"/>
                         </items>
                     </form>
                 </items>
                 <footer jcr:primaryType="nt:unstructured">
                     <close
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                        text="Cancel">
-                        <parentConfig
                             jcr:primaryType="nt:unstructured"
-                            close="{Boolean}true"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                            text="Cancel">
+                        <parentConfig
+                                jcr:primaryType="nt:unstructured"
+                                close="{Boolean}true"/>
                     </close>
                     <submit
-                        granite:class="foundation-validation-bind"
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                        disabled="{Boolean}true"
-                        formId="changeUserPasswordForm"
-                        text="Save"
-                        type="submit"
-                        variant="primary"/>
+                            granite:class="foundation-validation-bind"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                            disabled="{Boolean}true"
+                            formId="changeUserPasswordForm"
+                            text="Save"
+                            type="submit"
+                            variant="primary"/>
                 </footer>
             </changePasswordDialog>
             <setKeyStorePasswordDialog
-                granite:id="setKeyStorePasswordDialog"
-                jcr:primaryType="nt:unstructured"
-                jcr:title="Set KeyStore Access Password"
-                sling:resourceType="granite/ui/components/coral/foundation/dialog">
+                    granite:id="setKeyStorePasswordDialog"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Set KeyStore Access Password"
+                    sling:resourceType="granite/ui/components/coral/foundation/dialog">
                 <items jcr:primaryType="nt:unstructured">
                     <form
-                        granite:class="store-foundation-form"
-                        granite:id="setKeyStorePasswordForm"
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/form"
-                        action="${requestPathInfo.suffix}.ks.html"
-                        foundationForm="{Boolean}true"
-                        loadingMask="{Boolean}false"
-                        method="post"
-                        style="aligned"
-                        ui="none">
+                            granite:class="store-foundation-form"
+                            granite:id="setKeyStorePasswordForm"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/form"
+                            action="${requestPathInfo.suffix}.ks.html"
+                            foundationForm="{Boolean}true"
+                            loadingMask="{Boolean}false"
+                            method="post"
+                            style="aligned"
+                            ui="none">
                         <items jcr:primaryType="nt:unstructured">
                             <password
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                fieldLabel="New password"
-                                name="newPassword"
-                                required="{Boolean}true"
-                                retype="rePassword"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                    fieldLabel="New password"
+                                    name="newPassword"
+                                    required="{Boolean}true"
+                                    retype="rePassword"/>
                             <re-password
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/password"
-                                fieldLabel="Retype Password"
-                                name="rePassword"
-                                required="{Boolean}true"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/password"
+                                    fieldLabel="Retype Password"
+                                    name="rePassword"
+                                    required="{Boolean}true"/>
                             <operation
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
-                                name=":operation"
-                                value="createStore"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                    name=":operation"
+                                    value="createStore"/>
                         </items>
                         <granite:data
-                            jcr:primaryType="nt:unstructured"
-                            error-message="Something went wrong while setting the password."
-                            success-message="The password was set successfully."/>
+                                jcr:primaryType="nt:unstructured"
+                                error-message="Something went wrong while setting the password."
+                                success-message="The password was set successfully."/>
                     </form>
                 </items>
                 <footer jcr:primaryType="nt:unstructured">
                     <close
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                        text="Cancel">
-                        <parentConfig
                             jcr:primaryType="nt:unstructured"
-                            close="{Boolean}true"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                            text="Cancel">
+                        <parentConfig
+                                jcr:primaryType="nt:unstructured"
+                                close="{Boolean}true"/>
                     </close>
                     <submit
-                        granite:class="foundation-validation-bind"
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/button"
-                        disabled="{Boolean}true"
-                        formId="setKeyStorePasswordForm"
-                        text="Save"
-                        type="submit"
-                        variant="primary"/>
+                            granite:class="foundation-validation-bind"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/button"
+                            disabled="{Boolean}true"
+                            formId="setKeyStorePasswordForm"
+                            text="Save"
+                            type="submit"
+                            variant="primary"/>
                 </footer>
             </setKeyStorePasswordDialog>
         </items>
