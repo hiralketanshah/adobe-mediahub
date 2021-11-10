@@ -122,6 +122,10 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                     break;
                 }
             }
+
+            if(null != group.getChild("profile")){
+                 emailParams.put("role", group.getChild("profile").getValueMap().get("alternateTitle", StringUtils.EMPTY));
+            }
         }
     }
 
@@ -130,7 +134,8 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
         if (null != job.getProperty(BnpConstants.BEFORE_VALUE)) {
             List<String> before = job.getProperty(BnpConstants.BEFORE_VALUE, new ArrayList<>());
             if (after.size() > before.size()) {
-                return after.removeAll(before);
+                after.removeAll(before);
+                return true;
             } else {
                 return false;
             }
