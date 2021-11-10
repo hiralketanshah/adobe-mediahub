@@ -82,7 +82,7 @@
                         required="{Boolean}true">
                         <datasource
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/security/components/datasource/countrydatasource"/>
+                            sling:resourceType="/apps/mediahub/components/datasource/countrydatasource"/>
                     </country>
                     <duedatetypehint
                         jcr:primaryType="nt:unstructured"
