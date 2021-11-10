@@ -235,6 +235,14 @@
                                                                         metaType="text"/>
                                                                 </titlefieldBody>
                                                             </items>
+                                                            <granite:rendercondition
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                <groups
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                  groups="[administrators,mediahub-super-administrators]"/>
+                                                            </granite:rendercondition>
                                                         </titlefield>
                                                         <orderable
                                                             granite:id="orderable"
