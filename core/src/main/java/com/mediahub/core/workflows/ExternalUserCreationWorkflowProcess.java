@@ -259,8 +259,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
         if (user.getProperty("./profile/expiry") != null) {
             String userExpiryDate = user.getProperty("./profile/expiry")[0].toString().substring(0, 10);
             String newExpiryDate = expiryDate.substring(0, 10);
-            Date start = new SimpleDateFormat("yyyy/MM/dd").parse(userExpiryDate);
-            Date end = new SimpleDateFormat("yyyy/MM/dd").parse(newExpiryDate);
+
+            Date start = ProjectExpireNotificationUtil.getSimpleDateFormat(userExpiryDate).parse(userExpiryDate);
+            Date end = ProjectExpireNotificationUtil.getSimpleDateFormat(newExpiryDate).parse(newExpiryDate);
 
             if (start.compareTo(end) < 0) {
                 Value expiryDateValue = valueFactory.createValue(expiryDate, PropertyType.STRING);
