@@ -1,7 +1,9 @@
 package com.mediahub.core.services.impl;
 
+import com.adobe.granite.asset.api.Asset;
 import com.adobe.granite.jmx.annotation.AnnotatedStandardMBean;
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
@@ -42,8 +44,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component(service = {DynamicMBean.class, UpdateInternalUsersService.class}, property = {
-        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users"})
+@Component(service = { DynamicMBean.class, UpdateInternalUsersService.class }, property = {
+        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users" })
 
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
 
@@ -76,27 +78,42 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         LOGGER.info("Start time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             if (StringUtils.isNotBlank(csvUserInfo) && null != csvAdditionalInfo && null != csvStatusInfo) {
-            	
-            	File csvUserInfoFile = new File(csvUserInfo);
-            	File csvAdditionalInfoFile = new File(csvAdditionalInfo);
-            	File csvStatusInfoFile = new File(csvStatusInfo);
+
+                Resource csvResource = resourceResolver.getResource(csvUserInfo);
+                Resource userInfoResource = resourceResolver.getResource(csvAdditionalInfo);
+                Resource userStatusResource = resourceResolver.getResource(csvStatusInfo);
+
+                File csvUserInfoFile = new File(csvUserInfo);
+                File csvAdditionalInfoFile = new File(csvAdditionalInfo);
+                File csvStatusInfoFile = new File(csvStatusInfo);
                 Map<String, User> inputUserMap = new LinkedHashMap<>();
                 Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
                 Map<String, UserStatus> userStatusMap = new LinkedHashMap<>();
-                if (csvUserInfoFile.isFile()) {
-                    InputStream userInputStream = getFileInputStream(csvUserInfoFile);
+                if ((null != csvResource && DamUtil.isAsset(csvResource)) || (csvUserInfoFile.isFile())) {
+                    InputStream userInputStream = (csvUserInfo.startsWith("/content/dam")
+                            ? csvResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
+                                    .getStream()
+                            : getFileInputStream(csvUserInfoFile));
                     BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
                     inputUserMap = convertStreamToHashMap(brUser, false);
                     brUser.close();
                 }
-                if (csvAdditionalInfoFile.isFile()) {
-                    InputStream userInfoInputStream = getFileInputStream(csvAdditionalInfoFile);
+                if ((null != userInfoResource && DamUtil.isAsset(userInfoResource))
+                        || (csvAdditionalInfoFile.isFile())) {
+                    InputStream userInfoInputStream = (csvAdditionalInfo.startsWith("/content/dam")
+                            ? userInfoResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
+                                    .getStream()
+                            : getFileInputStream(csvAdditionalInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
                     userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, false);
                     brUserInfo.close();
                 }
-                if (csvStatusInfoFile.isFile()) {
-                    InputStream userStatusInputStream = getFileInputStream(csvStatusInfoFile);
+                if ((null != userStatusResource && DamUtil.isAsset(userStatusResource))
+                        || (csvStatusInfoFile.isFile())) {
+                    InputStream userStatusInputStream = (csvStatusInfo.startsWith("/content/dam")
+                            ? userStatusResource.adaptTo(Asset.class)
+                                    .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
+                            : getFileInputStream(csvStatusInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userStatusInputStream));
                     userStatusMap = convertStreamToHashMapUserStatus(brUserInfo, false);
                     brUserInfo.close();
@@ -191,7 +208,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     public void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
-                                   Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
+            Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
             throws RepositoryException {
         int count = 0;
         Group mediahubBasicGroup = (Group) (userManager.getAuthorizable(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY));
@@ -226,7 +243,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     private void createAEMUser(UserManager userManager, Session session, Principal principal, String userId,
-                               User userInfo, Group mediahubBasicGroup) {
+            User userInfo, Group mediahubBasicGroup) {
         if (null != userManager) {
             try {
                 if (null != userManager.getAuthorizable(userId)) {
@@ -355,7 +372,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         }
         return false;
     }
-    
+
     private InputStream getFileInputStream(File file) {
         InputStream fis = null;
         try {
@@ -379,6 +396,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         int skip = skipLine ? 1 : 0;
         List<User> inputList;
         inputList = br.lines().skip(skip).map(mapToItem).collect(Collectors.toList());
+        inputList.remove(inputList.size() - 1);
         return inputList.stream()
                 .collect(Collectors.toMap(User::getId, Function.identity(), (v1, v2) -> v1, LinkedHashMap::new));
     }
