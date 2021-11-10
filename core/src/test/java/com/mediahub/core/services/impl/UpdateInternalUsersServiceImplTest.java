@@ -124,9 +124,9 @@ public class UpdateInternalUsersServiceImplTest {
         when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
 
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        isList = classloader.getResourceAsStream("users-list.csv");
-        isInfo = classloader.getResourceAsStream("user-info.csv");
-        isStatus = classloader.getResourceAsStream("user-status.csv");
+        isList = classloader.getResourceAsStream("user-list.csv");
+        isInfo = classloader.getResourceAsStream("users-info.csv");
+        isStatus = classloader.getResourceAsStream("users-status.csv");
 
     }
 
