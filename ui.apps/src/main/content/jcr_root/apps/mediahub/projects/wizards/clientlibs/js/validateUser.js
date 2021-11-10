@@ -1,9 +1,15 @@
 (function ($, Granite, undefined) {
+
+    function validateEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     $(window).adaptTo("foundation-registry").register("foundation.validation.validator", {
         selector: '.project-email',
         validate: function(e) {
         var value = e.value;
-        if(null!=value.match(/@[A-Za-z]*\.[A-Za-z]*$/g)){
+        if(validateEmail(value)){
             var userId;
             $.ajax( {
                 url: "/apps/mediahub/projects/teammembers/datasource.userinfo.json?userid="+value,
