@@ -606,7 +606,7 @@ PropertiesPage
                     {
                         %>
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
-                        <button <%=inviteTeamAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Invite member")) %>
+                        <button <%=inviteTeamAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Invite external contributor")) %>
                         </button>
                     </coral-buttongroup>
                     <%}%>
