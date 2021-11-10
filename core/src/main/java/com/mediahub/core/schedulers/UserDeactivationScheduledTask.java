@@ -16,11 +16,7 @@ import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,7 +30,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -97,8 +94,8 @@ public class UserDeactivationScheduledTask implements Runnable {
             while (userResources.hasNext()) {
                 Resource user = userResources.next();
                 Resource userProfile = user.getChild(BnpConstants.PROFILE);
-                String expiryDate = userProfile != null ? userProfile.getValueMap().get(BnpConstants.EXPIRY, String.class) : StringUtils.EMPTY;
-                if (StringUtils.isNotBlank(expiryDate)) {
+                Calendar expiryDate = userProfile != null ? userProfile.getValueMap().get(BnpConstants.EXPIRY, Calendar.class) : null;
+                if (expiryDate != null) {
                     deactivateExpiredUsers(userManager, user, expiryDate, builder, resolver);
                 }
             }
@@ -120,77 +117,64 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @throws ParseException                - Thrown when there is a issue while parsing date
      * @throws javax.jcr.RepositoryException - Thrown while accessing nodes in JCR
      */
-    protected void deactivateExpiredUsers(UserManager userManager, Resource user, String expiryDate, QueryBuilder builder, ResourceResolver resolver)
+    protected void deactivateExpiredUsers(UserManager userManager, Resource user, Calendar expiryDate, QueryBuilder builder, ResourceResolver resolver)
             throws ParseException, javax.jcr.RepositoryException {
-        if (StringUtils.contains(expiryDate, "/")) {
-            Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
-            SimpleDateFormat dateFormat = getSimpleDateFormat(expiryDate);
+        Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
 
-            Date actualDueDate = dateFormat.parse(expiryDate);
-            Date currentDate = ProjectExpireNotificationUtil.getCurrentDate(dateFormat);
-            int differenceInDays = (int) ((actualDueDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+        Duration duration = Duration.between(expiryDate.toInstant(), Instant.now());
+        long differenceInDays = Math.abs(duration.toDays());
 
-            if (!(authorizable instanceof User && !((User) authorizable).isDisabled())) {
-                return;
-            }
-
-            if (differenceInDays == 30) {
-                Iterator<Group> groupIterator = authorizable.memberOf();
-                String groupName = getProjectGroupFromUser(groupIterator);
-                if (StringUtils.isNotEmpty(groupName)) {
-                    Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
-                    // Adding email of the user
-                    String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
-
-                    //send mail to user
-                    String[] emailRecipients = {email};
-                    sendWarningMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
-
-                    //send mail to managers
-                    String[] managerEmail = managers.toArray(new String[0]);
-                    sendWarningMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html");
-                }
-            } else if (differenceInDays <= 0) {
-
-                logger.info(user.getPath());
-                ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
-                Iterator<Group> groupIterator = authorizable.memberOf();
-                String groupName = getProjectGroupFromUser(groupIterator);
-                if (StringUtils.isNotEmpty(groupName)) {
-                    Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName,
-                            ROLE_OWNER);
-                    fetchEmailFromSuperAdmin(userManager, managers);
-
-                    // Adding email of the user
-                    String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
-
-                    //send mail to user
-                    String[] emailRecipients = {email};
-                    sendDeactivationgMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html");
-
-                    //send mail to managers
-                    String[] managerEmail = managers.toArray(new String[0]);
-                    sendDeactivationgMail(user, managerEmail, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html");
-                }
-            }
-
+        if (!(authorizable instanceof User && !((User) authorizable).isDisabled())) {
+            return;
         }
-    }
 
-    /**
-     * Method to get date format from string value
-     *
-     * @param expiryDate - expiry date in string format
-     * @return SimpleDateFormat object
-     */
-    private SimpleDateFormat getSimpleDateFormat(String expiryDate) {
-        SimpleDateFormat dateFormat;
-        if (expiryDate.indexOf('/') == 2) {
-            dateFormat = new SimpleDateFormat(BnpConstants.DD_MM_YYYY);
-        } else {
-            dateFormat = new SimpleDateFormat(BnpConstants.YYYY_MM_DD);
+        String language = UserUtils.getUserLanguage(user);
+        Locale locale = LocaleUtils.toLocale(language);
+
+        if (differenceInDays >= 30) {
+            Iterator<Group> groupIterator = authorizable.memberOf();
+            String groupName = getProjectGroupFromUser(groupIterator);
+            if (StringUtils.isNotEmpty(groupName)) {
+                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
+                // Adding email of the user
+                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
+
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated in 30 days", locale);
+
+                //send mail to user
+                String[] emailRecipients = {email};
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", subject);
+
+                //send mail to managers
+                String[] managerEmail = managers.toArray(new String[0]);
+                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", subject);
+            }
+        } else if (differenceInDays <= 0) {
+
+            logger.debug(user.getPath());
+            ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
+            Iterator<Group> groupIterator = authorizable.memberOf();
+            String groupName = getProjectGroupFromUser(groupIterator);
+            if (StringUtils.isNotEmpty(groupName)) {
+                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName,
+                        ROLE_OWNER);
+                fetchEmailFromSuperAdmin(userManager, managers);
+
+                // Adding email of the user
+                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
+
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated", locale);
+
+                //send mail to user
+                String[] emailRecipients = {email};
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html", subject);
+
+                //send mail to managers
+                String[] managerEmail = managers.toArray(new String[0]);
+                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
+            }
         }
-        return dateFormat;
+
     }
 
     private void fetchEmailFromSuperAdmin(UserManager userManager, Set<String> managers)
@@ -210,39 +194,8 @@ public class UserDeactivationScheduledTask implements Runnable {
         }
     }
 
-    /**
-     * Method to send user deactivation within 30 days notice
-     *
-     * @param user            - AEM user
-     * @param emailRecipients - Email recipient to which mail to be sent
-     * @param templatePath    - template path to create email
-     */
-    protected void sendWarningMail(Resource user, String[] emailRecipients, String templatePath) {
-        String language = UserUtils.getUserLanguage(user);
-        Locale locale = LocaleUtils.toLocale(language);
-        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated in 30 days", locale);
-        Map<String, String> emailParams = new HashMap<>();
-        emailParams.put(BnpConstants.SUBJECT, subject);
-        Resource profile = user.getChild(BnpConstants.PROFILE);
-        if (profile != null) {
-            emailParams.put(BnpConstants.FIRSTNAME, profile.getValueMap().get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
-        } else {
-            emailParams.put(BnpConstants.FIRSTNAME, StringUtils.EMPTY);
-        }
-        genericEmailNotification.sendEmail(templatePath, emailRecipients, emailParams);
-    }
 
-    /**
-     * Method to send user deactivation
-     *
-     * @param user            - AEM user
-     * @param emailRecipients - Email recipient to which mail to be sent
-     * @param templatePath    - template path to create email
-     */
-    protected void sendDeactivationgMail(Resource user, String[] emailRecipients, String templatePath) {
-        String language = UserUtils.getUserLanguage(user);
-        Locale locale = LocaleUtils.toLocale(language);
-        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated", locale);
+    protected void sendMail(Resource user, String[] emailRecipients, String templatePath, String subject) {
         Map<String, String> emailParams = new HashMap<>();
         emailParams.put(BnpConstants.SUBJECT, subject);
         Resource profile = user.getChild(BnpConstants.PROFILE);
@@ -269,7 +222,6 @@ public class UserDeactivationScheduledTask implements Runnable {
         if (StringUtils.isBlank(groupName)) {
             return managers;
         }
-
 
         Map<String, String> predicateMapForQuery = getPredicateMapProjectSearch(BnpConstants.AEM_PROJECTS_PATH, groupName);
         Query query = builder.createQuery(

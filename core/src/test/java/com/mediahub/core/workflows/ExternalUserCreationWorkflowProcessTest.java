@@ -193,7 +193,7 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(user.getProperty("./profile/givenName")).thenReturn(valueArray);
         when(value2.toString()).thenReturn("MediaUserName");
         when(project.getTitle()).thenReturn("Project Title");
-        when(user.getProperty("./profile/expiry")).thenReturn(valueArray1);
+        when(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)).thenReturn(valueArray1);
         when(value3.toString()).thenReturn("2020-10-11");
         when(externalizer.authorLink(resolver, "/projects/details.html"
                 + "/content/projects/corporate_institutionalbankingcib".replace("/dam", ""))).thenReturn(
@@ -205,16 +205,17 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     @Test
     public void setExpiryDateExistingUser() throws ParseException, RepositoryException {
+        Calendar cal = Calendar.getInstance();
         when(userManager.getAuthorizable("test@gmail.com")).thenReturn(user);
         Value firstValue = new Value() {
             @Override
             public String toString() {
-                return "2020/10/11";
+                return null;
             }
 
             @Override
             public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
-                return "2020/10/11";
+                return null;
             }
 
             @Override
@@ -244,7 +245,7 @@ public class ExternalUserCreationWorkflowProcessTest {
 
             @Override
             public Calendar getDate() throws ValueFormatException, RepositoryException {
-                return null;
+                return cal;
             }
 
             @Override
@@ -258,12 +259,11 @@ public class ExternalUserCreationWorkflowProcessTest {
             }
         };
         Value[] strings = new Value[]{firstValue};
-        when(user.getProperty("./profile/expiry")).thenReturn(strings);
-        when(value.toString()).thenReturn("2020/10/11");
+        when(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)).thenReturn(strings);
 
-        User testUser = workflowProcess.setExpiryDateExistingUser("test@gmail.com", "2020/10/11", userManager,
+        User testUser = workflowProcess.setExpiryDateExistingUser("test@gmail.com", cal, userManager,
                 valueFactory);
-        assertEquals("2020/10/11", testUser.getProperty("./profile/expiry")[0].toString());
+        assertEquals(cal.getTimeInMillis(), testUser.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTimeInMillis());
     }
 
 }

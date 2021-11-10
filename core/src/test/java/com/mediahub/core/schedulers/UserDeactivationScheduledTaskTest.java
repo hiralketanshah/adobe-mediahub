@@ -1,35 +1,21 @@
 package com.mediahub.core.schedulers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.adobe.acs.commons.i18n.I18nProvider;
+import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.UserUtils;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-
-import java.util.Set;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.UnsupportedRepositoryOperationException;
-
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.settings.SlingSettingsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,19 +23,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.SearchResult;
-import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.services.GenericEmailNotification;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import org.osgi.service.component.annotations.Reference;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-@ExtendWith({ AemContextExtension.class })
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import java.text.ParseException;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+@ExtendWith({AemContextExtension.class})
 public class UserDeactivationScheduledTaskTest {
 
     @InjectMocks
@@ -112,7 +99,7 @@ public class UserDeactivationScheduledTaskTest {
     @Test
     void run() throws LoginException {
         try {
-        	List<Group> listOfGroups = new ArrayList<>();
+            List<Group> listOfGroups = new ArrayList<>();
             when(user.memberOf()).thenReturn(listOfGroups.listIterator());
             UserDeactivationScheduledTask.Config config = mock(UserDeactivationScheduledTask.Config.class);
             when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
@@ -157,9 +144,9 @@ public class UserDeactivationScheduledTaskTest {
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
         when(provider.translate("User will be Deactivated in 30 days", LocaleUtils
-            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated in 30 days");
-        fixture.sendWarningMail(resource, new String[] { "abibrahi@adobe.com" },
-                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+                .toLocale(UserUtils.getUserLanguage(user)))).thenReturn("User will be Deactivated in 30 days");
+        fixture.sendMail(resource, new String[]{"abibrahi@adobe.com"},
+                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", "User will be Deactivated in 30 days");
     }
 
     @Test
@@ -168,9 +155,9 @@ public class UserDeactivationScheduledTaskTest {
         when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("FirstName");
         when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
         when(provider.translate("User will be Deactivated", LocaleUtils
-            .toLocale(UserUtils.getUserLanguage(user))) ).thenReturn("User will be Deactivated");
-        fixture.sendDeactivationgMail(resource, new String[] { "abibrahi@adobe.com" },
-                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html");
+                .toLocale(UserUtils.getUserLanguage(user)))).thenReturn("User will be Deactivated");
+        fixture.sendMail(resource, new String[]{"abibrahi@adobe.com"},
+                "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", "User will be Deactivated");
     }
 
     @Test
@@ -203,7 +190,7 @@ public class UserDeactivationScheduledTaskTest {
     void fetchUserMailFromGroup() throws ParseException, RepositoryException {
         List<Group> userList = new ArrayList<>();
         when(authorizable.memberOf()).thenReturn(userList.listIterator());
-        fixture.deactivateExpiredUsers(userManager, resource, "15/04/2021", builder, resolver);
+        fixture.deactivateExpiredUsers(userManager, resource, Calendar.getInstance(), builder, resolver);
     }
 
 }
