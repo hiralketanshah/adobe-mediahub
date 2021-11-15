@@ -28,13 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.management.DynamicMBean;
 import javax.management.NotCompliantMBeanException;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -44,9 +38,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component(service = { DynamicMBean.class, UpdateInternalUsersService.class }, property = {
-        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users" })
-
+@SuppressWarnings("findsecbugs:PATH_TRAVERSAL_IN")
+@Component(service = {DynamicMBean.class, UpdateInternalUsersService.class}, property = {
+        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users"})
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateInternalUsersServiceImpl.class);
@@ -92,7 +86,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 if ((null != csvResource && DamUtil.isAsset(csvResource)) || (csvUserInfoFile.isFile())) {
                     InputStream userInputStream = (csvUserInfo.startsWith("/content/dam")
                             ? csvResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
-                                    .getStream()
+                            .getStream()
                             : getFileInputStream(csvUserInfoFile));
                     BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
                     inputUserMap = convertStreamToHashMap(brUser, false);
@@ -102,7 +96,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                         || (csvAdditionalInfoFile.isFile())) {
                     InputStream userInfoInputStream = (csvAdditionalInfo.startsWith("/content/dam")
                             ? userInfoResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
-                                    .getStream()
+                            .getStream()
                             : getFileInputStream(csvAdditionalInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
                     userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, false);
@@ -112,7 +106,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                         || (csvStatusInfoFile.isFile())) {
                     InputStream userStatusInputStream = (csvStatusInfo.startsWith("/content/dam")
                             ? userStatusResource.adaptTo(Asset.class)
-                                    .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
+                            .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
                             : getFileInputStream(csvStatusInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userStatusInputStream));
                     userStatusMap = convertStreamToHashMapUserStatus(brUserInfo, false);
@@ -208,7 +202,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     public void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
-            Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
+                                   Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
             throws RepositoryException {
         int count = 0;
         Group mediahubBasicGroup = (Group) (userManager.getAuthorizable(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY));
@@ -243,7 +237,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     private void createAEMUser(UserManager userManager, Session session, Principal principal, String userId,
-            User userInfo, Group mediahubBasicGroup) {
+                               User userInfo, Group mediahubBasicGroup) {
         if (null != userManager) {
             try {
                 if (null != userManager.getAuthorizable(userId)) {
