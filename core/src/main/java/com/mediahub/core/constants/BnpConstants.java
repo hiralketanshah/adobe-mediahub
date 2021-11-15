@@ -178,6 +178,7 @@ public class BnpConstants {
      * User Profile Details
      */
     public static final String COMMA = ",";
+    public static final String SEMI_COLON = ";";
     public static final String INTERNAL_USER_PATH = "/home/users/mediahub/internal";
     public static final String EXTERNAL_USER_PATH = "/home/users/mediahub/external";
     public static final String CSV_FILE_PATH = "/content/dam/bnp/users-list.csv";
