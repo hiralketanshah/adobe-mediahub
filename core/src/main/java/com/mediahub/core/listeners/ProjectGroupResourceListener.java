@@ -82,7 +82,7 @@ public class ProjectGroupResourceListener implements EventListener {
              * Adding the event listener
              */
             observationManager.addEventListener(this,
-                Event.NODE_MOVED | Event.PERSIST | Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects/admin", true, null, new String[]{"rep:Group"}, false);
+                Event.NODE_MOVED | Event.PERSIST | Event.PROPERTY_ADDED | Event.NODE_ADDED | Event.PROPERTY_CHANGED, "/home/groups/projects", true, null, new String[]{"rep:Group"}, false);
 
         } catch (RepositoryException e) {
             log.error("Error while accessing repository : {}", e);
