@@ -13,12 +13,12 @@
         <list jcr:primaryType="nt:unstructured">
             <item0
                 jcr:primaryType="nt:unstructured"
-                jcr:title="External Provider"
-                value="external"/>
-            <item1
-                jcr:primaryType="nt:unstructured"
                 jcr:title="Internal"
                 value="internal"/>
+            <item1
+                jcr:primaryType="nt:unstructured"
+                jcr:title="External Provider"
+                value="external"/>
         </list>
     </jcr:content>
 </jcr:root>
