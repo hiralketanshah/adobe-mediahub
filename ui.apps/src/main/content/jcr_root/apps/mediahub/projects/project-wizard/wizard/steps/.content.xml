@@ -51,7 +51,7 @@
                                         granite:rel="cq-projects--required-nospaces"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                        fieldLabel="Title"
+                                        fieldLabel="Title for Project"
                                         name="jcr:title"
                                         required="{Boolean}true">
                                         <granite:data
