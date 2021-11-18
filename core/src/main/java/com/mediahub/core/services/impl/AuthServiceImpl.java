@@ -39,7 +39,6 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.json.JSONException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -70,7 +69,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Designate(ocd = AuthServiceImpl.Config.class)
 public class AuthServiceImpl implements AuthService {
-    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
+
+	private static final String RSA = "RSA";
+	private static final String ACCESS_TOKEN = "access_token";
+	private static final String EXPIRES_IN = "expires_in";
+	private static final String END_PRIVATE_KEY = "-----END PRIVATE KEY-----";
+	private static final String BEGIN_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----";
+	private static final String NEW_LINE = "\\n";
+	private static final String EMPTY = "";
     
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
     
@@ -86,49 +93,49 @@ public class AuthServiceImpl implements AuthService {
                 name = "Organization ID",
                 description = "JWT Organization ID parameter"
         )
-        String orgId() default "";
+        String orgId() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Technical Account ID",
                 description = "JWT technical account ID parameter"
         )
-        String technicalAccountId() default "";
+        String technicalAccountId() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "API Key",
                 description = "JWT API key parameter"
         )
-        String apiKey() default "";
+        String apiKey() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Certificate Resource Path",
                 description = "JWT signing certificate path in AEM"
         )
-        String keyPath() default "";
+        String keyPath() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Auth host",
                 description = "IMS Authentication Service host"
         )
-        String authHost() default "";
+        String authHost() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Metascopes",
                 description = "JWT integration scopes"
         )
-        String metascopes() default "";
+        String metascopes() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Auth Exchange endpoint",
                 description = "IMS Authentication Service exchange path"
         )
-        String exchangeEndpoint() default "";
+        String exchangeEndpoint() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Client Secret",
                 description = "Secret for exchanging JWT token"
         )
-        String secret() default "";
+        String secret() default EMPTY;
         
         @AttributeDefinition(
                 name = "JWT Expiration",
@@ -166,24 +173,17 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
-	public String getAuthToken() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, JSONException, LoginException {
-		String jwtToken = getJWTToken();
-		if(jwtToken != null && jwtToken != "") {
-			log.info("JWT Token: " + jwtToken);
-			String accessToken = getAccessToken(jwtToken);
-			log.info("Access Token: " + accessToken);
-			return accessToken;
-		} else {
-			log.error("Failed to generate JWT token");
-			throw new IOException("Could not generate JWT token");
-		}		
+	public String getAuthToken() throws IOException {
+		String accessToken = getAccessToken();
+		log.debug("Access Token: " + accessToken);
+		return accessToken;	
 	}
     
-    private Boolean isJwtTokenExpired(String token) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, LoginException {
+    private Boolean isJwtTokenExpired(String token) {
     	try {
     		final Date expiration = getExpirationDateFromJwtToken(token);
     		return expiration.before(new Date());
-    	} catch (ExpiredJwtException e) {
+    	} catch (ExpiredJwtException | NoSuchAlgorithmException | InvalidKeySpecException | IOException | LoginException e) {
 			return true;
 		}
 	}
@@ -201,7 +201,7 @@ public class AuthServiceImpl implements AuthService {
 		return Jwts.parser().setSigningKey(getKey()).parseClaimsJws(token).getBody();
 	}
 
-	private String getJWTToken() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, LoginException {
+	private String getJWTToken() {
 		if (jwtToken != null && !isJwtTokenExpired(jwtToken)) {
 			return jwtToken;
 		}
@@ -231,24 +231,19 @@ public class AuthServiceImpl implements AuthService {
 		return jwtToken;
 	}
 	
-	public RSAPrivateKey getKey() {
+	private RSAPrivateKey getKey() {
         return cachedPrivateKey.get();
     }
 
     private Supplier<RSAPrivateKey> privateKeySupplier() {
         return new Supplier<RSAPrivateKey>() {
             public RSAPrivateKey get() {
-                try {
-					return transformKey();
-				} catch (NoSuchAlgorithmException | InvalidKeySpecException | LoginException | IOException e) {
-					log.error("Failed to transform private key", e);
-					return null;
-				}
+				return transformKey();
             }
         };
     }
 
-	private RSAPrivateKey transformKey() throws LoginException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+	private RSAPrivateKey transformKey() {
 		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 			Resource privateKeyRes = resourceResolver.getResource(this.config.keyPath());
 			InputStream is = privateKeyRes.adaptTo(InputStream.class);
@@ -262,13 +257,13 @@ public class AuthServiceImpl implements AuthService {
 			}
 			
 			String privatekeyString = buf.toString();
-			privatekeyString  = privatekeyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "");
-			log.debug("The sanitized private key string is "+privatekeyString);
+			privatekeyString  = privatekeyString.replaceAll(NEW_LINE, EMPTY).replace(BEGIN_PRIVATE_KEY, EMPTY).replace(END_PRIVATE_KEY, EMPTY);
+			log.debug("The sanitized private key string is " + privatekeyString);
 			// Create the private key
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			log.debug("The key factory algorithm is "+keyFactory.getAlgorithm());
-			byte []byteArray = privatekeyString.getBytes();
-			log.debug("The array length is "+byteArray.length);
+			KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+			log.debug("The key factory algorithm is " + keyFactory.getAlgorithm());
+			byte[] byteArray = privatekeyString.getBytes();
+			log.debug("The array length is " + byteArray.length);
 			//KeySpec ks = new PKCS8EncodedKeySpec(Base64.getDecoder().decode(keyString));
 			byte[] encodedBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(privatekeyString);
 			
@@ -277,42 +272,55 @@ public class AuthServiceImpl implements AuthService {
 			RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(ks);
 			
 			return privateKey;
-		}		
+		} catch (LoginException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+			log.error("Could not parse the provided private key", e);
+		}
+		
+		return null;		
 	}
 
-	private String getAccessToken(String jwtToken) throws IOException, JSONException {
+	private String getAccessToken() throws IOException {
 		if (authToken != null && !isAuthTokenExpired()) {
 			return authToken;
 		}
 		
-		HttpClient httpClient = HttpClientBuilder.create().build();
+		String jwtToken = getJWTToken();
 		
-		HttpHost authServer = new HttpHost(this.config.authHost(), 443, "https");
-        HttpPost authPostRequest = new HttpPost(this.config.exchangeEndpoint());
-        authPostRequest.addHeader("Cache-Control", "no-cache");
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("client_id", this.config.apiKey()));
-        params.add(new BasicNameValuePair("client_secret", this.config.secret()));
-        params.add(new BasicNameValuePair("jwt_token", jwtToken));
-        authPostRequest.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
-        HttpResponse response = httpClient.execute(authServer, authPostRequest);
-        if (200 != response.getStatusLine().getStatusCode()) {
-            HttpEntity ent = response.getEntity();
-            String content = EntityUtils.toString(ent);
-            log.error("JWT: Server Returned Error\n", response.getStatusLine().getReasonPhrase());
-            log.error("ERROR DETAILS: \n", content);
-            throw new IOException("Server returned error: " + response.getStatusLine().getReasonPhrase());
-        }
-        HttpEntity entity = response.getEntity();
+		if(jwtToken != null && jwtToken != EMPTY) {
+			log.debug("JWT Token: " + jwtToken);
+			HttpClient httpClient = HttpClientBuilder.create().build();
+			
+			HttpHost authServer = new HttpHost(this.config.authHost(), 443, "https");
+			HttpPost authPostRequest = new HttpPost(this.config.exchangeEndpoint());
+			authPostRequest.addHeader("Cache-Control", "no-cache");
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("client_id", this.config.apiKey()));
+			params.add(new BasicNameValuePair("client_secret", this.config.secret()));
+			params.add(new BasicNameValuePair("jwt_token", jwtToken));
+			authPostRequest.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+			HttpResponse response = httpClient.execute(authServer, authPostRequest);
+			if (200 != response.getStatusLine().getStatusCode()) {
+				HttpEntity ent = response.getEntity();
+				String content = EntityUtils.toString(ent);
+				log.error("JWT: Server Returned Error\n", response.getStatusLine().getReasonPhrase());
+				log.error("ERROR DETAILS: \n", content);
+				throw new IOException("Server returned error: " + response.getStatusLine().getReasonPhrase());
+			}
+			HttpEntity entity = response.getEntity();
+			
+			JsonObject jo = new JsonParser().parse(EntityUtils.toString(entity)).getAsJsonObject();
+			
+			Long expiresIn = jo.get(EXPIRES_IN).getAsLong();
+			authTokenExpiry = Date.from(Instant.now().plusMillis(expiresIn));
+			authToken = jo.get(ACCESS_TOKEN).getAsString();
+			
+			log.debug("Returning access_token " + authToken);
+			return authToken;
+		} else {
+			log.error("Failed to generate JWT token");
+			throw new IOException("Could not generate JWT token");
+		}
 		
-		JsonObject jo = new JsonParser().parse(EntityUtils.toString(entity)).getAsJsonObject();
-		
-		Long expiresIn = jo.get("expires_in").getAsLong();
-		authTokenExpiry = Date.from(Instant.now().plusMillis(expiresIn));
-		authToken = jo.get("access_token").getAsString();
-		
-        log.debug("Returning access_token " + authToken);
-        return authToken;
 	}
 	
 	private Boolean isAuthTokenExpired() {
