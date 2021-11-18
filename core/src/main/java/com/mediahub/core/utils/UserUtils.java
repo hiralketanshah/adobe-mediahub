@@ -7,7 +7,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+
 import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 
 public class UserUtils {
@@ -40,5 +44,20 @@ public class UserUtils {
           hashtext = "0" + hashtext;
       }
       return hashtext;
+  }
+  
+  public static String getProjectOwnerName(String initiator, UserManager userManager) throws RepositoryException {
+      User projectOwnerUser = (User) userManager.getAuthorizable(initiator);
+      Value[] givenName = projectOwnerUser.getProperty("./profile/givenName");
+      Value[] familyName = projectOwnerUser.getProperty("./profile/familyName");
+      String fullName;
+      if(null!=givenName && null!=familyName) {
+          String[] fullNameString = {givenName[0].getString(),familyName[0].getString()}; 
+          fullName = String.join(" ", fullNameString);
+      }
+      else {
+          fullName = null==givenName ? (null==familyName ? initiator : familyName[0].getString()) : givenName[0].getString();
+      }
+      return fullName;
   }
 }
