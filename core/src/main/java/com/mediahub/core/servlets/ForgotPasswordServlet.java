@@ -111,7 +111,7 @@ public class ForgotPasswordServlet extends SlingAllMethodsServlet {
                     String language = UserUtils.getUserLanguage(user);
                     Locale locale = LocaleUtils.toLocale(language);
 
-                    String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Forgot password link", locale);
+                    String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Forgot password link //  Mot de passe oublié", locale);
                     emailParams.put(BnpConstants.SUBJECT, subject);
                     emailParams.put("firstname", firstname[0].getString());
                     emailParams.put(BnpConstants.LINK, externalizer.authorLink(resolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));
