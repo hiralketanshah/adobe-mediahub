@@ -3,11 +3,12 @@ package com.mediahub.core.services;
 import java.util.Date;
 
 import org.apache.sling.api.resource.Resource;
-import org.json.JSONObject;
+
+import com.google.gson.JsonObject;
 
 
 public interface AnalyticsGetterService {
 
-	JSONObject updateMetrics(Resource asset, Date startDate, Date endDate);
+	JsonObject updateMetrics(Resource asset, Date startDate, Date endDate);
 
 }
