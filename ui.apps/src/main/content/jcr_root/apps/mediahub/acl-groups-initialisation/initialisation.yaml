@@ -1,6 +1,6 @@
 - group_config:
     - FOR level0 IN CHILDREN OF /content/dam/medialibrary:
-        - IF ${level0.primaryType == 'sling:Folder'}:
+        - IF ${level0.primaryType == 'sling:Folder' || level0.primaryType == 'sling:OrderedFolder'}:
             - ${level0.name}-entity-manager:
                 - name: ${level0.title} - Entity Manager
                   isMemberOf: mediahub-basic-entity-manager
@@ -17,7 +17,7 @@
                   path: /home/groups/mediahub
 
             - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${level0.name}:
-                - IF ${level1.primaryType == 'sling:Folder'}:
+                - IF ${level1.primaryType == 'sling:Folder' || level1.primaryType == 'sling:OrderedFolder'}:
                     - ${level0.name}-${level1.name}-entity-manager:
                         - name: ${level0.title} - ${level1.title} - Entity Manager
                           isMemberOf: mediahub-basic-entity-manager
@@ -34,52 +34,52 @@
                           path: /home/groups/mediahub
 
                     - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}:
-                        - IF ${level2.primaryType == 'sling:Folder'}:
-                            - ${level0.name}-${level1.name}-${level2.name}-entity-manager:
+                        - IF ${level2.primaryType == 'sling:Folder' || level2.primaryType == 'sling:OrderedFolder'}:
+                            - ${level1.name}-${level2.name}-entity-manager:
                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - Entity Manager
                                   isMemberOf: mediahub-basic-entity-manager
                                   path: /home/groups/mediahub
 
-                            - ${level0.name}-${level1.name}-${level2.name}-contributor:
+                            - ${level1.name}-${level2.name}-contributor:
                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - Contributor
                                   isMemberOf: mediahub-basic-reader
                                   path: /home/groups/mediahub
 
-                            - ${level0.name}-${level1.name}-${level2.name}-reader:
+                            - ${level1.name}-${level2.name}-reader:
                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - Reader
                                   isMemberOf: mediahub-basic-contributor
                                   path: /home/groups/mediahub
 
                             - FOR level3 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}:
-                                - IF ${level3.primaryType == 'sling:Folder'}:
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-entity-manager:
+                                - IF ${level3.primaryType == 'sling:Folder' || level3.primaryType == 'sling:OrderedFolder'}:
+                                    - ${level2.name}-${level3.name}-entity-manager:
                                         - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Entity Manager
                                           isMemberOf: mediahub-basic-entity-manager
                                           path: /home/groups/mediahub
 
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-contributor:
+                                    - ${level2.name}-${level3.name}-contributor:
                                         - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Contributor
                                           isMemberOf: mediahub-basic-reader
                                           path: /home/groups/mediahub
 
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-reader:
+                                    - ${level2.name}-${level3.name}-reader:
                                         - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Reader
                                           isMemberOf: mediahub-basic-contributor
                                           path: /home/groups/mediahub
 
                                     - FOR level4 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}:
-                                        - IF ${level4.primaryType == 'sling:Folder'}:
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-entity-manager:
+                                        - IF ${level4.primaryType == 'sling:Folder' || level4.primaryType == 'sling:OrderedFolder'}:
+                                            - ${level3.name}-${level4.name}-entity-manager:
                                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Entity Manager
                                                   isMemberOf: mediahub-basic-entity-manager
                                                   path: /home/groups/mediahub
 
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-contributor:
+                                            - ${level3.name}-${level4.name}-contributor:
                                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Contributor
                                                   isMemberOf: mediahub-basic-reader
                                                   path: /home/groups/mediahub
 
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-reader:
+                                            - ${level3.name}-${level4.name}-reader:
                                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Reader
                                                   isMemberOf: mediahub-basic-contributor
                                                   path: /home/groups/mediahub
@@ -87,7 +87,7 @@
 
 - ace_config:
     - FOR level0 IN CHILDREN OF /content/dam/medialibrary:
-        - IF ${level0.primaryType == 'sling:Folder'}:
+        - IF ${level0.primaryType == 'sling:Folder' || level0.primaryType == 'sling:OrderedFolder'}:
             - ${level0.name}-entity-manager:
                 - path: /content/dam/medialibrary/${level0.name}
                   permission: allow
@@ -122,7 +122,7 @@
                   repGlob:
 
             - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${level0.name}:
-                - IF ${level1.primaryType == 'sling:Folder'}:
+                - IF ${level1.primaryType == 'sling:Folder' || level1.primaryType == 'sling:OrderedFolder'}:
                     - ${level0.name}-${level1.name}-entity-manager:
                         - path: /content/dam/medialibrary/${level0.name}/${level1.name}
                           permission: allow
@@ -169,8 +169,8 @@
                           repGlob: ""
 
                     - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}:
-                        - IF ${level2.primaryType == 'sling:Folder'}:
-                            - ${level0.name}-${level1.name}-${level2.name}-entity-manager:
+                        - IF ${level2.primaryType == 'sling:Folder' || level2.primaryType == 'sling:OrderedFolder'}:
+                            - ${level1.name}-${level2.name}-entity-manager:
                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
                                   permission: allow
                                   actions:
@@ -189,7 +189,7 @@
                                   privileges: jcr:all
                                   repGlob:
 
-                            - ${level0.name}-${level1.name}-${level2.name}-contributor:
+                            - ${level1.name}-${level2.name}-contributor:
                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
                                   permission: allow
                                   actions:
@@ -208,7 +208,7 @@
                                   privileges: jcr:read
                                   repGlob: ""
 
-                            - ${level0.name}-${level1.name}-${level2.name}-reader:
+                            - ${level1.name}-${level2.name}-reader:
                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
                                   permission: allow
                                   actions:
@@ -228,8 +228,8 @@
                                   repGlob: ""
 
                             - FOR level3 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}:
-                                - IF ${level3.primaryType == 'sling:Folder'}:
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-entity-manager:
+                                - IF ${level3.primaryType == 'sling:Folder' || level3.primaryType == 'sling:OrderedFolder'}:
+                                    - ${level2.name}-${level3.name}-entity-manager:
                                         - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
                                           permission: allow
                                           actions:
@@ -248,7 +248,7 @@
                                           privileges: jcr:all
                                           repGlob:
 
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-contributor:
+                                    - ${level2.name}-${level3.name}-contributor:
                                         - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
                                           permission: allow
                                           actions:
@@ -273,7 +273,7 @@
                                           privileges: jcr:read
                                           repGlob: ""
 
-                                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-reader:
+                                    - ${level2.name}-${level3.name}-reader:
                                         - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
                                           permission: allow
                                           actions:
@@ -299,8 +299,8 @@
                                           repGlob: ""
 
                                     - FOR level4 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}:
-                                        - IF ${level4.primaryType == 'sling:Folder'}:
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-entity-manager:
+                                        - IF ${level4.primaryType == 'sling:Folder' || level4.primaryType == 'sling:OrderedFolder'}:
+                                            - ${level3.name}-${level4.name}-entity-manager:
                                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
                                                   permission: allow
                                                   actions:
@@ -319,7 +319,7 @@
                                                   privileges: jcr:all
                                                   repGlob:
 
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-contributor:
+                                            - ${level3.name}-${level4.name}-contributor:
                                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
                                                   permission: allow
                                                   actions:
@@ -350,7 +350,7 @@
                                                   privileges: jcr:read
                                                   repGlob: ""
 
-                                            - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-reader:
+                                            - ${level3.name}-${level4.name}-reader:
                                                 - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
                                                   permission: allow
                                                   actions:
