@@ -64,20 +64,24 @@ public class AssetShareFilter implements AuthenticationHandler {
         String sh = request.getParameterMap().get("sh")[0];
         try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             Resource resource = resolver.getResource("/var/dam/share/" + sh.split("\\.")[0]);
-            boolean isSecured = resource.getValueMap().get("secured", Boolean.FALSE);
-            boolean isLogged = Boolean.FALSE;
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (StringUtils.equals(cookie.getName(), "login-token")) {
-                        isLogged = Boolean.TRUE;
-                        break;
+            if(null == resource){
+                response.sendRedirect("/linkexpired.html?sh="+ sh);
+            } else {
+                boolean isSecured = resource.getValueMap().get("secured", Boolean.FALSE);
+                boolean isLogged = Boolean.FALSE;
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if (StringUtils.equals(cookie.getName(), "login-token")) {
+                            isLogged = Boolean.TRUE;
+                            break;
+                        }
                     }
                 }
-            }
-            if (isSecured && !isLogged) {
-                String newURI = BnpConstants.LOGIN_PAGE_PATH+ "?resource=%2Flinkshare.html%3Fsh=" + sh + "%26redirected%3Dtrue";
-                response.sendRedirect(newURI);
+                if (isSecured && !isLogged) {
+                    String newURI = BnpConstants.LOGIN_PAGE_PATH+ "?resource=%2Flinkshare.html%3Fsh=" + sh + "%26redirected%3Dtrue";
+                    response.sendRedirect(newURI);
+                }
             }
         } catch (LoginException ex) {
             logger.error("Error while fetching service user {0}", ex);
