@@ -215,7 +215,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
                     emailParams.put("expiry", sdf.format(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)[0].getDate().getTime()));
                     emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
-                    emailParams.put("projectowner", item.getWorkflow().getInitiator());
+                    emailParams.put("projectowner", UserUtils.getProjectOwnerName(item.getWorkflow().getInitiator(), userManager));
 
                     if (isUserAlreadyExists) {
                         genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html", emailRecipients, emailParams);
@@ -238,10 +238,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 resourceResolver.close();
             }
         }
-
-
         logger.info("ExternalUserCreationWorkflowProcess :: exceute method end");
-
     }
 
     /**

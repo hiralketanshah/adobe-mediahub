@@ -12,7 +12,11 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import com.mediahub.core.utils.QueryUtils;
+import com.mediahub.core.utils.UserUtils;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
@@ -168,7 +172,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                         emailParams.put(BnpConstants.PROJECT_TITLE, hit.getResource().getChild(JcrConstants.JCR_CONTENT).getValueMap().get(JcrConstants.JCR_TITLE, StringUtils.EMPTY));
                     }
                     emailParams.put("projecturl", hit.getPath());
-                    emailParams.put("projectowner", job.getProperty("userID", StringUtils.EMPTY));
+                    emailParams.put("projectowner", getProjectOwnerName(job.getProperty("userID", StringUtils.EMPTY), resourceResolver));
                     break;
                 }
             }
@@ -179,6 +183,13 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
         }
     }
 
+
+    private String getProjectOwnerName(String ownerName, ResourceResolver resourceResolver) throws RepositoryException {
+        Session adminSession = resourceResolver.adaptTo(Session.class);
+        JackrabbitSession js = (JackrabbitSession) adminSession;
+        UserManager userManager = js.getUserManager();
+        return UserUtils.getProjectOwnerName(ownerName, userManager);
+    }
 
     private boolean filterModifiedValues(Job job, List<String> after) {
         if (null != job.getProperty(BnpConstants.BEFORE_VALUE)) {
