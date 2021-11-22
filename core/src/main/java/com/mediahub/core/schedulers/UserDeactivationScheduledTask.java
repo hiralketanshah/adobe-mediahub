@@ -129,7 +129,6 @@ public class UserDeactivationScheduledTask implements Runnable {
         }
 
         String language = UserUtils.getUserLanguage(user);
-        Locale locale = LocaleUtils.toLocale(language);
 
         if (differenceInDays >= 30) {
             Iterator<Group> groupIterator = authorizable.memberOf();
@@ -139,7 +138,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                 // Adding email of the user
                 String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
 
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated in 30 days", locale);
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 30 days // Votre accès sera desactivé dans 30 jours", Locale.ENGLISH);
 
                 //send mail to user
                 String[] emailRecipients = {email};
@@ -163,7 +162,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                 // Adding email of the user
                 String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
 
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated", locale);
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated", Locale.ENGLISH);
 
                 //send mail to user
                 String[] emailRecipients = {email};
