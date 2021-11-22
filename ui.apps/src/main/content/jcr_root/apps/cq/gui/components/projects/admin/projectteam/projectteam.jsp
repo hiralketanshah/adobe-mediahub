@@ -37,6 +37,7 @@ from Adobe Systems Incorporated.
                   javax.jcr.RepositoryException,
                   javax.jcr.Session,
                   java.util.Calendar,
+                  com.mediahub.core.utils.ProjectPermissionsUtil,
                   java.util.Iterator,
                   java.util.Map,
 				  org.apache.sling.jcr.base.util.AccessControlUtil,
@@ -87,23 +88,17 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
         project = projectResource.adaptTo(Project.class);
     }
 
-	UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
-  	boolean isAdmin = false;
-  	if(userManager != null){
-      User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
-      Group group = (Group)userManager.getAuthorizable("administrators");
-      if(currentUser != null){
-          if(group != null){
-            isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
-          }
-          if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
-            isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
-          }
-          if( (!isAdmin) && (userManager.getAuthorizable("mediahub-basic-project-manager") != null) ){
-            isAdmin = ((Group)userManager.getAuthorizable("mediahub-basic-project-manager")).isMember(currentUser);
-          }
-      }
-  }
+    Authorizable auth = resourceResolver.adaptTo(Authorizable.class);
+    boolean isAdmin = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, projectResource.getPath(), new String[]{"mediahub-basic-project-manager"}, resourceResolver.getUserID());
+    if (!isAdmin) {
+        Iterator<Group> projectGroups = auth.memberOf();
+        while (projectGroups.hasNext()) {
+            Group group = projectGroups.next();
+            if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                isAdmin = true;
+            }
+        }
+    }
 %>
 
 <div class="team coral-Form-fieldwrapper team-members-table"><%
