@@ -13,7 +13,7 @@
   from Adobe Systems Incorporated.
 --%><%@page import="javax.jcr.RepositoryException"%>
 <%
-%><%@include file="/libs/granite/ui/global.jsp"%><%         
+%><%@include file="/libs/granite/ui/global.jsp"%><%
 %><%@page import="org.apache.sling.api.resource.Resource,
 				  javax.jcr.Node,
 				  javax.jcr.RepositoryException,
@@ -26,44 +26,48 @@
                   org.apache.jackrabbit.api.security.user.Group,
 				  com.day.cq.dam.api.Asset"%><%
 %><%@taglib prefix="cq" uri="http://www.day.com/taglibs/cq/1.0"%><%
-%><%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/card/common/processAttributes.jsp"%><%                       
+%><%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/card/common/processAttributes.jsp"%><%
 %><sling:include resourceType= "dam/gui/components/s7dam/smartcroprenditions/rendercondition"/><%
 %><%@include file="/libs/dam/gui/coral/components/admin/contentrenderer/base/directoryBase.jsp"%><%--###
 
 Directory Quick Action
 =========
 ###--%><%
-boolean showDesktopLinks = request.getAttribute(SHOW_DESKTOP_LINKS) != null ? (boolean) request.getAttribute(SHOW_DESKTOP_LINKS) : false;
-String resourcePath = request.getAttribute(RESOURCE_PATH) != null ? (String) request.getAttribute(RESOURCE_PATH) : "";
-String escapedResourcePath = (Text.escape(resourcePath)).replaceAll("%2f","/");
-boolean hasReplicate = (boolean) request.getAttribute(HAS_REPLICATE_ACCESS);
+    boolean showDesktopLinks = request.getAttribute(SHOW_DESKTOP_LINKS) != null ? (boolean) request.getAttribute(SHOW_DESKTOP_LINKS) : false;
+    String resourcePath = request.getAttribute(RESOURCE_PATH) != null ? (String) request.getAttribute(RESOURCE_PATH) : "";
+    String escapedResourcePath = (Text.escape(resourcePath)).replaceAll("%2f","/");
+    boolean hasReplicate = (boolean) request.getAttribute(HAS_REPLICATE_ACCESS);
 
-boolean showSmartCropEditLink = true;
-final String CROP_EDITOR_PATH = "/mnt/overlay/dam/gui/content/s7dam/smartcrop/smartcropedit.html";
+    boolean showSmartCropEditLink = true;
+    final String CROP_EDITOR_PATH = "/mnt/overlay/dam/gui/content/s7dam/smartcrop/smartcropedit.html";
 
-Resource currentFolderResource = slingRequest.getResourceResolver().getResource(resourcePath);
-SimpleRenderCondition s7smarCropRenderCondition = (SimpleRenderCondition) request.getAttribute(RenderCondition.class.getName());
+    Resource currentFolderResource = slingRequest.getResourceResolver().getResource(resourcePath);
+    SimpleRenderCondition s7smarCropRenderCondition = (SimpleRenderCondition) request.getAttribute(RenderCondition.class.getName());
 
-UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
-  boolean isAdmin = false;
+    UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
+    boolean isAdmin = false;
 
-  if(userManager != null){
-      User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
-      Group group = (Group)userManager.getAuthorizable("administrators");
-      if(currentUser != null){
-          if(group != null){
-            isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
-          }
+    if(userManager != null){
+        User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
+        Group group = (Group)userManager.getAuthorizable("administrators");
+        if(currentUser != null){
+            if(group != null){
+                isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
+            }
 
-          if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
-            isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
-          }
+            if( (!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+            }
 
-          if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
-            isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
-          }
-      }
-  }
+            if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+            }
+
+            if( (!isAdmin) && (userManager.getAuthorizable("mediahub-basic-entity-manager") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser);
+            }
+        }
+    }
 
 %>
 
@@ -73,28 +77,30 @@ UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adap
     <% if (showDesktopLinks) { %>
     <coral-quickactions-item icon="open" class="dam-asset-desktop-action" data-path="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>"><%= xssAPI.encodeForHTML(i18n.get("Reveal on desktop")) %></coral-quickactions-item>
     <%
-       }
+        }
+        if(isAdmin || StringUtils.contains(resourcePath, "/content/dam/projects")){
     %>
     <coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" data-href="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/dam/gui/content/assets/downloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="/mnt/overlay/dam/gui/content/assets/haslicense.html" data-license-href="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
-    <coral-quickactions-item icon="collectionAdd" class="foundation-anchor" data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/dam/gui/content/collections/addtocollectionwizard.html/content/dam/collections?item=" + escapedResourcePath) %>"><%= xssAPI.encodeForHTML(i18n.get("To Collection")) %></coral-quickactions-item> 
-<%
-    	if(isAdmin){
+    <% } %>
+    <coral-quickactions-item icon="collectionAdd" class="foundation-anchor" data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + "/mnt/overlay/dam/gui/content/collections/addtocollectionwizard.html/content/dam/collections?item=" + escapedResourcePath) %>"><%= xssAPI.encodeForHTML(i18n.get("To Collection")) %></coral-quickactions-item>
+    <%
+        if(isAdmin){
     %>
     <coral-quickactions-item icon="copy" class="foundation-collection-action" data-foundation-collection-action='{"action": "cq.wcm.copy"}'><%= xssAPI.encodeForHTML(i18n.get("Copy")) %></coral-quickactions-item>
-<%
-    }
+    <%
+        }
     %>
     <% if(hasReplicate && isAdmin) { %>
-        <coral-quickactions-item icon="globe" class="cq-damadmin-admin-actions-publish-activator" data-src = "/mnt/overlay/dam/gui/content/commons/publish.html" data-foundation-mode-value="default" data-foundation-collection-item="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>"><%= xssAPI.encodeForHTML(i18n.get("Publish")) %></coral-quickactions-item>
+    <coral-quickactions-item icon="globe" class="cq-damadmin-admin-actions-publish-activator" data-src = "/mnt/overlay/dam/gui/content/commons/publish.html" data-foundation-mode-value="default" data-foundation-collection-item="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>"><%= xssAPI.encodeForHTML(i18n.get("Publish")) %></coral-quickactions-item>
     <% } %>
     <!-- edit smart crops quick action -->
     <% if(s7smarCropRenderCondition.check() && isAdmin) { %>
-    <coral-quickactions-item 
-		icon="cropLightning"
-		class="foundation-anchor"
-		data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + CROP_EDITOR_PATH + currentFolderResource.getPath())%>"
-		data-pageheading="<%= i18n.get("AEM Assets | Smart Crop Editor")%>"><%= xssAPI.encodeForHTML(i18n.get("Smart Crop")) %>
-	</coral-quickactions-item>
+    <coral-quickactions-item
+            icon="cropLightning"
+            class="foundation-anchor"
+            data-foundation-anchor-href="<%= xssAPI.getValidHref(request.getContextPath() + CROP_EDITOR_PATH + currentFolderResource.getPath())%>"
+            data-pageheading="<%= i18n.get("AEM Assets | Smart Crop Editor")%>"><%= xssAPI.encodeForHTML(i18n.get("Smart Crop")) %>
+    </coral-quickactions-item>
     <% } %>
 </coral-quickactions>
 <% } %>
