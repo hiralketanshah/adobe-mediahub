@@ -102,12 +102,14 @@
                                             sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                             fieldLabel="Path"
                                             name="project.path"
+                                            required="{Boolean}true"
                                             rootPath="/content/dam/medialibrary"/>
                                         <sponsor
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                             fieldLabel="Sponsor"
                                             name="project.sponsor"
+                                            required="{Boolean}true"
                                             rootPath="/content/cq:tags/mediahub/sponsors"/>
                                         <memberpicker
                                             jcr:primaryType="nt:unstructured"
