@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
-    jcr:primaryType="cq:Page">
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0"
+          xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+          xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+          jcr:primaryType="cq:Page">
     <v2/>
     <metadataeditor/>
     <jcr:content jcr:primaryType="nt:unstructured">
@@ -9,277 +11,277 @@
                 <create jcr:primaryType="nt:unstructured">
                     <items jcr:primaryType="nt:unstructured">
                         <ugc
-                            granite:class="dam-create-fragment"
-                            jcr:primaryType="nt:unstructured"
-                            sling:hideResource="{Boolean}true"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            action="dam-create-fragment"
-                            icon="facebookCoverImage"
-                            text="Import UGC">
-                            <data
+                                granite:class="dam-create-fragment"
                                 jcr:primaryType="nt:unstructured"
-                                wizard.url="/mnt/overlay/social/integrations/livefyre/aem-livefyre/admin/content/ugcImporter.html"/>
+                                sling:hideResource="{Boolean}true"
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                action="dam-create-fragment"
+                                icon="facebookCoverImage"
+                                text="Import UGC">
+                            <data
+                                    jcr:primaryType="nt:unstructured"
+                                    wizard.url="/mnt/overlay/social/integrations/livefyre/aem-livefyre/admin/content/ugcImporter.html"/>
                         </ugc>
                         <createfolder
-                            granite:class="dam-create-folder"
-                            granite:id="dam-create-folder"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            icon="folderAdd"
-                            text="Folder"/>
-                        <createmedias
-                            granite:class="dam-create-folder"
-                            granite:id="dam-create-folder-1"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            icon="folderAdd"
-                            text="Media">
-                            <granite:rendercondition
+                                granite:class="dam-create-folder"
+                                granite:id="dam-create-folder"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                <groups
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                icon="folderAdd"
+                                text="Folder"/>
+                        <createmedias
+                                granite:class="dam-create-folder"
+                                granite:id="dam-create-folder-1"
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                icon="folderAdd"
+                                text="Media">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[mediahub-basic-project-internal-contributor,administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-administrators]"/>
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[mediahub-basic-project-internal-contributor,administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-administrators]"/>
                             </granite:rendercondition>
                         </createmedias>
                         <fileupload
-                            granite:class="cq-damadmin-admin-assets-upload"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/fileupload/action"
-                            chunkSize="52428800"
-                            chunkUploadMinFileSize="524288000"
-                            chunkUploadSupported="{Boolean}true"
-                            dragDropSupported="{Boolean}true"
-                            fileNameParameter="fileName"
-                            icon="upload"
-                            multiple="{Boolean}true"
-                            name="file"
-                            parallelUploads="{Boolean}false"
-                            sizeLimit="10737418240"
-                            text="Assets">
-                            <granite:rendercondition
+                                granite:class="cq-damadmin-admin-assets-upload"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/and">
-                                <groups
+                                sling:resourceType="dam/gui/coral/components/commons/fileupload/action"
+                                chunkSize="52428800"
+                                chunkUploadMinFileSize="524288000"
+                                chunkUploadSupported="{Boolean}true"
+                                dragDropSupported="{Boolean}true"
+                                fileNameParameter="fileName"
+                                icon="upload"
+                                multiple="{Boolean}true"
+                                name="file"
+                                parallelUploads="{Boolean}false"
+                                sizeLimit="10737418240"
+                                text="Assets">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
                             </granite:rendercondition>
                         </fileupload>
                         <folderupload
-                            granite:class="dam-asset-desktop-action"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            icon="folder"
-                            text="Upload Folder">
+                                granite:class="dam-asset-desktop-action"
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                icon="folder"
+                                text="Upload Folder">
                             <granite:data
-                                jcr:primaryType="nt:unstructured"
-                                href-query="?action=upload"
-                                use-current-path="true"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    href-query="?action=upload"
+                                    use-current-path="true"/>
                             <granite:rendercondition
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="dam/gui/coral/components/admin/renderconditions/userprop"
-                                property="preferences/showAssetDesktopLinks"
-                                value="true"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/userprop"
+                                    property="preferences/showAssetDesktopLinks"
+                                    value="true"/>
                         </folderupload>
                         <createfragment
-                            granite:class="dam-create-fragment"
-                            jcr:primaryType="nt:unstructured"
-                            sling:hideResource="{Boolean}false"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            action="dam-create-fragment"
-                            icon="tableHistogram"
-                            text="Content Fragment">
+                                granite:class="dam-create-fragment"
+                                jcr:primaryType="nt:unstructured"
+                                sling:hideResource="{Boolean}false"
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                action="dam-create-fragment"
+                                icon="tableHistogram"
+                                text="Content Fragment">
                             <data
-                                jcr:primaryType="nt:unstructured"
-                                wizard.url="/mnt/overlay/dam/cfm/admin/content/v2/createfragment.html"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    wizard.url="/mnt/overlay/dam/cfm/admin/content/v2/createfragment.html"/>
                             <granite:rendercondition
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                 <isfragmentsenabled
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="dam/gui/components/admin/renderconditions/fragmentsenabled"/>
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/components/admin/renderconditions/fragmentsenabled"/>
                                 <groups
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[administrators,mediahub-super-administrators]"/>
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-super-administrators]"/>
                             </granite:rendercondition>
                         </createfragment>
                         <createlivecopy
-                            granite:rel="cq-damadmin-admin-actions-createlivecopy"
-                            jcr:primaryType="nt:unstructured"
-                            sling:hideResource="{Boolean}true"
-                            sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
-                            action="foundation.link"
-                            href="/mnt/overlay/dam/gui/content/assets/createlivecopywizard.html${granite:encodeURIPath(requestPathInfo.suffix)}"
-                            icon="pages"
-                            rel="cq-damadmin-admin-createlivecopy"
-                            relScope="collection"
-                            target=".cq-siteadmin-admin-childpages"
-                            text="Live Copy">
-                            <data
+                                granite:rel="cq-damadmin-admin-actions-createlivecopy"
                                 jcr:primaryType="nt:unstructured"
-                                href.uritemplate="/mnt/overlay/dam/gui/content/assets/createlivecopywizard.html{+id}"/>
+                                sling:hideResource="{Boolean}true"
+                                sling:resourceType="granite/ui/components/coral/foundation/collection/actionlink"
+                                action="foundation.link"
+                                href="/mnt/overlay/dam/gui/content/assets/createlivecopywizard.html${granite:encodeURIPath(requestPathInfo.suffix)}"
+                                icon="pages"
+                                rel="cq-damadmin-admin-createlivecopy"
+                                relScope="collection"
+                                target=".cq-siteadmin-admin-childpages"
+                                text="Live Copy">
+                            <data
+                                    jcr:primaryType="nt:unstructured"
+                                    href.uritemplate="/mnt/overlay/dam/gui/content/assets/createlivecopywizard.html{+id}"/>
                         </createlivecopy>
                         <createimageset
-                            granite:class="dm-create-set"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
-                            href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=imageset"
-                            icon="imageAlbum"
-                            text="Image Set">
-                            <granite:rendercondition
+                                granite:class="dm-create-set"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
-                                <condition1
+                                sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
+                                href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=imageset"
+                                icon="imageAlbum"
+                                text="Image Set">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <condition1
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <s7
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition1>
                                 <condition2
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <dm
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition2>
                             </granite:rendercondition>
                         </createimageset>
                         <createspinset
-                            granite:class="dm-create-set"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
-                            href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=spinset"
-                            icon="ungroup"
-                            text="Spin Set">
-                            <granite:rendercondition
+                                granite:class="dm-create-set"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
-                                <condition1
+                                sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
+                                href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=spinset"
+                                icon="ungroup"
+                                text="Spin Set">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <condition1
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <s7
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition1>
                                 <condition2
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <dm
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition2>
                             </granite:rendercondition>
                         </createspinset>
                         <createmmset
-                            granite:class="dm-create-set"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
-                            href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=mixedmediaset"
-                            icon="asset"
-                            text="Mixed Media Set">
-                            <granite:rendercondition
+                                granite:class="dm-create-set"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
-                                <condition1
+                                sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
+                                href="/mnt/overlay/dam/gui/content/s7dam/sets/editor.html${granite:encodeURIPath(requestPathInfo.suffix)}?settype=mixedmediaset"
+                                icon="asset"
+                                text="Mixed Media Set">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <condition1
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <s7
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition1>
                                 <condition2
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <dm
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition2>
                             </granite:rendercondition>
                         </createmmset>
                         <createcarousel
-                            granite:class="dm-create-set"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
-                            href="/mnt/overlay/dam/gui/content/s7dam/sets/carousel/editor.html"
-                            icon="imageCarousel"
-                            text="Carousel Set">
-                            <granite:rendercondition
+                                granite:class="dm-create-set"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
-                                <condition1
+                                sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
+                                href="/mnt/overlay/dam/gui/content/s7dam/sets/carousel/editor.html"
+                                icon="imageCarousel"
+                                text="Carousel Set">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <condition1
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <s7
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition1>
                                 <condition2
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                                     <dm
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
-                                        feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <groups
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators]"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators]"/>
                                 </condition2>
                             </granite:rendercondition>
                         </createcarousel>
                         <metadata
-                            granite:class="dam-import-metadata"
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
-                            href="/mnt/overlay/dam/gui/content/metadataimport.html"
-                            icon="import"
-                            text="Metadata">
-                            <granite:rendercondition
+                                granite:class="dam-import-metadata"
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/renderconditions/and">
-                                <groups
+                                sling:resourceType="granite/ui/components/coral/foundation/hyperlink"
+                                href="/mnt/overlay/dam/gui/content/metadataimport.html"
+                                icon="import"
+                                text="Metadata">
+                            <granite:rendercondition
                                     jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[administrators,mediahub-administrators]"/>
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators]"/>
                             </granite:rendercondition>
                         </metadata>
                     </items>
@@ -288,419 +290,576 @@
             <selection jcr:primaryType="nt:unstructured">
                 <create jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </create>
-                <customadhocassetshare
-                    granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
-                    jcr:primaryType="nt:unstructured"
-                    sling:orderBefore="adhocassetshare"
-                    sling:resourceType="granite/ui/components/coral/foundation/collection/action"
-                    action="foundation.dialog"
-                    activeSelectionCount="multiple"
-                    icon="share"
-                    target=".cq-damadmin-admin-childpages"
-                    text="Share Link"
-                    variant="actionBar">
+                <adhocassetshare
+                        jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
-                        <not
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
-                            <cloudrendercondition
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="dam/gui/coral/components/admin/renderconditions/macshare"
-                                path="${requestPathInfo.suffix}"/>
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                        <not
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                            <cloudrendercondition
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/macshare"
+                                    path="${requestPathInfo.suffix}"/>
                         </not>
+                        <or
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                            <medialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                <ismedialibrary
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-super-administrators]"/>
+                            </medialibrary>
+                            <projects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                <isprojects
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                <or
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                    <projectgroups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                            groups="[mediahub-basic-project-internal-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                                    <groups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                </or>
+                            </projects>
+                        </or>
                     </granite:rendercondition>
                     <data
-                        jcr:primaryType="nt:unstructured"
-                        src="/mnt/overlay/dam/gui/content/assets/bnpadhocassetsharedialog.html"/>
-                </customadhocassetshare>
-                <download
-                    jcr:primaryType="nt:unstructured"
-                    sling:orderBefore="viewproperties">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
-                        <condition1
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                            src="/mnt/overlay/dam/gui/content/assets/bnpadhocassetsharedialog.html"/>
+                </adhocassetshare>
+                <download
+                        jcr:primaryType="nt:unstructured"
+                        sling:orderBefore="viewproperties">
+                    <granite:rendercondition
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <condition1
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                             <ismedialibrary
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
                             <groups
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
                         </condition1>
                         <condition2
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/foundation/renderconditions/and">
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/renderconditions/and">
                             <isprojects
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
                             <groups
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-reader,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-reader,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
                         </condition2>
                     </granite:rendercondition>
                 </download>
                 <customdownload
-                    granite:rel="cq-damadmin-admin-actions-download-activator"
-                    jcr:primaryType="nt:unstructured"
-                    sling:orderBefore="viewproperties"
-                    sling:resourceType="granite/ui/components/coral/foundation/collection/action"
-                    activeCondition="dam.gui.customdownload.activecondition"
-                    activeSelectionCount="multiple"
-                    icon="download"
-                    target=".cq-damadmin-admin-childpages"
-                    text="Download"
-                    variant="actionBar">
+                        granite:rel="cq-damadmin-admin-actions-download-activator"
+                        jcr:primaryType="nt:unstructured"
+                        sling:orderBefore="viewproperties"
+                        sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                        activeCondition="dam.gui.customdownload.activecondition"
+                        activeSelectionCount="multiple"
+                        icon="download"
+                        target=".cq-damadmin-admin-childpages"
+                        text="Download"
+                        variant="actionBar">
                     <granite:data
-                        jcr:primaryType="nt:unstructured"
-                        haslicense-href="/mnt/overlay/dam/gui/content/assets/haslicense.html"
-                        href="/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html"
-                        license-href="/mnt/overlay/dam/gui/content/assets/licensecheck.external.html"/>
+                            jcr:primaryType="nt:unstructured"
+                            haslicense-href="/mnt/overlay/dam/gui/content/assets/haslicense.html"
+                            href="/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html"
+                            license-href="/mnt/overlay/dam/gui/content/assets/licensecheck.external.html"/>
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[mediahub-reader-medialibrary,mediahub-basic-contributor,mediahub-basic-reader,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[mediahub-reader-medialibrary,mediahub-basic-contributor,mediahub-basic-reader,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                         <ismedialibrary
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
                     </granite:rendercondition>
                 </customdownload>
                 <checkout jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </checkout>
                 <checkin jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </checkin>
-                <viewproperties
-                    jcr:primaryType="nt:unstructured"
-                    sling:orderAfter="download">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
-                    </granite:rendercondition>
-                </viewproperties>
                 <customviewproperties
-                    granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
-                    jcr:primaryType="nt:unstructured"
-                    sling:orderAfter="download"
-                    sling:resourceType="granite/ui/components/coral/foundation/collection/action"
-                    action="foundation.link"
-                    actionConfigName="granite/ui/shell/actions/properties"
-                    activeCondition="media.bulk.edit.active.condition"
-                    text="Properties"
-                    variant="actionBar">
-                    <data
+                        granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
                         jcr:primaryType="nt:unstructured"
-                        href="/mnt/overlay/dam/gui/content/assets/v2/multifoldersharewizard.html{+item}"
-                        postRequestLimit="{Long}1"/>
+                        sling:orderAfter="download"
+                        sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                        action="foundation.link"
+                        actionConfigName="granite/ui/shell/actions/properties"
+                        activeCondition="media.bulk.edit.active.condition"
+                        text="Properties"
+                        variant="actionBar">
+                    <data
+                            jcr:primaryType="nt:unstructured"
+                            href="/mnt/overlay/dam/gui/content/assets/v2/multifoldersharewizard.html{+item}"
+                            postRequestLimit="{Long}1"/>
                 </customviewproperties>
                 <smartcrop jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                        <groups
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
                     </granite:rendercondition>
                 </smartcrop>
-                <editasset jcr:primaryType="nt:unstructured"/>
                 <annotate jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                            <or
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <projectgroups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                        groups="[mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                            </or>
+                        </projects>
                     </granite:rendercondition>
                 </annotate>
                 <managetags jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                            <or
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                <projectgroups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                        groups="[mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                            </or>
+                        </projects>
                     </granite:rendercondition>
                 </managetags>
-                <addtocollection jcr:primaryType="nt:unstructured">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-reader-medialibrary,mediahub-basic-reader,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
-                    </granite:rendercondition>
-                </addtocollection>
                 <createtask jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </createtask>
                 <copyasset jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                        <or
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                            <medialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+
+                                <ismedialibrary
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                            </medialibrary>
+                            <projects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                <isprojects
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                <or
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                    <projectgroups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                            groups="[mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                                    <groups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                </or>
+                            </projects>
+                        </or>
                     </granite:rendercondition>
                 </copyasset>
                 <moveasset jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                        <or
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                            <medialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+
+                                <ismedialibrary
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                            </medialibrary>
+                            <projects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                <isprojects
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                        expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                                <or
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                    <projectgroups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                            groups="[mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
+                                    <groups
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                </or>
+                            </projects>
+                        </or>
                     </granite:rendercondition>
                 </moveasset>
                 <quickpublish jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
-                        <not
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
-                            <cloudpublish
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                        <groups
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
+                        <not
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                            <cloudpublish
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                                 <mppublish
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
-                                    type="mediaportal"/>
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
+                                        type="mediaportal"/>
                                 <dmpublish
-                                    jcr:primaryType="nt:unstructured"
-                                    sling:resourceType="dam/gui/components/s7dam/dmrenderconditions/selectivepublish"
-                                    path="${ requestPathInfo.suffix }"/>
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="dam/gui/components/s7dam/dmrenderconditions/selectivepublish"
+                                        path="${ requestPathInfo.suffix }"/>
                             </cloudpublish>
                         </not>
                     </granite:rendercondition>
                 </quickpublish>
                 <quickpublishwithmp jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
                         <cloudpublish
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                             <mppublish
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
-                                type="mediaportal"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/admin/renderconditions/sync-config"
+                                    type="mediaportal"/>
                             <dmpublish
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="dam/gui/components/s7dam/dmrenderconditions/selectivepublish"
-                                path="${ requestPathInfo.suffix }"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/components/s7dam/dmrenderconditions/selectivepublish"
+                                    path="${ requestPathInfo.suffix }"/>
                         </cloudpublish>
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </quickpublishwithmp>
                 <managepublication jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-super-administrators]"/>
                     </granite:rendercondition>
                 </managepublication>
                 <relate jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
-                        <ismedialibrary
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-super-administrators]"/>
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                        </projects>
                     </granite:rendercondition>
                 </relate>
                 <unrelate jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-publisher,mediahub-basic-project-manager]"/>
-                        <ismedialibrary
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor]"/>
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-super-administrators]"/>
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                        </projects>
                     </granite:rendercondition>
                 </unrelate>
-                <relateprojects jcr:primaryType="nt:unstructured">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
-                        <isprojects
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                    </granite:rendercondition>
-                </relateprojects>
-                <unrelateprojects jcr:primaryType="nt:unstructured">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-super-administrators]"/>
-                        <isprojects
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                    </granite:rendercondition>
-                </unrelateprojects>
                 <delete jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                         <mainasset
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="dam/gui/coral/components/commons/renderconditions/mainasset"/>
                         <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-project-manager,mediahub-basic-project-publisher]"/>
                     </granite:rendercondition>
                 </delete>
                 <exportmetadata jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager]"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                            <or
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                <projectgroups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/projectmember"
+                                        groups="[mediahub-basic-project-manager]"/>
+                                <groups
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                            </or>
+                        </projects>
                     </granite:rendercondition>
                 </exportmetadata>
                 <findsimilar jcr:primaryType="nt:unstructured">
                     <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-basic-reader,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-reader-medialibrary]"/>
-                        <ismedialibrary
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                        <medialibrary
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-contributor,mediahub-reader-medialibrary,mediahub-basic-reader]"/>
+                            <ismedialibrary
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                        </medialibrary>
+                        <projects
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                            <groups
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                            <isprojects
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
+                        </projects>
                     </granite:rendercondition>
                 </findsimilar>
-                <findsimilarprojects jcr:primaryType="nt:unstructured">
-                    <granite:rendercondition
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                        <groups
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
-                        <isprojects
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
-                    </granite:rendercondition>
-                </findsimilarprojects>
             </selection>
         </actions>
         <head jcr:primaryType="nt:unstructured">
             <clientlibs
-              jcr:primaryType="nt:unstructured"
-              sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-              categories="[dam.gui.admin.coral,dam.gui.actions.coral,unorm.coral,granite.shared,dam.gui.components.admin.adhocassetshare.coral,cq.common.wcm,dam.gui.view.insight,cq.gui.damadmin.lightbox.coral,cq.siteadmin.common,cq.gui.s7dam.admin.assetviewer,dam.gui.coral.fileupload,dam.gui.coral.backhref,cq.gui.coral.common.admin.timeline,dam.gui.admin.asset.uploadstatus,cq.gui.damadmin.references,dam.gui.admin.publishasset.coral,dam.gui.admin.unpublishasset.coral,dam.gui.coral.common.admin.timeline.events.workflow,dam.gui.coral.common.admin.timeline.events.version,dam.gui.admin.util.coral,dam.gui.coral.relateasset,dam.gui.admin.desktop.coral, dam.gui.coral.assetdetails.assetnavigator.layout, dam.gui.coral.stock.actions,dam.gui.s7dam.admin.dmpublish,dam.gui.download.activecondition]"/>
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+                    categories="[dam.gui.admin.coral,dam.gui.actions.coral,unorm.coral,granite.shared,dam.gui.components.admin.adhocassetshare.coral,cq.common.wcm,dam.gui.view.insight,cq.gui.damadmin.lightbox.coral,cq.siteadmin.common,cq.gui.s7dam.admin.assetviewer,dam.gui.coral.fileupload,dam.gui.coral.backhref,cq.gui.coral.common.admin.timeline,dam.gui.admin.asset.uploadstatus,cq.gui.damadmin.references,dam.gui.admin.publishasset.coral,dam.gui.admin.unpublishasset.coral,dam.gui.coral.common.admin.timeline.events.workflow,dam.gui.coral.common.admin.timeline.events.version,dam.gui.admin.util.coral,dam.gui.coral.relateasset,dam.gui.admin.desktop.coral, dam.gui.coral.assetdetails.assetnavigator.layout, dam.gui.coral.stock.actions,dam.gui.s7dam.admin.dmpublish,dam.gui.download.activecondition]"/>
         </head>
     </jcr:content>
     <bnpadhocassetsharedialog
@@ -839,12 +998,12 @@
                             text="Allow download of original file"
                             value="{Boolean}true">
                         <granite:rendercondition
-                          jcr:primaryType="nt:unstructured"
-                          sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
                             <groups
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                              groups="[administrators,mediahub-super-administrators]"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                    groups="[administrators,mediahub-super-administrators]"/>
                         </granite:rendercondition>
                     </allowOriginal>
                     <secureSharedLink
@@ -889,574 +1048,574 @@
         </footer>
     </bnpadhocassetsharedialog>
     <bnpdownloadasset
-      granite:id="downloadasset"
-      granite:rel="cq-damadmin-admin-actions-download"
-      jcr:primaryType="nt:unstructured"
-      jcr:title="Download"
-      sling:resourceType="/libs/dam/gui/coral/components/admin/downloadasset/daasset">
+            granite:id="downloadasset"
+            granite:rel="cq-damadmin-admin-actions-download"
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Download"
+            sling:resourceType="/libs/dam/gui/coral/components/admin/downloadasset/daasset">
         <items jcr:primaryType="nt:unstructured">
             <container
-              jcr:primaryType="nt:unstructured"
-              sling:resourceType="granite/ui/components/coral/foundation/container">
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/container">
                 <items jcr:primaryType="nt:unstructured">
                     <saveas
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="dam/gui/coral/components/admin/downloadasset/saveas"/>
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="dam/gui/coral/components/admin/downloadasset/saveas"/>
                     <createseparatefolder
-                      granite:class="row"
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                            granite:class="row"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <checkbox
-                              granite:class="flatstructure-select dam-download-type"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                              checked="{Boolean}false"
-                              text="Create separate folder for each asset"/>
+                                    granite:class="flatstructure-select dam-download-type"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                    checked="{Boolean}false"
+                                    text="Create separate folder for each asset"/>
                         </items>
                     </createseparatefolder>
                     <emaillist
-                      granite:class="email row"
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                            granite:class="email row"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <email
-                              granite:class="emailCheckBox"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                              checked="{Boolean}false"
-                              text="Email"
-                              value="{Boolean}true"/>
+                                    granite:class="emailCheckBox"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                    checked="{Boolean}false"
+                                    text="Email"
+                                    value="{Boolean}true"/>
                             <emaillist
-                              granite:class="userlist"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="userlist"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <userlist
-                                      granite:class="emaillist-Autocomplete downloadOptionValidationRequired"
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
-                                      hideServiceUsers="{Boolean}true"
-                                      multiple="{Boolean}true"
-                                      showAllAuthorizables="{Boolean}true"
-                                      useHomeAsValue="{Boolean}true"/>
+                                            granite:class="emaillist-Autocomplete downloadOptionValidationRequired"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
+                                            hideServiceUsers="{Boolean}true"
+                                            multiple="{Boolean}true"
+                                            showAllAuthorizables="{Boolean}true"
+                                            useHomeAsValue="{Boolean}true"/>
                                 </items>
                             </emaillist>
                         </items>
                     </emaillist>
                     <optional
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container"/>
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"/>
                     <optionalbox
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <assetselect
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
-                              checkboxClass="assetSelectCheckBox"
-                              checked="{Boolean}true"
-                              class="asset-select"
-                              label="Asset(s)"
-                              type="asset"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
+                                    checkboxClass="assetSelectCheckBox"
+                                    checked="{Boolean}true"
+                                    class="asset-select"
+                                    label="Asset(s)"
+                                    type="asset"/>
                             <renditionselbox
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <renditionselect
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
-                                      checkboxClass="renditionSelectCheckBox"
-                                      class="rendition-select"
-                                      label="Rendition(s)"
-                                      type="rendition"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
+                                            checkboxClass="renditionSelectCheckBox"
+                                            class="rendition-select"
+                                            label="Rendition(s)"
+                                            type="rendition"/>
                                 </items>
                                 <granite:rendercondition
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="granite/ui/components/foundation/renderconditions/not">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/renderconditions/not">
                                     <or
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/foundation/renderconditions/or">
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/foundation/renderconditions/or">
                                         <dam-condition-default
-                                          jcr:primaryType="nt:unstructured"
-                                          sling:resourceType="granite/ui/components/foundation/renderconditions/simple"
-                                          expression="{Boolean}false"/>
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/foundation/renderconditions/simple"
+                                                expression="{Boolean}false"/>
                                         <dmmode
-                                          jcr:primaryType="nt:unstructured"
-                                          sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                          feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                         <dms7mode
-                                          jcr:primaryType="nt:unstructured"
-                                          sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                          feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                                feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                     </or>
                                 </granite:rendercondition>
                             </renditionselbox>
                             <dm_renditionselbox
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <renditionselect
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/optional_dm"
-                                      checkboxClass="renditionSelectCheckBox"
-                                      class="rendition-select"
-                                      label="Rendition(s)"
-                                      type="rendition"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/optional_dm"
+                                            checkboxClass="renditionSelectCheckBox"
+                                            class="rendition-select"
+                                            label="Rendition(s)"
+                                            type="rendition"/>
                                 </items>
                                 <granite:rendercondition
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                                     <condition1
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                      feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <condition2
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                      feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                 </granite:rendercondition>
                             </dm_renditionselbox>
                             <subassetselect
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
-                              checkboxClass="subassetSelectCheckBox"
-                              class="subasset-select"
-                              label="Subasset(s)"
-                              type="subasset"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/admin/downloadasset/optional_general"
+                                    checkboxClass="subassetSelectCheckBox"
+                                    class="subasset-select"
+                                    label="Subasset(s)"
+                                    type="subasset"/>
                             <smartcropselbox
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <smartcropselect
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/optional_dm"
-                                      checkboxClass="smartcropSelectCheckBox"
-                                      class="smartcrop-select"
-                                      label="Smart Crops"
-                                      type="smartcrop"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/optional_dm"
+                                            checkboxClass="smartcropSelectCheckBox"
+                                            class="smartcrop-select"
+                                            label="Smart Crops"
+                                            type="smartcrop"/>
                                 </items>
                                 <granite:rendercondition
-                                  jcr:primaryType="nt:unstructured"
-                                  sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                                     <condition1
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                      feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                                     <condition2
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                                      feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                            feature="com.adobe.dam.asset.scene7.feature.flag"/>
                                 </granite:rendercondition>
                             </smartcropselbox>
                         </items>
                     </optionalbox>
                     <dynamic_renditions
-                      granite:class="coral-Form--vertical dynamicRenditions row"
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                            granite:class="coral-Form--vertical dynamicRenditions row"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <dynamicrenditionscheckbox
-                              granite:class="dynamicRenditions-sel"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                              checked="{Boolean}false"
-                              text="Dynamic Rendition(s)"/>
+                                    granite:class="dynamicRenditions-sel"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                    checked="{Boolean}false"
+                                    text="Dynamic Rendition(s)"/>
                             <dynamicrenditionsettings
-                              granite:class="dynamicRenditionSettings setting"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="dynamicRenditionSettings setting"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <presets
-                                      granite:class="imagepresets-sel"
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                      emptyText="Select ..."
-                                      fieldLabel="Presets"
-                                      imagePresetPathDefault="/macros"
-                                      imageServerPathRoot="/conf/global/settings/dam/dm/presets"
-                                      ordered="{Boolean}true">
+                                            granite:class="imagepresets-sel"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                            emptyText="Select ..."
+                                            fieldLabel="Presets"
+                                            imagePresetPathDefault="/macros"
+                                            imageServerPathRoot="/conf/global/settings/dam/dm/presets"
+                                            ordered="{Boolean}true">
                                         <datasource
-                                          jcr:primaryType="nt:unstructured"
-                                          sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/datasources/imagepresets"/>
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="dam/gui/coral/components/s7dam/downloadasset/datasources/imagepresets"/>
                                     </presets>
                                     <manualsettings
-                                      granite:class="manualPresetSettings"
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                                            granite:class="manualPresetSettings"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
                                             <size_section
-                                              granite:class="size_selection"
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                    granite:class="size_selection"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <size_pixel
-                                                      granite:class="size_select"
-                                                      granite:id="size_pixel"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                      fieldLabel="Size"
-                                                      validation="dynamicrendition.maxsize">
+                                                            granite:class="size_select"
+                                                            granite:id="size_pixel"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Size"
+                                                            validation="dynamicrendition.maxsize">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <_x0031_00x100
-                                                              jcr:primaryType="nt:unstructured"
-                                                              selected="{Boolean}true"
-                                                              text="100x100"
-                                                              value="100x100"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    selected="{Boolean}true"
+                                                                    text="100x100"
+                                                                    value="100x100"/>
                                                             <_x0032_00x200
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="200x200"
-                                                              value="200x200"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="200x200"
+                                                                    value="200x200"/>
                                                             <_x0033_00x300
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="300x300"
-                                                              value="300x300"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="300x300"
+                                                                    value="300x300"/>
                                                             <_x0034_00x400
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="400x400"
-                                                              value="400x400"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="400x400"
+                                                                    value="400x400"/>
                                                             <other
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="other"
-                                                              value="other"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="other"
+                                                                    value="other"/>
                                                         </items>
                                                     </size_pixel>
                                                     <size_inch
-                                                      granite:class="size_select"
-                                                      granite:id="size_inch"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                      fieldLabel="Size"
-                                                      validation="dynamicrendition.maxsize">
+                                                            granite:class="size_select"
+                                                            granite:id="size_inch"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Size"
+                                                            validation="dynamicrendition.maxsize">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <_x0031_x1
-                                                              jcr:primaryType="nt:unstructured"
-                                                              selected="{Boolean}true"
-                                                              text="1x1"
-                                                              value="1x1"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    selected="{Boolean}true"
+                                                                    text="1x1"
+                                                                    value="1x1"/>
                                                             <_x0032_x2
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="2x2"
-                                                              value="2x2"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="2x2"
+                                                                    value="2x2"/>
                                                             <_x0035_x5
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="5x5"
-                                                              value="5x5"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="5x5"
+                                                                    value="5x5"/>
                                                             <other
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="other"
-                                                              value="other"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="other"
+                                                                    value="other"/>
                                                         </items>
                                                     </size_inch>
                                                     <size_centimeter
-                                                      granite:class="size_select"
-                                                      granite:id="size_centimeter"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                      fieldLabel="Size"
-                                                      validation="dynamicrendition.maxsize">
+                                                            granite:class="size_select"
+                                                            granite:id="size_centimeter"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Size"
+                                                            validation="dynamicrendition.maxsize">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <_x0031_0x10
-                                                              jcr:primaryType="nt:unstructured"
-                                                              selected="{Boolean}true"
-                                                              text="10x10"
-                                                              value="10x10"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    selected="{Boolean}true"
+                                                                    text="10x10"
+                                                                    value="10x10"/>
                                                             <_x0032_5x25
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="25x25"
-                                                              value="25x25"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="25x25"
+                                                                    value="25x25"/>
                                                             <other
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="other"
-                                                              value="other"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="other"
+                                                                    value="other"/>
                                                         </items>
                                                     </size_centimeter>
                                                     <custom_size
-                                                      granite:class="custom_size"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                            granite:class="custom_size"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <width
-                                                              granite:class="downloadOptionValidationRequired"
-                                                              granite:id="custom_size_width"
-                                                              jcr:primaryType="nt:unstructured"
-                                                              sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
-                                                              fieldLabel="Width"
-                                                              min="{Long}1"
-                                                              required="{Boolean}true"
-                                                              validation="dynamicrendition.maxsize"
-                                                              value="1"/>
+                                                                    granite:class="downloadOptionValidationRequired"
+                                                                    granite:id="custom_size_width"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                                                    fieldLabel="Width"
+                                                                    min="{Long}1"
+                                                                    required="{Boolean}true"
+                                                                    validation="dynamicrendition.maxsize"
+                                                                    value="1"/>
                                                             <height
-                                                              granite:class="downloadOptionValidationRequired"
-                                                              granite:id="custom_size_height"
-                                                              jcr:primaryType="nt:unstructured"
-                                                              sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
-                                                              fieldLabel="Height"
-                                                              min="{Long}1"
-                                                              required="{Boolean}true"
-                                                              validation="dynamicrendition.maxsize"
-                                                              value="1"/>
+                                                                    granite:class="downloadOptionValidationRequired"
+                                                                    granite:id="custom_size_height"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                                                    fieldLabel="Height"
+                                                                    min="{Long}1"
+                                                                    required="{Boolean}true"
+                                                                    validation="dynamicrendition.maxsize"
+                                                                    value="1"/>
                                                         </items>
                                                     </custom_size>
                                                     <unit
-                                                      granite:class="size_unit"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select">
+                                                            granite:class="size_unit"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <pixels
-                                                              jcr:primaryType="nt:unstructured"
-                                                              selected="{Boolean}true"
-                                                              text="Pixels"
-                                                              value="pixels"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    selected="{Boolean}true"
+                                                                    text="Pixels"
+                                                                    value="pixels"/>
                                                             <inches
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="Inches"
-                                                              value="inches"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Inches"
+                                                                    value="inches"/>
                                                             <centimeters
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="Centimeters"
-                                                              value="centimeters"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="Centimeters"
+                                                                    value="centimeters"/>
                                                         </items>
                                                     </unit>
                                                 </items>
                                             </size_section>
                                             <format
-                                              granite:class="format_sel"
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                              fieldLabel="Format">
+                                                    granite:class="format_sel"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                    fieldLabel="Format">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <jpeg
-                                                      jcr:primaryType="nt:unstructured"
-                                                      selected="{Boolean}true"
-                                                      text="JPEG"
-                                                      value="jpeg"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            selected="{Boolean}true"
+                                                            text="JPEG"
+                                                            value="jpeg"/>
                                                     <eps
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="EPS"
-                                                      value="eps"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="EPS"
+                                                            value="eps"/>
                                                     <gif
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="GIF"
-                                                      value="gif"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="GIF"
+                                                            value="gif"/>
                                                     <gif-alpha
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="GIF with alpha"
-                                                      value="gif-alpha"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="GIF with alpha"
+                                                            value="gif-alpha"/>
                                                     <pdf
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="PDF"
-                                                      value="pdf"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="PDF"
+                                                            value="pdf"/>
                                                     <png
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="PNG"
-                                                      value="png"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="PNG"
+                                                            value="png"/>
                                                     <png-alpha
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="PNG with alpha"
-                                                      value="png-alpha"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="PNG with alpha"
+                                                            value="png-alpha"/>
                                                     <tif
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="TIFF"
-                                                      value="tif"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="TIFF"
+                                                            value="tif"/>
                                                     <tif-alpha
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="TIFF with alpha"
-                                                      value="tif-alpha"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="TIFF with alpha"
+                                                            value="tif-alpha"/>
                                                 </items>
                                             </format>
                                             <colorspace
-                                              granite:class="color_sel"
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                              fieldLabel="Color Space">
+                                                    granite:class="color_sel"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                    fieldLabel="Color Space">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <rgb
-                                                      jcr:primaryType="nt:unstructured"
-                                                      selected="{Boolean}true"
-                                                      text="RGB"
-                                                      value="RGB"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            selected="{Boolean}true"
+                                                            text="RGB"
+                                                            value="RGB"/>
                                                     <gray
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="GRAY"
-                                                      value="GRAY"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="GRAY"
+                                                            value="GRAY"/>
                                                     <cmyk
-                                                      jcr:primaryType="nt:unstructured"
-                                                      text="CMYK"
-                                                      value="CMYK"/>
+                                                            jcr:primaryType="nt:unstructured"
+                                                            text="CMYK"
+                                                            value="CMYK"/>
                                                 </items>
                                             </colorspace>
                                             <colorprofile
-                                              granite:class="icc_sel"
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                              fieldLabel="Color Profile"/>
+                                                    granite:class="icc_sel"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                    fieldLabel="Color Profile"/>
                                             <resolution_section
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <resolutions
-                                                      granite:class="resolution_sel"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                      fieldLabel="Resolution"
-                                                      validation="dynamicrendition.maxsize">
+                                                            granite:class="resolution_sel"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                            fieldLabel="Resolution"
+                                                            validation="dynamicrendition.maxsize">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <_x0037_2
-                                                              jcr:primaryType="nt:unstructured"
-                                                              selected="{Boolean}true"
-                                                              text="72 ppi"
-                                                              value="72"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    selected="{Boolean}true"
+                                                                    text="72 ppi"
+                                                                    value="72"/>
                                                             <_x0031_50
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="150 ppi"
-                                                              value="150"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="150 ppi"
+                                                                    value="150"/>
                                                             <_x0034_00
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="400 ppi"
-                                                              value="400"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="400 ppi"
+                                                                    value="400"/>
                                                             <other
-                                                              jcr:primaryType="nt:unstructured"
-                                                              text="other"
-                                                              value="other"/>
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    text="other"
+                                                                    value="other"/>
                                                         </items>
                                                     </resolutions>
                                                     <custom_resolution
-                                                      granite:class="custom_resolution"
-                                                      jcr:primaryType="nt:unstructured"
-                                                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                            granite:class="custom_resolution"
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container">
                                                         <items jcr:primaryType="nt:unstructured">
                                                             <resolution
-                                                              granite:class="downloadOptionValidationRequired"
-                                                              granite:id="custom_resolution_input"
-                                                              jcr:primaryType="nt:unstructured"
-                                                              sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
-                                                              emptyText="ppi"
-                                                              min="{Long}1"
-                                                              required="{Boolean}true"
-                                                              validation="dynamicrendition.maxsize"
-                                                              value="1"/>
+                                                                    granite:class="downloadOptionValidationRequired"
+                                                                    granite:id="custom_resolution_input"
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
+                                                                    emptyText="ppi"
+                                                                    min="{Long}1"
+                                                                    required="{Boolean}true"
+                                                                    validation="dynamicrendition.maxsize"
+                                                                    value="1"/>
                                                         </items>
                                                     </custom_resolution>
                                                 </items>
                                             </resolution_section>
                                             <modifier
-                                              granite:class="extramodifiers"
-                                              jcr:primaryType="nt:unstructured"
-                                              sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
-                                              fieldLabel="Image Modifier"/>
+                                                    granite:class="extramodifiers"
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
+                                                    fieldLabel="Image Modifier"/>
                                         </items>
                                     </manualsettings>
                                 </items>
                             </dynamicrenditionsettings>
                             <dynamicrenditiondata
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="dam/gui/coral/components/s7dam/downloadasset"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="dam/gui/coral/components/s7dam/downloadasset"/>
                         </items>
                         <granite:rendercondition
-                          jcr:primaryType="nt:unstructured"
-                          sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
                             <condition1
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                              feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                    feature="com.adobe.dam.asset.dynamicmedia.feature.flag"/>
                             <condition2
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
-                              feature="com.adobe.dam.asset.scene7.feature.flag"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/feature"
+                                    feature="com.adobe.dam.asset.scene7.feature.flag"/>
                         </granite:rendercondition>
                     </dynamic_renditions>
                     <bnpcustomfields
-                      granite:class="row coral-Form--vertical"
-                      jcr:primaryType="nt:unstructured"
-                      sling:resourceType="granite/ui/components/coral/foundation/container">
+                            granite:class="row coral-Form--vertical"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
                             <emaillist
-                              granite:class="row"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="row"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <userlist
-                                      granite:class="row"
-                                      granite:id="internalUserContact"
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
-                                      src="/bin/project/internalusers.html"
-                                      required="{Boolean}true"
-                                      multiple="{Boolean}true"
-                                      fieldLabel="Contact"
-                                      hideServiceUsers="{Boolean}true"
-                                      showAllAuthorizables="{Boolean}true"
-                                      useHomeAsValue="{Boolean}true"/>
+                                            granite:class="row"
+                                            granite:id="internalUserContact"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
+                                            src="/bin/project/internalusers.html"
+                                            required="{Boolean}true"
+                                            multiple="{Boolean}true"
+                                            fieldLabel="Contact"
+                                            hideServiceUsers="{Boolean}true"
+                                            showAllAuthorizables="{Boolean}true"
+                                            useHomeAsValue="{Boolean}true"/>
                                 </items>
                             </emaillist>
                             <useText
-                              jcr:primaryType="nt:unstructured"
-                              granite:class="coral-Form-fieldlabel"
-                              sling:resourceType="granite/ui/components/coral/foundation/text"
-                              text="Use"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    granite:class="coral-Form-fieldlabel"
+                                    sling:resourceType="granite/ui/components/coral/foundation/text"
+                                    text="Use"/>
                             <use
-                              granite:class="row"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="row"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <use
-                                      jcr:primaryType="nt:unstructured"
-                                      required="{Boolean}true"
-                                      granite:id="useTextArea"
-                                      granite:class="row"
-                                      sling:resourceType="granite/ui/components/coral/foundation/form/textarea"/>
+                                            jcr:primaryType="nt:unstructured"
+                                            required="{Boolean}true"
+                                            granite:id="useTextArea"
+                                            granite:class="row"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/textarea"/>
                                 </items>
                             </use>
                             <dateofusetext
-                              jcr:primaryType="nt:unstructured"
-                              granite:class="coral-Form-fieldlabel"
-                              sling:resourceType="granite/ui/components/coral/foundation/text"
-                              text="Date of Use"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    granite:class="coral-Form-fieldlabel"
+                                    sling:resourceType="granite/ui/components/coral/foundation/text"
+                                    text="Date of Use"/>
                             <dateOfUse
-                              granite:class="row"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="row"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <dateofuse
-                                      granite:id="dateOfUse"
-                                      granite:class="row"
-                                      required="{Boolean}true"
-                                      jcr:primaryType="nt:unstructured"
-                                      sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
-                                      displayedFormat="YYYY-MM-DD HH:mm"
-                                      id="dateOfUse"
-                                      name="dateOfUse"
-                                      type="datetime"/>
+                                            granite:id="dateOfUse"
+                                            granite:class="row"
+                                            required="{Boolean}true"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                            displayedFormat="YYYY-MM-DD HH:mm"
+                                            id="dateOfUse"
+                                            name="dateOfUse"
+                                            type="datetime"/>
                                 </items>
                             </dateOfUse>
                             <geographicalareatext
-                              jcr:primaryType="nt:unstructured"
-                              granite:class="coral-Form-fieldlabel"
-                              sling:resourceType="granite/ui/components/coral/foundation/text"
-                              text="Geographical Area"/>
+                                    jcr:primaryType="nt:unstructured"
+                                    granite:class="coral-Form-fieldlabel"
+                                    sling:resourceType="granite/ui/components/coral/foundation/text"
+                                    text="Geographical Area"/>
                             <geographicalarea
-                              granite:class="row"
-                              jcr:primaryType="nt:unstructured"
-                              sling:resourceType="granite/ui/components/coral/foundation/container">
+                                    granite:class="row"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
                                     <geographicalarea
-                                      cq:showOnCreate="{Boolean}true"
-                                      granite:class="row"
-                                      jcr:primaryType="nt:unstructured"
-                                      cq-msm-lockable="cq:tags"
-                                      forceSelection="{Boolean}true"
-                                      granite:id="geographicalarea"
-                                      metaType="tags"
-                                      multiple="true"
-                                      required="{Boolean}true"
-                                      name="./jcr:content/metadata/bnpp-geographicalarea"
-                                      sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                      rootPath="/content/cq:tags/mediahub/geography">
+                                            cq:showOnCreate="{Boolean}true"
+                                            granite:class="row"
+                                            jcr:primaryType="nt:unstructured"
+                                            cq-msm-lockable="cq:tags"
+                                            forceSelection="{Boolean}true"
+                                            granite:id="geographicalarea"
+                                            metaType="tags"
+                                            multiple="true"
+                                            required="{Boolean}true"
+                                            name="./jcr:content/metadata/bnpp-geographicalarea"
+                                            sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                            rootPath="/content/cq:tags/mediahub/geography">
                                         <granite:data
-                                          jcr:primaryType="nt:unstructured"
-                                          cq-msm-lockable="./metadata/bnpp-geographicalarea"
-                                          visibilityCascading="default"/>
+                                                jcr:primaryType="nt:unstructured"
+                                                cq-msm-lockable="./metadata/bnpp-geographicalarea"
+                                                visibilityCascading="default"/>
                                     </geographicalarea>
                                 </items>
                             </geographicalarea>
@@ -1467,24 +1626,24 @@
         </items>
         <footer jcr:primaryType="nt:unstructured">
             <cancel
-              jcr:primaryType="nt:unstructured"
-              sling:resourceType="granite/ui/components/coral/foundation/button"
-              text="Cancel">
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/button"
+                    text="Cancel">
                 <parentConfig
-                  jcr:primaryType="nt:unstructured"
-                  close="{Boolean}true"/>
+                        jcr:primaryType="nt:unstructured"
+                        close="{Boolean}true"/>
             </cancel>
             <download
-              granite:id="exportBtn"
-              jcr:primaryType="nt:unstructured"
-              sling:resourceType="granite/ui/components/coral/foundation/button"
-              text="Download"
-              disabled="{Boolean}true"
-              trackingFeature="aem:assets:asset:download"
-              variant="primary">
+                    granite:id="exportBtn"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/button"
+                    text="Download"
+                    disabled="{Boolean}true"
+                    trackingFeature="aem:assets:asset:download"
+                    variant="primary">
                 <parentConfig
-                  jcr:primaryType="nt:unstructured"
-                  close="{Boolean}true"/>
+                        jcr:primaryType="nt:unstructured"
+                        close="{Boolean}true"/>
             </download>
         </footer>
     </bnpdownloadasset>

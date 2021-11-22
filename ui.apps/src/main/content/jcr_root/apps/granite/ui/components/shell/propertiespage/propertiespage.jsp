@@ -50,7 +50,8 @@
                  java.net.URLDecoder,
                  com.mediahub.core.constants.*,
                  java.util.*,
-                 java.util.stream.Collectors" %>
+                 java.util.stream.Collectors,
+                 com.mediahub.core.utils.*" %>
 <%--###
 PropertiesPage
 ==============
@@ -351,44 +352,20 @@ PropertiesPage
             <coral-actionbar-primary><%
                 Resource actions = resource.getChild("actions");
                 if (actions != null) {
-                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext(); ) {
+                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext();) {
                         Resource item = it.next();
 
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
-
-                        if (StringUtils.equals(item.getName(), "customadhocassetshare")) {
-                            if (StringUtils.contains(assetId, "/content/dam/collections")) {
-            %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item");
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
+            %><coral-actionbar-item><%
+                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                selectionItemAttrs.addClass("betty-ActionBar-item");
+                cmp.include(item, new Tag(selectionItemAttrs));
+            %></coral-actionbar-item><%
                     }
-                } else if (StringUtils.equals(item.getName(), "adhocassetshare")) {
-                    if (!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")) {
-                %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
-                    }
-                } else { %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
-                            }
-                        }
-                    }
-                %></coral-actionbar-primary>
+                }
+            %></coral-actionbar-primary>
             <coral-actionbar-secondary><%
 
                 AttrBuilder backAttrs = new AttrBuilder(request, xssAPI);
@@ -428,19 +405,11 @@ PropertiesPage
                     boolean isChildrenDeactivated = true;
                     boolean isMedia = false;
 
-                    boolean canSavePublishForProjects = true;
+                    boolean canSavePublishForProjects = false;
 
                     try {
 
-                        if (null != auth) {
-                            Iterator<Group> projectGroups = auth.memberOf();
-                            while (projectGroups.hasNext()) {
-                                Group group = projectGroups.next();
-                                if (StringUtils.equals(group.getID(), "mediahub-basic-project-internal-contributor") || StringUtils.equals(group.getID(), "mediahub-basic-project-external-contributor")) {
-                                    canSavePublishForProjects = false;
-                                }
-                            }
-                        }
+                        canSavePublishForProjects = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, assetId, new String[]{"mediahub-basic-project-manager","mediahub-basic-project-publisher"}, resourceResolver.getUserID());
 
                         if (StringUtils.isNotEmpty(assetId)) {
                             Resource assetResource = resourceResolver.getResource(assetId);
