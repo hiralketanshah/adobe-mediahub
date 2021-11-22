@@ -79,15 +79,15 @@
                                         sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                         fieldLabel="Path"
                                         name="project.path"
-                                        rootPath="/content/dam/medialibrary"
-                                        value="/content/dam/medialibrary"/>
+                                        required="{Boolean}true"
+                                        rootPath="/content/dam/medialibrary"/>
                                     <sponsor
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/pathfield"
                                         fieldLabel="Sponsor"
                                         name="project.sponsor"
-                                        rootPath="/content/cq:tags/mediahub/sponsors"
-                                        value="/content/cq:tags/mediahub/sponsors"/>
+                                        required="{Boolean}true"
+                                        rootPath="/content/cq:tags/mediahub/sponsors"/>
                                     <memberpicker
                                         jcr:primaryType="nt:unstructured"
                                         jcr:title="User"
