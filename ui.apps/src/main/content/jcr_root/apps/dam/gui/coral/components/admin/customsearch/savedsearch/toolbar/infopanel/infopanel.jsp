@@ -39,7 +39,7 @@
                 isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
               } 
               if((!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
-                isAdmin = userManager.getAuthorizable("mediahub-administrators")!=null;
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
               }
               if((!isAdmin) && (userManager.getAuthorizable("mediahub-basic-entity-manager") != null) ){
                 isAdmin = ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser);

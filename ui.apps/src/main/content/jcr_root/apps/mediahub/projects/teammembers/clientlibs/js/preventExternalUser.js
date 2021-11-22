@@ -18,6 +18,8 @@
 
                             if (data.type === 'external' && data.roleId !== 'external-contributor') {
                                 ui.alert(Granite.I18n.get("Error"), Granite.I18n.get('External Users cannot be assigned to another project role'), 'error');
+                            }else if (data.type === 'internal' && data.roleId === 'external-contributor'){
+                                ui.alert(Granite.I18n.get("Error"), Granite.I18n.get('Internal user cannot be assigned to external contributor role'), 'error');
                             } else {
                                 // add new member to the table
                                 CQ.Projects.addTeamMember($(".team-table tbody"), data, false);
