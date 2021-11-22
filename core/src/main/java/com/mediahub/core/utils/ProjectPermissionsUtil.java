@@ -31,8 +31,9 @@ public class ProjectPermissionsUtil {
 
     public static boolean isAuthorizedForProject(ResourceResolver resourceResolver, String projectDamPath, String[] groups, String userId) {
         try {
-            if (groups != null && groups.length > 0) {
-                if (!StringUtils.isEmpty(projectDamPath) && projectDamPath.startsWith("/content/dam/projects")) {
+            if (groups != null && groups.length > 0 && !StringUtils.isEmpty(projectDamPath)) {
+                String projectPath = null;
+                if (projectDamPath.startsWith("/content/dam/projects")) {
                     Resource projectDam = resourceResolver.getResource(projectDamPath);
                     boolean isProject = false;
                     while (!projectDam.getPath().equals("/content/dam/projects") && !isProject) {
@@ -42,7 +43,11 @@ public class ProjectPermissionsUtil {
                             projectDam = projectDam.getParent();
                         }
                     }
-                    String projectPath = projectDam.getValueMap().get("projectPath", new String[]{""})[0];
+                    projectPath = projectDam.getValueMap().get("projectPath", new String[]{""})[0];
+                } else if (projectDamPath.startsWith("/content/projects")) {
+                    projectPath = projectDamPath;
+                }
+                if (!StringUtils.isEmpty(projectPath)) {
                     Resource project = resourceResolver.getResource(projectPath);
                     ValueMap map = project.getValueMap();
                     for (String group : groups) {

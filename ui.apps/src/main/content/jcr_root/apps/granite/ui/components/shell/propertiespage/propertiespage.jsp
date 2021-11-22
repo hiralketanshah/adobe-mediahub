@@ -32,12 +32,14 @@
                  com.day.cq.search.Query,
                  com.day.cq.search.QueryBuilder,
                  com.day.cq.search.result.SearchResult,
+                 com.mediahub.core.constants.BnpConstants,
+                 com.mediahub.core.utils.ProjectPermissionsUtil,
                  org.apache.commons.lang3.StringUtils,
                  org.apache.jackrabbit.api.security.user.Authorizable,
+                 org.apache.jackrabbit.api.security.user.Group,
                  org.apache.sling.api.SlingHttpServletRequest,
                  org.apache.sling.api.request.RequestDispatcherOptions,
                  org.apache.sling.api.resource.Resource,
-                 org.apache.jackrabbit.api.security.user.Group,
                  org.apache.sling.api.resource.ResourceResolver,
                  org.apache.sling.commons.json.JSONObject,
                  org.apache.sling.commons.json.io.JSONStringer,
@@ -48,10 +50,8 @@
                  javax.jcr.Session,
                  java.io.UnsupportedEncodingException,
                  java.net.URLDecoder,
-                 com.mediahub.core.constants.*,
                  java.util.*,
-                 java.util.stream.Collectors,
-                 com.mediahub.core.utils.*" %>
+                 java.util.stream.Collectors" %>
 <%--###
 PropertiesPage
 ==============
@@ -352,20 +352,22 @@ PropertiesPage
             <coral-actionbar-primary><%
                 Resource actions = resource.getChild("actions");
                 if (actions != null) {
-                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext();) {
+                    for (Iterator<Resource> it = actions.listChildren(); it.hasNext(); ) {
                         Resource item = it.next();
 
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
-            %><coral-actionbar-item><%
-                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                selectionItemAttrs.addClass("betty-ActionBar-item");
-                cmp.include(item, new Tag(selectionItemAttrs));
-            %></coral-actionbar-item><%
+            %>
+                <coral-actionbar-item><%
+                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                    selectionItemAttrs.addClass("betty-ActionBar-item");
+                    cmp.include(item, new Tag(selectionItemAttrs));
+                %></coral-actionbar-item>
+                <%
+                        }
                     }
-                }
-            %></coral-actionbar-primary>
+                %></coral-actionbar-primary>
             <coral-actionbar-secondary><%
 
                 AttrBuilder backAttrs = new AttrBuilder(request, xssAPI);
@@ -409,7 +411,16 @@ PropertiesPage
 
                     try {
 
-                        canSavePublishForProjects = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, assetId, new String[]{"mediahub-basic-project-manager","mediahub-basic-project-publisher"}, resourceResolver.getUserID());
+                        canSavePublishForProjects = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, assetId, new String[]{"mediahub-basic-project-manager", "mediahub-basic-project-publisher"}, resourceResolver.getUserID());
+                        if (!canSavePublishForProjects) {
+                            Iterator<Group> projectGroups = auth.memberOf();
+                            while (projectGroups.hasNext()) {
+                                Group group = projectGroups.next();
+                                if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                                    canSavePublishForProjects = true;
+                                }
+                            }
+                        }
 
                         if (StringUtils.isNotEmpty(assetId)) {
                             Resource assetResource = resourceResolver.getResource(assetId);
@@ -515,10 +526,10 @@ PropertiesPage
                     <%
                     } else {
                         String saveBtnVariant = "primary";
-						String url = slingRequest.getRequestPathInfo().getResourcePath();
-                    	String destinationUrl = "location.href='/libs/cq/core/content/projects/wizard/startwork.html?project=" + assetId + "'";
+                        String url = slingRequest.getRequestPathInfo().getResourcePath();
+                        String destinationUrl = "location.href='/libs/cq/core/content/projects/wizard/startwork.html?project=" + assetId + "'";
 
-                    	AttrBuilder inviteTeamAttrs = new AttrBuilder(request, xssAPI);
+                        AttrBuilder inviteTeamAttrs = new AttrBuilder(request, xssAPI);
 
                         inviteTeamAttrs.add("id", "shell-propertiespage-invite-members");
 
@@ -571,9 +582,8 @@ PropertiesPage
                         saveAttrs.add("role", "menuitem");
 
                     %>
-                    <% if(StringUtils.contains(assetId, "/content/projects") && StringUtils.contains(url, "/projects/teampage"))
-                    {
-                        %>
+                    <% if (StringUtils.contains(assetId, "/content/projects") && StringUtils.contains(url, "/projects/teampage")) {
+                    %>
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <button <%=inviteTeamAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Invite external contributor")) %>
                         </button>
@@ -640,22 +650,21 @@ PropertiesPage
 
 
                     <%
-                    if ( (isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
-                      Resource assetResource = resourceResolver.getResource(assetId);
-                      if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
-                        Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
-                        if ( isMedia || (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)) ) {
+                        if ((isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                            Resource assetResource = resourceResolver.getResource(assetId);
+                            if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
+                                Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
+                                if (isMedia || (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL))) {
                     %>
-
 
 
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <%
                             AttrBuilder unpublishAttributes = new AttrBuilder(request, xssAPI);
-                            if(isAsset){
-                              unpublishAttributes.add("id", "shell-propertiespage-deactivate-asset");
+                            if (isAsset) {
+                                unpublishAttributes.add("id", "shell-propertiespage-deactivate-asset");
                             } else {
-                              unpublishAttributes.add("id", "shell-propertiespage-deactivate-media");
+                                unpublishAttributes.add("id", "shell-propertiespage-deactivate-media");
                             }
                             unpublishAttributes.add("type", "submit");
                             unpublishAttributes.add("form", formId);
@@ -669,12 +678,13 @@ PropertiesPage
                             unpublishAttributes.add("isFolderMetadataMissing", isFolderMetadataMissing);
                             unpublishAttributes.add("isMediaValidated", isMediaValidated);
                         %>
-                        <button <%= unpublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %></button>
+                        <button <%= unpublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %>
+                        </button>
                     </coral-buttongroup>
                     <%
+                                }
+                            }
                         }
-                      }
-                    }
                     %>
                 </coral-actionbar-item>
                 <% } %>
@@ -880,9 +890,9 @@ PropertiesPage
 
 <script type="text/javascript">
 
-	if($(".foundation-content-path").data("is-bulk-mode")){
-	document.getElementById("shell-propertiespage-save-publish").style.display = 'none';
-	}
+    if ($(".foundation-content-path").data("is-bulk-mode")) {
+        document.getElementById("shell-propertiespage-save-publish").style.display = 'none';
+    }
 
     data.push({name: '_charset_', value: 'UTF-8'});
     data.push({name: 'payloadType', value: 'JCR_PATH'});
@@ -954,7 +964,7 @@ PropertiesPage
         alertdialog.show();
     }
 
-    function deactivateAsset(event){
+    function deactivateAsset(event) {
         data.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---asset-deactivation'});
         event.preventDefault();
         $.ajax({
@@ -982,33 +992,33 @@ PropertiesPage
         });
     }
 
-    function deactivateAssetsInsideMedia(event){
-            data.push({name: 'model', value: '/var/workflow/models/mediahub/unpublish-media-folder'});
-            event.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "/etc/workflow/instances",
-                data: data,
-                async: true,
-                cache: false,
-                success: function (response) {
-                    if (response) {
-                        var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
-                    }
+    function deactivateAssetsInsideMedia(event) {
+        data.push({name: 'model', value: '/var/workflow/models/mediahub/unpublish-media-folder'});
+        event.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "/etc/workflow/instances",
+            data: data,
+            async: true,
+            cache: false,
+            success: function (response) {
+                if (response) {
+                    var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
                 }
-            }).done(function (html) {
-                var ui = $(window).adaptTo("foundation-ui");
-                successMessage = Granite.I18n.get("The asset inside media will be deactivated in sometime");
-                ui.prompt(Granite.I18n.get("Deactivate Assets inside media"), successMessage, "success", [{
-                    text: Granite.I18n.get("OK"),
-                    primary: true,
-                    handler: function () {
-                        location.href =
-                            $(".foundation-backanchor").attr("href");
-                    }
-                }]);
-            });
-        }
+            }
+        }).done(function (html) {
+            var ui = $(window).adaptTo("foundation-ui");
+            successMessage = Granite.I18n.get("The asset inside media will be deactivated in sometime");
+            ui.prompt(Granite.I18n.get("Deactivate Assets inside media"), successMessage, "success", [{
+                text: Granite.I18n.get("OK"),
+                primary: true,
+                handler: function () {
+                    location.href =
+                        $(".foundation-backanchor").attr("href");
+                }
+            }]);
+        });
+    }
 </script>
 </html>
 <%!
