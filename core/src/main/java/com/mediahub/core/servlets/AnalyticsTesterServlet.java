@@ -16,17 +16,14 @@
 package com.mediahub.core.servlets;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Servlet;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -43,7 +40,6 @@ import com.mediahub.core.services.AnalyticsGetterService;
 public class AnalyticsTesterServlet extends SlingAllMethodsServlet {
     
     private static final long serialVersionUID = 1L;
-    private static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AnalyticsTesterServlet.class);
     
@@ -53,25 +49,17 @@ public class AnalyticsTesterServlet extends SlingAllMethodsServlet {
     @Override
     protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
     	LOGGER.info("Starting Analytics tester servlet");
-    	DateFormat dateFormat = new SimpleDateFormat(DATE_INPUT_FORMAT);
-    	ResourceResolver resourceResolver = request.getResourceResolver();
     	
-    	String resourcePath = request.getRequestParameter("resource").getString();
-    	String startDateStr = request.getRequestParameter("startDate").getString();
-    	String endDateStr = request.getRequestParameter("endDate").getString();
+    	Map<String, String> parametersMap = new HashMap<String, String>();
+    	Map<String, RequestParameter[]> requestMap = request.getRequestParameterMap();
     	
-    	Date startDate = null, endDate = null;
-		try {
-			startDate = dateFormat.parse(startDateStr);
-			endDate = dateFormat.parse(endDateStr);
-		} catch (ParseException e) {
-			LOGGER.error("Failed to parse date", e);
-		}
-    	
-    	Resource resource = resourceResolver.getResource(resourcePath);
+    	for (String paramKey : requestMap.keySet()) {
+    		RequestParameter[] reqParam = requestMap.get(paramKey);
+    		parametersMap.put(paramKey, reqParam[0].getString());
+    	}
     	
     	response.setContentType("application/json");
-        response.getWriter().print(analyticsService.updateMetrics(resource, startDate, endDate));
+        response.getWriter().print(analyticsService.getCustomReport(parametersMap));
         
         LOGGER.info("Successfully executed analytics service");
     }
