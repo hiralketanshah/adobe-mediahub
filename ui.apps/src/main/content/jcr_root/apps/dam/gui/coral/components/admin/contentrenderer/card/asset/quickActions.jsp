@@ -95,7 +95,7 @@ ASSET Quick Action
     <coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" link="<%=resourcePath%>" data-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/downloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/haslicense.html") %>" data-license-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
     <%  %>
     <% } else {
-        if(StringUtils.contains(resourcePath, "/content/dam/medialibrary") || StringUtils.equals(bnpDownloadAuth, "yes")){%>
+        if(StringUtils.contains(resourcePath, "/content/dam/medialibrary") && StringUtils.equals(bnpDownloadAuth, "yes")){%>
     <coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" link="<%=resourcePath%>" data-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/haslicense.html") %>" data-license-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
 
     <% } } %>
