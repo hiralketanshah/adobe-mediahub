@@ -61,9 +61,8 @@ public class UserWelcomeEmail implements JobConsumer {
     try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
       if(StringUtils.isNotBlank(job.getProperty(BnpConstants.EMAIL, StringUtils.EMPTY))){
         String[] emailRecipients = { job.getProperty(BnpConstants.EMAIL).toString() };
-        Locale locale = LocaleUtils.toLocale(job.getProperty(BnpConstants.LANGUAGE, "en"));
         Map<String, String> emailParams = new HashMap<>();
-        emailParams.put(BnpConstants.SUBJECT, ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Welcome Email", locale) );
+        emailParams.put(BnpConstants.SUBJECT, ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Welcome to MediaHub // Bienvenue sur MediaHub", Locale.ENGLISH) );
         emailParams.put("firstname", job.getProperty(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
         String userToken = job.getProperty(BnpConstants.USER_TOKEN, StringUtils.EMPTY);
         emailParams.put(BnpConstants.LINK, externalizer.authorLink(resolver, BnpConstants.CHANGE_PASSWORD_RESOURCE_PATH + userToken));

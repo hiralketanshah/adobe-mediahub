@@ -1014,44 +1014,20 @@ CollectionPage
             <coral-actionbar-primary><%
                 Resource selection = resource.getChild("actions/selection");
                 if (selection != null) {
-                    for (Iterator<Resource> it = selection.listChildren(); it.hasNext(); ) {
+                    for (Iterator<Resource> it = selection.listChildren(); it.hasNext();) {
                         Resource item = it.next();
 
                         if (!cmp.getRenderCondition(item, true).check()) {
                             continue;
                         }
-
-                        if (StringUtils.equals(item.getName(), "customadhocassetshare")) {
-                            if (StringUtils.contains(assetId, "/content/dam/projects")) {
-            %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item");
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
+            %><coral-actionbar-item><%
+                AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
+                selectionItemAttrs.addClass("betty-ActionBar-item");
+                cmp.include(item, new Tag(selectionItemAttrs));
+            %></coral-actionbar-item><%
                     }
-                } else if (StringUtils.equals(item.getName(), "adhocassetshare")) {
-                    if (!StringUtils.contains(assetId, "/content/dam/medialibrary") && !StringUtils.contains(assetId, "/content/dam/projects")) {
-                %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item " + item.getName() + assetId);
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
-                    }
-                } else { %>
-                <coral-actionbar-item><%
-                    AttrBuilder selectionItemAttrs = new AttrBuilder(request, xssAPI);
-                    selectionItemAttrs.addClass("betty-ActionBar-item" + item.getName());
-                    cmp.include(item, new Tag(selectionItemAttrs));
-                %></coral-actionbar-item>
-                <%
-                            }
-                        }
-                    }
-                %></coral-actionbar-primary>
+                }
+            %></coral-actionbar-primary>
             <coral-actionbar-secondary>
                 <coral-actionbar-item><%
                     AttrBuilder deselectAttrs = new AttrBuilder(request, xssAPI);

@@ -37,8 +37,13 @@ from Adobe Systems Incorporated.
                   javax.jcr.RepositoryException,
                   javax.jcr.Session,
                   java.util.Calendar,
+                  com.mediahub.core.utils.ProjectPermissionsUtil,
                   java.util.Iterator,
                   java.util.Map,
+				  org.apache.sling.jcr.base.util.AccessControlUtil,
+                  org.apache.jackrabbit.api.security.user.User,
+                  org.apache.jackrabbit.api.security.user.UserManager,
+                  org.apache.jackrabbit.api.security.user.Group,
                   org.apache.sling.api.resource.ResourceUtil" %>
 <%@include file="/libs/granite/ui/global.jsp"%><%
 %><ui:includeClientLib categories="cq.projects.admin.projecteam"/><%
@@ -82,6 +87,18 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
     if (projectResource != null) {
         project = projectResource.adaptTo(Project.class);
     }
+
+    Authorizable auth = resourceResolver.adaptTo(Authorizable.class);
+    boolean isAdmin = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, projectResource.getPath(), new String[]{"mediahub-basic-project-manager"}, resourceResolver.getUserID());
+    if (!isAdmin) {
+        Iterator<Group> projectGroups = auth.memberOf();
+        while (projectGroups.hasNext()) {
+            Group group = projectGroups.next();
+            if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                isAdmin = true;
+            }
+        }
+    }
 %>
 
 <div class="team coral-Form-fieldwrapper team-members-table"><%
@@ -100,7 +117,7 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
 
                  JSONObject obj = loadUserProfile(resourceResolver, projectMember.getId());
                  if (obj !=null) {
-                    out.write(addUser(xssAPI, i18n, false, obj, role, allowRemove, request.getContextPath()));
+                    out.write(addUser(xssAPI, i18n, false, obj, role, allowRemove, request.getContextPath(), isAdmin));
                 }
             }
         } else {
@@ -110,7 +127,7 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
                 String ownerId = resourceResolver.getUserID();
                 obj = loadUserProfile(resourceResolver, ownerId);
                 if (obj != null) {
-                    out.write(addUser(xssAPI, i18n, false, obj, (ProjectMemberRole)request.getAttribute("ownerRole"), false, request.getContextPath()));
+                    out.write(addUser(xssAPI, i18n, false, obj, (ProjectMemberRole)request.getAttribute("ownerRole"), false, request.getContextPath(), isAdmin));
                }
             }
 
@@ -128,7 +145,7 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
                             // add default members
                             JSONObject defaultUserJSON = loadUserProfile(resourceResolver, userId);
                             if (defaultUserJSON != null) {
-                                out.write(addUser(xssAPI, i18n, false, defaultUserJSON, entry.getKey(), false, request.getContextPath()));
+                                out.write(addUser(xssAPI, i18n, false, defaultUserJSON, entry.getKey(), false, request.getContextPath(), isAdmin));
                             }
                         }
                     }
@@ -140,7 +157,7 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
 </div>
 
 <%!
-    String addUser(XSSAPI xssAPI, I18n i18n, boolean isNew,  JSONObject user, ProjectMemberRole role, boolean allowRemove, String ctx) throws JSONException {
+    String addUser(XSSAPI xssAPI, I18n i18n, boolean isNew,  JSONObject user, ProjectMemberRole role, boolean allowRemove, String ctx, boolean isAdmin) throws JSONException {
         StringBuilder builder = new StringBuilder();
         builder.append("<tr class=\"" + isNew + "\">");
         builder.append("<td class=\"avatar\">");
@@ -167,12 +184,15 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
         builder.append("<input type=\"hidden\" name=\"teamMemberRoleId\" value=\"" + xssAPI.encodeForHTMLAttr(role.getId()) + "\">");
         builder.append("</td>");
 
-    	/*builder.append("<td class=\"path\">");
-        builder.append("<button is=\"coral-button\" type=\"button\" variant=\"quiet\" onclick=\"window.location.href='/mnt/overlay/granite/security/content/v2/usereditor.html"+ xssAPI.encodeForHTMLAttr(user.getString("path")) +"'\" class=\"foundation-field-edit\" title=\"" + "Edit" + "\">");
-        builder.append("<i class=\"coral-Icon coral-Icon--sizeXS coral-Icon--edit\"></i>");
-        builder.append("</button>");
-        builder.append("</td>");*/
+    	builder.append("<td class=\"path\">");
 
+    	if(isAdmin && StringUtils.equals(role.getId(), "external-contributor")){
+            builder.append("<button is=\"coral-button\" type=\"button\" variant=\"quiet\" onclick=\"window.location.href='/mnt/overlay/granite/security/content/v2/usereditor.html"+ xssAPI.encodeForHTMLAttr(user.getString("path")) +"'\" class=\"foundation-field-edit\" title=\"" + "Edit" + "\">");
+            builder.append("<i class=\"coral-Icon coral-Icon--sizeXS coral-Icon--edit\"></i>");
+            builder.append("</button>");
+
+    	}
+ 		builder.append("</td>");
         builder.append("<td class=\"remove\">");
         if (allowRemove) {
             String buttonTitle = xssAPI.encodeForHTMLAttr(i18n.get("Remove"));
