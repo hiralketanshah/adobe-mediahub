@@ -81,6 +81,40 @@
                         propertyIndex="{Boolean}true"
                         useInSpellcheck="{Boolean}true"
                         useInSuggest="{Boolean}true"/>
+                    <titleEn
+                        jcr:primaryType="nt:unstructured"
+                        boost="{Double}2.0"
+                        name="jcr:content/metadata/bnpp-title-en"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        useInSpellcheck="{Boolean}true"
+                        useInSuggest="{Boolean}true"/>
+                    <descriptionEn
+                        jcr:primaryType="nt:unstructured"
+                        name="jcr:content/metadata/dc:description"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        useInSpellcheck="{Boolean}true"
+                        useInSuggest="{Boolean}true"/>
+                    <titleLocal
+                        jcr:primaryType="nt:unstructured"
+                        name="jcr:content/metadata/bnpp-title-local"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        useInSpellcheck="{Boolean}true"
+                        useInSuggest="{Boolean}true"/>
+                    <descriptionLocal
+                        jcr:primaryType="nt:unstructured"
+                        name="jcr:content/metadata/bnpp-desc-local"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        useInSpellcheck="{Boolean}true"
+                        useInSuggest="{Boolean}true"/>
+                    <controlComments
+                        jcr:primaryType="nt:unstructured"
+                        name="jcr:content/metadata/bnpp-control-comments"
+                        nodeScopeIndex="{Boolean}true"
+                        propertyIndex="{Boolean}true"/>
                     <bnppKeywords
                         jcr:primaryType="nt:unstructured"
                         name="jcr:content/metadata/bnpp-keywords"
@@ -224,6 +258,31 @@
                             propertyIndex="{Boolean}true"
                             useInSpellcheck="{Boolean}true"
                             useInSuggest="{Boolean}true"/>
+                    <localTitle
+                            jcr:primaryType="nt:unstructured"
+                            name="jcr:content/metadata/bnpp-assettitle-local"
+                            nodeScopeIndex="{Boolean}true"
+                            ordered="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            useInSpellcheck="{Boolean}true"
+                            useInSuggest="{Boolean}true"/>
+                    <localDescription
+                            jcr:primaryType="nt:unstructured"
+                            name="jcr:content/metadata/bnpp-assetdesc-local"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            useInSpellcheck="{Boolean}true"
+                            useInSuggest="{Boolean}true"/>
+                    <notes
+                            jcr:primaryType="nt:unstructured"
+                            name="jcr:content/metadata/bnpp-notes"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"/>
+                    <contracts
+                            jcr:primaryType="nt:unstructured"
+                            name="jcr:content/metadata/bnpp-contracts"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"/>
                     <xmpMMInstanceId
                             jcr:primaryType="nt:unstructured"
                             name="jcr:content/metadata/xmpMM:InstanceID"
