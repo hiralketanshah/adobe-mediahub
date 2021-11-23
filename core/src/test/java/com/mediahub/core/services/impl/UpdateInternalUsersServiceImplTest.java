@@ -125,8 +125,8 @@ public class UpdateInternalUsersServiceImplTest {
 
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         isList = classloader.getResourceAsStream("users-list.csv");
-        isInfo = classloader.getResourceAsStream("user-info.csv");
-        isStatus = classloader.getResourceAsStream("user-status.csv");
+        isInfo = classloader.getResourceAsStream("users-info.csv");
+        isStatus = classloader.getResourceAsStream("users-status.csv");
 
     }
 

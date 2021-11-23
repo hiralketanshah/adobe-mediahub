@@ -66,10 +66,23 @@ UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adap
       if(currentUser != null){
           if(group != null){
             isAdminUser = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
-          } else if( (!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
-            isAdminUser = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+          }
+
+          if( (!isAdminUser) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+            isAdminUser = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+          }
+
+          if( (!isAdminUser) && (userManager.getAuthorizable("mediahub-basic-entity-manager") != null) ){
+            isAdminUser = ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser);
           }
       }
+  }
+
+  Resource cardResource = resourceResolver.getResource(resourcePath);
+
+  String bnpDownloadAuth = "no";
+  if(cardResource != null && cardResource.getChild("jcr:content") != null && cardResource.getChild("jcr:content").getChild("metadata") != null){
+     bnpDownloadAuth = cardResource.getChild("jcr:content").getChild("metadata").getValueMap().get("bnpp-download-auth","no");
   }
 
 %>
@@ -78,7 +91,13 @@ UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adap
     <% if (showQuickActions) { %>
     <% if ((isAdmin || (!isAssetExpired && !isSubAssetExpired )) && isDownloadable) {
            if( bytes != 0 ) { %>
-            		<coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" data-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/downloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/haslicense.html") %>" data-license-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
+              <% if (StringUtils.contains(resourcePath, "/content/dam/medialibrary")) { %>
+                <% if(isAdmin && StringUtils.equals(bnpDownloadAuth, "yes")){%>
+                <coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" link="<%=resourcePath%>" data-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/bnpdownloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/haslicense.html") %>" data-license-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
+                <% } %>
+              <% } else {%>
+              <coral-quickactions-item icon="download" class="cq-damadmin-admin-actions-download-activator foundation-collection-action" link="<%=resourcePath%>" data-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/downloadasset.html") %>" data-itempath="<%= xssAPI.encodeForHTMLAttr(resourcePath) %>" data-haslicense-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/haslicense.html") %>" data-license-href="<%= xssAPI.getValidHref("/mnt/overlay/dam/gui/content/assets/licensecheck.external.html") %>"><%= xssAPI.encodeForHTML(i18n.get("Download")) %></coral-quickactions-item>
+              <% } %>
     <% }
      }%>
      <% if (showDesktopLinks && isAdminUser) { %>

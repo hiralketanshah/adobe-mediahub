@@ -1,85 +1,372 @@
-- def rootFolders=[corporate_institutionalbankingcib, domestic_marketsdm, international_financialservicesifs, group_functions, transversal_activities]
-
 - group_config:
+    - FOR level0 IN CHILDREN OF /content/dam/medialibrary:
+        - ${level0.name}-entity-manager:
+            - name: ${level0.title} - Entity Manager
+              isMemberOf: mediahub-basic-entity-manager
+              path: /home/groups/mediahub
 
-    - FOR folder IN ${rootFolders}:
+        - ${level0.name}-contributor:
+            - name: ${level0.title} - Contributor
+              isMemberOf: mediahub-basic-reader
+              path: /home/groups/mediahub
 
-        - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${folder}:
-            - mediahub-entity-manager-${folder}-${level1.name}:
-                - name: Entity Manager - ${folder} - ${level1.title}
+        - ${level0.name}-reader:
+            - name: ${level0.title} - Reader
+              isMemberOf: mediahub-basic-contributor
+              path: /home/groups/mediahub
+
+        - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${level0.name}:
+            - ${level0.name}-${level1.name}-entity-manager:
+                - name: ${level0.title} - ${level1.title} - Entity Manager
                   isMemberOf: mediahub-basic-entity-manager
                   path: /home/groups/mediahub
 
-            - mediahub-contributor-${folder}-${level1.name}:
-                - name: Contributor - ${folder} - ${level1.title}
+            - ${level0.name}-${level1.name}-contributor:
+                - name: ${level0.title} - ${level1.title} - Contributor
                   isMemberOf: mediahub-basic-reader
                   path: /home/groups/mediahub
 
-            - mediahub-reader-${folder}-${level1.name}:
-                - name: Reader - ${folder} - ${level1.title}
+            - ${level0.name}-${level1.name}-reader:
+                - name: ${level0.title} - ${level1.title} - Reader
                   isMemberOf: mediahub-basic-contributor
                   path: /home/groups/mediahub
 
-            - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level1.name}:
-                - mediahub-entity-manager-${folder}-${groupFolder.name}:
-                    - name: Entity Manager - ${folder} - ${groupFolder.title}
+            - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}:
+                - ${level0.name}-${level1.name}-${level2.name}-entity-manager:
+                    - name: ${level0.title} - ${level1.title} - ${level2.title} - Entity Manager
                       isMemberOf: mediahub-basic-entity-manager
                       path: /home/groups/mediahub
 
-                - mediahub-contributor-${folder}-${groupFolder.name}:
-                    - name: Contributor - ${folder} - ${groupFolder.title}
+                - ${level0.name}-${level1.name}-${level2.name}-contributor:
+                    - name: ${level0.title} - ${level1.title} - ${level2.title} - Contributor
                       isMemberOf: mediahub-basic-reader
                       path: /home/groups/mediahub
 
-                - mediahub-reader-${folder}-${groupFolder.name}:
-                    - name: Reader - ${folder} - ${groupFolder.title}
+                - ${level0.name}-${level1.name}-${level2.name}-reader:
+                    - name: ${level0.title} - ${level1.title} - ${level2.title} - Reader
                       isMemberOf: mediahub-basic-contributor
                       path: /home/groups/mediahub
 
+                - FOR level3 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}:
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-entity-manager:
+                        - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Entity Manager
+                          isMemberOf: mediahub-basic-entity-manager
+                          path: /home/groups/mediahub
+
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-contributor:
+                        - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Contributor
+                          isMemberOf: mediahub-basic-reader
+                          path: /home/groups/mediahub
+
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-reader:
+                        - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Reader
+                          isMemberOf: mediahub-basic-contributor
+                          path: /home/groups/mediahub
+
+                    - FOR level4 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}:
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-entity-manager:
+                            - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Entity Manager
+                              isMemberOf: mediahub-basic-entity-manager
+                              path: /home/groups/mediahub
+
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-contributor:
+                            - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Contributor
+                              isMemberOf: mediahub-basic-reader
+                              path: /home/groups/mediahub
+
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-reader:
+                            - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Reader
+                              isMemberOf: mediahub-basic-contributor
+                              path: /home/groups/mediahub
+
+
 - ace_config:
-    - FOR folder IN ${rootFolders}:
-        - FOR groupFolder IN CHILDREN OF /content/dam/medialibrary/${folder}:
-            - mediahub-entity-manager-${folder}-${groupFolder.name}:
-                - path: /content/dam/medialibrary/${folder}/${groupFolder.name}
+    - FOR level0 IN CHILDREN OF /content/dam/medialibrary:
+        - ${level0.name}-entity-manager:
+            - path: /content/dam/medialibrary/${level0.name}
+              permission: allow
+              actions:
+              privileges: jcr:all
+              repGlob:
+
+            - path: /content/projects/${level0.name}
+              permission: allow
+              actions:
+              privileges: jcr:all
+              repGlob:
+
+            - path: /content/dam/projects/${level0.name}
+              permission: allow
+              actions:
+              privileges: jcr:all
+              repGlob:
+
+        - ${level0.name}-contributor:
+            - path: /content/dam/medialibrary/${level0.name}
+              permission: allow
+              actions:
+              privileges: jcr:all
+              repGlob:
+
+        - ${level0.name}-reader:
+            - path: /content/dam/medialibrary/${folder}/${groupFolder.name}
+              permission: allow
+              actions:
+              privileges: jcr:read
+              repGlob:
+
+        - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${level0.name}:
+            - ${level0.name}-${level1.name}-entity-manager:
+                - path: /content/dam/medialibrary/${level0.name}/${level1.name}
                   permission: allow
                   actions:
                   privileges: jcr:all
                   repGlob:
 
-                - path: /content/projects/${folder}/${groupFolder.name}
+                - path: /content/projects/${level0.name}/${level1.name}
                   permission: allow
                   actions:
                   privileges: jcr:all
                   repGlob:
 
-                - path: /content/dam/projects/${folder}/${groupFolder.name}
+                - path: /content/dam/projects/${level0.name}/${level1.name}
                   permission: allow
                   actions:
                   privileges: jcr:all
                   repGlob:
 
-            - mediahub-contributor-${folder}-${groupFolder.name}:
-                - path: /content/dam/medialibrary/${folder}/${groupFolder.name}
+            - ${level0.name}-${level1.name}-contributor:
+                - path: /content/dam/medialibrary/${level0.name}/${level1.name}
                   permission: allow
                   actions:
                   privileges: jcr:all
                   repGlob:
 
-                - path: /content/dam/medialibrary/${folder}
+                - path: /content/dam/medialibrary/${level0.name}
                   permission: allow
                   actions:
                   privileges: jcr:read
                   repGlob: ""
 
-            - mediahub-reader-${folder}-${groupFolder.name}:
-                - path: /content/dam/medialibrary/${folder}/${groupFolder.name}
+            - ${level0.name}-${level1.name}-reader:
+                - path: /content/dam/medialibrary/${level0.name}/${level1.name}
                   permission: allow
                   actions:
                   privileges: jcr:read
                   repGlob:
 
-                - path: /content/dam/medialibrary/${folder}
+                - path: /content/dam/medialibrary/${level0.name}
                   permission: allow
                   actions:
                   privileges: jcr:read
                   repGlob: ""
+
+            - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}:
+                - ${level0.name}-${level1.name}-${level2.name}-entity-manager:
+                    - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:all
+                      repGlob:
+
+                    - path: /content/projects/${level0.name}/${level1.name}/${level2.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:all
+                      repGlob:
+
+                    - path: /content/dam/projects/${level0.name}/${level1.name}/${level2.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:all
+                      repGlob:
+
+                - ${level0.name}-${level1.name}-${level2.name}-contributor:
+                    - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:all
+                      repGlob:
+
+                    - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:read
+                      repGlob: ""
+
+                    - path: /content/dam/medialibrary/${level0.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:read
+                      repGlob: ""
+
+                - ${level0.name}-${level1.name}-${level2.name}-reader:
+                    - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:read
+                      repGlob:
+
+                    - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:read
+                      repGlob: ""
+
+                    - path: /content/dam/medialibrary/${level0.name}
+                      permission: allow
+                      actions:
+                      privileges: jcr:read
+                      repGlob: ""
+
+                - FOR level3 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}:
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-entity-manager:
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:all
+                          repGlob:
+
+                        - path: /content/projects/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:all
+                          repGlob:
+
+                        - path: /content/dam/projects/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:all
+                          repGlob:
+
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-contributor:
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:all
+                          repGlob:
+
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                        - path: /content/dam/medialibrary/${level0.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                    - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-reader:
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob:
+
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                        - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                        - path: /content/dam/medialibrary/${level0.name}
+                          permission: allow
+                          actions:
+                          privileges: jcr:read
+                          repGlob: ""
+
+                    - FOR level4 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}:
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-entity-manager:
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:all
+                              repGlob:
+
+                            - path: /content/projects/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:all
+                              repGlob:
+
+                            - path: /content/dam/projects/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:all
+                              repGlob:
+
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-contributor:
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:all
+                              repGlob:
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                        - ${level0.name}-${level1.name}-${level2.name}-${level3.name}-${level4.name}-reader:
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}/${level4.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob:
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}/${level1.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""
+
+                            - path: /content/dam/medialibrary/${level0.name}
+                              permission: allow
+                              actions:
+                              privileges: jcr:read
+                              repGlob: ""

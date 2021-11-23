@@ -167,11 +167,11 @@ String membersTitle = xssAPI.filterHTML(i18n.getVar(cfg.get("fieldLabel", String
         builder.append("<input type=\"hidden\" name=\"teamMemberRoleId\" value=\"" + xssAPI.encodeForHTMLAttr(role.getId()) + "\">");
         builder.append("</td>");
 
-    	builder.append("<td class=\"path\">");
+    	/*builder.append("<td class=\"path\">");
         builder.append("<button is=\"coral-button\" type=\"button\" variant=\"quiet\" onclick=\"window.location.href='/mnt/overlay/granite/security/content/v2/usereditor.html"+ xssAPI.encodeForHTMLAttr(user.getString("path")) +"'\" class=\"foundation-field-edit\" title=\"" + "Edit" + "\">");
         builder.append("<i class=\"coral-Icon coral-Icon--sizeXS coral-Icon--edit\"></i>");
         builder.append("</button>");
-        builder.append("</td>");
+        builder.append("</td>");*/
 
         builder.append("<td class=\"remove\">");
         if (allowRemove) {

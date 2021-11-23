@@ -38,6 +38,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
      */
     private static final Logger log = LoggerFactory.getLogger(ExistingUserProjectAccessEmail.class);
 
+
     @Reference
     private ResourceResolverFactory resolverFactory;
 
@@ -57,52 +58,101 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                 BnpConstants.WRITE_SERVICE);
         String path = job.getProperty(BnpConstants.PATH, String.class);
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-            if (null != job.getProperty(BnpConstants.AFTER_VALUE)) {
-                List<String> after = job.getProperty(BnpConstants.AFTER_VALUE, new ArrayList<>());
-                if (filterModifiedValues(job, after)) {
-                    for (String uuid : after) {
-                        Map<String, String> emailParams = new HashMap<>();
-                        Resource group = resourceResolver.getResource(path);
-                        getProjectDetails(job, resourceResolver, emailParams, group);
-                        String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Invitation to join « projectitle » MediaHub project // Invitation pour rejoindre le projet MediaHub « projectitle »", Locale.ENGLISH);
-                        subject = subject.replaceAll("projectitle", emailParams.get("projectitle"));
-                        emailParams.put(EmailServiceConstants.SUBJECT, subject);
-                        Node userNode = resourceResolver.adaptTo(Session.class).getNodeByIdentifier(uuid);
-                        if (null != userNode && null != userNode.getNode(BnpConstants.PROFILE)) {
-                            Node profile = userNode.getNode(BnpConstants.PROFILE);
-                            ValueMap profileProperties = resourceResolver.getResource(profile.getPath()).getValueMap();
 
-                            String email;
-                            if (profileProperties.containsKey(BnpConstants.EMAIL)) {
-                                email = profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY);
-                            } else {
-                                email = resourceResolver.getResource(userNode.getPath()).getValueMap().get("rep:authorizableId", StringUtils.EMPTY);
-                            }
-                            String[] emailRecipients = {email};
+            if(null == job.getProperty(BnpConstants.AFTER_VALUE)){
+                log.error("Error while fetching value of members", "Since there is no after value");
+                return JobResult.FAILED;
+            }
 
-                            emailParams.put(BnpConstants.FIRSTNAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
-                            emailParams.put(BnpConstants.EXPIRY, profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY));
+            List<String> after = job.getProperty(BnpConstants.AFTER_VALUE, new ArrayList<>());
+            if (filterModifiedValues(job, after)) {
+                for (String uuid : after) {
+                    Map<String, String> emailParams = new HashMap<>();
+                    Resource group = resourceResolver.getResource(path);
+                    getProjectDetails(job, resourceResolver, emailParams, group);
+                    String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Invitation to join « projectitle » MediaHub project // Invitation pour rejoindre le projet MediaHub « projectitle »", Locale.ENGLISH);
+                    subject = subject.replaceAll(BnpConstants.PROJECT_TITLE, emailParams.get(BnpConstants.PROJECT_TITLE));
+                    emailParams.put(EmailServiceConstants.SUBJECT, subject);
+                    Node userNode = resourceResolver.adaptTo(Session.class).getNodeByIdentifier(uuid);
+                    if (null != userNode && null != userNode.getNode(BnpConstants.PROFILE)) {
+                        Node profile = userNode.getNode(BnpConstants.PROFILE);
+                        ValueMap profileProperties = resourceResolver.getResource(profile.getPath()).getValueMap();
+                        String email = fetchEmail(resourceResolver, userNode, profileProperties);
+                        String[] emailRecipients = {email};
 
-                            if (StringUtils.equals(profileProperties.get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL)) {
-                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistinginternalusers.html", emailRecipients, emailParams);
-                            } else {
-                                genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistingexternalusers.html", emailRecipients, emailParams);
-                            }
+                        emailParams.put(BnpConstants.FIRSTNAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
+                        emailParams.put(BnpConstants.EXPIRY, profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY));
+
+                        if(StringUtils.equals(emailParams.getOrDefault("role", StringUtils.EMPTY), "Observers")){
+                            sendObserverEmail(uuid, emailParams, group, profileProperties,
+                                emailRecipients);
+                        } else {
+                            sendEmail(emailParams, profileProperties, emailRecipients);
                         }
                     }
                 }
             }
+
         } catch (RepositoryException | LoginException e) {
             log.error("Error while sending user notification mail", e);
+            return JobResult.FAILED;
+        } catch (InterruptedException e) {
+            log.error("Error while making thread sleep for 5 seconds", e);
             return JobResult.FAILED;
         }
 
         return JobResult.OK;
     }
 
+    private String fetchEmail(ResourceResolver resourceResolver, Node userNode,
+        ValueMap profileProperties) throws RepositoryException {
+        String email;
+        if (profileProperties.containsKey(BnpConstants.EMAIL)) {
+            email = profileProperties.get(BnpConstants.EMAIL, StringUtils.EMPTY);
+        } else {
+            email = resourceResolver.getResource(userNode.getPath()).getValueMap().get("rep:authorizableId", StringUtils.EMPTY);
+        }
+        return email;
+    }
+
+    private void sendObserverEmail(String uuid, Map<String, String> emailParams, Resource group,
+        ValueMap profileProperties, String[] emailRecipients) throws InterruptedException {
+        Thread.sleep(5000);
+        Resource project = group.getParent().getParent();
+        Boolean isObserver = true;
+        Iterator<Resource> children = project.listChildren();
+        while(children.hasNext()){
+            Resource child = children.next();
+            if(!StringUtils.equals(child.getName(), group.getParent().getName())){
+                ValueMap properties =  child.getValueMap();
+                if(properties.containsKey(BnpConstants.REP_MEMBERS)){
+                    String[] members = properties.get(BnpConstants.REP_MEMBERS, new String[]{""});
+                    if(Arrays.asList(members).contains(uuid)){
+                        isObserver = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if(isObserver){
+            sendEmail(emailParams, profileProperties, emailRecipients);
+        }
+    }
+
+    private void sendEmail(Map<String, String> emailParams, ValueMap profileProperties,
+        String[] emailRecipients) {
+        if (StringUtils
+            .equals(profileProperties.get(BnpConstants.TYPE, StringUtils.EMPTY), BnpConstants.BROADCAST_VALUE_INTERNAL)) {
+            genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistinginternalusers.html", emailRecipients, emailParams);
+        } else {
+            genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentexistingexternalusers.html", emailRecipients, emailParams);
+        }
+    }
+
     private void getProjectDetails(Job job, ResourceResolver resourceResolver,
                                    Map<String, String> emailParams, Resource group) throws RepositoryException {
-        if (StringUtils.equals("rep:members", group.getName())) {
+        if (StringUtils.equals(BnpConstants.REP_MEMBERS, group.getName())) {
             group = group.getParent();
             ValueMap properties = group.getValueMap();
             if (properties.containsKey("rep:principalName")) {
@@ -115,7 +165,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                 log.debug("Query {}", result.getQueryStatement());
                 for (Hit hit : result.getHits()) {
                     if (null != hit.getResource().getChild(JcrConstants.JCR_CONTENT)) {
-                        emailParams.put("projectitle", hit.getResource().getChild(JcrConstants.JCR_CONTENT).getValueMap().get(JcrConstants.JCR_TITLE, StringUtils.EMPTY));
+                        emailParams.put(BnpConstants.PROJECT_TITLE, hit.getResource().getChild(JcrConstants.JCR_CONTENT).getValueMap().get(JcrConstants.JCR_TITLE, StringUtils.EMPTY));
                     }
                     emailParams.put("projecturl", hit.getPath());
                     emailParams.put("projectowner", job.getProperty("userID", StringUtils.EMPTY));
