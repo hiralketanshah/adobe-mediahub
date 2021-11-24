@@ -208,20 +208,17 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                     parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
                 }
 
-                if (log.isDebugEnabled()) {
-                    con.getHeaderFields().entrySet().stream().forEach(e -> log.debug("Header {} contains {}", e.getKey(), e.getValue().stream().collect(Collectors.joining(","))));
-                }
-
                 //Setting parameters
-                DataOutputStream out = new DataOutputStream(con.getOutputStream());
-                out.writeBytes(getParamsString(parameters));
-                out.flush();
-                out.close();
-
-                log.debug("Sending hit to {} with parameters {}", url, getParamsString(parameters));
-                int status = con.getResponseCode();
-                if (status != HttpURLConnection.HTTP_OK) {
-                    log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
+                try (DataOutputStream out = new DataOutputStream(con.getOutputStream())) {
+                    out.writeBytes(getParamsString(parameters));
+                    if (log.isDebugEnabled()) {
+                        log.debug("Sending hit to {} with parameters {}", url, getParamsString(parameters));
+                        con.getHeaderFields().entrySet().stream().forEach(e -> log.debug("Header {} contains {}", e.getKey(), e.getValue().stream().collect(Collectors.joining(","))));
+                    }
+                    int status = con.getResponseCode();
+                    if (status != HttpURLConnection.HTTP_OK) {
+                        log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
+                    }
                 }
 
             } catch (IOException e) {
