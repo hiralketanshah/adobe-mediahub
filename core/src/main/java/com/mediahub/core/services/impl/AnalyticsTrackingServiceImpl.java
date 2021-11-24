@@ -119,6 +119,10 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         if (metadata.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
             parameters.put("prop13", formatMetadata(metadata.get(BnpConstants.BNPP_BROADCAST_STATUS)));
         }
+        parameters.put("prop14", asset.getParent().getPath());
+        if (metadata.containsKey(BnpConstants.DAM_FILE_TITLE)) {
+            parameters.put("prop15", formatMetadata(metadata.get(BnpConstants.DAM_FILE_TITLE)));
+        }
 
         //Fill in media properties
         Resource media = asset.getParent();
@@ -187,6 +191,21 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 }
                 if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
                     parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_SOURCE_PROPERTY))) {
+                    parameters.put("prop16", properties.get(GlobalFilter.UTM_SOURCE_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY))) {
+                    parameters.put("prop17", properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY))) {
+                    parameters.put("prop18", properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_TERM_PROPERTY))) {
+                    parameters.put("prop19", properties.get(GlobalFilter.UTM_TERM_PROPERTY));
+                }
+                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CONTENT_PROPERTY))) {
+                    parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
                 }
 
                 if (log.isDebugEnabled()) {

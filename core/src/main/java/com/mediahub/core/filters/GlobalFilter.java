@@ -15,6 +15,7 @@
  */
 package com.mediahub.core.filters;
 
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 import org.slf4j.Logger;
@@ -41,6 +42,12 @@ public class GlobalFilter implements Filter {
     public static final String USER_AGENT_PROPERTY = "USER_AGENT";
     public static final String LANGUAGE_PROPERTY = "LANGUAGE";
     public static final String REFERER_PROPERTY = "REFERER";
+    public static final String UTM_SOURCE_PROPERTY = "utm_source";
+    public static final String UTM_MEDIUM_PROPERTY = "utm_medium";
+    public static final String UTM_CAMPAIGN_PROPERTY = "utm_campaign";
+    public static final String UTM_TERM_PROPERTY = "utm_term";
+    public static final String UTM_CONTENT_PROPERTY = "utm_content";
+
 
     private static final ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<>();
 
@@ -67,6 +74,21 @@ public class GlobalFilter implements Filter {
             globalProperties.put(USER_AGENT_PROPERTY, request.getHeader("User-Agent"));
             globalProperties.put(LANGUAGE_PROPERTY, request.getHeader("Accept-Language"));
             globalProperties.put(REFERER_PROPERTY, request.getHeader("Referer"));
+            if (!StringUtils.isEmpty(request.getParameter(UTM_SOURCE_PROPERTY))) {
+                globalProperties.put(UTM_SOURCE_PROPERTY, request.getParameter(UTM_SOURCE_PROPERTY));
+            }
+            if (!StringUtils.isEmpty(request.getParameter(UTM_MEDIUM_PROPERTY))) {
+                globalProperties.put(UTM_MEDIUM_PROPERTY, request.getParameter(UTM_MEDIUM_PROPERTY));
+            }
+            if (!StringUtils.isEmpty(request.getParameter(UTM_CAMPAIGN_PROPERTY))) {
+                globalProperties.put(UTM_CAMPAIGN_PROPERTY, request.getParameter(UTM_CAMPAIGN_PROPERTY));
+            }
+            if (!StringUtils.isEmpty(request.getParameter(UTM_TERM_PROPERTY))) {
+                globalProperties.put(UTM_TERM_PROPERTY, request.getParameter(UTM_TERM_PROPERTY));
+            }
+            if (!StringUtils.isEmpty(request.getParameter(UTM_CONTENT_PROPERTY))) {
+                globalProperties.put(UTM_CONTENT_PROPERTY, request.getParameter(UTM_CONTENT_PROPERTY));
+            }
             setGlobalProperties(globalProperties);
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {

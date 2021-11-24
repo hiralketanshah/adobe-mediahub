@@ -118,6 +118,7 @@ public class BnpConstants {
 
 
     public static final String DAM_FILE_FORMAT = DamConstants.DC_FORMAT;
+    public static final String DAM_FILE_TITLE = DamConstants.DC_TITLE;
     public static final String DAM_SLING_FOLDER = JcrResourceConstants.NT_SLING_FOLDER;
 
 
