@@ -2,6 +2,7 @@ package com.mediahub.core.jobs;
 
 import com.adobe.acs.commons.email.EmailServiceConstants;
 import com.adobe.acs.commons.i18n.I18nProvider;
+import com.day.cq.commons.Externalizer;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
@@ -48,6 +49,9 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
 
     @Reference
     private GenericEmailNotification genericEmailNotification;
+
+    @Reference
+    private Externalizer externalizer;
 
     @SuppressWarnings("CQRules:AMSCORE-553")
     @Reference
@@ -171,7 +175,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                     if (null != hit.getResource().getChild(JcrConstants.JCR_CONTENT)) {
                         emailParams.put(BnpConstants.PROJECT_TITLE, hit.getResource().getChild(JcrConstants.JCR_CONTENT).getValueMap().get(JcrConstants.JCR_TITLE, StringUtils.EMPTY));
                     }
-                    emailParams.put("projecturl", hit.getPath());
+                    emailParams.put("projecturl", externalizer.authorLink(resourceResolver, hit.getPath()));
                     emailParams.put("projectowner", getProjectOwnerName(job.getProperty("userID", StringUtils.EMPTY), resourceResolver));
                     break;
                 }
