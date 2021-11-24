@@ -25,7 +25,7 @@
 
 %><ui:includeClientLib categories="dam.admin.searchpanel.searchtypepredicate" />
 <coral-select class="cq-dam-searchContextDropdown" label="<%= xssAPI.encodeForHTML(i18n.get(fieldLabel)) %>">
-    <coral-select-item value="files" selected><%= xssAPI.encodeForHTML(i18n.get("Assets")) %></coral-select-item>
-    <coral-select-item value="folders"><%= xssAPI.encodeForHTML(i18n.get("Media")) %></coral-select-item>
+    <coral-select-item value="files"><%= xssAPI.encodeForHTML(i18n.get("Assets")) %></coral-select-item>
+    <coral-select-item value="folders" selected><%= xssAPI.encodeForHTML(i18n.get("Media")) %></coral-select-item>
 </coral-select>
 
