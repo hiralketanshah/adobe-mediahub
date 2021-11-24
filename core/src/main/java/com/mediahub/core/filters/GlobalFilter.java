@@ -70,7 +70,7 @@ public class GlobalFilter implements Filter {
             if (ipAddress == null) {
                 ipAddress = request.getRemoteAddr();
             }
-            globalProperties.put(IP_ADDRESS_PROPERTY, ipAddress.split(",")[0].trim());
+            globalProperties.put(IP_ADDRESS_PROPERTY, ipAddress.split(",")[0].split(":")[0].trim());
             globalProperties.put(USER_AGENT_PROPERTY, request.getHeader("User-Agent"));
             globalProperties.put(LANGUAGE_PROPERTY, request.getHeader("Accept-Language"));
             globalProperties.put(REFERER_PROPERTY, request.getHeader("Referer"));
