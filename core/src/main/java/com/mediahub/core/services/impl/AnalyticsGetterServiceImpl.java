@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -60,7 +59,6 @@ import com.mediahub.core.services.AuthService;
 public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	private static final Logger log = LoggerFactory.getLogger(AnalyticsGetterServiceImpl.class);
     private static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-    private static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
     private static final String ANALYTICS_TEMPLATES = "/etc/mediahub/analyticstemplates/";
     private static final String ANALYTICS_ENV = "analyticsEnv";
     private final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
@@ -98,7 +96,6 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     private Config config;
     private ExecutorService executorService;
     private DateFormat outputDateFormat = new SimpleDateFormat(DATE_OUTPUT_FORMAT);
-    private DateFormat inputDateFormat = new SimpleDateFormat(DATE_INPUT_FORMAT);
     
     @Reference
     private AuthService authService;
@@ -121,34 +118,27 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
      * Custom call by template + parameters
      */
     @Override
-    public JsonObject getCustomReport(Map<String, String> parametersMap) {    	
+    public JsonObject getCustomReport(Map<String, String> parametersMap, Date startDate, Date endDate) {    	
     	JsonObject reports = new JsonObject();
     	
     	try {
 	//    	String rootPath = parametersMap.get("rootPath").toString();    		
-    		if (parametersMap.containsKey("startDate")) {
-    			String startDateStr = parametersMap.get("startDate").toString();
-    			Date startDate = inputDateFormat.parse(startDateStr);
+    		if (startDate != null) {
     			parametersMap.put("startDate", outputDateFormat.format(startDate));    			
     		}
     		
-    		if (parametersMap.containsKey("endDate")) {
-    			String endDateStr = parametersMap.get("endDate").toString();
-    			Date endDate = inputDateFormat.parse(endDateStr);
+    		if (endDate != null) {
     			parametersMap.put("endDate", outputDateFormat.format(endDate));    			
     		}
 	    	
-    		if (parametersMap.containsKey("dimension")) {    			
-    			String dimension = parametersMap.get("dimension").toString();
-    			reports = performCustomCall(dimension, parametersMap);
+    		if (parametersMap.containsKey("template")) {    			
+    			String template = parametersMap.get("template").toString();
+    			reports = performCustomCall(template, parametersMap);
     		} else {
-    			reports.addProperty("error", "dimension is mandatory");
+    			reports.addProperty("error", "Either action or template is mandatory");
     		}
 			
-    	} catch (ParseException e) {
-    		log.error("Failed to parse date", e);
-    		reports.addProperty("error", e.getMessage());
-		} catch (LoginException e) {
+    	} catch (LoginException e) {
 			log.error("Failed to get call Template", e);
 			reports.addProperty("error", e.getMessage());
 		} catch (IOException e) {
@@ -188,7 +178,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "2");
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2");
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
@@ -208,7 +198,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Sort.desc, Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc, Collections.singletonList("0"));
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
@@ -233,7 +223,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getCurrentMonthStart()) + "/" + outputDateFormat.format(getCurrentMonthEnd()));
@@ -253,7 +243,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "2", Sort.desc, Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc, Collections.singletonList("0"));
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
@@ -276,8 +266,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "2", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
     	AnalyticsCallMetric typeMetric = new AnalyticsCallMetric("cm1773_613a1285f5584605697d0cfe", "3");
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, typeMetric);
     	
@@ -294,7 +284,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop6", metrics, null, globalFilters, null, null, 5L, "exclude-nones");
@@ -307,7 +297,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop7", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
@@ -320,7 +310,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop3", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
@@ -333,7 +323,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop8", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
@@ -346,7 +336,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop1", metrics, null, globalFilters, null, null, 5L, "exclude-nones");
@@ -359,8 +349,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "2", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
     	
     	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
@@ -376,8 +366,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "2", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "3", Arrays.asList("2", "3"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2", Arrays.asList("0", "1"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "3", Arrays.asList("2", "3"));
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
     	
     	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("0", FilterType.breakdown, "prop4", "2711056172");
@@ -407,8 +397,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("assetimpressions", "1", Arrays.asList("0", "2", "4"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("assetimpressions", "2", Arrays.asList("1", "3", "5"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/aemassetimpressions", "1", Sort.desc, Arrays.asList("0", "2", "4"));
+    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/aemassetimpressions", "2", Arrays.asList("1", "3", "5"));
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
     	
     	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("0", FilterType.breakdown, "prop1", "3204310542");
@@ -432,8 +422,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("event1", "2");
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2");
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
     	
     	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
@@ -451,8 +441,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "2", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
     	
     	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
@@ -468,8 +458,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("event1", "2", Collections.singletonList("2"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Arrays.asList("0", "1"));
+    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2", Collections.singletonList("2"));
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
     	
     	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
@@ -487,8 +477,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "2", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
     	AnalyticsCallMetric operatingSystemMetric = new AnalyticsCallMetric("cm1773_613a192e405ee86c1753c0b1", "3");
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, operatingSystemMetric);
     	
@@ -505,8 +495,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("event1", "2", Collections.singletonList("2"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Arrays.asList("0", "1"));
+    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Collections.singletonList("2"));
     	AnalyticsCallMetric operatingSystemMetric = new AnalyticsCallMetric("cm1773_613a192e405ee86c1753c0b1", "3", Collections.singletonList("3"));
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, operatingSystemMetric);
     	
@@ -526,7 +516,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "referrer", metrics, null, globalFilters, null, null, 50L);
@@ -542,7 +532,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "geocountry", metrics, null, globalFilters, null, null, 50L);
@@ -555,7 +545,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "geocountry", metrics, null, globalFilters, null, null, 50L);
@@ -568,7 +558,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "language", metrics, null, globalFilters, null, null, 50L);
@@ -584,8 +574,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("event1", "2");
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2");
     	AnalyticsCallMetric timepartMetric = new AnalyticsCallMetric("cm1773_613a1cd48ef9e17f9e77f1ca", "3");
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2, timepartMetric);
     	
@@ -607,8 +597,8 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("event1", "3", Collections.singletonList("1"));
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
+    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "3", Collections.singletonList("1"));
     	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
     	
     	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
@@ -628,9 +618,16 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	    return performReportsCall(callData.toString());
     }
 	
-    private JsonObject performCustomCall(String action, Map<String, String> callParams) throws LoginException, IOException {
+    private JsonObject performCustomCall(String template, Map<String, String> callParams) throws LoginException, IOException {
     	try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-			Resource getFoldersTemplateResource = resourceResolver.getResource(ANALYTICS_TEMPLATES + action + ".json");
+			Resource getFoldersTemplateResource = resourceResolver.getResource(ANALYTICS_TEMPLATES + template + ".json");
+			if (getFoldersTemplateResource == null) {
+				log.error("Failed to call Analytics service");
+				JsonObject error = new JsonObject();
+				error.addProperty("error", "Expected to find a call template at: " + ANALYTICS_TEMPLATES + template + ".json");
+				return error;
+			}
+			
 			InputStream is = getFoldersTemplateResource.adaptTo(InputStream.class);
 			BufferedInputStream bis = new BufferedInputStream(is);
 			ByteArrayOutputStream buf = new ByteArrayOutputStream();

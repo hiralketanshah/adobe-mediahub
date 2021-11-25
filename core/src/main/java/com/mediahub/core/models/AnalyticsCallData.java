@@ -34,7 +34,7 @@ public class AnalyticsCallData {
 	
 	private String nonesBehavior;
 	
-	private AnalyticsCallSearch search;//TODO can be clause or specific itemIds so better create a bean for abstraction
+	private AnalyticsCallSearch search;
 	
 	public AnalyticsCallData(String rsId, String dimension, List<AnalyticsCallMetric> metrics, List<AnalyticsCallFilter> metricFilters, List<AnalyticsCallFilter> globalFilters, AnalyticsCallSearch search, Sort dimensionSort, Long limit, String nonesBehavior) {
 		this.rsId = rsId;
@@ -42,7 +42,7 @@ public class AnalyticsCallData {
 		this.metrics = metrics;
 		this.metricFilters = metricFilters;
 		this.globalFilters = globalFilters;
-		this.setSearch(search);
+		this.search = search;
 		this.dimensionSort = dimensionSort;
 		this.limit = limit;
 		this.nonesBehavior = nonesBehavior;
@@ -409,7 +409,7 @@ public class AnalyticsCallData {
 			JsonObject data = new JsonObject();
 			
 			data.addProperty("columnId", getColumnId());
-			data.addProperty("id", "metrics/" + getId());
+			data.addProperty("id", getId());
 			
 			if (getSort() != null) data.addProperty("sort", getSort().toString());
 			

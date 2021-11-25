@@ -14,7 +14,7 @@ public interface AnalyticsGetterService {
 	/**
      * Number of Impressions
      */
-	JsonObject getCustomReport(Map<String, String> parametersMap);
+	JsonObject getCustomReport(Map<String, String> parametersMap, Date startDate, Date endDate);
 	
 	JsonObject getFolders(String rootPath, Date startDate, Date endDate) throws IOException, LoginException;
 
