@@ -10,7 +10,7 @@
         org.apache.jackrabbit.api.security.user.Authorizable,
         org.apache.jackrabbit.api.security.user.Query,
         org.apache.jackrabbit.api.security.user.QueryBuilder,
-        org.apache.jackrabbit.api.security.user.User,
+        org.apache.jackrabbit.api.security.user.User,org.apache.jackrabbit.api.security.user.Group,
         com.adobe.granite.ui.components.Config,
         org.apache.sling.api.resource.ResourceResolver,
         org.apache.jackrabbit.api.security.principal.PrincipalManager,
@@ -70,7 +70,6 @@
     UserPropertiesService upService = sling.getService(UserPropertiesService.class);
     List<Authorizable> authorizables = new ArrayList<Authorizable>();
     final String nameDisplayOrder = i18n.get("{0} {1}","name display order: {0} is the given (first) name, {1} the family (last) name","givenName middleName","familyName");
-
     try {
         userResolver = resource.getResourceResolver();
         userSession = userResolver.adaptTo(Session.class);
@@ -79,6 +78,8 @@
         PrincipalManager pm = ((JackrabbitSession) userSession).getPrincipalManager();
         final UserPropertiesManager upm = upService.createUserPropertiesManager(userSession, resourceResolver);
 		boolean isExt = isExternalUser(um.getAuthorizable(userSession.getUserID()), upm);
+        boolean isAdmin = isAdminUser(um.getAuthorizable(userSession.getUserID()), upm);
+
         if ("true".equals(searchById)) {
            authorizables.add(um.getAuthorizable(searchProcessed));
         } else {
@@ -95,7 +96,7 @@
                 String scope = authorizable != null ? authorizable.getID() : null;
                 // create query
                 Query q = createQuery(searchProcessedOriginal,
-                        scope, offset, limit, showDeclaraedGroupMembersOnly);
+                        scope, offset, limit, showDeclaraedGroupMembersOnly, isExt, isAdmin);
                 Iterator<? extends Authorizable> result = um.findAuthorizables(q);
                 // iterate over the result and append to authorizables
                 while (result.hasNext()) {
@@ -104,6 +105,29 @@
                         authorizables.add(next);
                     }
                 }
+            }
+
+            if (isExt && (authorizable == null || authorizable.isGroup())) {
+
+                boolean showDeclaraedGroupMembersOnly = cfg.get("showDeclaraedGroupMembersOnly", false);
+
+               List<String> groups = getGroups(um.getAuthorizable(userSession.getUserID()));
+                for(String group : groups){
+					String scope = authorizable != null ? authorizable.getID() : null;
+                    // create query
+                    Query q = createQuery(searchProcessedOriginal,
+                            group, -1, -1, showDeclaraedGroupMembersOnly, isExt, isAdmin);
+                    Iterator<? extends Authorizable> result = um.findAuthorizables(q);
+                    // iterate over the result and append to authorizables
+                    while (result.hasNext()) {
+                        Authorizable next = result.next();
+                        if ((next.isGroup() ||  !((User)next).isSystemUser()) && !authorizables.contains(next)){
+                            authorizables.add(next);
+                        }
+                    }
+
+                }
+
             }
 
 	        if (!authorizables.isEmpty()) {
@@ -150,7 +174,7 @@
         image  = request.getContextPath() + image;
 
 		  String principalName = authorizable.getPrincipal().getName();
-		  %><li class="coral-SelectList-item coral-SelectList-item--option foundation-layout-flexmedia <%= isExt %>" data-principal-name="<%= xssAPI.encodeForHTMLAttr(principalName) %>" data-value="<%= xssAPI.encodeForHTMLAttr(authorizable.getID()) %>" data-display="<%= xssAPI.encodeForHTMLAttr(displayData) %>" data-name="<%= nameHtml %>" data-email="<%= xssAPI.encodeForHTMLAttr(email) %>">	
+		  %><li class="coral-SelectList-item coral-SelectList-item--option foundation-layout-flexmedia" data-principal-name="<%= xssAPI.encodeForHTMLAttr(principalName) %>" data-value="<%= xssAPI.encodeForHTMLAttr(authorizable.getID()) %>" data-display="<%= xssAPI.encodeForHTMLAttr(displayData) %>" data-name="<%= nameHtml %>" data-email="<%= xssAPI.encodeForHTMLAttr(email) %>">	
           <% if (image != null && image.length() > 0) { %>
                  <img class="foundation-layout-flexmedia-img" width="32" height="32" src="<%=  xssAPI.getValidHref(image) %>" alt="<%= xssAPI.encodeForHTMLAttr(name) %>"><%
              }
@@ -198,7 +222,7 @@
      */
     private Query createQuery(final String queryStringOriginal, final String group,
                               final long offset, final long limit,
-                              final boolean showDeclaraedGroupMembersOnly) {
+                              final boolean showDeclaraedGroupMembersOnly, final boolean isExt, final boolean isAdmin) {
         Query q = new Query() {
             public <T> void build(QueryBuilder<T> queryBuilder) {
                 T condition = null;
@@ -210,8 +234,13 @@
                 if(group != null) {
                     queryBuilder.setScope(group, showDeclaraedGroupMembersOnly);
                 }
-                queryBuilder.setSelector(Authorizable.class);
-                queryBuilder.setLimit(offset, limit);
+                if(offset!=-1 && limit !=-1){
+					queryBuilder.setLimit(offset, limit);
+                }
+                queryBuilder.setSelector(User.class);
+                if(isAdmin){
+                	queryBuilder.setSelector(Authorizable.class);
+                }
             }
         };
         return q;
@@ -224,6 +253,36 @@
 			returnValue = up.getProperty("type", "", String.class).equalsIgnoreCase("external") ? true : false;
 		}
 		return returnValue;
+	}
+
+	private Boolean isAdminUser(Authorizable user, UserPropertiesManager upm)throws RepositoryException{
+        boolean isAdminUser = false;
+		Iterator<Group> groups = user.memberOf();
+        while(groups.hasNext()) {
+			Group group = groups.next();
+			if(null!=group.getID() && group.getID().matches("administrators|mediahub-administrators|mediahub-super-administrators|mediahub-basic-entity-manager")) {
+				isAdminUser = true;
+				break;
+			}
+		}
+        return isAdminUser;
+	}
+
+	private List<String> getGroups(Authorizable user)throws RepositoryException{
+        Iterator<Group> groups = user.memberOf();
+        List<String> listOfGroups = new ArrayList<>();
+
+		while(groups.hasNext()) {
+			Group group = groups.next();
+			if(null!=group.getID() && group.getID().contains("external-contributor")) {
+				String groupName = group.getID();
+                String[] arrayOfGroupName = groupName.split("-external-contributor",2);
+                listOfGroups.add(arrayOfGroupName[0]);
+
+			}
+		}
+        return listOfGroups;
+
 	}
 
 %>
