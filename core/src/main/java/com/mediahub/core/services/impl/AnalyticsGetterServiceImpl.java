@@ -10,8 +10,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +36,8 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mediahub.core.constants.BnpConstants;
@@ -58,9 +58,17 @@ import com.mediahub.core.services.AuthService;
 @Designate(ocd = AnalyticsGetterServiceImpl.Config.class)
 public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	private static final Logger log = LoggerFactory.getLogger(AnalyticsGetterServiceImpl.class);
+	
+	private static final String JSON_EXTENSION = ".json";
+	private static final String EXCLUDE_NONES = "exclude-nones";
+	private static final String ASSET_PATH_DIMENSION = "prop14";
+	private static final String ZERO = "0";
+	private static final String DATE_RANGE_SEPARATOR = "/";
+	private static final String AEMASSETIMPRESSIONS_METRIC = "aemassetimpressions";
     private static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     private static final String ANALYTICS_TEMPLATES = "/etc/mediahub/analyticstemplates/";
     private static final String ANALYTICS_ENV = "analyticsEnv";
+    
     private final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
     @ObjectClassDefinition(
@@ -118,8 +126,9 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
      * Custom call by template + parameters
      */
     @Override
-    public JsonObject getCustomReport(Map<String, String> parametersMap, Date startDate, Date endDate) {    	
-    	JsonObject reports = new JsonObject();
+    public JsonElement getCustomReport(Map<String, String> parametersMap, Date startDate, Date endDate) {    	
+    	JsonElement reports = null;
+    	JsonObject error = new JsonObject();
     	
     	try {
 	//    	String rootPath = parametersMap.get("rootPath").toString();    		
@@ -133,17 +142,20 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	    	
     		if (parametersMap.containsKey("template")) {    			
     			String template = parametersMap.get("template").toString();
-    			reports = performCustomCall(template, parametersMap);
+    			reports = toSimpleResult(performCustomCall(template, parametersMap));
     		} else {
-    			reports.addProperty("error", "Either action or template is mandatory");
+    			error.addProperty("error", "Either dimension or template is mandatory");
+    			reports = error;
     		}
 			
     	} catch (LoginException e) {
 			log.error("Failed to get call Template", e);
-			reports.addProperty("error", e.getMessage());
+			error.addProperty("error", e.getMessage());
+			reports = error;
 		} catch (IOException e) {
 			log.error("Failed to call Analytics service", e);
-			reports.addProperty("error", e.getMessage());
+			error.addProperty("error", e.getMessage());
+			reports = error;
 		}
 		
 		return reports;
@@ -153,465 +165,41 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
      * Getting subfolders
      */
     @Override
-    public JsonObject getFolders(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
+    public JsonElement getFolders(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
+    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + DATE_RANGE_SEPARATOR + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("aemassetimpressions", "0", Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric(AEMASSETIMPRESSIONS_METRIC, ZERO, Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallSearch search = new AnalyticsCallSearch("( BEGINS-WITH '" + rootPath + "' )");
     	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop14", metrics, null, globalFilters, search, null, 50L, "exclude-nones");
+    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), ASSET_PATH_DIMENSION, metrics, null, globalFilters, search, null, EXCLUDE_NONES);
     	
     	JsonObject jObject = performRegularCall(callData.toJson());
 		
 		return jObject;
 	}
     
-    
     /**
-     * Number of Impressions
+     * Getting dimension data
      */
     @Override
-    public JsonObject getAssetImpressionsPerDay(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
+    public JsonElement getDimension(String rootPath, String dimension, Date startDate, Date endDate) throws IOException, LoginException {
+    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + DATE_RANGE_SEPARATOR + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2");
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", ZERO);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangeday", metrics, metricFilters, globalFilters, null, Sort.asc);
+    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), dimension, globalFilters, metrics);
     	
     	JsonObject jObject = performRegularCall(callData.toJson());
-    	
-		//callParams.put("rootPath", rootPath);
 		
-		return jObject;
+		return toSimpleResult(jObject);
 	}
-    
-    @Override
-    public JsonObject getAssetImpressionsPerDayCounter(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc, Collections.singletonList("0"));
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangeday", metrics, metricFilters, globalFilters, null, null);
-    	
-    	JsonObject jObject = performRegularCall(callData.toJson());
-    	
-		//callParams.put("rootPath", rootPath);
-		
-		return jObject;
-	}
-    
-    @Override
-    public JsonObject getImpressionsPerMonthTarget(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-		return getImpressionsPerMonth(rootPath, startDate, endDate);
-	}
-    
-    @Override
-    public JsonObject getImpressionsPerMonth(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getCurrentMonthStart()) + "/" + outputDateFormat.format(getCurrentMonthEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangemonth", metrics, metricFilters, globalFilters, null, Sort.asc);
-    	
-    	JsonObject jObject = performRegularCall(callData.toJson());
-    	
-		//callParams.put("rootPath", rootPath);
-		
-		return jObject;
-	}
-    
-    @Override
-    public JsonObject getImpressionsPerDay(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc, Collections.singletonList("0"));
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangeday", metrics, metricFilters, globalFilters, null, null);
-    	
-    	JsonObject jObject = performRegularCall(callData.toJson());
-    	
-		//callParams.put("rootPath", rootPath);
-		
-		return jObject;
-	}
-    
-    /**
-     * Assets Characteristic
-     */
-    @Override
-    public JsonObject getTopAssetImpressions(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
-    	AnalyticsCallMetric typeMetric = new AnalyticsCallMetric("cm1773_613a1285f5584605697d0cfe", "3");
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, typeMetric);
-    	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangeday", metrics, metricFilters, globalFilters, null, null, 10L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getTopAssetMediaTypes(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop6", metrics, null, globalFilters, null, null, 5L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getTopAssetCategories(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop7", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getTopAssetTypes(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop3", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getTopMediaThemes(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop8", metrics, null, globalFilters, null, null, 10L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getTopAssetsSensibility(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "0", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop1", metrics, null, globalFilters, null, null, 5L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getBroadcastStatus(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
-    	
-    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop13", metrics, metricFilters, globalFilters, null, null, 50L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getImpressionsWithSubs(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "2", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "3", Arrays.asList("2", "3"));
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
-    	
-    	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("0", FilterType.breakdown, "prop4", "2711056172");
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("1", FilterType.dateRange, outputDateFormat.format(getTowWeeksBeforeNow()) + "/" + outputDateFormat.format(getEndOfTHeDay()));
-    	AnalyticsCallFilter breakdownMetricFilter2 = new AnalyticsCallFilter("2", FilterType.breakdown, "prop4", "3611065747" );
-    	AnalyticsCallFilter dateRangeMetricFilter2 = new AnalyticsCallFilter("3", FilterType.dateRange, outputDateFormat.format(getTowWeeksBeforeNow()) + "/" + outputDateFormat.format(getEndOfTHeDay()));
-    	List<AnalyticsCallFilter> metricFilters = Arrays.asList(breakdownMetricFilter, dateRangeMetricFilter, breakdownMetricFilter2, dateRangeMetricFilter2);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "daterangeday", metrics, metricFilters, globalFilters, null, Sort.asc);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getSubtitles(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {    	
-    	return getImpressionsWithSubs(rootPath, startDate, endDate);
-	}
-    
-    
-    @Override
-    public JsonObject getDetailedAssetInfo(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	return getImpressionsWithSubs(rootPath, startDate, endDate);
-	}
-    
-    @Override
-    public JsonObject getFreeForm(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/aemassetimpressions", "1", Sort.desc, Arrays.asList("0", "2", "4"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/aemassetimpressions", "2", Arrays.asList("1", "3", "5"));
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
-    	
-    	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("0", FilterType.breakdown, "prop1", "3204310542");
-    	AnalyticsCallFilter breakdownMetricFilter2 = new AnalyticsCallFilter("1", FilterType.breakdown, "prop1", "1742590979");
-    	AnalyticsCallFilter breakdownMetricFilter3 = new AnalyticsCallFilter("2", FilterType.breakdown, "prop11", "1277529264" );
-    	AnalyticsCallFilter breakdownMetricFilter4 = new AnalyticsCallFilter("3", FilterType.breakdown, "prop11", "1277529264" );
-    	AnalyticsCallFilter breakdownMetricFilter5 = new AnalyticsCallFilter("4", FilterType.breakdown, "prop6", "234358538" );
-    	AnalyticsCallFilter breakdownMetricFilter6 = new AnalyticsCallFilter("5", FilterType.breakdown, "prop6", "234358538" );
-    	List<AnalyticsCallFilter> metricFilters = Arrays.asList(breakdownMetricFilter, breakdownMetricFilter2, breakdownMetricFilter3, breakdownMetricFilter4, breakdownMetricFilter5, breakdownMetricFilter6);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "prop4", metrics, metricFilters, globalFilters, null, null, 5L, "exclude-nones");
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    /**
-     * Technical Information
-     */
-    @Override
-    public JsonObject getDeviceType(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2");
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(dateRangeMetricFilter);
-    	
-    	AnalyticsCallSearch search = new AnalyticsCallSearch("itemIds", "0", "2163986270");
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "mobiledevicetype", metrics, metricFilters, globalFilters, search, null, 5000L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getDeviceTypeTop(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(dateRangeMetricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "mobiledevicetype", metrics, metricFilters, globalFilters, null, null, 5L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getImpressionsPerBrowser(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2", Collections.singletonList("2"));
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("1", FilterType.breakdown, "browsertype", "7");
-    	AnalyticsCallFilter breakdownMetricFilter2 = new AnalyticsCallFilter("2", FilterType.breakdown, "browsertype", "7");
-    	List<AnalyticsCallFilter> metricFilters = Arrays.asList(dateRangeMetricFilter, breakdownMetricFilter, breakdownMetricFilter2);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "browser", metrics, metricFilters, globalFilters, null, null, 5L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getOperatingSystems(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Sort.desc);
-    	AnalyticsCallMetric operatingSystemMetric = new AnalyticsCallMetric("cm1773_613a192e405ee86c1753c0b1", "3");
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, operatingSystemMetric);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(dateRangeMetricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "operatingsystemgroup", metrics, metricFilters, globalFilters, null, null, 10L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getOperatingSystemsTable(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Arrays.asList("0", "1"));
-    	AnalyticsCallMetric impressionsMetricDesc = new AnalyticsCallMetric("metrics/event1", "2", Collections.singletonList("2"));
-    	AnalyticsCallMetric operatingSystemMetric = new AnalyticsCallMetric("cm1773_613a192e405ee86c1753c0b1", "3", Collections.singletonList("3"));
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetricDesc, operatingSystemMetric);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	AnalyticsCallFilter breakdownMetricFilter = new AnalyticsCallFilter("1", FilterType.breakdown, "operatingsystemgroup", "4");
-    	AnalyticsCallFilter breakdownMetricFilter2 = new AnalyticsCallFilter("2", FilterType.breakdown, "operatingsystemgroup", "4");
-    	AnalyticsCallFilter breakdownMetricFilter3 = new AnalyticsCallFilter("3", FilterType.breakdown, "operatingsystemgroup", "4");
-    	List<AnalyticsCallFilter> metricFilters = Arrays.asList(dateRangeMetricFilter, breakdownMetricFilter, breakdownMetricFilter2, breakdownMetricFilter3);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "operatingsystem", metrics, metricFilters, globalFilters, null, null, 5L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getReferrer(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "referrer", metrics, null, globalFilters, null, null, 50L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    /**
-     * Geoloc
-     */
-    @Override
-    public JsonObject getMap(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "geocountry", metrics, null, globalFilters, null, null, 50L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getImpressionsPerCountry(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "geocountry", metrics, null, globalFilters, null, null, 50L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getLanguage(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Sort.desc);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "language", metrics, null, globalFilters, null, null, 50L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    /**
-     * Time Parting
-     */
-    @Override
-    public JsonObject getWeekdayImpressions(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "2");
-    	AnalyticsCallMetric timepartMetric = new AnalyticsCallMetric("cm1773_613a1cd48ef9e17f9e77f1ca", "3");
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2, timepartMetric);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastMonthStart()) + "/" + outputDateFormat.format(getLastMonthEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(dateRangeMetricFilter);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "timepartdayofweek", metrics, metricFilters, globalFilters, null, Sort.asc, 10L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    @Override
-    public JsonObject getWeekday(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	return getWeekdayImpressions(rootPath, startDate, endDate);
-	}
-    
-    @Override
-    public JsonObject getHourOfDay(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + "/" + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", "1", Collections.singletonList("0"));
-    	AnalyticsCallMetric impressionsMetric2 = new AnalyticsCallMetric("metrics/event1", "3", Collections.singletonList("1"));
-    	List<AnalyticsCallMetric> metrics = Arrays.asList(impressionsMetric, impressionsMetric2);
-    	
-    	AnalyticsCallFilter dateRangeMetricFilter = new AnalyticsCallFilter("0", FilterType.dateRange, outputDateFormat.format(getLastWeekStart()) + "/" + outputDateFormat.format(getLastWeekEnd()));
-    	AnalyticsCallFilter dateRangeMetricFilter2 = new AnalyticsCallFilter("1", FilterType.dateRange, outputDateFormat.format(getCurrentWeekStart()) + "/" + outputDateFormat.format(getCurrentWeekEnd()));
-    	List<AnalyticsCallFilter> metricFilters = Arrays.asList(dateRangeMetricFilter, dateRangeMetricFilter2);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), "timeparthourofday", metrics, metricFilters, globalFilters, null, Sort.asc, 25L);
-    	
-    	return performRegularCall(callData.toJson());
-	}
-    
-    
-    /**
+
+	/**
      * Call handling methods
      */
     private JsonObject performRegularCall(JsonObject callData) throws IOException, LoginException {	    
@@ -620,11 +208,11 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	
     private JsonObject performCustomCall(String template, Map<String, String> callParams) throws LoginException, IOException {
     	try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-			Resource getFoldersTemplateResource = resourceResolver.getResource(ANALYTICS_TEMPLATES + template + ".json");
+			Resource getFoldersTemplateResource = resourceResolver.getResource(ANALYTICS_TEMPLATES + template + JSON_EXTENSION);
 			if (getFoldersTemplateResource == null) {
 				log.error("Failed to call Analytics service");
 				JsonObject error = new JsonObject();
-				error.addProperty("error", "Expected to find a call template at: " + ANALYTICS_TEMPLATES + template + ".json");
+				error.addProperty("error", "Expected to find a call template at: " + ANALYTICS_TEMPLATES + template + JSON_EXTENSION);
 				return error;
 			}
 			
@@ -652,7 +240,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     private JsonObject performReportsCall(String message) throws IOException {
     	String accessToken = authService.getAuthToken();			
     	
-    	String reportsUrl = this.config.analyticsApiUrl() + "/" + this.config.globalCompanyId() + "/reports";
+    	String reportsUrl = this.config.analyticsApiUrl() + DATE_RANGE_SEPARATOR + this.config.globalCompanyId() + "/reports";
     	URL obj = new URL(reportsUrl);
     	HttpsURLConnection con = (HttpsURLConnection)obj.openConnection();
     	
@@ -665,7 +253,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	con.setRequestProperty("x-api-key", this.config.apiKey());
     	con.setRequestProperty("x-proxy-global-company-id", this.config.globalCompanyId());
     	
-    	log.info("Sending 'POST' request to URL: " + reportsUrl);
+    	log.debug("Sending 'POST' request to URL: " + reportsUrl);
     	
     	OutputStream os = con.getOutputStream();
     	os.write(message.getBytes("UTF-8"));
@@ -675,7 +263,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	
     	String response = handleResponse(con);
     	
-    	log.info("analytics/reports response: " + response);
+    	log.debug("analytics/reports response: " + response);
     	
     	// get the global company id of the first company in the first IMS org
     	JsonObject jObject = new JsonParser().parse(response).getAsJsonObject();
@@ -713,120 +301,15 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 		return response.toString();
 	}
 	
-    /**
-     * Util methods
-     */
-    private static Calendar resetTime(Calendar calendar) {
-    	calendar.set(Calendar.HOUR_OF_DAY, 0);
-    	calendar.set(Calendar.MINUTE, 0);
-    	calendar.set(Calendar.SECOND, 0);
-    	calendar.set(Calendar.MILLISECOND, 0);
-    	
-    	return calendar;
-    }
-    
-    private static Date getLastWeekStart() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
-        c.add(Calendar.DATE, -i - 7);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getLastWeekEnd() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
-        c.add(Calendar.DATE, -i);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getCurrentMonthStart() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getCurrentMonthEnd() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.add(Calendar.MONTH, 1);
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getTowWeeksBeforeNow() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.add(Calendar.DAY_OF_MONTH, -14);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getEndOfTHeDay() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getLastMonthStart() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        c.add(Calendar.MONTH, -1);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getLastMonthEnd() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        c.set(Calendar.DAY_OF_MONTH, 1);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getCurrentWeekStart() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
-        c.add(Calendar.DATE, -i);
-        c = resetTime(c);
-        return c.getTime();
-    }
-    
-    private static Date getCurrentWeekEnd() {
-    	Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        
-        int i = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
-        c.add(Calendar.DATE, -i + 7);
-        c = resetTime(c);
-        return c.getTime();
-    }
+	private JsonElement toSimpleResult(JsonObject jObject) {
+		JsonArray result = jObject.getAsJsonArray("rows");
+		result.forEach((elem) -> {
+			if (elem.isJsonObject()) {
+				JsonObject row = elem.getAsJsonObject();
+				row.remove("itemId");
+	        }
+	    });
+		
+		return result;
+	}
 }

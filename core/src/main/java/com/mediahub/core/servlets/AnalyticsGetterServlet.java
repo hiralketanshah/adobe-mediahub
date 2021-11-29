@@ -16,17 +16,12 @@
 package com.mediahub.core.servlets;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.Servlet;
 
@@ -34,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -48,11 +44,17 @@ import com.mediahub.core.services.AnalyticsGetterService;
  */
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/getanalytics"})
 public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
+	
+	private static final long serialVersionUID = 1L;
     
-    private static final long serialVersionUID = 1L;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyticsGetterServlet.class);
-    
+	private static final Logger logger = LoggerFactory.getLogger(AnalyticsGetterServlet.class);
+	
+	private static final String ACTION_PARAM = "dimension";
+    private static final String END_DATE_PARAM = "endDate";
+	private static final String START_DATE_PARAM = "startDate";
+	private static final String ROOT_PATH_PARAM = "path";
+	private static final String APPLICATION_JSON_CONTENT_TYPE = "application/json";
+	
     private DateFormat inputDateFormat = new SimpleDateFormat(DATE_INPUT_FORMAT);
     private static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
     
@@ -61,12 +63,12 @@ public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
     
     @Override
     protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
-    	LOGGER.info("Starting Analytics getter servlet");
+    	logger.info("Starting Analytics getter servlet");
     	
     	Date startDate = null, endDate = null;
-    	String action = request.getParameter("action");
-    	String startDateStr = request.getParameter("startDate");
-		String endDateStr = request.getParameter("endDate");
+    	String dimension = request.getParameter(ACTION_PARAM);
+    	String startDateStr = request.getParameter(START_DATE_PARAM);
+		String endDateStr = request.getParameter(END_DATE_PARAM);
 		
     	try {
 	    	if (startDateStr != null) {
@@ -81,29 +83,20 @@ public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
 				endDate = new Date();
 			}
     	} catch (ParseException e) {
-    		LOGGER.error("Failed to parse date", e);
+    		logger.error("Failed to parse date", e);
     	}
     	
-    	response.setContentType("application/json");
+    	response.setContentType(APPLICATION_JSON_CONTENT_TYPE);
     	
-    	if (StringUtils.isNotEmpty(action)) {
+    	if (StringUtils.isNotEmpty(dimension)) {
+			String rootPath = request.getParameter(ROOT_PATH_PARAM);
+    		
     		try {
-    			String rootPath = request.getParameter("resource");
-	    		Method method = analyticsService.getClass().getMethod(action, String.class, Date.class, Date.class);
-	    		
-	    		response.getWriter().print(method.invoke(analyticsService, rootPath, startDate, endDate));
-	    		
-    		} catch (NoSuchMethodException | SecurityException e) {
-    			List<String> actions = Arrays.asList(analyticsService.getClass().getMethods()).stream()
-    					.map(m -> m.getName())
-    					.filter(n -> n.startsWith("get") && !StringUtils.equalsAny(n, "getCustomReport", "getClass"))
-    					.collect(Collectors.toList());
-    			LOGGER.error("Could not find the requested action", e);
-    			response.getWriter().print("Could not find the requested action. Available actions are: " + String.join(", ", actions));
-    		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
-    			LOGGER.error("Error trying to call action", e);
-    			response.getWriter().print("Error trying to call action");
-    		}
+				response.getWriter().print(analyticsService.getDimension(rootPath, dimension, startDate, endDate));
+			} catch (IOException | LoginException e) {
+				logger.error("Error trying to call service", e);
+    			response.getWriter().print("Error trying to call service");
+			}
     	}
     	else {
     		Map<String, String> parametersMap = new HashMap<String, String>();
@@ -116,6 +109,6 @@ public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
     		response.getWriter().print(analyticsService.getCustomReport(parametersMap, startDate, endDate));
     	}
     	
-        LOGGER.info("Successfully executed analytics service");
+        logger.debug("Successfully executed analytics service");
     }
 }

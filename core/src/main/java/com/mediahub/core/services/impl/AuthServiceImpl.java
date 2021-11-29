@@ -2,10 +2,7 @@ package com.mediahub.core.services.impl;
 
 import static java.lang.Boolean.TRUE;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
@@ -14,7 +11,6 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +32,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -54,7 +48,6 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AuthService;
 
 import io.jsonwebtoken.Claims;
@@ -78,8 +71,6 @@ public class AuthServiceImpl implements AuthService {
 	private static final String BEGIN_PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----";
 	private static final String NEW_LINE = "\\n";
 	private static final String EMPTY = "";
-    
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
     
     @Reference
 	private ResourceResolverFactory resolverFactory;
@@ -108,10 +99,10 @@ public class AuthServiceImpl implements AuthService {
         String apiKey() default EMPTY;
     	
     	@AttributeDefinition(
-                name = "Certificate Resource Path",
-                description = "JWT signing certificate path in AEM"
+                name = "Signing Certificate",
+                description = "JWT signing certificate"
         )
-        String keyPath() default EMPTY;
+        String privateKey() default EMPTY;
     	
     	@AttributeDefinition(
                 name = "Auth host",
@@ -244,19 +235,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
 	private RSAPrivateKey transformKey() {
-		try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
-			Resource privateKeyRes = resourceResolver.getResource(this.config.keyPath());
-			InputStream is = privateKeyRes.adaptTo(InputStream.class);
-			BufferedInputStream bis = new BufferedInputStream(is);
-			ByteArrayOutputStream buf = new ByteArrayOutputStream();
-			int result = bis.read();
-			while (result != -1) {
-				byte b = (byte) result;
-				buf.write(b);
-				result = bis.read();
-			}
-			
-			String privatekeyString = buf.toString();
+		try {
+			String privatekeyString = this.config.privateKey();
 			privatekeyString  = privatekeyString.replaceAll(NEW_LINE, EMPTY).replace(BEGIN_PRIVATE_KEY, EMPTY).replace(END_PRIVATE_KEY, EMPTY);
 			log.debug("The sanitized private key string is " + privatekeyString);
 			// Create the private key
@@ -272,7 +252,7 @@ public class AuthServiceImpl implements AuthService {
 			RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(ks);
 			
 			return privateKey;
-		} catch (LoginException | IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 			log.error("Could not parse the provided private key", e);
 		}
 		
