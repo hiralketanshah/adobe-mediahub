@@ -1,6 +1,6 @@
 package com.mediahub.core.workflows;
 
-import com.adobe.granite.asset.api.Asset;
+import com.adobe.granite.asset.api.Rendition;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -15,6 +15,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,13 +60,19 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
             if (null != payload && StringUtils.isNotBlank(destinationPath)) {
-                crunchifyWriteToFile(payload);
-            }
-            else {
+                Resource resourceAsset = payload.getParent().getParent();
+                Resource metadata = resourceAsset.getChild(BnpConstants.METADATA);
+                ValueMap metadataProperties = metadata.adaptTo(ValueMap.class);
+                if (metadataProperties.containsKey("bnpp-rich-media")
+                        && metadataProperties.get("bnpp-rich-media", String.class).equalsIgnoreCase("true")) {
+                    crunchifyWriteToFile(payload);
+                }
+
+            } else {
                 log.info("Either payload or destination path is empty");
             }
         } catch (LoginException | IOException e) {
-            throw new WorkflowException("Error while publishing asset", e);
+            throw new WorkflowException("Error while moving rich media asset", e);
         } finally {
             if (resourceResolver != null && resourceResolver.isLive()) {
                 resourceResolver.close();
@@ -75,14 +82,21 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
 
     private static void crunchifyWriteToFile(Resource payload) throws IOException {
 
-        InputStream userInputStream = payload.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
-                .getStream();
+        InputStream userInputStream = payload.adaptTo(Rendition.class).getStream();
         ZipArchiveInputStream zipArchiveInputStream = new ZipArchiveInputStream(userInputStream);
         File folderFile = new File(destinationPath);
         try {
             ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
             while (archiveEntry != null) {
                 File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
+                if (entry.exists()) {
+                    File parent = new File(entry.getParent());
+                    log.info(parent.getAbsolutePath());
+                    File[] files = parent.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        files[i].delete();
+                    }
+                }
                 entry.getParentFile().mkdirs();
                 entry.createNewFile();
                 FileOutputStream fileOutputStream = new FileOutputStream(entry);
