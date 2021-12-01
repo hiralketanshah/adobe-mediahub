@@ -221,6 +221,67 @@
         //
     }
 
+    function saveMetadataChangesBulkEditMedia(e) {
+            if(!validateBnppStatus()){
+                showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("BNPP Status is not Validated."),
+                    '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
+                return false;
+            }
+
+            // @see CQ-29669 Don't validate for bulkeditor
+            if (!validateRequiredFields()) {
+                showDialog("aem-assets-metadataedit-validationerror", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("One or more required field(s) is/are empty."),
+                    '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
+                return;
+            }
+
+            //
+            createNewTags($("form.cq-damadmin-admin-folder-settings-form")).done(function() {
+                addRating();
+            }).fail(function(response) {
+                showDialog("aem-assets-metadataedit-tags-error", "error", Granite.I18n.get("Error"),
+                    Granite.I18n.get("Unable to create new tags. Check for access privileges to create tags."), "");
+            });
+
+
+
+            var wizard = $("form#folder-settings-form")[0];
+            var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+            var mediaPaths = folderPath.split("%2c");
+            if(folderPath && folderPath.includes("%2c")){
+                mediaPaths.forEach(function(path) {
+                  var hintFields = createHintFields(false, false);
+                  $.DAM.FolderShare.updateCugToFolder(path, function() {
+                      // submit the form after cug policy is applied to folder
+                      $("form#folder-settings-form")[0].action = path;
+                      $.DAM.FolderShare.submitBulkMedia(wizard, hintFields, path);
+                  });
+                });
+            } else {
+                var hintFields = createHintFields(false, false);
+                $.DAM.FolderShare.updateCugToFolder(folderPath, function() {
+                    // submit the form after cug policy is applied to folder
+                    $.DAM.FolderShare.submit(wizard, hintFields);
+                });
+            }
+
+            if ($("#collection-modifieddate").length) {
+                $("#collection-modifieddate").attr("value", (new Date()).toISOString());
+            }
+
+            if(folderPath && folderPath.includes("%2c")){
+                mediaPaths.forEach(function(path) {
+                  internalPublish(document.getElementById("shell-propertiespage-bulksave-publish").getAttribute("isValidated"), e , "true", "true", path);
+                });
+            } else {
+                internalPublish(document.getElementById("shell-propertiespage-bulksave-publish").getAttribute("isValidated"), e , "true", "true", folderPath);
+            }
+
+            return true;
+        }
+
     function saveMediaMetadataChanges(e) {
 
             if (document.getElementById("shell-propertiespage-save-publish").getAttribute("ismediavalidated") === "emptyMedia") {
@@ -288,6 +349,28 @@
                     handler: function () {
                       internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
                       location.href = $(".foundation-backanchor").attr("href");
+                    }
+                }]);
+
+          } else {
+              internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+          }
+        }
+        return false;
+    });
+
+
+    $(document).on("click", "#shell-propertiespage-bulksave-publish", function(e) {
+        if(saveMetadataChangesBulkEditMedia(e)){
+          var isValidated = document.getElementById("shell-propertiespage-bulksave-publish").getAttribute("isValidated");
+          if (isValidated && isValidated === 'true') {
+                var ui = $(window).adaptTo("foundation-ui");
+                var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                    text: Granite.I18n.get("OK"),
+                    primary: true,
+                    handler: function () {
+                        location.href = $(".foundation-backanchor").attr("href");
                     }
                 }]);
 
