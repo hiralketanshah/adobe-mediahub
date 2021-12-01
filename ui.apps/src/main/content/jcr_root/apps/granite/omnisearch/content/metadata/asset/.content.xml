@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+  clientlibs="[dam.gui.actions.coral,unorm.coral,granite.shared,cq.gui.damadmin.collectiondock.coral,dam.gui.components.admin.adhocassetshare.coral,cq.common.wcm,dam.gui.view.insight,cq.gui.damadmin.lightbox.coral,cq.siteadmin.common,cq.gui.s7dam.admin.assetviewer,cq.gui.damadmin.omnisearch.coral,dam.gui.desktop.coral,dam.gui.admin.coral,dam.gui.admin.publishasset.coral,dam.gui.admin.unpublishasset.coral,dam.gui.assetomnisearch,dam.gui.coral.backhref,dam.gui.admin.desktop.coral, dam.gui.coral.stock.actions,dam.gui.mediaaccess.activecondition]"
+  jcr:primaryType="sling:Folder"/>

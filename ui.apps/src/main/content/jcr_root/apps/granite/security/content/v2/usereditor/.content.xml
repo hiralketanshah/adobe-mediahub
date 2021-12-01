@@ -19,7 +19,7 @@
         <clientlibs
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-                categories="[granite.security.ui.user.editor.v2,granite.security.ui.user.keystore.v2]"/>
+                categories="[granite.security.ui.user.editor.v2,granite.security.ui.user.keystore.v2,mediahub.user.creation]"/>
     </head>
     <title
             jcr:primaryType="nt:unstructured"

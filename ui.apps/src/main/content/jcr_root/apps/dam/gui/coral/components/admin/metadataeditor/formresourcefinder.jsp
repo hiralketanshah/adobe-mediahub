@@ -95,7 +95,7 @@ if (isReport) {
 } else if (isCollection) {
     MetadataEditorHelper helper = sling.getService(MetadataEditorHelper.class);
     Resource tabsResource = helper.getEditorFormResource(assetRes);
-    relativeFormPath = tabsResource == null ? "/collection" : tabsResource.getParent().getParent().getPath();
+    relativeFormPath = tabsResource == null ? "/collection" : "/apps/dam/content/schemaeditors/forms/collection";
 } else if (content.length > 1 && null != appsBulkForm) {
 		// Go to bulkview form in case of bulk view for backward compatibilty
 		relativeFormPath = "/bulkview";
