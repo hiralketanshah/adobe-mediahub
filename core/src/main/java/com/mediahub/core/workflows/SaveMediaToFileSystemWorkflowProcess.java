@@ -7,15 +7,10 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.mediahub.core.constants.BnpConstants;
-
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,8 +27,9 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
+@SuppressWarnings("findsecbugs:PATH_TRAVERSAL_IN")
 @Component(service = WorkflowProcess.class, immediate = true, property = {
-        "process.label=MEDIAHUB : Save Media To File System" })
+        "process.label=MEDIAHUB : Save Media To File System"})
 @Designate(ocd = SaveMediaToFileSystemWorkflowProcess.Config.class)
 public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
 

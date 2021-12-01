@@ -6,7 +6,6 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.mediahub.core.constants.BnpConstants;
-
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -24,8 +23,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+@SuppressWarnings("findsecbugs:PATH_TRAVERSAL_IN")
 @Component(service = WorkflowProcess.class, immediate = true, property = {
-        "process.label=MEDIAHUB : Remove Media To File System" })
+        "process.label=MEDIAHUB : Remove Media To File System"})
 @Designate(ocd = RemoveMediaToFileSystemWorkflowProcess.Config.class)
 public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
 
@@ -72,7 +72,7 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             }
         }
         boolean deleted = entry.delete();
-        log.info("File removed : {}",deleted); 
+        log.info("File removed : {}", deleted);
     }
 
     @ObjectClassDefinition(name = "Mediahub Remove Media To File System", description = "Configuration for removing rich media to file system")
