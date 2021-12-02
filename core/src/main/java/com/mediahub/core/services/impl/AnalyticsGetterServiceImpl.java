@@ -10,8 +10,10 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -57,6 +59,8 @@ import com.mediahub.core.services.AuthService;
 
 @Designate(ocd = AnalyticsGetterServiceImpl.Config.class)
 public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
+	private static final String METRICS_PREFIX = "metrics/";
+
 	private static final Logger log = LoggerFactory.getLogger(AnalyticsGetterServiceImpl.class);
 	
 	private static final String JSON_EXTENSION = ".json";
@@ -142,7 +146,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	    	
     		if (parametersMap.containsKey("template")) {    			
     			String template = parametersMap.get("template").toString();
-    			reports = toSimpleResult(performCustomCall(template, parametersMap));
+    			reports = performCustomCall(template, parametersMap);
     		} else {
     			error.addProperty("error", "Either dimension or template is mandatory");
     			reports = error;
@@ -162,14 +166,55 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 	}
     
     /**
-     * Getting subfolders
+     * Getting dimension data
      */
     @Override
-    public JsonElement getFolders(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
+    public JsonArray getDimension(String rootPath, String dimension, Date startDate, Date endDate) throws IOException, LoginException {
+    	List<String> folders = getFolderIds(rootPath, startDate, endDate);
+    	
+    	Map<String, Long> merged = new HashMap<String, Long>();
+    	
+    	for (String folderId: folders) {
+    		Map<String, Long> remaining = getDimensionCall(folderId, dimension, startDate, endDate);
+    		remaining.forEach((k, v) -> merged.merge(k, v, Long::sum));
+    	}
+    	
+    	JsonArray result = new JsonArray();
+    	for (Map.Entry<String, Long> entry : merged.entrySet()) {
+    		JsonObject obj = new JsonObject();
+    		obj.addProperty(entry.getKey(), entry.getValue());
+    		result.add(obj);
+    	}
+    	
+    	return result;
+    }
+    
+    private Map<String, Long> getDimensionCall(String folderId, String dimension, Date startDate, Date endDate) throws IOException, LoginException {
     	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + DATE_RANGE_SEPARATOR + outputDateFormat.format(endDate));
     	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
     	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric(AEMASSETIMPRESSIONS_METRIC, ZERO, Sort.desc);
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric(METRICS_PREFIX + AEMASSETIMPRESSIONS_METRIC, ZERO, Collections.singletonList(ZERO));
+    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
+    	
+    	AnalyticsCallFilter metricFilter = new AnalyticsCallFilter(ZERO, FilterType.breakdown, ASSET_PATH_DIMENSION, folderId);
+    	List<AnalyticsCallFilter> metricFilters = Collections.singletonList(metricFilter);
+    	
+    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), dimension, globalFilters, metrics, metricFilters);
+    	
+    	JsonObject jObject = performRegularCall(callData.toJson());
+    	
+    	return toSimpleResult(jObject);
+    }
+    
+    /**
+     * Getting subfolders
+     */
+    private List<String> getFolderIds(String rootPath, Date startDate, Date endDate) throws IOException, LoginException {
+    	List<String> result = new ArrayList<String>();
+    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + DATE_RANGE_SEPARATOR + outputDateFormat.format(endDate));
+    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
+    	
+    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric(METRICS_PREFIX + AEMASSETIMPRESSIONS_METRIC, ZERO, Sort.desc);
     	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
     	
     	AnalyticsCallSearch search = new AnalyticsCallSearch("( BEGINS-WITH '" + rootPath + "' )");
@@ -177,35 +222,21 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), ASSET_PATH_DIMENSION, metrics, null, globalFilters, search, null, EXCLUDE_NONES);
     	
     	JsonObject jObject = performRegularCall(callData.toJson());
+    	
+    	for (JsonElement elem: jObject.getAsJsonArray("rows")) {
+    		if (elem.isJsonObject()) {
+    			JsonObject elemObj = elem.getAsJsonObject();
+    			JsonElement valueElem = elemObj.get("itemId");
+    			result.add(valueElem.getAsString());
+    		}
+    	}
 		
-		return jObject;
-	}
-    
-    /**
-     * Getting dimension data
-     */
-    @Override
-    public JsonElement getDimension(String rootPath, String dimension, Date startDate, Date endDate) throws IOException, LoginException {
-    	AnalyticsCallFilter globalFilter = new AnalyticsCallFilter(FilterType.dateRange, outputDateFormat.format(startDate) + DATE_RANGE_SEPARATOR + outputDateFormat.format(endDate));
-    	List<AnalyticsCallFilter> globalFilters = Collections.singletonList(globalFilter);
-    	
-    	AnalyticsCallMetric impressionsMetric = new AnalyticsCallMetric("metrics/event1", ZERO);
-    	List<AnalyticsCallMetric> metrics = Collections.singletonList(impressionsMetric);
-    	
-    	AnalyticsCallData callData = new AnalyticsCallData(this.config.analyticsEnv(), dimension, globalFilters, metrics);
-    	
-    	JsonObject jObject = performRegularCall(callData.toJson());
-		
-		return toSimpleResult(jObject);
+		return result;
 	}
 
 	/**
      * Call handling methods
      */
-    private JsonObject performRegularCall(JsonObject callData) throws IOException, LoginException {	    
-	    return performReportsCall(callData.toString());
-    }
-	
     private JsonObject performCustomCall(String template, Map<String, String> callParams) throws LoginException, IOException {
     	try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
 			Resource getFoldersTemplateResource = resourceResolver.getResource(ANALYTICS_TEMPLATES + template + JSON_EXTENSION);
@@ -237,6 +268,10 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
     	}
 	}
 	
+    private JsonObject performRegularCall(JsonObject callData) throws IOException, LoginException {	    
+    	return performReportsCall(callData.toString());
+    }
+    
     private JsonObject performReportsCall(String message) throws IOException {
     	String accessToken = authService.getAuthToken();			
     	
@@ -301,12 +336,25 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
 		return response.toString();
 	}
 	
-	private JsonElement toSimpleResult(JsonObject jObject) {
-		JsonArray result = jObject.getAsJsonArray("rows");
-		result.forEach((elem) -> {
+	private Map<String, Long> toSimpleResult(JsonObject jObject) {
+		Map<String, Long> result = new HashMap<String, Long>();
+		JsonArray rows = jObject.getAsJsonArray("rows");
+		rows.forEach((elem) -> {
 			if (elem.isJsonObject()) {
 				JsonObject row = elem.getAsJsonObject();
-				row.remove("itemId");
+				if (row.has("value") && row.has("data")) {
+					String value = row.get("value").getAsString();
+					Long data = null;
+					
+					JsonElement dataElem = row.get("data");
+					if (dataElem.isJsonArray()) {
+						data = dataElem.getAsJsonArray().getAsLong();
+					} else {
+						data = dataElem.getAsLong();
+					}
+					
+					result.put(value, data);					
+				}
 	        }
 	    });
 		

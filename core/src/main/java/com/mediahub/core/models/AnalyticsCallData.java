@@ -92,8 +92,12 @@ public class AnalyticsCallData {
 		this(rsId, dimension, metrics, metricFilters, globalFilters, search, dimensionSort, 400L, "return-nones");
 	}
 	
+	public AnalyticsCallData(String rsId, String dimension, List<AnalyticsCallFilter> globalFilters, List<AnalyticsCallMetric> metrics, List<AnalyticsCallFilter> metricFilters) {
+		this(rsId, dimension, metrics, metricFilters, globalFilters, null, null);
+	}
+	
 	public AnalyticsCallData(String rsId, String dimension, List<AnalyticsCallFilter> globalFilters, List<AnalyticsCallMetric> metrics) {
-		this(rsId, dimension, metrics, null, globalFilters, null, null);
+		this(rsId, dimension, globalFilters, metrics, null);
 	}
 	
 	public AnalyticsCallData(String rsId, String dimension, List<AnalyticsCallFilter> globalFilters) {
