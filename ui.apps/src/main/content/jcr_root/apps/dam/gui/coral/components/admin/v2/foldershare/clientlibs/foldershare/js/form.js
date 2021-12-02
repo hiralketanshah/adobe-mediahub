@@ -361,23 +361,43 @@
 
 
     $(document).on("click", "#shell-propertiespage-bulksave-publish", function(e) {
-        if(saveMetadataChangesBulkEditMedia(e)){
-          var isValidated = document.getElementById("shell-propertiespage-bulksave-publish").getAttribute("isValidated");
-          if (isValidated && isValidated === 'true') {
-                var ui = $(window).adaptTo("foundation-ui");
-                var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
-                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
-                    text: Granite.I18n.get("OK"),
-                    primary: true,
-                    handler: function () {
-                        location.href = $(".foundation-backanchor").attr("href");
-                    }
-                }]);
+        var validationData = {}
+        var ui = $(window).adaptTo("foundation-ui");
+        validationData["path"] = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+        $.ajax({
+            type: "GET",
+            url: "/bin/media/bulkedit",
+            data: validationData
+        }).done(function(json) {
+            if(saveMetadataChangesBulkEditMedia(e)){
+                var isValidated = document.getElementById("shell-propertiespage-bulksave-publish").getAttribute("isValidated");
+                if (isValidated && isValidated === 'true') {
+                      var ui = $(window).adaptTo("foundation-ui");
+                      var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+                      ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                          text: Granite.I18n.get("OK"),
+                          primary: true,
+                          handler: function () {
+                              location.href = $(".foundation-backanchor").attr("href");
+                          }
+                      }]);
 
-          } else {
-              internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-          }
-        }
+                } else {
+                    internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                }
+            }
+        }).fail(function(json) {
+            ui.prompt(Granite.I18n.get("Error"), "Metadata field missing inside Media :" + json.responseJSON.media + " and in Asset :" + json.responseJSON.asset, "Error metadata field missing in Asset :" + json.asset, [{
+                text: Granite.I18n.get("Close"),
+                primary: true,
+                handler: function() {
+                    // do nothing in case of error
+                }
+            }]);
+        });
+
+
+
         return false;
     });
 
