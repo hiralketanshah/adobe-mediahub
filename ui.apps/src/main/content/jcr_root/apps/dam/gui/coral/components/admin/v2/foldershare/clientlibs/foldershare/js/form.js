@@ -401,6 +401,36 @@
         return false;
     });
 
+    $(document).on("click", "#shell-propertiespage-bulkmedia-unpublish", function(e) {
+      var validationData = {}
+      var ui = $(window).adaptTo("foundation-ui");
+      validationData["path"] = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+      $.ajax({
+          type: "GET",
+          url: "/bin/media/bulkunpublish",
+          data: validationData
+      }).done(function(json) {
+        var ui = $(window).adaptTo("foundation-ui");
+        var successMessage = Granite.I18n.get("The Assets inside media will be unpublished soon");
+        ui.prompt(Granite.I18n.get("The Assets wil be unpublished soon"), successMessage, "success", [{
+            text: Granite.I18n.get("OK"),
+            primary: true,
+            handler: function () {
+                location.href = $(".foundation-backanchor").attr("href");
+            }
+        }]);
+      }).fail(function(json) {
+          ui.prompt(Granite.I18n.get("Error"), "Error while unpublishing assets :" + json.responseJSON.message, "Error while unpublishing assets :" + json.responseJSON.message, [{
+              text: Granite.I18n.get("Close"),
+              primary: true,
+              handler: function() {
+                  // do nothing in case of error
+              }
+          }]);
+      });
+
+    });
+
     $(document).on("click", "#shell-propertiespage-saveactivator, #shell-propertiespage-doneactivator", function(e) {
         saveMetadataChanges(e);
         return false;
