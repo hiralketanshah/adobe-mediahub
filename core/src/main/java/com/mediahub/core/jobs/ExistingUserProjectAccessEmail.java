@@ -175,7 +175,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                     if (null != hit.getResource().getChild(JcrConstants.JCR_CONTENT)) {
                         emailParams.put(BnpConstants.PROJECT_TITLE, hit.getResource().getChild(JcrConstants.JCR_CONTENT).getValueMap().get(JcrConstants.JCR_TITLE, StringUtils.EMPTY));
                     }
-                    emailParams.put("projecturl", externalizer.authorLink(resourceResolver, hit.getPath() + ".html"));
+                    emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + hit.getPath() ));
                     emailParams.put("projectowner", getProjectOwnerName(job.getProperty("userID", StringUtils.EMPTY), resourceResolver));
                     break;
                 }
