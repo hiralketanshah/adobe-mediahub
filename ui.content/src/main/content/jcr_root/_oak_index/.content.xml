@@ -11,7 +11,91 @@
     <cqReportsLucene/>
     <commerceLucene/>
     <counter/>
-    <authorizables/>
+    <authorizables
+            jcr:primaryType="oak:QueryIndexDefinition"
+            async="[async,nrt]"
+            compatVersion="{Long}2"
+            evaluatePathRestrictions="{Boolean}true"
+            excludedPaths="[/var,/etc/replication,/etc/workflow/instances,/jcr:system]"
+            reindex="{Boolean}false"
+            reindexCount="{Long}2"
+            seed="{Long}7935123923820169281"
+            type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <rep:Authorizable jcr:primaryType="nt:unstructured">
+                <properties jcr:primaryType="nt:unstructured">
+                    <repPrincipalName
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="rep:principalName"
+                            ordered="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                    <repAuthorizableId
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="rep:authorizableId"
+                            nodeScopeIndex="{Boolean}true"
+                            ordered="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"
+                            useInSuggest="{Boolean}true"/>
+                    <profileEmail
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/email"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                    <profileGivenName
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/givenName"
+                            nodeScopeIndex="{Boolean}true"
+                            ordered="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"
+                            useInSuggest="{Boolean}true"/>
+                    <profileFamilyName
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/familyName"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"
+                            useInSuggest="{Boolean}true"/>
+                    <profileDisplayName
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/displayName"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                    <profileGender
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/gender"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                    <token
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="userToken"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                    <profileType
+                            jcr:primaryType="nt:unstructured"
+                            analyzed="{Boolean}true"
+                            name="profile/type"
+                            nodeScopeIndex="{Boolean}true"
+                            propertyIndex="{Boolean}true"
+                            type="String"/>
+                </properties>
+            </rep:Authorizable>
+        </indexRules>
+    </authorizables>
     <enablementResourceName/>
     <externalPrincipalNames/>
     <cmLucene/>
@@ -146,12 +230,6 @@
     </ntFolderDamLucene>
     <mediahubIndex compatVersion="{Long}2" async="async" jcr:primaryType="oak:QueryIndexDefinition" type="lucene">
         <indexRules jcr:primaryType="nt:unstructured">
-            <rep:user jcr:primaryType="nt:unstructured">
-                <properties jcr:primaryType="nt:unstructured">
-                    <expiry name="profile/expiry" ordered="{Boolean}true" jcr:primaryType="nt:unstructured"/>
-                    <type name="profile/type" propertyIndex="{Boolean}true" jcr:primaryType="nt:unstructured"/>
-                </properties>
-            </rep:user>
             <nt:unstructured jcr:primaryType="nt:unstructured">
                 <properties jcr:primaryType="nt:unstructured">
                     <requiredCascading name="requiredCascading" propertyIndex="{Boolean}true"
