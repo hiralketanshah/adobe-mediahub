@@ -453,7 +453,19 @@ try {
                             saveAttrs.addClass("granite-form-saveactivator");
                             saveAttrs.add("role", "menuitem");
 
-                            %><coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+
+                            AttrBuilder doneAttrs1 = new AttrBuilder(request, xssAPI);
+                            doneAttrs1.add("id", "shell-propertiespage-bulksave-publish");
+                            doneAttrs1.add("type", "submit");
+                            doneAttrs1.add("form", formId);
+                            doneAttrs1.add("is", "coral-button");
+                            doneAttrs1.add("isValidated", true);
+                            doneAttrs1.add("variant", saveBtnVariant);
+                            doneAttrs1.addClass("granite-form-saveactivator");
+
+                            %>
+
+                            <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                                 <button <%= doneAttrs %>><%= xssAPI.encodeForHTML(i18n.get("Save & Close")) %></button>
                                 <button <%= saveChevronAttrs %>></button>
                                 <coral-popover role="presentation" placement="center" alignMy="right top" alignAt="right bottom" target="_prev">
@@ -463,7 +475,13 @@ try {
                                         </coral-buttonlist>
                                     </coral-popover-content>
                                 </coral-popover>
-                            </coral-buttongroup><%
+                            </coral-buttongroup>
+
+                            <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                                <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                            </coral-buttongroup>
+
+                            <%
                         }
                     %></coral-actionbar-item><%
                 }
@@ -614,7 +632,68 @@ try {
 }
 logger.debug("Render ends");
 %>
+
 <script type="text/javascript">
+    var data = {};
+</script>
+
+
+<%
+if (StringUtils.isNotEmpty(assetId)) {
+
+    String[] assetPaths = assetId.split(",");
+
+    for(String assetPath : assetPaths){
+
+%>
+<script type="text/javascript">
+    var media = [];
+</script>
+<%
+
+    Resource asset = resourceResolver.getResource(assetPath);
+    if (asset != null) {
+        if (asset.getValueMap().get("jcr:primaryType") != null && StringUtils.equals(asset.getValueMap().get("jcr:primaryType").toString(), "sling:Folder")) {
+            Iterator<Resource> it = asset.listChildren();
+            while (it.hasNext()) {
+                Resource child = it.next();
+                if (!StringUtils.equals(child.getName(), "jcr:content") && !StringUtils.equals(child.getName(), "rep:policy")) {
+%>
+<script>
+   media.push({
+       name: 'payload',
+       value: "<%= child.getPath() %>"
+   });
+</script>
+<%
+        }
+    }
+}
+%>
+<script type="text/javascript">
+    data["<%= assetPath %>"] = media;
+</script>
+<%
+} else {
+%>
+<script>
+    media.push({
+        name: 'payload',
+        value: "<%= assetId %>"
+    });
+    data["<%= assetId %>"] = media;
+</script>
+<%
+            }
+        }
+    }
+%>
+
+
+<script type="text/javascript">
+
+
+
   function isChildrenDeactivated() {
       var ui = $(window).adaptTo("foundation-ui");
       var failureMessage = Granite.I18n.get("Kindly Deactivate Assets inside Media Folder");
@@ -622,6 +701,38 @@ logger.debug("Render ends");
           text: Granite.I18n.get("OK"),
           primary: true
       }]);
+  }
+
+  function internalPublish(isValidated, event, isFolderMetadataMissing, isMediaValidated, path) {
+      var workflowData = [];
+      workflowData.push({name: '_charset_', value: 'UTF-8'});
+      workflowData.push({name: 'payloadType', value: 'JCR_PATH'});
+      workflowData.push({name: 'model@Delete', value: ''});
+      workflowData.push({name: 'workflowTitle', value: 'Internal Publish'});
+
+      workflowData.push({name: 'model', value: '/var/workflow/models/mediahub/mediahub---validation'});
+      workflowData.push({name: 'path', value: path});
+
+      if(data[path] && data[path].length > 0){
+        data[path].forEach(function(item){
+          workflowData.push({name: 'payload', value: item.value});
+        });
+      }
+
+      $.ajax({
+          type: "POST",
+          url: "/etc/workflow/instances",
+          data: workflowData,
+          async: true,
+          cache: false,
+          success: function (response) {
+              if (response) {
+                  var processedHtml = Granite.UI.Foundation.Utils.processHtml(response);
+              }
+          }
+      }).done(function (html) {
+          // code is removed to handle the issue of popup in save and publish
+      });
   }
 </script>
 
