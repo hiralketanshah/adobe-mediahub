@@ -130,7 +130,7 @@ public class UserDeactivationScheduledTask implements Runnable {
 
         String language = UserUtils.getUserLanguage(user);
 
-        if (differenceInDays >= 30) {
+        if (differenceInDays == 30) {
             Iterator<Group> groupIterator = authorizable.memberOf();
             String groupName = getProjectGroupFromUser(groupIterator);
             if (StringUtils.isNotEmpty(groupName)) {
