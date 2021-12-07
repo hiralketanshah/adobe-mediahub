@@ -168,9 +168,14 @@ public class UserDeactivationScheduledTask implements Runnable {
                 String[] emailRecipients = {email};
                 sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html", subject);
 
-                //send mail to managers
-                String[] managerEmail = managers.toArray(new String[0]);
-                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
+                if(!managers.isEmpty()) {
+                    //send mail to managers
+                    String[] managerEmail = managers.toArray(new String[0]);
+                    sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
+                }
+                if(expiryDate.toInstant().compareTo(Instant.now()) <=0) {
+                    authorizable.remove();
+                }
             }
         }
 
