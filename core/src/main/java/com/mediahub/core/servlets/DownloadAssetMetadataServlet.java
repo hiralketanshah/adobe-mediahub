@@ -20,10 +20,13 @@ import com.mediahub.core.utils.ProjectExpireNotificationUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.Servlet;
@@ -78,29 +81,31 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
                 List<String> value = new ArrayList<>();
                 if(null != asset && asset.getChild(JcrConstants.JCR_CONTENT) != null && asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null){
                     ModifiableValueMap values = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
-                    value.add(getParameterValue(request, charset, "dateOfUse"));
-                    value.add(getParameterValue(request, charset, "useTextArea"));
+
+                    value.add(ProjectExpireNotificationUtil.getCurrentDateString(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX")));
                     value.add(request.getResourceResolver().getUserID());
-                    String users = StringUtils.EMPTY;
-                    if(null != request.getRequestParameterMap().getValues("internalUserContact")){
-                        users = String.join(",", request.getParameterMap().getOrDefault("internalUserContact", new String[]{}));
-                    }
-                    value.add(users);
-                    value.add(ProjectExpireNotificationUtil.getCurrentDate(new SimpleDateFormat(BnpConstants.DD_MM_YYYY)).toString());
+                    value.add(getParameterValue(request, charset, "internalUserContact"));
+                    value.add(getParameterValue(request, charset, "useTextArea"));
+                    value.add(getParameterDateValue(request, charset, "dateOfUse"));
                     String areas = StringUtils.EMPTY;
                     if(null != request.getRequestParameterMap().getValues(BnpConstants.GEOGRAPHICALAREA)){
                         areas = String.join(",", request.getParameterMap().getOrDefault(BnpConstants.GEOGRAPHICALAREA, new String[]{}));
                     }
                     value.add(areas);
 
-                    if(values.containsKey(BnpConstants.DOWNLOAD_DETAILS)){
+                    if(values.containsKey(BnpConstants.DOWNLOAD_DETAILS) && (values.get(BnpConstants.DOWNLOAD_DETAILS) instanceof String[]) ){
                         String[] downloadDetails = values.get(BnpConstants.DOWNLOAD_DETAILS, new String[]{});
+                        values.remove(BnpConstants.DOWNLOAD_DETAILS);
+                        resolver.commit();
                         List<String> list = new ArrayList<>(Arrays.asList(downloadDetails));
-                        list.add(String.join("|", value));
-                        values.put(BnpConstants.DOWNLOAD_DETAILS, list.toArray(new String[list.size()]));
-                    } else {
-                        values.put(BnpConstants.DOWNLOAD_DETAILS, new String[]{String.join("|", value)});
+                        list.add(0,String.join("|", value));
+                        String.join("\n",list);
+                        values.put(BnpConstants.DOWNLOAD_DETAILS, String.join("\n",list));
+                    }else {
+                        String downloadDetails = values.get(BnpConstants.DOWNLOAD_DETAILS, StringUtils.EMPTY);
+                        values.put(BnpConstants.DOWNLOAD_DETAILS, String.join("|", value) + "\n" + downloadDetails);
                     }
+
                     values.put(BnpConstants.DOWNLOAD_COUNT, (long)values.get(BnpConstants.DOWNLOAD_COUNT, 0) +1);
                 }
             }
@@ -113,6 +118,22 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
     private String getParameterValue(SlingHttpServletRequest request, String charset, String dateOfUse) throws UnsupportedEncodingException {
         if(request.getRequestParameter(dateOfUse) != null){
             return request.getRequestParameter(dateOfUse).getString(charset);
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private String getParameterDateValue(SlingHttpServletRequest request, String charset, String dateOfUse) throws UnsupportedEncodingException {
+        if(request.getRequestParameter(dateOfUse) != null){
+            try {
+                String dateStr = request.getRequestParameter(dateOfUse).getString(charset);
+                DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+                Date date = (Date)formatter.parse(dateStr);
+                return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(date);
+            } catch (ParseException e) {
+                LOGGER.error("Error while parsing date while downloading asset", e);
+                return request.getRequestParameter(dateOfUse).getString(charset);
+            }
         } else {
             return StringUtils.EMPTY;
         }
