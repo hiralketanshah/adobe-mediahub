@@ -99,7 +99,6 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
                         resolver.commit();
                         List<String> list = new ArrayList<>(Arrays.asList(downloadDetails));
                         list.add(0,String.join("|", value));
-                        String.join("\n",list);
                         values.put(BnpConstants.DOWNLOAD_DETAILS, String.join("\n",list));
                     }else {
                         String downloadDetails = values.get(BnpConstants.DOWNLOAD_DETAILS, StringUtils.EMPTY);
@@ -128,7 +127,7 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
             try {
                 String dateStr = request.getRequestParameter(dateOfUse).getString(charset);
                 DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
-                Date date = (Date)formatter.parse(dateStr);
+                Date date = formatter.parse(dateStr);
                 return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(date);
             } catch (ParseException e) {
                 LOGGER.error("Error while parsing date while downloading asset", e);
