@@ -126,7 +126,13 @@ public class DownloadAssetMetadataServlet extends SlingAllMethodsServlet {
         if(request.getRequestParameter(dateOfUse) != null){
             try {
                 String dateStr = request.getRequestParameter(dateOfUse).getString(charset);
-                DateFormat formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+                DateFormat formatter;
+                if(dateStr.indexOf('-') == 4){
+                    formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                } else {
+                    formatter = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
+                }
+
                 Date date = formatter.parse(dateStr);
                 return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").format(date);
             } catch (ParseException e) {
