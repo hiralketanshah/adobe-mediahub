@@ -26,7 +26,7 @@
 
     function init() {
         var userID = getCurrentUserId();
-        if($("#internalUserContact")){
+        if($("#internalUserContact") && $("#internalUserContact").find("input[type=text]") && ($("#internalUserContact").find("input[type=text]").length > 0) ){
             if($("#internalUserContact").find("input[type=text]")[0].value === "tobereplaced"){
                 $("#internalUserContact").find("input[type=text]")[0].value = userID;
                 $("#internalUserContact").find("input[name=user]")[0].value = userID;
@@ -190,7 +190,7 @@
 
         // MED-347
         if($("#internalUserContact") || $("#useTextArea") || $("#dateOfUse") || $("#geographicalarea")){
-            if($("#internalUserContact")){
+            if($("#internalUserContact") && $("#internalUserContact").find("input[type=text]") && ($("#internalUserContact").find("input[type=text]").length > 0) ){
               params["internalUserContact"] = $("#internalUserContact").find("input[name=user]")[0].value;
             }
 
