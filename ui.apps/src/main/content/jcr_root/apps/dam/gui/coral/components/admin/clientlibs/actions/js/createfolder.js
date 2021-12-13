@@ -744,7 +744,7 @@
                     var fieldDiv = document.createElement("div");
                     var titleLabel = document.createElement("label");
                     fieldDiv.className += " coral-Form-fieldwrapper";
-                    titleLabel.innerHTML = Granite.I18n.get("Title *");
+                    titleLabel.innerHTML = Granite.I18n.get("Title for Media");
                     titleLabel.className += " coral-Form-fieldlabel";
                     var input = new Coral.Textfield().set({
                         name: "./jcr:content/jcr:title"
