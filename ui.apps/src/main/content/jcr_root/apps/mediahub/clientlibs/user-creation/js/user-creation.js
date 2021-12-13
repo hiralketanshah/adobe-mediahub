@@ -22,6 +22,10 @@
             $("coral-datepicker[name='./profile/expiry']")[0].disabled = false;
           }
         }
+		if(isExternalUser()){
+			$("coral-datepicker[name='./profile/expiry']")[0].disabled = true;
+            $("coral-select[name='./profile/type']")[0].disabled = true;
+        }
 
 
         if($("coral-datepicker[name='./profile/expiry']") && $("coral-datepicker[name='./profile/expiry']").length > 0){
@@ -31,7 +35,35 @@
         }
 
       }, millisecondsToWait);
+	  
+	  function isExternalUser() {
+        var currentUser = getCurrentUser();
+        var type;
+		$.ajax( {
+            url: "/apps/mediahub/projects/teammembers/datasource.userinfo.json?userid="+currentUser,
+            async: false
+        } ).done(handler);
+        function handler(data){
+            type = data.type;
+        }
+        if(type === "external"){
+			return true;
+        }
+        return false;
+	  }	
 
+      function getCurrentUser() {
+		var currentUserId;
+        var result = Granite.$.ajax({
+			type: "GET",
+            async: false,
+            url: Granite.HTTP.externalize("/libs/granite/security/currentuser.json")
+        });
+        if (result.status === 200) {
+            currentUserId = JSON.parse(result.responseText).authorizableId;
+        }
+        return currentUserId;
+      }
     }
 
 }(jQuery, jQuery(document)));
