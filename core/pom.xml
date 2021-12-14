@@ -241,6 +241,12 @@ Import-Package: javax.annotation;version=0.0.0,com.day.cq.dam.scene7.api;version
             <scope>provided</scope>
         </dependency>
         
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 </project>

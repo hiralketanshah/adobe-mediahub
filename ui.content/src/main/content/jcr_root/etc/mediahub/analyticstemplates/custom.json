@@ -1,0 +1,95 @@
+{
+    "rsid": "${analyticsEnv}",
+    "globalFilters": [
+        {
+            "type": "dateRange",
+            "dateRange": "${startDate}/${endDate}"
+        }
+    ],
+    "metricContainer": {
+        "metrics": [
+            {
+                "columnId": "1",
+                "id": "metrics/event1",
+                "filters": [
+                    "0",
+                    "1",
+                    "4"
+                ]
+            },
+            {
+                "columnId": "2",
+                "id": "metrics/event1",
+                "sort": "desc",
+                "filters": [
+                    "2",
+                    "5"
+                ]
+            },
+            {
+                "columnId": "3",
+                "id": "cm1773_613a0d46f85a38353ddf8426",
+                "filters": [
+                    "3",
+                    "6"
+                ]
+            }
+        ],
+        "metricFilters": [
+            {
+                "id": "0",
+                "type": "dateRange",
+                "dateRange": "2021-11-14T00:00:00.000/2021-11-21T00:00:00.000"
+            },
+            {
+                "id": "1",
+                "type": "breakdown",
+                "dimension": "variables/prop12",
+                "itemId": "2693374509"
+            },
+            {
+                "id": "2",
+                "type": "breakdown",
+                "dimension": "variables/prop12",
+                "itemId": "2693374509"
+            },
+            {
+                "id": "3",
+                "type": "breakdown",
+                "dimension": "variables/prop12",
+                "itemId": "2693374509"
+            },
+            {
+                "id": "4",
+                "type": "breakdown",
+                "dimension": "variables/aemassetsource",
+                "itemId": "1550369879"
+            },
+            {
+                "id": "5",
+                "type": "breakdown",
+                "dimension": "variables/aemassetsource",
+                "itemId": "1550369879"
+            },
+            {
+                "id": "6",
+                "type": "breakdown",
+                "dimension": "variables/aemassetsource",
+                "itemId": "1550369879"
+            }
+        ]
+    },
+    "dimension": "variables/aemassetid",
+    "settings": {
+        "countRepeatInstances": true,
+        "limit": 5,
+        "page": 0,
+        "nonesBehavior": "return-nones"
+    },
+    "statistics": {
+        "functions": [
+            "col-max",
+            "col-min"
+        ]
+    }
+}
