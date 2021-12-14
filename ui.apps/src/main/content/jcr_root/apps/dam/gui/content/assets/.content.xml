@@ -1542,11 +1542,11 @@
                                             sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
                                             src="/bin/project/internalusers.html"
                                             required="{Boolean}true"
-                                            multiple="{Boolean}true"
+                                            multiple="{Boolean}false"
+                                            name="user"
+                                            value="tobereplaced"
                                             fieldLabel="Contact"
-                                            hideServiceUsers="{Boolean}true"
-                                            showAllAuthorizables="{Boolean}true"
-                                            useHomeAsValue="{Boolean}true"/>
+                                            hideServiceUsers="{Boolean}true"/>
                                 </items>
                             </emaillist>
                             <useText

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured">
+    <items jcr:primaryType="nt:unstructured">
+        <none
+            jcr:primaryType="nt:unstructured"
+            text="None"
+            value="none"/>
+        <created
+            jcr:primaryType="nt:unstructured"
+            text="Created"
+            value="created"/>
+        <modified
+            jcr:primaryType="nt:unstructured"
+            text="Modified"
+            value="modified"/>
+        <name
+            jcr:primaryType="nt:unstructured"
+            compulsory="true"
+            selected="{Boolean}true"
+            text="Name"
+            value="name"/>
+    </items>
+</jcr:root>

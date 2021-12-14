@@ -463,6 +463,14 @@ try {
                             doneAttrs1.add("variant", saveBtnVariant);
                             doneAttrs1.addClass("granite-form-saveactivator");
 
+                            AttrBuilder unpublishAttrs = new AttrBuilder(request, xssAPI);
+                            unpublishAttrs.add("id", "shell-propertiespage-bulkmedia-unpublish");
+                            unpublishAttrs.add("type", "submit");
+                            unpublishAttrs.add("form", formId);
+                            unpublishAttrs.add("is", "coral-button");
+                            unpublishAttrs.add("variant", saveBtnVariant);
+                            unpublishAttrs.addClass("granite-form-saveactivator");
+
                             %>
 
                             <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
@@ -479,6 +487,10 @@ try {
 
                             <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                                 <button <%= doneAttrs1 %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %></button>
+                            </coral-buttongroup>
+
+                            <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                                <button <%= unpublishAttrs %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %></button>
                             </coral-buttongroup>
 
                             <%

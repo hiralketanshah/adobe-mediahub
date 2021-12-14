@@ -588,7 +588,7 @@
             // Do validation and add tooltip if required
             enteredText = enteredText.toLowerCase();
             enteredText = enteredText.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            enteredText = enteredText.replace(/[^a-z1-9]/g, "-");
+            enteredText = enteredText.replace(/[^a-z0-9]/g, "-");
             self.dialog.nameInput.value = enteredText.replace(/ /g, "-");
 
             if (!self.nameForceChanged) { // if folder name is not force changed, change case to lower
@@ -744,7 +744,7 @@
                     var fieldDiv = document.createElement("div");
                     var titleLabel = document.createElement("label");
                     fieldDiv.className += " coral-Form-fieldwrapper";
-                    titleLabel.innerHTML = Granite.I18n.get("Title *");
+                    titleLabel.innerHTML = Granite.I18n.get("Title for Media");
                     titleLabel.className += " coral-Form-fieldlabel";
                     var input = new Coral.Textfield().set({
                         name: "./jcr:content/jcr:title"
@@ -1245,7 +1245,7 @@
             // Do validation and add tooltip if required
             enteredText = enteredText.toLowerCase();
             enteredText = enteredText.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            enteredText = enteredText.replace(/[^a-z1-9]/g, "-");
+            enteredText = enteredText.replace(/[^a-z0-9]/g, "-");
             self.dialog.nameInput.value = enteredText.toLowerCase().replace(/ /g, "-");
 
             self.dialog.submit.disabled = toDisable;

@@ -325,7 +325,7 @@
         setTimeout(function() {
             $(".adhocassetshare-share-link").val(assetShareLink);
 
-            $("#expirationDate")[0].valueAsDate = new Date(moment().add(2, "days"));
+            $("#expirationDate")[0].valueAsDate = new Date(moment().add(7, "days"));
             $("#sharelink").attr("readonly", "true");
             // retain the textbox border..
             $("#sharelink").css({

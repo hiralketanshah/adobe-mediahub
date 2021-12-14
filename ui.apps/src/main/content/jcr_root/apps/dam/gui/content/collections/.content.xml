@@ -25,6 +25,20 @@
                             groups="[administrators,mediahub-administrators]"/>
                     </granite:rendercondition>
                 </createtask>
+                <adhocassetshare
+                    granite:rel="cq-damadmin-admin-actions-adhocassetshare-activator"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="granite/ui/components/coral/foundation/collection/action"
+                    action="foundation.dialog"
+                    activeSelectionCount="multiple"
+                    icon="share"
+                    target=".cq-damadmin-admin-childcollections"
+                    text="Share Link"
+                    variant="actionBar">
+                    <data
+                        jcr:primaryType="nt:unstructured"
+                        src="/mnt/overlay/dam/gui/content/assets/bnpadhocassetsharedialog.html"/>
+                </adhocassetshare>
             </selection>
         </actions>
     </jcr:content>

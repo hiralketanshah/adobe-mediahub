@@ -22,6 +22,34 @@
 
     var actFailureModal;
 
+    $(document).on("foundation-contentloaded", init);
+
+    function init() {
+        var userID = getCurrentUserId();
+        if($("#internalUserContact") && $("#internalUserContact").find("input[type=text]") && ($("#internalUserContact").find("input[type=text]").length > 0) ){
+            if($("#internalUserContact").find("input[type=text]")[0].value === "tobereplaced"){
+                $("#internalUserContact").find("input[type=text]")[0].value = userID;
+                $("#internalUserContact").find("input[name=user]")[0].value = userID;
+            }
+        }
+    }
+
+    function getCurrentUserId(){
+        var userID;
+        $.ajax( {
+            url: "/libs/cq/security/userinfo.json",
+            async: false
+        } ).done(handler);
+
+        function handler(data){
+            if(!data || !data.userID){
+                return;
+            }
+            userID = data.userID;
+        }
+        return userID;
+    }
+
     function downloadAssets(e) {
         var container = $(e.target).closest("#downloadasset");
         var path = window.sessionStorage.damAssetDownloads.replace(/path=/g, "").split("&");
@@ -162,8 +190,8 @@
 
         // MED-347
         if($("#internalUserContact") || $("#useTextArea") || $("#dateOfUse") || $("#geographicalarea")){
-            if($("#internalUserContact") && $("#internalUserContact").length > 0){
-              params["internalUserContact"] = $("#internalUserContact")[0].outerText.split("\n");
+            if($("#internalUserContact") && $("#internalUserContact").find("input[type=text]") && ($("#internalUserContact").find("input[type=text]").length > 0) ){
+              params["internalUserContact"] = $("#internalUserContact").find("input[name=user]")[0].value;
             }
 
             if($("#useTextArea")){
@@ -223,7 +251,7 @@
         }
 
         if($("#internalUserContact") && $("#useTextArea") && $("#dateOfUse") && $("#geographicalarea")){
-            if( ($("#geographicalarea").find("coral-tag") && $("#geographicalarea").find("coral-tag").length > 0) && ($("#dateOfUse").find("input[is=coral-textfield]").val() !== "") && ($("#useTextArea").val() !== "") && ($("#internalUserContact")[0].outerText !== "") ){
+            if( ($("#geographicalarea").find("coral-tag") && $("#geographicalarea").find("coral-tag").length > 0) && ($("#dateOfUse").find("input[is=coral-textfield]").val() !== "") && ($("#useTextArea").val() !== "") && ($("#internalUserContact").find("input[name=user]").val() !== "") ){
                 $("#exportBtn").removeAttr("disabled");
             } else {
                 $("#exportBtn").attr("disabled", "disabled");

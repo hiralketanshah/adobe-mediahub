@@ -71,4 +71,14 @@ public class QueryUtils {
     return map;
   }
 
+  public static Map<String, String> getPredicateMapRequiredSchemaFields(String schemaPath) {
+    Map<String, String> map = new HashMap<>();
+    map.put("path", schemaPath);
+    map.put("type", "nt:unstructured");
+    map.put("1_property", "requiredCascading");
+    map.put("1_property.value", "always");
+
+    return map;
+  }
+
 }

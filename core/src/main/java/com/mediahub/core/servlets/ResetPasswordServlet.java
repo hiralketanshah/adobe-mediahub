@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -91,9 +92,12 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
                 while (userResources.hasNext()) {
                     Resource user = userResources.next();
                     User userByToken = user.adaptTo(User.class);
-                    Value[] expiryDates = userByToken.getProperty("tokenExpiryDate");
+                    Value[] expiryDates = userByToken.getProperty(BnpConstants.TOKEN_EXPIRY_DATE);
                     if (null != expiryDates && expiryDates.length > 0 && Calendar.getInstance().before(expiryDates[0].getDate())) {
                         user.adaptTo(User.class).changePassword(password);
+                        ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
+                        modifiableValueMap.remove(BnpConstants.USER_TOKEN);
+                        modifiableValueMap.remove(BnpConstants.TOKEN_EXPIRY_DATE);
                     }
                 }
                 resolver.commit();
