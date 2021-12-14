@@ -1,8 +1,7 @@
 package com.mediahub.core.servlets;
 
-import com.mediahub.core.constants.BnpConstants;
+import com.google.common.collect.Lists;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.jcr.RepositoryException;
@@ -48,13 +47,28 @@ public class DefaultPageServlet extends SlingSafeMethodsServlet {
 		}
 
 		if(currentUserGroups != null) {
-				response.sendRedirect(MEDIA_LIBRARY_ASSET_PATH);
-				return;
+		    if(isProjectExternalContributor(currentUserGroups)) {
+		        response.sendRedirect(PROJECTS_PATH);
+                return;
+		    }
+		   response.sendRedirect(MEDIA_LIBRARY_ASSET_PATH);
+		   return;
 		}
-
 		response.sendRedirect("/aem/start.html");
 	}
 
-
-
-}
+    private boolean isProjectExternalContributor(Iterator<Group> currentUserGroups) {
+        boolean isProjectExternalContributor = false;
+        List<Group> listOfGroups = Lists.newArrayList(currentUserGroups);
+        for(Group grp : listOfGroups) {
+                try {
+                    if(null != grp && ("mediahub-basic-project-external-contributor").equalsIgnoreCase(grp.getID())) {
+                        isProjectExternalContributor = true;
+                    }
+                } catch (RepositoryException e) {
+                    log.error("Unable to fetch Group ID : {}", grp);
+                }
+        }
+        return isProjectExternalContributor;
+    }
+} 
