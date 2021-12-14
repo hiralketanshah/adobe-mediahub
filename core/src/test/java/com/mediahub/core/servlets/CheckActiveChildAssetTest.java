@@ -15,9 +15,12 @@
  */
 package com.mediahub.core.servlets;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
@@ -25,9 +28,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
+import mockit.MockUp;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -39,6 +44,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,12 +91,21 @@ class CheckActiveChildAssetTest {
     @Mock
     ValueMap valueMap;
 
+    private MockUp<DamUtil> damUtils;
+
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
         BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
+        damUtils = new MockUp<DamUtil>() {
+            @mockit.Mock
+            Iterator<Asset> getAssets(Resource resource) {
+                List<Asset> assets = new ArrayList<>();
+                return assets.iterator();
+            }
+        };
     }
 
     @Test
@@ -108,7 +123,8 @@ class CheckActiveChildAssetTest {
         when(request.getRequestParameter("paths")).thenReturn(requestParameter);
         when(requestParameter.toString()).thenReturn("");
         when(response.getWriter()).thenReturn(null);
-
+        when(resourceResolver.getResource(anyString())).thenReturn(resource);
+        when(resource.hasChildren()).thenReturn(false);
         checkActiveChildAssets.doGet(request, response);
 
         //assertEquals("Title = resource title", response.getOutputAsString());
@@ -138,5 +154,12 @@ class CheckActiveChildAssetTest {
         when(resource.getValueMap()).thenReturn(valueMap);
 
         checkActiveChildAssets.doGet(request, response);
+    }
+
+    @AfterEach
+    public void shouldTearDown() {
+        if (damUtils != null) {
+            damUtils.tearDown();
+        }
     }
 }
