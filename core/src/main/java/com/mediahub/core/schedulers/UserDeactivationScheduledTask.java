@@ -147,7 +147,11 @@ public class UserDeactivationScheduledTask implements Runnable {
             return;
         }
 
-        if (differenceInDays <= 10 && differenceInDays > 0) {
+
+        String language = UserUtils.getUserLanguage(user);
+
+        if (differenceInDays == 10) {
+
             Iterator<Group> groupIterator = authorizable.memberOf();
             List<String> groups = getProjectGroupsFromUser(groupIterator);
             // Adding email of the user
@@ -178,6 +182,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                     Set<Authorizable> managers = getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER);
                     fetchEmailFromSuperAdmin(userManager, managers);
                     sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
+
                 }
             }
         }
