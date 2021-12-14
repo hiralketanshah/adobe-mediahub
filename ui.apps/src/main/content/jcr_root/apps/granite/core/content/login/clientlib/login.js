@@ -60,6 +60,7 @@
             var el = document.getElementById("success");
             // Display the success
             el.hidden = false;
+            el.style.display = "block";
             // adds the text inside the coral-Alert-message
             el.content.innerHTML = message;
         }, 150);
