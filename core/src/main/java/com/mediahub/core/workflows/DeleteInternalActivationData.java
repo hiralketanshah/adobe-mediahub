@@ -7,6 +7,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.AssetUtils;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,9 +51,7 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD);
                 modifiableValueMap.remove(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER);
-                List<String> status = new ArrayList<>(Arrays.asList(modifiableValueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
-                status.remove(BnpConstants.BROADCAST_VALUE_INTERNAL);
-                modifiableValueMap.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());
+                modifiableValueMap.remove(BnpConstants.BNPP_BROADCAST_STATUS);
                 resourceResolver.commit();
             }
 

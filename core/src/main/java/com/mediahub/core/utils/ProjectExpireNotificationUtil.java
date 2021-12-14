@@ -30,6 +30,10 @@ public class ProjectExpireNotificationUtil {
         // private Constructor
     }
 
+    /**
+     * @param dateFormat - Simple Date format Object
+     * @return Current Date Object
+     */
     public static Date getCurrentDate(SimpleDateFormat dateFormat) {
         Date crrentDate = null;
         Date date = Calendar.getInstance().getTime();
@@ -40,6 +44,17 @@ public class ProjectExpireNotificationUtil {
             logger.error("Eception occured while Parsing the Date : {} ", e.getMessage());
         }
         return crrentDate;
+    }
+
+    /**
+     * @param dateFormat  - Simple Date format Object
+     * @return date string
+     */
+    public static String getCurrentDateString(SimpleDateFormat dateFormat) {
+        Date crrentDate = null;
+        Date date = Calendar.getInstance().getTime();
+        String strDate = dateFormat.format(date);
+        return strDate;
     }
 
     @SuppressWarnings("CQRules:AMSCORE-553")

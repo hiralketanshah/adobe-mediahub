@@ -105,6 +105,9 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <excludes>
+                        <exclude>apps/**/*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>

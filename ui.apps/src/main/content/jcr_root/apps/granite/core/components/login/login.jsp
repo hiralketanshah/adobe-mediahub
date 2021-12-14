@@ -603,7 +603,7 @@ login
 
                     </form>
 
-                <br><a href="/apps/granite/core/content/login.html" id="login-link" style="display: none;"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
+                <br><a href="/apps/granite/core/content/login.html" id="login-link"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
 
                 <% } else {%>
                     <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="login" action="<%= xssAPI.getValidHref(urlLogin) %>" novalidate="novalidate">
@@ -647,7 +647,7 @@ login
                 <input id="in_history_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/loginInHistoryText", i18n.get("New password was found in password history")) %>"/>
                 <input id="not_match_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordsDoNotMatchText", i18n.get("New passwords do not match")) %>"/>
                 <input id="empty_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordEmptyText", i18n.get("New password must not be blank")) %>"/>
-                <input id="not_able_reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("BNP Paribas Password Constrain Message")) %>"/>
+                <input id="not_able_reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("Unable to change your password. Please check with your administrator.")) %>"/>
                 <% } %>
             </div>
         <% } %>

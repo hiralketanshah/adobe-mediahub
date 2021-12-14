@@ -22,22 +22,11 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -50,6 +39,13 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Servlet that writes token in user node and to send reset password link. It is mounted for
  * all resources of a specific Sling resource type. The
@@ -57,11 +53,11 @@ import org.slf4j.LoggerFactory;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 @Component(service = Servlet.class,
-    property = {
-        "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-        "sling.servlet.resourceTypes=" + "granite/core/components/login",
-        "sling.servlet.selectors=" + "changePassword",
-        "sling.servlet.extensions=" + "json"})
+        property = {
+                "sling.servlet.methods=" + HttpConstants.METHOD_POST,
+                "sling.servlet.resourceTypes=" + "granite/core/components/login",
+                "sling.servlet.selectors=" + "changePassword",
+                "sling.servlet.extensions=" + "json"})
 @ServiceDescription("To send Forgot Password Link")
 public class ResetPasswordServlet extends SlingAllMethodsServlet {
 
@@ -70,7 +66,7 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
     private static final long serialVersionUID = 1L;
 
     final transient Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-        BnpConstants.WRITE_SERVICE);
+            BnpConstants.WRITE_SERVICE);
 
     @Reference
     private transient Externalizer externalizer;
@@ -83,31 +79,31 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
 
     @Override
     protected void doPost(final SlingHttpServletRequest request,
-            final SlingHttpServletResponse response) throws ServletException, IOException {
-        try(ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)){
+                          final SlingHttpServletResponse response) throws ServletException, IOException {
+        try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String userToken = request.getRequestParameterMap().getValue("userToken").getString();
             String password = request.getRequestParameterMap().getValue("j_newpassword").getString();
-            if(StringUtils.isNotEmpty(userToken)){
+            if (StringUtils.isNotEmpty(userToken)) {
                 Map<String, String> predicateMap = getPredicateMap("/home/users", userToken);
                 QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
                 Query query = builder.createQuery(PredicateGroup.create(predicateMap), resolver.adaptTo(Session.class));
                 SearchResult result = query.getResult();
                 Iterator<Resource> userResources = result.getResources();
-                while(userResources.hasNext()) {
+                while (userResources.hasNext()) {
                     Resource user = userResources.next();
                     User userByToken = user.adaptTo(User.class);
-                    Value[] expiryDates = userByToken.getProperty("tokenExpiryDate");
-                    if(null != expiryDates && expiryDates.length > 0 && Calendar.getInstance().before(expiryDates[0].getDate())){
+                    Value[] expiryDates = userByToken.getProperty(BnpConstants.TOKEN_EXPIRY_DATE);
+                    if (null != expiryDates && expiryDates.length > 0 && Calendar.getInstance().before(expiryDates[0].getDate())) {
                         user.adaptTo(User.class).changePassword(password);
+                        ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
+                        modifiableValueMap.remove(BnpConstants.USER_TOKEN);
+                        modifiableValueMap.remove(BnpConstants.TOKEN_EXPIRY_DATE);
                     }
                 }
                 resolver.commit();
             }
-        } catch (LoginException e) {
-            LOGGER.error("Error while fecthing system user : {0}", e);
-            setErrorResponse(response, "not_able_reset");
-        } catch (RepositoryException e) {
-            LOGGER.error("Error while changing password : {0}", e);
+        } catch (Exception e) {
+            LOGGER.error("Error while changing password", e);
             setErrorResponse(response, "not_able_reset");
         }
 
