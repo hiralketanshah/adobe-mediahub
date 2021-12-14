@@ -6,7 +6,9 @@
     <filter root="/apps/sling"/>
     <filter root="/apps/granite"/>
     <filter root="/apps/cq">
-        <exclude pattern="/apps/cq/core/content/nav"/>
+        <exclude pattern="/apps/cq/core/content/nav/tools/acs-commons"/>
+        <exclude pattern="/apps/cq/core/content/nav/tools/acs-tools"/>
+        <exclude pattern="/apps/cq/core/content/nav/tools/security/actool"/>
     </filter>
     <filter root="/apps/clientlibs">
         <exclude pattern="/apps/clientlibs/social"/>
