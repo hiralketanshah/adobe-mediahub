@@ -72,7 +72,9 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 }
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
 
+
                 if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, String.class))) ) {
+
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {
                         ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
