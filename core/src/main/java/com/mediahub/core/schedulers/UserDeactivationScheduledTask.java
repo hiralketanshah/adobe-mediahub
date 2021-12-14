@@ -8,34 +8,13 @@ import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.utils.ProjectExpireNotificationUtil;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -45,6 +24,14 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Cron Job for Deactivating external user with past expiry date.
@@ -106,9 +93,9 @@ public class UserDeactivationScheduledTask implements Runnable {
             while (userResources.hasNext()) {
                 Resource user = userResources.next();
                 Resource userProfile = user.getChild(BnpConstants.PROFILE);
-                Calendar expiryDate =  Calendar.getInstance();
+                Calendar expiryDate = Calendar.getInstance();
                 String expiry = userProfile.getValueMap().get(BnpConstants.EXPIRY, StringUtils.EMPTY);
-                if(expiry.indexOf('/') == 2){
+                if (expiry.indexOf('/') == 2) {
                     Date userExpiryDate = new SimpleDateFormat("dd/MM/yyyy").parse(expiry);
                     expiryDate.setTime(userExpiryDate);
                 } else {
@@ -140,92 +127,53 @@ public class UserDeactivationScheduledTask implements Runnable {
             throws ParseException, javax.jcr.RepositoryException {
         Authorizable authorizable = userManager.getAuthorizableByPath(user.getPath());
 
-        Duration duration = Duration.between(Instant.now(), expiryDate.toInstant());
+        Duration duration = Duration.between(Instant.now(), expiryDate.toInstant()).abs();
         long differenceInDays = duration.toDays();
 
         if (!(authorizable instanceof User && !((User) authorizable).isDisabled())) {
             return;
         }
 
-        String language = UserUtils.getUserLanguage(user);
-
-        if (differenceInDays == 10) {
-
+        if (differenceInDays <= 10) {
             Iterator<Group> groupIterator = authorizable.memberOf();
             List<String> groups = getProjectGroupsFromUser(groupIterator);
-            // Adding email of the user
-            String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
-            String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within " + Math.abs(differenceInDays) + " days // Votre accès sera desactivé dans " +  Math.abs(differenceInDays) + " jours", Locale.ENGLISH);
-            //send mail to user
-            String[] emailRecipients = {email};
-            sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", subject);
+            Set<Authorizable> managers = new HashSet<>();
             if (!groups.isEmpty()) {
-                for(String group : groups){
-                    Set<Authorizable> managers = getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER);
-                    sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", subject);
+                for (String group : groups) {
+                    managers.addAll(getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER));
                 }
             }
-        } else if (differenceInDays == 3) {
-            Iterator<Group> groupIterator = authorizable.memberOf();
-            String groupName = getProjectGroupFromUser(groupIterator);
-            if (StringUtils.isNotEmpty(groupName)) {
-                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
-                // Adding email of the user
-                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
 
+            // Adding email of the user
+            String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
+            //send mail to user
+            String[] emailRecipients = {email};
+
+            if (differenceInDays == 10) {
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 10 days // Votre accès sera desactivé dans 10 jours", Locale.ENGLISH);
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", subject);
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", subject);
+            } else if (differenceInDays == 3) {
                 String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 3 days // Votre accès sera desactivé dans 3 jours", Locale.ENGLISH);
-
-                //send mail to user
-                String[] emailRecipients = {email};
                 sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationthreedaysmailtemplate.html", subject);
-
-                //send mail to managers
-                String[] managerEmail = managers.toArray(new String[0]);
-                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationthreedaysmanagernotificationmailtemplate.html", subject);
-            }
-        } else if (differenceInDays == 1) {
-            Iterator<Group> groupIterator = authorizable.memberOf();
-            String groupName = getProjectGroupFromUser(groupIterator);
-            if (StringUtils.isNotEmpty(groupName)) {
-                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
-                // Adding email of the user
-                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
-
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationthreedaysmanagernotificationmailtemplate.html", subject);
+            } else if (differenceInDays == 1) {
                 String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 1 day // Votre accès sera desactivé dans 1 jour", Locale.ENGLISH);
-
-                //send mail to user
-                String[] emailRecipients = {email};
                 sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationonedaymailtemplate.html", subject);
-
-                //send mail to managers
-                String[] managerEmail = managers.toArray(new String[0]);
-                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationonedaymanagernotificationmailtemplate.html", subject);
-            }
-        } else if (differenceInDays <= 0) {
-            logger.debug(user.getPath());
-            ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
-            Iterator<Group> groupIterator = authorizable.memberOf();
-            List<String> groups = getProjectGroupsFromUser(groupIterator);
-            // Adding email of the user
-            String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
-            String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("User will be Deactivated", Locale.ENGLISH);
-            //send mail to user
-            String[] emailRecipients = {email};
-            sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html", subject);
-            if (!groups.isEmpty()) {
-                for(String group : groups){
-                    Set<Authorizable> managers = getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER);
-                    fetchEmailFromSuperAdmin(userManager, managers);
-                    sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
-
-                }
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationonedaymanagernotificationmailtemplate.html", subject);
+            } else if (differenceInDays <= 0) {
+                ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated // Votre accès est desactivé", Locale.ENGLISH);
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userdeactivationmailtemplate.html", subject);
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userdeactivationmanagernotificationmailtemplate.html", subject);
+                authorizable.remove();
             }
         }
 
     }
 
     private void fetchEmailFromSuperAdmin(UserManager userManager, Set<Authorizable> managers)
-        throws RepositoryException {
+            throws RepositoryException {
         Authorizable bnpsuperAdmin = userManager.getAuthorizable("mediahub-administrators");
         if (null != bnpsuperAdmin && bnpsuperAdmin.isGroup()) {
             Iterator<Authorizable> superAdmins = ((Group) bnpsuperAdmin).getMembers();
@@ -255,15 +203,15 @@ public class UserDeactivationScheduledTask implements Runnable {
     }
 
     protected void sendManagerNoficationMail(Set<Authorizable> managers, String templatePath, String subject) {
-        for(Authorizable manager : managers){
+        for (Authorizable manager : managers) {
             try {
                 Map<String, String> emailParams = new HashMap<>();
                 emailParams.put(BnpConstants.SUBJECT, subject);
                 String[] emailRecipients = new String[]{manager.getProperty(PROFILE_EMAIL)[0].getString()};
                 String userName = "";
-                if(manager.hasProperty("profile/givenName")){
+                if (manager.hasProperty("profile/givenName")) {
                     userName = manager.getProperty("profile/givenName")[0].getString() + " ";
-                } else if(manager.hasProperty("profile/familyName")){
+                } else if (manager.hasProperty("profile/familyName")) {
                     userName = userName + manager.getProperty("profile/familyName")[0].getString();
                 } else {
                     userName = manager.getProperty("rep:principalName")[0].getString();
@@ -271,7 +219,8 @@ public class UserDeactivationScheduledTask implements Runnable {
                 emailParams.put(BnpConstants.FIRSTNAME, userName);
                 genericEmailNotification.sendEmail(templatePath, emailRecipients, emailParams);
             } catch (RepositoryException e) {
-                logger.error("Error while fecthing user details from group", e);;
+                logger.error("Error while fecthing user details from group", e);
+                ;
             }
         }
     }
@@ -285,7 +234,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @return
      */
     protected Set<Authorizable> getMembersFromGroup(UserManager userManager, QueryBuilder builder,
-                                              ResourceResolver resolver, String groupName, String role) {
+                                                    ResourceResolver resolver, String groupName, String role) {
         Set<Authorizable> managers = new HashSet<>();
 
         if (StringUtils.isBlank(groupName)) {
@@ -341,7 +290,7 @@ public class UserDeactivationScheduledTask implements Runnable {
      * @throws RepositoryException - Thrown while accessing nodes in JCR
      */
     protected List<String> getProjectGroupsFromUser(Iterator<Group> groupIterator)
-        throws RepositoryException {
+            throws RepositoryException {
         List<String> groups = new ArrayList<>();
         while (groupIterator.hasNext()) {
             Group group = groupIterator.next();
