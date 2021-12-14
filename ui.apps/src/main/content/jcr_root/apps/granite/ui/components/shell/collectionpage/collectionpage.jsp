@@ -41,6 +41,11 @@
                  java.security.MessageDigest,
                  java.security.NoSuchAlgorithmException,
                  java.util.*,
+				 org.apache.sling.jcr.base.util.AccessControlUtil,
+				 org.apache.jackrabbit.api.security.user.User,
+                 org.apache.jackrabbit.api.security.user.UserManager,
+                 org.apache.jackrabbit.api.security.user.Group,
+				 javax.jcr.Session,
                  java.util.stream.Collectors" %><%--###
 CollectionPage
 ==============
@@ -330,6 +335,27 @@ CollectionPage
             }
         }
     }
+	
+	UserManager userManager = AccessControlUtil.getUserManager(resourceResolver.adaptTo(Session.class));
+      boolean isAdmin = false;
+      if(userManager != null){
+          User currentUser = (User) userManager.getAuthorizable(resourceResolver.getUserID());
+          Group group = (Group)userManager.getAuthorizable("administrators");
+          if(currentUser != null){
+              if(group != null){
+                isAdmin = group.isMember(currentUser) || "admin".equals(resourceResolver.getUserID());
+              } 
+              if((!isAdmin) && (userManager.getAuthorizable("mediahub-administrators") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-administrators")).isMember(currentUser);
+              }
+              if((!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
+              }
+              if((!isAdmin) && (userManager.getAuthorizable("mediahub-basic-entity-manager") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser);
+              }
+          }
+      }
 
     resource = new FilteringResourceWrapper(resource, sling.getService(ExpressionResolver.class), slingRequest);
 
@@ -786,6 +812,7 @@ CollectionPage
                         <coral-cyclebutton <%= switcherAttrs %>><%
                             for (Resource item : viewCache) {
                                 Config itemCfg = new Config(item);
+								if(!item.getPath().contains("project") || isAdmin || (!isAdmin && item.getPath().contains("project") && item.getPath().contains("card"))){
 
                                 String src = ex.getString(itemCfg.get("src", String.class));
 
@@ -798,7 +825,8 @@ CollectionPage
                             <coral-cyclebutton-item <%= itemAttrs %>><%= outVar(xssAPI, i18n, itemCfg.get("jcr:title", String.class)) %>
                             </coral-cyclebutton-item>
                             <%
-                                }
+                                } 
+								}
 
                                 if (!viewCache.isEmpty()) {
                                     String viewSettingsSrcBase = "/mnt/overlay/granite/ui/content/shell/collectionpage/viewsettings.html";

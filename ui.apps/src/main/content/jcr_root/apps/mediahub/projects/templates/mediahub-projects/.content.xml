@@ -20,17 +20,27 @@
             jcr:primaryType="nt:unstructured"
             jcr:title="Team"
             sling:resourceType="cq/gui/components/projects/admin/pod/teampod"
-            cardWeight="60"/>
+            cardWeight="100"/>
         <asset
             jcr:primaryType="nt:unstructured"
             jcr:title="Content"
             sling:resourceType="cq/gui/components/projects/admin/pod/assetpod"
-            cardWeight="90"/>
+            cardWeight="100"/>
+        <externallinks
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Links Tile"
+            sling:resourceType="cq/gui/components/projects/admin/pod/externallinkspod"
+            cardWeight="100"/>
+        <collections
+            jcr:primaryType="nt:unstructured"
+            jcr:title="Collections"
+            sling:resourceType="cq/gui/components/projects/admin/pod/collectionspod"
+            cardWeight="100"/>
         <assets-medialibrary
             jcr:primaryType="nt:unstructured"
             jcr:title="Medialibrary"
             sling:resourceType="/apps/mediahub/projects/pod/assetpod"
-            cardWeight="91"/>
+            cardWeight="100"/>
     </gadgets>
     <roles jcr:primaryType="nt:unstructured">
         <project-reader

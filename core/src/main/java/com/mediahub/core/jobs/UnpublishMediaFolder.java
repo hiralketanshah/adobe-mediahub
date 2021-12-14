@@ -66,6 +66,10 @@ public class UnpublishMediaFolder implements JobConsumer {
             if (DamUtil.isAsset(payloadResource)) {
                 ModifiableValueMap valueMap = payloadResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                 String scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
+                if(StringUtils.isBlank(scene7Path)){
+                    scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
+                }
+
                 String publishPath = valueMap.getOrDefault(BnpConstants.BNPP_INTERNAL_FILE_URL, StringUtils.EMPTY).toString();
 
                 WorkflowSession workflowSession = workflowService.getWorkflowSession(resourceResolver.adaptTo(

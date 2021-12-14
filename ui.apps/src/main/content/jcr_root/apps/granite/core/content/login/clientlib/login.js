@@ -60,6 +60,7 @@
             var el = document.getElementById("success");
             // Display the success
             el.hidden = false;
+            el.style.display = "block";
             // adds the text inside the coral-Alert-message
             el.content.innerHTML = message;
         }, 150);
@@ -376,7 +377,6 @@
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         displaySuccess(document.getElementById("confirming-password-reset").value);
-                       document.getElementById("login-link").style.display = "block";
                     } else {
                         var reason = xhr.getResponseHeader("X-Reason-Code");
                         var messageId = reason;

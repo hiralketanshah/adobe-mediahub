@@ -13,6 +13,7 @@ import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
+import com.mediahub.core.utils.AssetUtils;
 import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +72,9 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 }
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
 
-                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) {
+
+                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, String.class))) ) {
+
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {
                         ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
@@ -89,9 +92,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD);
                         properties.remove(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD);
-                        List<String> status = new ArrayList<>(Arrays.asList(properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{})));
-                        status.remove(BnpConstants.BROADCAST_VALUE_EXTERNAL);
-                        properties.put(BnpConstants.BNPP_BROADCAST_STATUS, status.toArray());
+                        properties.remove(BnpConstants.BNPP_BROADCAST_STATUS);
                         resourceResolver.commit();
 
                         if (S7_FILE_STATUS_NOT_SUPPORTED.equals(properties.get(S7_FILE_STATUS_PROPERTY, String.class)) && StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(damResource)) {
@@ -110,4 +111,5 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
         }
 
     }
+
 }
