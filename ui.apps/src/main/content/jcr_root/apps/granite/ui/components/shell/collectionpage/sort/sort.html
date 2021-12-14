@@ -1,0 +1,33 @@
+<div data-sly-use.model="Sort"
+     class="shell-collection-sortcontainer"
+     data-sly-attribute="${model.attributes}">
+
+    <label>${model.label @ i18n}</label>
+
+    <coral-cyclebutton
+        class="shell-collection-sortby"
+        placeholder="${model.label}"
+        ordered="${model.ordered}"
+        displayMode="text">
+        <coral-cyclebutton-item
+            data-sly-repeat.item="${model.sortByItems}"
+            value="${item.value}"
+            selected="${item.selected}">
+            ${item.label}
+        </coral-cyclebutton-item>
+    </coral-cyclebutton>
+
+    <hr class="coral-Divider--S coral-Divider--vertical">
+
+    <coral-cyclebutton
+        class="shell-collection-sortorder"
+        displayMode="icon">
+        <coral-cyclebutton-item
+            data-sly-repeat.item="${model.sortOrderItems}"
+            value="${item.value}"
+            icon="${item.icon}"
+            selected="${item.selected}">
+            ${item.label}
+        </coral-cyclebutton-item>
+    </coral-cyclebutton>
+</div>

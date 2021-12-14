@@ -1,8 +1,18 @@
 package com.mediahub.core.servlets;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.commons.util.DamUtil;
 import com.google.gson.Gson;
 import com.mediahub.core.constants.BnpConstants;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -10,7 +20,11 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -18,15 +32,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.Servlet;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 @SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class,
@@ -49,11 +54,16 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
         try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             boolean hasAdminPrivileges = hasAdminPrivileges(request, adminResolver);
-            Resource resource = adminResolver.getResource(request.getRequestParameter("paths").toString());
-            if (resource != null && resource.hasChildren()) {
-                Iterator<Resource> resources = resource.listChildren();
-                while (resources.hasNext()) {
-                    Resource childResource = resources.next();
+            String[] assetPaths = request.getParameterMap().getOrDefault("paths", new String[]{""});
+            for(String assetPath : assetPaths){
+                Resource resource = adminResolver.getResource(assetPath);
+                if(!resource.hasChildren()){
+                    continue;
+                }
+                Iterator<Asset> assetIterator = DamUtil.getAssets(resource);
+                while(assetIterator.hasNext()){
+                    Asset asset = assetIterator.next();
+                    Resource childResource = adminResolver.getResource(asset.getPath());
                     if (childResource.getChild(JcrConstants.JCR_CONTENT) != null && childResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
                         ValueMap metadata = childResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
                         if (checkChildAssetStatus(response, metadata, hasAdminPrivileges)) {
@@ -61,14 +71,11 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
                         }
                     }
                 }
-                Map<String, Object> responseMap = new HashMap<>();
-                responseMap.put("hasActiveAsset", false);
-                setJsonResponse(200, response, responseMap);
-            } else {
-                Map<String, Object> responseMap = new HashMap<>();
-                responseMap.put("hasActiveAsset", false);
-                setJsonResponse(200, response, responseMap);
             }
+            Map<String, Object> responseMap = new HashMap<>();
+            responseMap.put("hasAdminPrivilege", hasAdminPrivileges);
+            responseMap.put("hasActiveAsset", false);
+            setJsonResponse(200, response, responseMap);
         } catch (RepositoryException | LoginException e) {
             LOGGER.error("repo error :", e);
         }
@@ -131,11 +138,12 @@ public class CheckActiveChildAssets extends SlingAllMethodsServlet {
             } else {
                 Map<String, Object> responseMap = new HashMap<>();
                 responseMap.put("hasAdminPrivilege", hasAdminPrivileges);
+                responseMap.put("hasActiveAsset", true);
                 setJsonResponse(400, response, responseMap);
                 return true;
             }
         } catch (IOException e) {
-            LOGGER.error("Exception while setting JSON response : {}", e);
+            LOGGER.error("Exception while setting JSON response", e);
         }
         return false;
     }

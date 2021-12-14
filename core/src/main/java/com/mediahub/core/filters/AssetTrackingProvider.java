@@ -8,6 +8,7 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsTrackingService;
+import com.mediahub.core.utils.AssetUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.apache.sling.jcr.resource.api.JcrResourceConstants;
@@ -86,7 +87,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                 log.debug("Mapped resource is {}", asset.getPath());
                 Resource metadata = asset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
                 log.debug("Mapped metadata is {}", metadata.getPath());
-                String[] broadcastStatus = (String[]) metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS);
+                String[] broadcastStatus = AssetUtils.getBroadcastStatus(metadata.getValueMap(), BnpConstants.BNPP_BROADCAST_STATUS);
                 log.debug("Broadcast Status is {}", Arrays.toString(broadcastStatus));
                 if (metadata != null && metadata.getValueMap().get(BnpConstants.BNPP_BROADCAST_STATUS) != null) {
                     switch (status) {

@@ -615,7 +615,7 @@ login
 
                     </form>
 
-                <br><a href="/apps/granite/core/content/login.html" id="login-link" style="display: none;"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
+                <br><a href="/apps/granite/core/content/login.html" id="login-link"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
 
                 <% } else {%>
                     <form class="coral-Form coral-Form--vertical" name="login" method="POST" id="login" action="<%= xssAPI.getValidHref(urlLogin) %>" novalidate="novalidate">
