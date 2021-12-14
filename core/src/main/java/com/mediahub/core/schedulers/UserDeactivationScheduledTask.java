@@ -147,7 +147,6 @@ public class UserDeactivationScheduledTask implements Runnable {
             return;
         }
 
-
         String language = UserUtils.getUserLanguage(user);
 
         if (differenceInDays == 10) {
@@ -165,6 +164,42 @@ public class UserDeactivationScheduledTask implements Runnable {
                     Set<Authorizable> managers = getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER);
                     sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", subject);
                 }
+            }
+        } else if (differenceInDays == 3) {
+            Iterator<Group> groupIterator = authorizable.memberOf();
+            String groupName = getProjectGroupFromUser(groupIterator);
+            if (StringUtils.isNotEmpty(groupName)) {
+                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
+                // Adding email of the user
+                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
+
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 3 days // Votre accès sera desactivé dans 3 jours", Locale.ENGLISH);
+
+                //send mail to user
+                String[] emailRecipients = {email};
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationthreedaysmailtemplate.html", subject);
+
+                //send mail to managers
+                String[] managerEmail = managers.toArray(new String[0]);
+                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationthreedaysmanagernotificationmailtemplate.html", subject);
+            }
+        } else if (differenceInDays == 1) {
+            Iterator<Group> groupIterator = authorizable.memberOf();
+            String groupName = getProjectGroupFromUser(groupIterator);
+            if (StringUtils.isNotEmpty(groupName)) {
+                Set<String> managers = getMembersFromGroup(userManager, builder, resolver, groupName, ROLE_OWNER);
+                // Adding email of the user
+                String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
+
+                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 1 day // Votre accès sera desactivé dans 1 jour", Locale.ENGLISH);
+
+                //send mail to user
+                String[] emailRecipients = {email};
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationonedaymailtemplate.html", subject);
+
+                //send mail to managers
+                String[] managerEmail = managers.toArray(new String[0]);
+                sendMail(user, managerEmail, "/etc/mediahub/mailtemplates/userexpirationonedaymanagernotificationmailtemplate.html", subject);
             }
         } else if (differenceInDays <= 0) {
             logger.debug(user.getPath());
