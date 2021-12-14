@@ -9,6 +9,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowModel;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.AssetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -54,8 +55,7 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
             if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
                 ValueMap properties = payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
                 if (properties.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
-                    String[] status = properties.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[]{});
-
+                    String[] status = AssetUtils.getBroadcastStatus(properties, BnpConstants.BNPP_BROADCAST_STATUS);
                     if (Arrays.asList(status).contains(BnpConstants.BROADCAST_VALUE_NOT_BROADCAST)) {
                         // for future requirement
                     } else {
