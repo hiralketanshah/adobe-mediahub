@@ -161,7 +161,7 @@ public class ExternalLinksProjectListener implements EventHandler {
     public @interface SchedulerConfig {
 
         @AttributeDefinition(name = "Generic list path for default links", description = "Generic list path for default links", type = AttributeType.STRING)
-        public String defaultLinkPath() default "/etc/acs-commons/lists/external-links-for-the-project";
+        public String defaultLinkPath() default "/etc/acs-commons/lists/external-links";
     }
 
 }
