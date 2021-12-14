@@ -462,13 +462,25 @@ login
         String urlLogin = request.getContextPath() + resource.getPath() + ".html" + getAuthURLSuffix(slingRequest);
 
         if (authType == null || user == null || userManagementService.getAnonymousId().equals(user)) {
+
+            String titleMessageBox = "Welcome to BNP Paribas";
+            String bodyMessageBox = "BNP login page box text";
+            if(isReset){
+                titleMessageBox = "Reset your password";
+                bodyMessageBox = "BNP reset page box text";
+            }else if(isChagePassword){
+                titleMessageBox = "Change your password";
+                bodyMessageBox = "BNP change password page box text";
+            }
+
     %><div id="login-box" class="coral--dark">
+
         <div id="leftbox" class="box">
             <div class="header">
-                <h1 class="coral-Heading coral-Heading--1"><%= printProperty(cfg, i18n, xssAPI, "box/title", i18n.get("Welcome to BNP Paribas")) %></h1>
+                <h1 class="coral-Heading coral-Heading--1"><%= i18n.get(titleMessageBox) %></h1>
             </div>
             <p>
-                <%= i18n.get("BNP login page box text")%>
+                <%= i18n.get(bodyMessageBox)%>
 
             </p>
         </div>
@@ -497,7 +509,7 @@ login
                                     String changeTitle = printProperty(cfg, i18n, xssAPI, "box/changePasswordTitle", i18n.get("Change Password"));
                                     String loginSubmitText = printProperty(cfg, i18n, xssAPI, "box/submitText", i18n.get("Sign In"));
                                     String changeSubmitText = printProperty(cfg, i18n, xssAPI, "box/changePasswordSubmitText", i18n.get("Submit"));
-                                    String userPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/userPlaceholder", i18n.get("User name"));
+                                    String userPlaceholder = i18n.get("UID");
                                     String loginPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/passwordPlaceholder", i18n.get("Password"));
                                     String changePasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/oldPasswordPlaceholder", i18n.get("Old password"));
                                     String newPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/newPasswordPlaceholder", i18n.get("New password"));
@@ -555,7 +567,7 @@ login
                     String changeTitle = printProperty(cfg, i18n, xssAPI, "box/changePasswordTitle", i18n.get("Change Password"));
                     String loginSubmitText = printProperty(cfg, i18n, xssAPI, "box/submitText", i18n.get("Sign In"));
                     String changeSubmitText = printProperty(cfg, i18n, xssAPI, "box/changePasswordSubmitText", i18n.get("Submit"));
-                    String userPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/userPlaceholder", i18n.get("User name"));
+                    String userPlaceholder = i18n.get("UID");
                     String loginPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/passwordPlaceholder", i18n.get("Password"));
                     String changePasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/oldPasswordPlaceholder", i18n.get("Old password"));
                     String newPasswordPlaceholder = printAttribute(cfg, i18n, xssAPI, "box/newPasswordPlaceholder", i18n.get("New password"));
@@ -647,7 +659,7 @@ login
                 <input id="in_history_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/loginInHistoryText", i18n.get("New password was found in password history")) %>"/>
                 <input id="not_match_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordsDoNotMatchText", i18n.get("New passwords do not match")) %>"/>
                 <input id="empty_message" type="hidden" value="<%= printProperty(cfg, i18n, xssAPI, "box/passwordEmptyText", i18n.get("New password must not be blank")) %>"/>
-                <input id="not_able_reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("Unable to change your password. Please check with your administrator.")) %>"/>
+                <input id="not_able_reset" type="hidden" value="<%= xssAPI.encodeForHTML(i18n.get("BNP Paribas Password Constrain Message")) %>"/>
                 <% } %>
             </div>
         <% } %>
