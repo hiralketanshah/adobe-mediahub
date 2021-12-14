@@ -119,6 +119,7 @@ public class UserDeactivationScheduledTaskTest {
             when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
             when(resource.getValueMap()).thenReturn(valueMap);
             when(valueMap.get(BnpConstants.EXPIRY, String.class)).thenReturn("2019/06/09");
+            when(valueMap.get(BnpConstants.EXPIRY, StringUtils.EMPTY)).thenReturn("2019/06/09");
             when(resource.getPath()).thenReturn("/etc/home/user");
             when(userManager.getAuthorizableByPath("/etc/home/user")).thenReturn(user);
             when(user.isDisabled()).thenReturn(false);
