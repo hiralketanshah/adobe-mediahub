@@ -3,6 +3,6 @@
     jcr:primaryType="sling:OsgiConfig"
     groupPrivilegeNames="[jcr:read]"
     userPrivilegeNames="[jcr:all]"
-    constraint="(?=^.{8,16}$)(?=.*\\d)(?=.*[!@#$%^&amp;*;-]+)(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$"
+    constraint="(?=^.{8,16}$)(?=.*\\d)(?=.*[!&quot;#$%&amp;'()*+,\\-./:;&lt;=&gt;?@\\[\\]^_`{|}~]+)(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$"
     enabledActions="[org.apache.jackrabbit.oak.spi.security.user.action.AccessControlAction,org.apache.jackrabbit.oak.spi.security.user.action.PasswordValidationAction]"
 />
