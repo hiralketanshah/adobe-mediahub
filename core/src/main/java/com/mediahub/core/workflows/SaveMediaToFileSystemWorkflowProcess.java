@@ -81,33 +81,28 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         InputStream userInputStream = payload.adaptTo(Rendition.class).getStream();
         ZipArchiveInputStream zipArchiveInputStream = new ZipArchiveInputStream(userInputStream);
         File folderFile = new File(destinationPath);
-        try {
-            ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
-            while (archiveEntry != null) {
-                File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
-                if (entry.exists()) {
-                    File parent = new File(entry.getParent());
-                    log.info(parent.getAbsolutePath());
-                    File[] files = parent.listFiles();
-                    for (int i = 0; i < files.length; i++) {
-                        files[i].delete();
-                    }
+        ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
+        while (archiveEntry != null) {
+            File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
+            if (entry.exists()) {
+                File parent = new File(entry.getParent());
+                log.info(parent.getAbsolutePath());
+                File[] files = parent.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    files[i].delete();
                 }
-                entry.getParentFile().mkdirs();
-                entry.createNewFile();
-                FileOutputStream fileOutputStream = new FileOutputStream(entry);
+            }
+            entry.getParentFile().mkdirs();
+            entry.createNewFile();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(entry)) {
                 byte[] buffer = new byte[4096];
                 int read = zipArchiveInputStream.read(buffer);
                 while (read != -1) {
                     fileOutputStream.write(buffer, 0, read);
                     read = zipArchiveInputStream.read(buffer);
                 }
-                fileOutputStream.close();
-                archiveEntry = getEntry(zipArchiveInputStream);
             }
-        } catch (IOException e) {
-            log.error("Exception while extracting zip file and storing into file system, {}", e);
-            throw new RuntimeException(e);
+            archiveEntry = getEntry(zipArchiveInputStream);
         }
     }
 
