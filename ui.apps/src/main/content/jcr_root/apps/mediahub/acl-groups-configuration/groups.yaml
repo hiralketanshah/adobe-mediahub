@@ -589,12 +589,14 @@
         - path: /etc/languages
           permission: allow
           actions: read
-          repGlob:
+
+        - path: /etc/acs-commons/notifications
+          permission: allow
+          actions: read
 
         - path: /libs/dam/content/schemaeditors/forms/references
           permission: deny
           actions: read
-          repGlob:
 
         - path: /libs/dam/gui/content/nav/navigationlinks/items/assets
           permission: deny
