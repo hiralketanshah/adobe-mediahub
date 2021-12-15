@@ -217,11 +217,7 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                     emailParams.put("projecturl", externalizer.authorLink(resourceResolver, "/projects/details.html" + payloadPath.replace("/dam", "")));
                     emailParams.put("projectowner", UserUtils.getProjectOwnerName(item.getWorkflow().getInitiator(), userManager));
 
-                    if (isUserAlreadyExists) {
-                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentmailtemplate.html", emailRecipients, emailParams);
-                    } else {
-                        genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html", emailRecipients, emailParams);
-                    }
+                    genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/projectassignmentcreamailtemplate.html", emailRecipients, emailParams);
                 } else {
                     if (!userManager.isAutoSave()) {
                         js.save();

@@ -143,6 +143,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                     managers.addAll(getMembersFromGroup(userManager, builder, resolver, group, ROLE_OWNER));
                 }
             }
+            fetchEmailFromSuperAdmin(userManager, managers);
 
             // Adding email of the user
             String email = user.getChild(BnpConstants.PROFILE).getValueMap().get(BnpConstants.EMAIL, String.class);
