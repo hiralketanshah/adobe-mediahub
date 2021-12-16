@@ -388,7 +388,7 @@
             }
         }).fail(function(json) {
             if(json.responseJSON.isTitleMissing){
-                ui.prompt(Granite.I18n.get("Error"), "Bnpp title en is missing in :" + json.responseJSON.media, "Bnpp title en is missing in :" + json.responseJSON.media, [{
+                ui.prompt(Granite.I18n.get("Error"), Granite.I18n.get("The title is missing in a media"), "warning", [{
                     text: Granite.I18n.get("Close"),
                     primary: true,
                     handler: function() {
