@@ -24140,8 +24140,6 @@ coral-shell-header-home > a > img {
 
 coral-shell-header-home .bnp-text-style {
   line-height: 1.9;
-  position: absolute;
-  left: 165px;
 }
 
 .coral3-Shell-menubar{
@@ -24263,3 +24261,28 @@ a {
 /* #00925a could be replaced by #00915A */
 /* #87beff could be replaced by #00915A (or lighter) */
 /* #87beff could be replaced by #00915A (or lighter) */
+
+/* LOGO BNPP */
+
+.logo-header-long{
+  height: 34px;
+  width: 165px;
+}
+.logo-header-small{
+  height: 34px;
+  display: none;
+}
+@media (max-width: 380px) {
+  .logo-header-long{
+    display: none;
+  }
+  .logo-header-small{
+    display: block;
+  }
+}
+
+@media (max-width: 1070px) {
+  #mediahub-menu {
+    display: none;
+  }
+}
