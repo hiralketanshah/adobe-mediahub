@@ -65,11 +65,11 @@ request.setAttribute("com.adobe.assets.meta.attributes", metaAttrs);
           <% if (isLiveCopy) { %><%= xssAPI.encodeForHTML(i18n.get("Live Copy")) %><% } %>
         </coral-card-context>
         <% String parent = "";
-        if(resource.getPath().startsWith("/content/dam/medialibrary")){
+        if(isOmniSearchRequest && resource.getPath().startsWith("/content/dam/medialibrary")){
         parent = "From Medialibrary";
         
         }
-        else if(resource.getPath().startsWith("/content/dam/projects")){
+        else if(isOmniSearchRequest && resource.getPath().startsWith("/content/dam/projects")){
         parent = "From Project";
         
         }
