@@ -13,7 +13,6 @@ import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import com.mediahub.core.utils.AssetUtils;
 import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +23,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED;
 import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_PROPERTY;
@@ -73,7 +73,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
 
 
-                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, String.class))) ) {
+                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)))) {
 
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {

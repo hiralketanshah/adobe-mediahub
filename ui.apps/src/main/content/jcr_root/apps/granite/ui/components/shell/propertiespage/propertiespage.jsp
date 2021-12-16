@@ -654,7 +654,7 @@ PropertiesPage
                             Resource assetResource = resourceResolver.getResource(assetId);
                             if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                                 Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
-                                if (isMedia || (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL))) {
+                                if (isMedia || assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL) || assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL) || assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)) {
                     %>
 
 

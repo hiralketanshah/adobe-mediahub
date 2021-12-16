@@ -47,13 +47,13 @@ public class AssetDeactivateWorkflowProcess implements WorkflowProcess {
             Resource payload = resourceResolver.getResource(payloadPath);
             if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
                 ValueMap valueMap = payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
-                if ( (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class))) || (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, String.class))) ) {
+                if ((!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, String.class))) || (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)))) {
                     String workflowName = "/var/workflow/models/mediahub/mediahub---scene-7-deactivation";
                     WorkflowModel wfModel = workflowSession.getModel(workflowName);
                     WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
                     workflowSession.startWorkflow(wfModel, wfData);
                 }
-                if ( (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, String.class))) || (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_INTERNAL_FILE_URL, String.class))) ) {
+                if ((!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_INTERNAL_FILE_URL, String.class))) || (!StringUtils.isEmpty(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, String.class)))) {
                     String workflowName = "/var/workflow/models/mediahub/mediahub---internal-deactivation";
                     WorkflowModel wfModel = workflowSession.getModel(workflowName);
                     WorkflowData wfData = workflowSession.newWorkflowData("JCR_PATH", workItem.getWorkflowData().getPayload().toString());
