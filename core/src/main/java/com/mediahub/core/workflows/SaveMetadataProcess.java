@@ -17,7 +17,6 @@ import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.ReplicationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
-import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -62,8 +61,8 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
                     setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
-                    String broadcastUrl = "/player.jsp?content=" + URIUtil.encodePath(payloadPath);
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, externalizer.externalLink(resourceResolver, "internal", broadcastUrl));
+                    String broadcastUrl = "player.jsp?content=" + payloadPath;
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, externalizer.externalLink(resourceResolver, "internal", "/") + broadcastUrl);
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));

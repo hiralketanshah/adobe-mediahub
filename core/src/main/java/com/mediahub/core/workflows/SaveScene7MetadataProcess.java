@@ -20,7 +20,6 @@ import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.JobManager;
-import org.eclipse.jetty.util.URIUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -77,29 +76,27 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                         if (DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
                             if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.getValue())) {
                                 file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET
-                                        + URIUtil.encodePath(modifiableValueMap.get(
-                                        BnpConstants.S7_FILE, StringUtils.EMPTY)));
-                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY));
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                             } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.MASTER_VIDEO.getValue())) {
                                 file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + URIUtil.encodePath(modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY)));
-                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY));
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                             }
                             setMediumHighDefinitionAssetUrls(movedAsset, resourceResolver, modifiableValueMap, domain);
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.IMAGE.getValue())) {
                             file = "is/image/" + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                         } else if (!BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED.equals(modifiableValueMap.get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class))) {
                             file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + URIUtil.encodePath(file));
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                         }
                         modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, "external", "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         if (file != null) {
-                            workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + URIUtil.encodePath(file));
+                            workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                         }
                         if (StringUtils.contains(payloadPath, "/content/dam/medialibrary") && DamUtil.isAsset(movedAsset)) {
                             ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
