@@ -387,13 +387,25 @@
                 }
             }
         }).fail(function(json) {
-            ui.prompt(Granite.I18n.get("Error"), "Metadata field missing inside Media :" + json.responseJSON.media + " and in Asset :" + json.responseJSON.asset, "Error metadata field missing in Asset :" + json.asset, [{
-                text: Granite.I18n.get("Close"),
-                primary: true,
-                handler: function() {
-                    // do nothing in case of error
-                }
-            }]);
+            if(json.responseJSON.isTitleMissing){
+                ui.prompt(Granite.I18n.get("Error"), "Bnpp title en is missing in :" + json.responseJSON.media, "Bnpp title en is missing in :" + json.responseJSON.media, [{
+                    text: Granite.I18n.get("Close"),
+                    primary: true,
+                    handler: function() {
+                        // do nothing in case of error
+                    }
+                }]);
+            } else {
+                ui.prompt(Granite.I18n.get("Error"), "Metadata field missing inside Media :" + json.responseJSON.media + " and in Asset :" + json.responseJSON.asset, "Error metadata field missing in Asset :" + json.asset, [{
+                    text: Granite.I18n.get("Close"),
+                    primary: true,
+                    handler: function() {
+                        // do nothing in case of error
+                    }
+                }]);
+            }
+
+
         });
 
 
