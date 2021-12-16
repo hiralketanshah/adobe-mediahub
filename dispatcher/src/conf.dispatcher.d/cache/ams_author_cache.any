@@ -35,3 +35,7 @@
 	/glob "/libs/cq/core/content/welcome.*"
 	/type "deny"
 }
+/0007 {
+	/glob "/libs/granite/security/currentuser.json"
+	/type "deny"
+}
