@@ -588,6 +588,8 @@ login
                         <br><button is="coral-button" id="submit-button" variant="primary" type="submit"><%= xssAPI.encodeForHTML(i18n.get("Send Reset Password Link"))%></button>
                     </form>
 
+                <br><a href="/apps/granite/core/content/login.html" id="login-link"><%= xssAPI.encodeForHTML(i18n.get("Return to Login Page"))%></a>
+
                 <% } else if(isChagePassword) {
                     String token = request.getParameter("token") != null ? request.getParameter("token") : "";
                 %>
