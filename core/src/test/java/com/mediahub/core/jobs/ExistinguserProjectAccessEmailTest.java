@@ -15,6 +15,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -114,6 +115,8 @@ class ExistinguserProjectAccessEmailTest {
 		when(resource.getName()).thenReturn("rep:members");
 		when(resource.getParent()).thenReturn(resource);
 		when(resource.getValueMap()).thenReturn(valueMap);
+		when(resource.getChild("profile")).thenReturn(resource);
+		when(valueMap.get("alternateTitle", StringUtils.EMPTY)).thenReturn("Observers");
 		when(valueMap.containsKey("rep:principalName")).thenReturn(true);
 		when(valueMap.get(BnpConstants.EMAIL, StringUtils.EMPTY)).thenReturn("test@adobe.com");
 		when(valueMap.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY)).thenReturn("test");
@@ -127,6 +130,9 @@ class ExistinguserProjectAccessEmailTest {
 		listOfAfterValue.add("1234");
 		when(job.getProperty(BnpConstants.AFTER_VALUE)).thenReturn(listOfAfterValue);
 		when(job.getProperty(BnpConstants.AFTER_VALUE, new ArrayList<>())).thenReturn(listOfAfterValue);
+		List<Resource> userList = new ArrayList<>();
+        userList.add(resource);
+        when(resource.listChildren()).thenReturn(userList.iterator());
 		assertEquals(JobConsumer.JobResult.OK, existingUserProjectAccessEmail.process(job));
 	}
 
