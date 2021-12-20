@@ -6,4 +6,6 @@ public interface Scene7DeactivationService {
 
   String getCdnCacheInvalidationPath();
 
+  String getScene7Domain();
+
 }
