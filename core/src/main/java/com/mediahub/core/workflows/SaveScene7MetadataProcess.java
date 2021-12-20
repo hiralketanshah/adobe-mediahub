@@ -45,6 +45,8 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     public static final String IS_CONTENT = "is/content/";
     public static final String S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET = "s7viewers/html5/VideoViewer.html?asset=";
+    private static long JOB_TIMEOUT = 10 * 60 * (long)1000;
+    private static long JOB_TIMEOUT_2_MINUTES = 2 * 60 * (long)1000;
 
     @Reference
     ResourceResolverFactory resolverFactory;
@@ -78,6 +80,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                     ModifiableValueMap modifiableValueMap = resourceResolver.getResource(metadata.getPath()).adaptTo(ModifiableValueMap.class);
                     isInRunningWorkflow(movedAsset);
                     SlingJobUtils.startScene7ActivationJobWithoutStatus(movedAsset, resourceResolver, jobManager, SlingJobUtils.S7_ACTIVATE_VALUE);
+
                     String file = null;
                     String domain = scene7DeactivationService.getScene7Domain();
                     if (DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
@@ -127,15 +130,14 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
      * @param movedAsset
      */
     private void isInRunningWorkflow(Resource movedAsset) {
-        int retry = 0;
-        while((DamUtil.isInRunningWorkflow(movedAsset) && retry <= 5)){
+        long time = System.currentTimeMillis();
+        while((DamUtil.isInRunningWorkflow(movedAsset) && System.currentTimeMillis() < time + JOB_TIMEOUT)){
             try {
-                log.debug("No of retries before asset is processed : {0} for Asset Path {1}", retry ,movedAsset.getPath());
-                Thread.currentThread().wait(10000);
+                log.debug("Wait for the asset {} to be processed" ,movedAsset.getPath());
+                Thread.currentThread().wait(1000);
             } catch (InterruptedException e) {
                 log.error("Error while waiting for asset to update", e);
             }
-            retry = retry + 1;
         }
     }
 
@@ -149,9 +151,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
     private void setMediumHighDefinitionAssetUrls(Resource originalAsset, ResourceResolver resourceResolver, ModifiableValueMap modifiableValueMap, String domain) {
         S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
         List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
-
         scene7Assets = getUpdatedScene7Assets(modifiableValueMap, s7Config, scene7Assets);
-
         if (scene7Assets != null && !scene7Assets.isEmpty()) {
             Scene7Asset associatedAsset = scene7Service.getAssociatedAssets(scene7Assets.get(0), s7Config);
             if (null != associatedAsset) {
@@ -190,8 +190,8 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
         if(scene7Assets != null && !scene7Assets.isEmpty() && StringUtils
             .contains(scene7Assets.get(0).getFolder(),"/projects/")){
             try {
-                int retry = 0;
-                while(StringUtils.contains(scene7Assets.get(0).getFolder(),"/projects/") && retry <= 5){
+                long time = System.currentTimeMillis();
+                while(StringUtils.contains(scene7Assets.get(0).getFolder(),"/projects/") && (System.currentTimeMillis() < time + JOB_TIMEOUT_2_MINUTES) ){
                     Thread.currentThread().wait(5000);
                     scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
                 }
