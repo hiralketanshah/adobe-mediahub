@@ -16,7 +16,10 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.ReplicationUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -72,7 +75,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (LoginException | PersistenceException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while adding attributes for internal asset", e);
         }
 

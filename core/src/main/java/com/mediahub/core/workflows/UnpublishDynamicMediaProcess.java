@@ -58,11 +58,8 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
 
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource damResource = resourceResolver.getResource(payloadPath);
             if (null != damResource) {
@@ -75,7 +72,7 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
 
                 if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)))) {
 
-                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
+                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {
                         ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
@@ -102,12 +99,8 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 }
             }
 
-        } catch (LoginException | PersistenceException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while deactivating asset from S7", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }

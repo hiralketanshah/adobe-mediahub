@@ -10,7 +10,10 @@ import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,11 +51,9 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
             if (null != payload && StringUtils.isNotBlank(destinationPath)) {
@@ -67,12 +68,8 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             } else {
                 log.info("Either payload or destination path is empty");
             }
-        } catch (LoginException | IOException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while moving rich media asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
     }
 

@@ -17,13 +17,8 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -32,6 +27,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Abuthahir Ibrahim
@@ -45,8 +44,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     public static final String IS_CONTENT = "is/content/";
     public static final String S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET = "s7viewers/html5/VideoViewer.html?asset=";
-    private static long JOB_TIMEOUT = 10 * 60 * (long)1000;
-    private static long JOB_TIMEOUT_2_MINUTES = 2 * 60 * (long)1000;
+    private static long JOB_TIMEOUT = 15 * 60 * (long) 1000;
 
     @Reference
     ResourceResolverFactory resolverFactory;
@@ -68,10 +66,8 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
 
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) throws WorkflowException {
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource movedAsset = resourceResolver.getResource(payloadPath);
             if (null != movedAsset) {
@@ -79,47 +75,47 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 if (metadata != null) {
                     ModifiableValueMap modifiableValueMap = resourceResolver.getResource(metadata.getPath()).adaptTo(ModifiableValueMap.class);
                     isInRunningWorkflow(movedAsset);
-                    SlingJobUtils.startScene7ActivationJobWithoutStatus(movedAsset, resourceResolver, jobManager, SlingJobUtils.S7_ACTIVATE_VALUE);
-
-                    String file = null;
-                    String domain = scene7DeactivationService.getScene7Domain();
-                    if (DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
-                        if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.getValue())) {
-                            file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY));
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
-                        } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.MASTER_VIDEO.getValue())) {
-                            file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY));
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(movedAsset, jobManager, SlingJobUtils.S7_ACTIVATE_VALUE);
+                    if (jobSuccess) {
+                        String file = null;
+                        String domain = modifiableValueMap.get(BnpConstants.S7_DOMAIN_PROPERTY, String.class);
+                        String s7Status = modifiableValueMap.get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class);
+                        if (BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED.equals(s7Status) || BnpConstants.S7_FILE_STATUS_COMPLETE.equals(s7Status)) {
+                            if (DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
+                                if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.VIDEO.getValue())) {
+                                    file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
+                                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY));
+                                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                                } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.MASTER_VIDEO.getValue())) {
+                                    file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
+                                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + S_7_VIEWERS_HTML_5_VIDEO_VIEWER_HTML_ASSET + modifiableValueMap.get("dam:scene7FileAvs", StringUtils.EMPTY));
+                                    modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                                }
+                                setMediumHighDefinitionAssetUrls(movedAsset, resourceResolver, modifiableValueMap, domain);
+                                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                            } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.IMAGE.getValue())) {
+                                file = "is/image/" + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                            } else if (!BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED.equals(modifiableValueMap.get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class))) {
+                                file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                            }
+                            modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                            if (file != null) {
+                                workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
+                            }
+                            if (StringUtils.contains(payloadPath, BnpConstants.MEDIALIBRARY_PATH) && DamUtil.isAsset(movedAsset)) {
+                                ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
+                            }
+                            resourceResolver.commit();
                         }
-                        setMediumHighDefinitionAssetUrls(movedAsset, resourceResolver, modifiableValueMap, domain);
-                        modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
-                    } else if (StringUtils.equalsIgnoreCase(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY), Scene7AssetType.IMAGE.getValue())) {
-                        file = "is/image/" + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                        modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
-                        modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
-                    } else if (!BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED.equals(modifiableValueMap.get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class))) {
-                        file = IS_CONTENT + modifiableValueMap.get(BnpConstants.S7_FILE, StringUtils.EMPTY);
-                        modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, domain + file);
-                        modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                     }
-                    modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
-                    if (file != null) {
-                        workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
-                    }
-                    if (StringUtils.contains(payloadPath, BnpConstants.MEDIALIBRARY_PATH) && DamUtil.isAsset(movedAsset)) {
-                        ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
-                    }
-                    resourceResolver.commit();
                 }
             }
-        } catch (LoginException | PersistenceException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while activating asset in S7", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }
@@ -131,10 +127,10 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
      */
     private void isInRunningWorkflow(Resource movedAsset) {
         long time = System.currentTimeMillis();
-        while((DamUtil.isInRunningWorkflow(movedAsset) && System.currentTimeMillis() < time + JOB_TIMEOUT)){
+        while ((DamUtil.isInRunningWorkflow(movedAsset) && System.currentTimeMillis() < time + JOB_TIMEOUT)) {
             try {
-                log.debug("Wait for the asset {} to be processed" ,movedAsset.getPath());
-                Thread.currentThread().wait(1000);
+                log.debug("Wait for the asset {} to be processed", movedAsset.getPath());
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 log.error("Error while waiting for asset to update", e);
             }
@@ -182,17 +178,15 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
      * @param modifiableValueMap
      * @param s7Config
      * @param scene7Assets
-     *
      * @return List of updated Scene7 Asset
      */
     private List<Scene7Asset> getUpdatedScene7Assets(ModifiableValueMap modifiableValueMap,
-        S7Config s7Config, List<Scene7Asset> scene7Assets) {
-        if(scene7Assets != null && !scene7Assets.isEmpty() && StringUtils
-            .contains(scene7Assets.get(0).getFolder(),"/projects/")){
+                                                     S7Config s7Config, List<Scene7Asset> scene7Assets) {
+        if (scene7Assets != null && !scene7Assets.isEmpty() && "projects".equals(scene7Assets.get(0).getFolder().split("/")[1])) {
             try {
                 long time = System.currentTimeMillis();
-                while(StringUtils.contains(scene7Assets.get(0).getFolder(),"/projects/") && (System.currentTimeMillis() < time + JOB_TIMEOUT_2_MINUTES) ){
-                    Thread.currentThread().wait(5000);
+                while ("projects".equals(scene7Assets.get(0).getFolder().split("/")[1]) && (System.currentTimeMillis() < time + JOB_TIMEOUT)) {
+                    Thread.sleep(1000);
                     scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
                 }
             } catch (InterruptedException e) {

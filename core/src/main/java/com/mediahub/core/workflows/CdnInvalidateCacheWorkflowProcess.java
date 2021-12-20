@@ -11,7 +11,6 @@ import com.day.cq.wcm.api.WCMMode;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.engine.SlingRequestProcessor;
@@ -20,11 +19,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.*;
 
 
@@ -60,10 +57,9 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
         if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
             throw new WorkflowException("Unable to get the payload");
         }
+
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-        ResourceResolver resourceResolver = null;
-        try {
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             log.debug("payloadPath : {}", payloadPath);
 
@@ -91,12 +87,8 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
             String html = out.toString();
             log.debug("Cdn cache response : " + html);
 
-        } catch (LoginException | ServletException | IOException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while invalidating S7 CDN", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }

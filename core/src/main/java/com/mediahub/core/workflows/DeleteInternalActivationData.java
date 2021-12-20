@@ -7,12 +7,12 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.utils.AssetUtils;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Abuthahir Ibrahim
@@ -29,12 +29,9 @@ public class DeleteInternalActivationData implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
 
-        ResourceResolver resourceResolver = null;
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)){
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
 
             Resource movedAsset = resourceResolver.getResource(payloadPath);
@@ -55,12 +52,8 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (LoginException | PersistenceException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while removing attributes for internal asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }
