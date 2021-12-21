@@ -48,12 +48,4 @@ public class SlingJobUtils {
         }
     }
 
-    public static void startScene7ActivationJobWithoutStatus(Resource asset, ResourceResolver resourceResolver, JobManager jobManager, String action) {
-        final Map<String, Object> props = new HashMap<>();
-        props.put("action", action);
-        props.put("path", asset.getPath());
-        props.put("user", "");
-        Job job = jobManager.addJob("dam/scene7/asset/activation", props);
-    }
-
 }

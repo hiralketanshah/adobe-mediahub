@@ -73,11 +73,13 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
             if (null != movedAsset) {
                 Resource metadata = movedAsset.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
                 if (metadata != null) {
-                    ModifiableValueMap modifiableValueMap = resourceResolver.getResource(metadata.getPath()).adaptTo(ModifiableValueMap.class);
+                    //Hack to wait for the move to be done
+                    Thread.sleep(30000);
                     isInRunningWorkflow(movedAsset);
                     boolean jobSuccess = SlingJobUtils.startS7ActivationJob(movedAsset, jobManager, SlingJobUtils.S7_ACTIVATE_VALUE);
                     if (jobSuccess) {
                         String file = null;
+                        ModifiableValueMap modifiableValueMap = resourceResolver.getResource(metadata.getPath()).adaptTo(ModifiableValueMap.class);
                         String domain = modifiableValueMap.get(BnpConstants.S7_DOMAIN_PROPERTY, String.class);
                         String s7Status = modifiableValueMap.get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class);
                         if (BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED.equals(s7Status) || BnpConstants.S7_FILE_STATUS_COMPLETE.equals(s7Status)) {
@@ -126,13 +128,26 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
      * @param movedAsset
      */
     private void isInRunningWorkflow(Resource movedAsset) {
+        Resource currentAsset = movedAsset;
         long time = System.currentTimeMillis();
-        while ((DamUtil.isInRunningWorkflow(movedAsset) && System.currentTimeMillis() < time + JOB_TIMEOUT)) {
+        while (DamUtil.isInRunningWorkflow(currentAsset) && System.currentTimeMillis() < time + JOB_TIMEOUT) {
             try {
                 log.debug("Wait for the asset {} to be processed", movedAsset.getPath());
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 log.error("Error while waiting for asset to update", e);
+            }
+        }
+        time = System.currentTimeMillis();
+        String status = BnpConstants.S7_FILE_STATUS_UPLOAD;
+        while (BnpConstants.S7_FILE_STATUS_UPLOAD.equals(status) && System.currentTimeMillis() < time + JOB_TIMEOUT) {
+            try {
+                log.debug("Wait for the asset {} to be processed in DM", movedAsset.getPath());
+                Thread.sleep(1000);
+                Resource metadata = movedAsset.getResourceResolver().getResource(movedAsset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+                status = metadata.getValueMap().get(BnpConstants.S7_FILE_STATUS_PROPERTY, String.class);
+            } catch (InterruptedException e) {
+                log.error("Error while waiting for asset to update in DM", e);
             }
         }
     }
@@ -147,7 +162,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
     private void setMediumHighDefinitionAssetUrls(Resource originalAsset, ResourceResolver resourceResolver, ModifiableValueMap modifiableValueMap, String domain) {
         S7Config s7Config = resourceResolver.getResource(scene7DeactivationService.getCloudConfigurationPath()).adaptTo(S7Config.class);
         List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
-        scene7Assets = getUpdatedScene7Assets(modifiableValueMap, s7Config, scene7Assets);
+        //scene7Assets = getUpdatedScene7Assets(modifiableValueMap, s7Config, scene7Assets);
         if (scene7Assets != null && !scene7Assets.isEmpty()) {
             Scene7Asset associatedAsset = scene7Service.getAssociatedAssets(scene7Assets.get(0), s7Config);
             if (null != associatedAsset) {
@@ -155,15 +170,15 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                 for (Scene7Asset asset : subAssets) {
                     if (asset != null && asset.getHeight() != null) {
                         if (asset.getHeight() == 540L) {
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_MD, domain + IS_CONTENT + asset.getRootFolder() + asset.getName());
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/md/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                         if (asset.getHeight() == 720L) {
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_HD, domain + IS_CONTENT + asset.getRootFolder() + asset.getName());
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/hd/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                         if (asset.getHeight() == 1080L) {
-                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD, domain + IS_CONTENT + asset.getFolder() + asset.getFileName());
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD, domain + IS_CONTENT + asset.getRootFolder() + asset.getName());
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/superhd/" + originalAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                         }
                     }
@@ -172,27 +187,4 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
         }
     }
 
-    /**
-     * Check whether the scene7 renditions are updated after move
-     *
-     * @param modifiableValueMap
-     * @param s7Config
-     * @param scene7Assets
-     * @return List of updated Scene7 Asset
-     */
-    private List<Scene7Asset> getUpdatedScene7Assets(ModifiableValueMap modifiableValueMap,
-                                                     S7Config s7Config, List<Scene7Asset> scene7Assets) {
-        if (scene7Assets != null && !scene7Assets.isEmpty() && "projects".equals(scene7Assets.get(0).getFolder().split("/")[1])) {
-            try {
-                long time = System.currentTimeMillis();
-                while ("projects".equals(scene7Assets.get(0).getFolder().split("/")[1]) && (System.currentTimeMillis() < time + JOB_TIMEOUT)) {
-                    Thread.sleep(1000);
-                    scene7Assets = scene7Service.getAssets(new String[]{modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)}, null, null, s7Config);
-                }
-            } catch (InterruptedException e) {
-                log.error("Error while waiting for asset to update", e);
-            }
-        }
-        return scene7Assets;
-    }
 }
