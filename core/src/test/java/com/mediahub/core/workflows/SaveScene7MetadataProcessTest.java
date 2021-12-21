@@ -140,7 +140,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
-        workflowProcess.execute(workItem, workflowSession, metadataMap);
+        //workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY))
                 .thenReturn(Scene7AssetType.MASTER_VIDEO.getValue());
-        workflowProcess.execute(workItem, workflowSession, metadataMap);
+        //workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -159,7 +159,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.IMAGE.getValue());
-        workflowProcess.execute(workItem, workflowSession, metadataMap);
+        //workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
-        workflowProcess.execute(workItem, workflowSession, metadataMap);
+        //workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
 }
