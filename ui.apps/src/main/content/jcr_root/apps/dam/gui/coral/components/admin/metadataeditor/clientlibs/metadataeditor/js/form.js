@@ -222,34 +222,62 @@
     });
 
     $(document).on("click", "#shell-propertiespage-save-publish", function (e) {
-        if (e.currentTarget.id === "shell-propertiespage-save-publish") {
-            simpleSave = false;
-        } else {
-            simpleSave = true;
-        }
-        var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
-        if (appendModeEnabled === undefined) {
-            appendModeEnabled = true;
-        }
-        if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
-            var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
-            if (isValidated && isValidated === 'true') {
-                var ui = $(window).adaptTo("foundation-ui");
-                var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
-                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
-                    text: Granite.I18n.get("OK"),
-                    primary: true,
-                    handler: function () {
-                        if (saveMetadataChanges(e)) {
-                            internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                        }
-                    }
-                }]);
+        var selectionItems = $(selectionItemRel);
+        var assets = new Array();
+        selectionItems.each(function (index, value) {
+            assets[index] = $(value).data("path");
+        });
+        $.ajax({
+           async: false,
+           url: Granite.HTTP.externalize("/bin/mediahub/asset/processed"),
+           type: "GET",
+           data: {
+               "paths": assets
+           },
+           success: function(resp) {
+               if(resp.isInRunningWorkflow === false){
+                  if (e.currentTarget.id === "shell-propertiespage-save-publish") {
+                      simpleSave = false;
+                  } else {
+                      simpleSave = true;
+                  }
+                  var appendModeEnabled = $(".foundation-content-path").data("appendModeEnabled");
+                  if (appendModeEnabled === undefined) {
+                      appendModeEnabled = true;
+                  }
+                  if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
+                      var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
+                      if (isValidated && isValidated === 'true') {
+                          var ui = $(window).adaptTo("foundation-ui");
+                          var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+                          ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                              text: Granite.I18n.get("OK"),
+                              primary: true,
+                              handler: function () {
+                                  if (saveMetadataChanges(e)) {
+                                      internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                                  }
+                              }
+                          }]);
 
-            } else {
-                internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-            }
-        }
+                      } else {
+                          internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                      }
+                  }
+               } else {
+                  var ui = $(window).adaptTo("foundation-ui");
+                  ui.prompt(Granite.I18n.get("Error"), Granite.I18n.get("This asset cannot be published now"), "warning", [{
+                      text: Granite.I18n.get("Close"),
+                      primary: true,
+                      handler: function() {
+                          // do nothing in case of error
+                      }
+                  }]);
+               }
+           }
+        });
+
+
         return false;
     });
 
@@ -748,5 +776,33 @@
             .then(function (html) {
                 return $(html).find("#Path").text();
             });
+    }
+
+    /**
+     * Method to check if current delete operation should be processed async
+     * @param selectedItems items to delete
+     * @param folderDelete is any of the items to delete a folder
+     * @returns {boolean} {@code true} if operation should be async, {@code false} otherwise
+     */
+    function isAssetProcessed(e) {
+         var selectedArticles = $(selectionItemRel);
+         var assets = new Array();
+
+         selectionItems.each(function (index, value) {
+              assets[index] = $(value).data("path");
+         });
+
+        $.ajax({
+            async: false,
+            url: Granite.HTTP.externalize("/bin/mediahub/asset/processed"),
+            type: "GET",
+            data: {
+                "paths": assets
+            },
+            success: function(resp) {
+                alert(resp);
+            }
+        });
+        return false;
     }
 })(document, Granite.$, _g, Dam);
