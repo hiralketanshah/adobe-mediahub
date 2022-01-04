@@ -78,11 +78,10 @@ public class InvalidateScene7Cache implements JobConsumer {
 
       if(null != resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT) && null != resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) ){
         Map<String, Object> metadata = resourceResolver.getResource(asset.getPath()).getChild(JcrConstants.JCR_CONTENT).getChild("metadata").getValueMap();
-        String scene7Path = metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
-        if(StringUtils.isNotBlank(scene7Path)){
+        if(metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL) || metadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)){
           Map<String, Object> params = new HashMap<>();
           List<String> urlList = new ArrayList<>();
-          urlList.add(scene7Path);
+          urlList.add(metadata.getOrDefault(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString());
           WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_HD);
           WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_MD);
           WorkflowUtils.appendExternalUrl(metadata, urlList, BnpConstants.BNPP_EXTERNAL_FILE_URL_SUPER_HD);

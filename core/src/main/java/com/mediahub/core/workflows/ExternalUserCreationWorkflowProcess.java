@@ -20,18 +20,19 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -79,19 +80,12 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
         logger.info("ExternalUserCreationWorkflowProcess :: execute method start");
 
-        ResourceResolver resourceResolver = null;
-
-        try {
-
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resourceResolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resourceResolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = item.getWorkflowData().getPayload().toString();
-            String projectName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.length());
             logger.debug("ExternalUserCreationWorkflowProcess :: payloadPath" + payloadPath);
 
             boolean addToProject = false;
-
 
             String firstName = item.getWorkflow().getMetaDataMap().get("firstName").toString();
             String lastName = item.getWorkflow().getMetaDataMap().get("lastName").toString();
@@ -111,7 +105,6 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                 addToProject = Boolean.parseBoolean(addToProjectStr);
             }
 
-            Boolean isUserAlreadyExists = false;
             String password = "";
 
             Session adminSession = resourceResolver.adaptTo(Session.class);
@@ -170,7 +163,6 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                     }
 
                 } else {
-                    isUserAlreadyExists = true;
                     logger.debug("---> User already exist..");
                     user = setExpiryDateExistingUser(email, expiration, userManager, valueFactory);
                 }
@@ -227,12 +219,8 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
 
             }
 
-        } catch (LoginException | RepositoryException | ParseException | NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             logger.error("Exception in ExternalUserCreationWorkflowProcess", e);
-        } finally {
-            if (resourceResolver != null) {
-                resourceResolver.close();
-            }
         }
         logger.info("ExternalUserCreationWorkflowProcess :: exceute method end");
     }

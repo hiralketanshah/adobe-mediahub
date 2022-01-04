@@ -64,7 +64,8 @@
 
 %><coral-shell-header-home <%= headerHome %>> 
 	<a href="#" style="text-decoration: none;">
-		<img src="/content/dam/technique/mediahub/logo-bnp.svg" height="34" width="165" alt="BNP Paribas">
+        <img src="/content/dam/technique/mediahub/logo-bnp.svg" alt="BNP Paribas" class="logo-header-long">
+        <img src="/content/dam/technique/mediahub/logo-bnp-small.svg" alt="BNP Paribas" class="logo-header-small">
 	</a>
 	<coral-shell-homeanchor-label class="bnp-text-style"> | Mediahub<%= runmode %></coral-shell-homeanchor-label>
 </coral-shell-header-home>

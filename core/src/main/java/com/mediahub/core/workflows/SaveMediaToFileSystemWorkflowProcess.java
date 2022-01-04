@@ -10,7 +10,10 @@ import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,11 +51,9 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
             if (null != payload && StringUtils.isNotBlank(destinationPath)) {
@@ -67,12 +68,8 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             } else {
                 log.info("Either payload or destination path is empty");
             }
-        } catch (LoginException | IOException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while moving rich media asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
     }
 
@@ -81,33 +78,28 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         InputStream userInputStream = payload.adaptTo(Rendition.class).getStream();
         ZipArchiveInputStream zipArchiveInputStream = new ZipArchiveInputStream(userInputStream);
         File folderFile = new File(destinationPath);
-        try {
-            ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
-            while (archiveEntry != null) {
-                File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
-                if (entry.exists()) {
-                    File parent = new File(entry.getParent());
-                    log.info(parent.getAbsolutePath());
-                    File[] files = parent.listFiles();
-                    for (int i = 0; i < files.length; i++) {
-                        files[i].delete();
-                    }
+        ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
+        while (archiveEntry != null) {
+            File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
+            if (entry.exists()) {
+                File parent = new File(entry.getParent());
+                log.info(parent.getAbsolutePath());
+                File[] files = parent.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    files[i].delete();
                 }
-                entry.getParentFile().mkdirs();
-                entry.createNewFile();
-                FileOutputStream fileOutputStream = new FileOutputStream(entry);
+            }
+            entry.getParentFile().mkdirs();
+            entry.createNewFile();
+            try (FileOutputStream fileOutputStream = new FileOutputStream(entry)) {
                 byte[] buffer = new byte[4096];
                 int read = zipArchiveInputStream.read(buffer);
                 while (read != -1) {
                     fileOutputStream.write(buffer, 0, read);
                     read = zipArchiveInputStream.read(buffer);
                 }
-                fileOutputStream.close();
-                archiveEntry = getEntry(zipArchiveInputStream);
             }
-        } catch (IOException e) {
-            log.error("Exception while extracting zip file and storing into file system, {}", e);
-            throw new RuntimeException(e);
+            archiveEntry = getEntry(zipArchiveInputStream);
         }
     }
 

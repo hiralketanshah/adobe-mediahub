@@ -446,7 +446,7 @@ PropertiesPage
                                                 Asset asset = child.adaptTo(Asset.class);
                                                 if (child.getChild("jcr:content").getChild("metadata") != null) {
                                                     Map<String, Object> metadata = child.getChild("jcr:content").getChild("metadata").getValueMap();
-                                                    if (isChildrenDeactivated && (!metadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_INTERNAL_FILE_URL).toString(), StringUtils.EMPTY)) && (!metadata.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL) || StringUtils.equals(metadata.get(BnpConstants.BNPP_EXTERNAL_FILE_URL).toString(), StringUtils.EMPTY))) {
+                                                    if (isChildrenDeactivated && StringUtils.isEmpty((String)metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL)) && StringUtils.isEmpty((String)metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)) && StringUtils.isEmpty((String)metadata.get(BnpConstants.BNPP_INTERNAL_FILE_URL)) && StringUtils.isEmpty((String)metadata.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL))) {
                                                         isChildrenDeactivated = true;
                                                     } else {
                                                         isChildrenDeactivated = false;
@@ -654,7 +654,7 @@ PropertiesPage
                             Resource assetResource = resourceResolver.getResource(assetId);
                             if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                                 Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
-                                if (isMedia || (assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL)) || (assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL))) {
+                                if (isMedia || assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL) || assetMetadata.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL) || assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_FILE_URL) || assetMetadata.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)) {
                     %>
 
 

@@ -10,30 +10,20 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
-import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.security.Principal;
+import java.util.*;
 
 
 @Component(service = WorkflowProcess.class, immediate = true, property = {"process.label=MEDIAHUB : MOVE ASSET BEFORE PUBLISH"})
@@ -65,11 +55,8 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
         String initiator = workItem.getWorkflow() == null ? StringUtils.EMPTY : workItem.getWorkflow().getInitiator();
 
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-        ResourceResolver resourceResolver = null;
-        Session session = null;
-        try {
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
-            session = resourceResolver.adaptTo(Session.class);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
+            Session session = resourceResolver.adaptTo(Session.class);
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             log.debug("payloadPath : {}", payloadPath);
             Resource payload = resourceResolver.getResource(payloadPath);
@@ -108,12 +95,8 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     resourceResolver.commit();
                 }
             }
-        } catch (LoginException | PersistenceException | RepositoryException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while moving asset from Projects", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
     }
 
@@ -130,11 +113,11 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                                           Resource media) {
         Resource project;
         String projectPath = DamUtil.getInheritedProperty("projectPath", payload, StringUtils.EMPTY);
-        if( StringUtils.isNotBlank(projectPath) ) {
+        if (StringUtils.isNotBlank(projectPath)) {
             project = resourceResolver.getResource(projectPath);
         } else if (media != null) {
             project = resourceResolver.getResource(
-                StringUtils.replace(media.getParent().getPath(), "/dam", StringUtils.EMPTY));
+                    StringUtils.replace(media.getParent().getPath(), "/dam", StringUtils.EMPTY));
         } else {
             project = resourceResolver.getResource(StringUtils.replace(payload.getParent().getPath(), "/dam", StringUtils.EMPTY));
         }

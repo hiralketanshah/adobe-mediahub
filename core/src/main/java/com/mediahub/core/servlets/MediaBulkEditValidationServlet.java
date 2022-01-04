@@ -19,6 +19,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.framework.Constants;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @Component(
 		service = Servlet.class,
 		property = {
-				Constants.SERVICE_DESCRIPTION + "=Create/Update Internal Users",
+				Constants.SERVICE_DESCRIPTION + "=Check for required fields for assets in Bulk Media save and publish",
 				"sling.servlet.methods=" + HttpConstants.METHOD_GET,
 				"sling.servlet.paths=" + "/bin/media/bulkedit"
 })
@@ -63,16 +64,21 @@ public class MediaBulkEditValidationServlet extends SlingAllMethodsServlet {
 					String[] paths = action.split("%2c");
 					for(String path: paths){
 						Resource mediaResource = adminResolver.getResource(path);
+						if(!containsBnppTitle(mediaResource)){
+							responseMap.put("isTitleMissing", Boolean.TRUE);
+							responseMap.put("media",path);
+							ResponseUtil.setJsonResponse(400, response, responseMap);
+							return;
+						}
+
 						String assetSchema = DamUtil.getInheritedProperty(BnpConstants.METADATA_SCHEMA, mediaResource, "/conf/global/settings/dam/adminui-extension/metadataschema/mediahub-assets-schema");
 						List<String> requiredFields = ProjectExpireNotificationUtil.getRequiredMetadataFields(adminResolver, assetSchema);
 						fieldMissed = checkChildAssetRequiredFields(responseMap, fieldMissed, mediaResource,
 								requiredFields);
-
 						if (fieldMissed) {
 							responseMap.put("media",path);
 							break;
 						}
-
 					}
 				}
 
@@ -83,6 +89,19 @@ public class MediaBulkEditValidationServlet extends SlingAllMethodsServlet {
 				}
 		} catch (IOException | LoginException e) {
 			log.error("Error while validating media : {0}", e);
+		}
+	}
+
+	private boolean containsBnppTitle(Resource mediaResource) {
+		if( (mediaResource.getChild(JcrConstants.JCR_CONTENT) != null) && (mediaResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) ){
+			ValueMap mediaProperties = mediaResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
+			if(mediaProperties.containsKey("bnpp-title-en") && StringUtils.isNotEmpty(mediaProperties.get("bnpp-title-en", StringUtils.EMPTY))){
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
+		} else {
+				return Boolean.FALSE;
 		}
 	}
 

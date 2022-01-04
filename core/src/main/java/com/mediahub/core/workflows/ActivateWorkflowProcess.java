@@ -11,7 +11,6 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.AssetUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -45,11 +44,8 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
             throw new WorkflowException("Unable to get the payload");
         }
 
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
             if (payload != null && payload.getChild(JcrConstants.JCR_CONTENT) != null && payload.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA) != null) {
@@ -95,14 +91,9 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
                     }
                 }
             }
-        } catch (LoginException e) {
+        } catch (Exception e) {
             throw new WorkflowException("Error while publishing asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
-
 
     }
 }

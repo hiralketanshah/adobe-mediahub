@@ -155,6 +155,7 @@ public class BnpConstants {
     public static final String S7_FILE_STATUS_NOT_SUPPORTED = "NotSupported";
     public static final String S7_FILE_STATUS_COMPLETE = "PublishComplete";
     public static final String S7_FILE_STATUS_INCOMPLETE = "PublishIncomplete";
+    public static final String S7_FILE_STATUS_UPLOAD = "UploadStart";
     public static final String S7_TYPE = "dam:scene7Type";
     public static final String S7_FILE = "dam:scene7File";
 

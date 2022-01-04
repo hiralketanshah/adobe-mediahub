@@ -15,10 +15,13 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
 
   private String cdnCacheInvalidationPath;
 
+  private String scene7Domain;
+
   @Activate
   protected void activate(final Scene7DeactivationServiceConfig config) {
     configurationPath = config.getCloudConfigurationPath();
     cdnCacheInvalidationPath = config.getCdnCacheInvalidationPath();
+    scene7Domain = config.getScene7Domain();
   }
 
   @Override
@@ -28,6 +31,9 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
 
   @Override
   public String getCdnCacheInvalidationPath() { return cdnCacheInvalidationPath; }
+
+  @Override
+  public String getScene7Domain() { return scene7Domain; }
 }
 
 @ObjectClassDefinition(name = "Scene 7 Deactivation Service",
@@ -41,5 +47,9 @@ public class Scene7DeactivationServiceImpl implements Scene7DeactivationService 
   @AttributeDefinition(name = "CDN cache Invalidation request URL",
       description = "CDN cache Invalidation request URL")
   String getCdnCacheInvalidationPath() default "/content/mediahub/us/en.s7cdninvalidation.json";
+
+  @AttributeDefinition(name = "Scene 7 Domain",
+      description = "Scene 7 Domain")
+  String getScene7Domain() default "https://asset.mediahub.bnpparibas/";
 
 }
