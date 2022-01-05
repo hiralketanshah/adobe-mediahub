@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,7 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                                 modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                             }
                             modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/master/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                            modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_FILE_LAST_PUBLISHED, Calendar.getInstance());
                             if (file != null) {
                                 workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, domain + file);
                             }
