@@ -63,6 +63,6 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @ObjectClassDefinition(name = "Mediahub Remove Media To File System", description = "Configuration for removing rich media to file system")
     public static @interface Config {
         @AttributeDefinition(name = "Destination path", description = "Destination path for removing the media")
-        String destinationPath() default "";
+        String destinationPath() default "/";
     }
 }

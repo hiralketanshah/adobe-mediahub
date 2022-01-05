@@ -115,6 +115,6 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @ObjectClassDefinition(name = "Mediahub Save Media To File System", description = "Configuration for sending rich media to file system")
     public static @interface Config {
         @AttributeDefinition(name = "Destination path", description = "Destination path for storing the media")
-        String destinationPath() default "";
+        String destinationPath() default "/";
     }
 }

@@ -141,11 +141,12 @@ public class ExternalUserCreationWorkflowProcessTest {
         metadataMap.put("firstName", "Test First Name");
         metadataMap.put("lastName", "Test First Name");
         metadataMap.put("email", "test@gmail.com");
-        metadataMap.put("expiryDate", "2020-10-11");
+        metadataMap.put("expiryDate", "11/10/2021");
         metadataMap.put("project", "Mediahub");
         metadataMap.put("company", "Bnp Paribas");
         metadataMap.put("city", "Bangalore");
         metadataMap.put("country", "India");
+        metadataMap.put("addToProject", "true");
         when(workItem.getWorkflowData()).thenReturn(workflowData);
         when(user.getPath()).thenReturn("Mediahub");
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
