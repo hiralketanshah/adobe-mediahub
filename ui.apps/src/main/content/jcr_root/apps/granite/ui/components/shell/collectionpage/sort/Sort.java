@@ -63,11 +63,11 @@ public class Sort extends ComponentHelper {
         if(ordered) {
             Collections.sort(sortByItems);
         }
-        return sortByItems;
+        return new ArrayList<>(sortByItems);
     }
 
     public ArrayList<SortOrderItem> getSortOrderItems() {
-        return sortOrderItems;
+        return new ArrayList<>(sortOrderItems);
     }
 
     public Map<String, String> getAttributes() {
