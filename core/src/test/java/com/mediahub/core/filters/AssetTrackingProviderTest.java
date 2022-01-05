@@ -111,7 +111,7 @@ class AssetTrackingProviderTest {
 	@Test
 	void internalResourceTest(AemContext context) {
 		Resource intResource = fixture.getResource(resolveContext, "/content/internal/format/uui", null, null);
-		assertEquals("dam:Asset", intResource.getResourceType());
+		assertEquals("mediahub/assets/tracking", intResource.getResourceType());
 
 	}
 
