@@ -221,6 +221,49 @@
         return false;
     });
 
+    $(document).on("click", "#shell-propertiespage-activate-bulk-asset, #shell-propertiespage-deactivate-bulk-asset", function (e) {
+        if (e.currentTarget.id === "shell-propertiespage-activate-bulk-asset") {
+            saveMediaMetadataChanges(e);
+        } else {
+            deactivateBulkAsset(e);
+        }
+        return false;
+    });
+
+    function deactivateBulkAsset(e){
+
+        var data = {};
+        var selectedItems = $(selectionItemRel);
+        var bulkAssets = new Array();
+        selectedItems.each(function(index, value) {
+            bulkAssets[index] = $(value).data("path");
+        });
+        data["path"] = bulkAssets;
+        $.ajax({
+            type: "GET",
+            url: "/bin/asset/bulkunpublish",
+            data: data
+        }).done(function(json) {
+          var ui = $(window).adaptTo("foundation-ui");
+          var successMessage = Granite.I18n.get("The Assets inside media will be unpublished soon");
+          ui.prompt(Granite.I18n.get("The Assets wil be unpublished soon"), successMessage, "success", [{
+              text: Granite.I18n.get("OK"),
+              primary: true,
+              handler: function () {
+                  location.href = $(".foundation-backanchor").attr("href");
+              }
+          }]);
+        }).fail(function(json) {
+            ui.prompt(Granite.I18n.get("Error"), "Error while unpublishing assets :" + json.responseJSON.message, "Error while unpublishing assets :" + json.responseJSON.message, [{
+                text: Granite.I18n.get("Close"),
+                primary: true,
+                handler: function() {
+                    // do nothing in case of error
+                }
+            }]);
+        });
+    }
+
     $(document).on("click", "#shell-propertiespage-save-publish", function (e) {
         if (e.currentTarget.id === "shell-propertiespage-save-publish") {
             simpleSave = false;
@@ -266,7 +309,7 @@
         if (!$(".foundation-content-path").data("is-bulk-mode") || !appendModeEnabled) {
             saveMediaMetadataChanges(e);
         }
-		saveMediaMetadataChanges(e);
+		    saveMediaMetadataChanges(e);
         return false;
     });
 
