@@ -416,12 +416,21 @@
 
             var nameInput = $('input[name=":name"]', self.dialog)[0];
             var name = nameInput.value;
-            if (self._checkExistance(name) || self._hasRestrictedChar(name)) {
+            if (self._checkExistance(name) || self._hasRestrictedChar(name) || name.length > 12) {
                 Array.prototype.slice.call(nameInput.parentElement.getElementsByTagName("coral-tooltip"))
                     .forEach(function(item) {
                         item.remove();
                     });
-                if (self._checkExistance(name)) {
+                if(name.length > 12){
+                  nameInput.parentElement.appendChild(new Coral.Tooltip().set({
+                      variant: "error",
+                      content: {
+                          innerHTML: Granite.I18n.get("Name of the folder cannot be more than 12 characters")
+                      },
+                      target: nameInput,
+                      placement: "bottom"
+                  })).show();
+                } else if (self._checkExistance(name)) {
                     nameInput.parentElement.appendChild(new Coral.Tooltip().set({
                         variant: "error",
                         content: {
