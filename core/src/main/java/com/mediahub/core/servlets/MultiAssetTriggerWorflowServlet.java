@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 )
 public class MultiAssetTriggerWorflowServlet extends SlingSafeMethodsServlet {
 
-  private static final Logger log = LoggerFactory.getLogger(MetadataUpdaterServlet.class);
+  private static final Logger log = LoggerFactory.getLogger(MultiAssetTriggerWorflowServlet.class);
 
   @Reference
   private transient ResourceResolverFactory resolverFactory;

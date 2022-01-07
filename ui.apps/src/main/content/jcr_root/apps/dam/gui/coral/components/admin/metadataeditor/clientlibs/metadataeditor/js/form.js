@@ -29,6 +29,7 @@
     var collectionItemRel = ".cq-damadmin-admin-childpages .foundation-collection-item";
     var selectionItemRel = ".cq-damadmin-admin-childpages .foundation-selections-item";
     var simpleSave = true;
+    var formId = "";
 
     $(document).on("keypress", ".data-fields input[type=text]", function (e) {
         if (e.keyCode === 13) {
@@ -223,6 +224,7 @@
 
     $(document).on("click", "#shell-propertiespage-activate-bulk-asset, #shell-propertiespage-deactivate-bulk-asset", function (e) {
         if (e.currentTarget.id === "shell-propertiespage-activate-bulk-asset") {
+            formId = "shell-propertiespage-activate-bulk-asset";
             saveMediaMetadataChanges(e);
             var isValidated = document.getElementById("shell-propertiespage-activate-bulk-asset").getAttribute("isValidated");
             if (isValidated && isValidated === 'true') {
@@ -493,8 +495,10 @@
         }
         resp += "</p>";
 
-        showDialog("aem-assets-metadataedit-success", "success", Granite.I18n.get("Asset(s) modified"), resp,
-            '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
+        if(formId !== "shell-propertiespage-activate-bulk-asset"){
+            showDialog("aem-assets-metadataedit-success", "success", Granite.I18n.get("Asset(s) modified"), resp,
+                        '<button is="coral-button" variant="default" coral-close>' + Granite.I18n.get("OK") + "</button>");
+        }
     }
 
     // showing spinner after bulk metadata edit success and reloading the window
