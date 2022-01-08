@@ -1,6 +1,5 @@
 package com.mediahub.core.utils;
 
-import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.model.Scene7Asset;
