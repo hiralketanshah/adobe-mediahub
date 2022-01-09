@@ -5,6 +5,7 @@ import com.mediahub.core.constants.BnpConstants;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
@@ -119,6 +120,11 @@ public class FolderResourceListener implements EventHandler {
             BnpConstants.USER_DEACTIVATION_SERVICE)) {
           adpatableResource
               .put(JcrConstants.JCR_CREATED_BY, event.getProperty(BnpConstants.USER_ID).toString());
+        }
+
+        // MED-491 Assign UUID to folder not Media
+        if(!StringUtils.equals(adpatableResource.get("bnpp-media", ""), Boolean.TRUE.toString())){
+          adpatableResource.put("uuid", UUID.randomUUID().toString());
         }
       }
     }
