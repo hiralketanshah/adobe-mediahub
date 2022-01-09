@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
@@ -68,6 +69,9 @@ class FolderResourceListenerTest {
 
     @Mock
     private Resource resource;
+
+    @Mock
+    private UserManager userManager;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -140,6 +144,7 @@ class FolderResourceListenerTest {
         when(map.get(JcrConstants.JCR_PRIMARYTYPE, String.class)).thenReturn(BnpConstants.SLING_FOLDER);
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
+        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
         fixture.captureFolderChanges(resourceEvent, resolver, resource);
 
         assertAll(() -> assertEquals(BnpConstants.TOPIC_RESOURCE_ADDED, resourceEvent.getTopic()),
