@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyFactory;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,14 +23,19 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.request.RequestParameter;
 import org.apache.sling.api.request.RequestParameterMap;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.AnalyticsGetterService;
 import com.mediahub.core.services.AuthService;
 import com.mediahub.core.services.impl.AnalyticsGetterServiceImpl;
@@ -63,14 +69,25 @@ public class AnalyticsGetterServletTest {
 
     @Mock
     ResourceResolverFactory resolverFactory;
+    
+    @Mock
+    ResourceResolver resourceResolver;
+    
+    @Mock
+    Resource resource;
 
     Value[] values;
 
     Map<String, Object> parameters = new HashMap<>();
+    
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
-    public void setupMock() throws RepositoryException, IOException {
+    public void setupMock() throws RepositoryException, IOException, LoginException {
         MockitoAnnotations.initMocks(this);
+        
+        
 
         parameters.put("metascopes", "abc,xyz");
         parameters.put("jwtToken", "abc,xyz");
@@ -80,6 +97,9 @@ public class AnalyticsGetterServletTest {
         context.registerService(AuthService.class, authService);
         context.registerService(ResourceResolverFactory.class, resolverFactory);
         context.registerService(AnalyticsGetterService.class, analyticsService);
+        
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
+        when(resourceResolver.getResource(Mockito.any())).thenReturn(resource);
 
         when(req.getParameter("startDate")).thenReturn("04-01-2022");
         when(req.getParameter("endDate")).thenReturn("06-01-2022");
@@ -129,7 +149,7 @@ public class AnalyticsGetterServletTest {
             @Override
             public Set<String> keySet() {
                 Set<String> testSet = new HashSet<>();
-                testSet.add("test");
+                testSet.add("template");
                 return testSet;
             }
 
