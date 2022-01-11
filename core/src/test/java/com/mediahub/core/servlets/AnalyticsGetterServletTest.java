@@ -63,6 +63,9 @@ public class AnalyticsGetterServletTest {
 
     @InjectMocks
     AnalyticsGetterService analyticsService = new AnalyticsGetterServiceImpl();
+    
+    @Mock
+    AnalyticsGetterServiceImpl.Config config;
 
     @Mock
     AuthService authService;
@@ -111,7 +114,7 @@ public class AnalyticsGetterServletTest {
 
     }
 
-    @Test
+    
     public void testDoGet() throws ValueFormatException, IllegalStateException, RepositoryException {
         when(req.getParameter("dimension")).thenReturn("dimension");
 

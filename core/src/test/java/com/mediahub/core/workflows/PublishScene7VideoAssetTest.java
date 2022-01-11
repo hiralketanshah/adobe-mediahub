@@ -12,6 +12,7 @@ import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.commons.Externalizer;
 import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -74,17 +75,11 @@ public class PublishScene7VideoAssetTest {
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
 
-    private MockUp<DamUtil> damUtil;
 
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        damUtil = new MockUp<DamUtil>() {
-            @mockit.Mock
-            Asset resolveToAsset(Resource resource) {
-                return asset;
-            }
-        };
+     
     }
 
     @Test
@@ -94,6 +89,8 @@ public class PublishScene7VideoAssetTest {
         when(workflowData.getPayload()).thenReturn(payload);
         when(payload.toString()).thenReturn("/content/dam/projects/");
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
+        when(resource.adaptTo(Asset.class)).thenReturn(asset);
+        when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
         when(resource.getValueMap()).thenReturn(modifiableValueMap);
