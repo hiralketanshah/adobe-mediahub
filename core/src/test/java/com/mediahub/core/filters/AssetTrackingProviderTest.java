@@ -217,4 +217,5 @@ class AssetTrackingProviderTest {
         Resource extResource = fixture.getResource(resolveContext, "/content/external/test/uui", null, null);
         assertEquals("mediahub/assets/tracking", extResource.getResourceType());
     }
+
 }

@@ -130,6 +130,7 @@ public class BnpConstants {
     public static final String BNPP_EXTERNAL_FILE_URL_HD = "bnpp-external-file-master-url-hd";
     public static final String BNPP_EXTERNAL_FILE_URL_SUPER_HD = "bnpp-external-file-master-url-super-hd";
     public static final String BNPP_EXTERNAL_FILE_URL_MD = "bnpp-external-file-master-url-md";
+    public static final String BNPP_EXTERNAL_FILE_LAST_PUBLISHED = "externalLastPublished";
 
     public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
