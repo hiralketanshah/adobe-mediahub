@@ -4,22 +4,10 @@ import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.google.gson.Gson;
 import com.mediahub.core.constants.BnpConstants;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ResourceUtil;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -27,6 +15,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.Servlet;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 @SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class,
@@ -52,20 +48,20 @@ public class AssetPublishStatus extends SlingAllMethodsServlet {
         try (ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String assetPath = request.getRequestParameter("paths").getString();
             Resource resource = adminResolver.getResource(assetPath);
-            if(DamUtil.isAsset(resource)){
+            if (DamUtil.isAsset(resource)) {
                 Asset asset = DamUtil.resolveToAsset(resource);
                 externalPublicationProcessed(responseMap, asset);
             } else {
                 Iterator<Asset> assets = DamUtil.getAssets(resource);
-                while(assets.hasNext()){
+                while (assets.hasNext()) {
                     Asset subAsset = assets.next();
                     externalPublicationProcessed(responseMap, subAsset);
-                    if(responseMap.containsKey(IS_IN_RUNNING_WORKFLOW)){
+                    if (responseMap.containsKey(IS_IN_RUNNING_WORKFLOW)) {
                         break;
                     }
                 }
             }
-            if(!responseMap.containsKey(IS_IN_RUNNING_WORKFLOW)){
+            if (!responseMap.containsKey(IS_IN_RUNNING_WORKFLOW)) {
                 responseMap.put(IS_IN_RUNNING_WORKFLOW, Boolean.FALSE);
             }
         } catch (LoginException e) {
@@ -81,7 +77,7 @@ public class AssetPublishStatus extends SlingAllMethodsServlet {
         String broadcastStatus = properties.get(BnpConstants.BNPP_BROADCAST_STATUS, StringUtils.EMPTY);
         String scene7FileStatus = subAsset.getMetadataValueFromJcr(BnpConstants.S7_FILE_STATUS_PROPERTY);
         if (StringUtils.equals(broadcastStatus, BnpConstants.EXTERNAL)
-            && !(StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_COMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_INCOMPLETE))) {
+                && !(StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_COMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_INCOMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED))) {
             responseMap.put(IS_IN_RUNNING_WORKFLOW, Boolean.TRUE);
         }
     }
