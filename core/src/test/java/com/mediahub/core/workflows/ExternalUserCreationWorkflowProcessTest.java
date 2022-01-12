@@ -125,6 +125,9 @@ public class ExternalUserCreationWorkflowProcessTest {
 
     @Mock
     I18nProvider provider;
+    
+    @Mock
+    Calendar cal;
 
     MetaDataMap metadataMap;
 
@@ -194,13 +197,16 @@ public class ExternalUserCreationWorkflowProcessTest {
         when(user.getProperty("./profile/givenName")).thenReturn(valueArray);
         when(value2.toString()).thenReturn("MediaUserName");
         when(project.getTitle()).thenReturn("Project Title");
-        when(user.getProperty(BnpConstants.EXT_USER_PROPERTY_EXPIRY)).thenReturn(valueArray1);
+        when(user.getProperty(Mockito.anyString())).thenReturn(valueArray1);
         when(value3.toString()).thenReturn("2020-10-11");
+        when(value3.getDate()).thenReturn(cal);
         when(externalizer.authorLink(resolver, "/projects/details.html"
                 + "/content/projects/corporate_institutionalbankingcib".replace("/dam", ""))).thenReturn(
                 "http://localhost:4502/projects/details.html/content/projects/corporate_institutionalbankingcib");
         when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflow.getInitiator()).thenReturn("InitiatorUser");
+        when(userManager.getAuthorizable("InitiatorUser")).thenReturn(user);
+        when(user.getProperty(Mockito.any())).thenReturn(valueArray1);
         assertAll(() -> workflowProcess.execute(workItem, wfsession, metadataMap));
     }
 

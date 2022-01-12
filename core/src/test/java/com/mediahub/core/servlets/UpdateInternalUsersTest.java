@@ -17,10 +17,13 @@ import org.mockito.MockitoAnnotations;
 
 import com.mediahub.core.services.UpdateInternalUsersService;
 
+import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
 public class UpdateInternalUsersTest {
+    
+    AemContext context = new AemContext();
 
 	@InjectMocks
 	UpdateInternalUsers updateInternalUsers;
@@ -40,6 +43,8 @@ public class UpdateInternalUsersTest {
 	@BeforeEach
 	public void setupMock() throws NotCompliantMBeanException {
 		MockitoAnnotations.initMocks(this);
+		context.registerService(UpdateInternalUsersService.class,updateUsers);
+		context.registerInjectActivateService(updateInternalUsers);
 	}
 
 	@Test

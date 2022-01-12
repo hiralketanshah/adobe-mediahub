@@ -12,12 +12,14 @@ import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
@@ -61,7 +63,8 @@ public class AssetDeactivateWorkflowProcessTest {
     MetaDataMap metadataMap;
 
     @Mock
-    ModifiableValueMap modifiableValueMap;
+    ValueMap valueMap;
+    
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -69,7 +72,7 @@ public class AssetDeactivateWorkflowProcessTest {
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(resource.getValueMap()).thenReturn(modifiableValueMap);
+        when(resource.getValueMap()).thenReturn(valueMap);
     }
 
     @Test
@@ -82,9 +85,9 @@ public class AssetDeactivateWorkflowProcessTest {
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
 
         when(resource.getChild(any())).thenReturn(resource);
-        when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
-        when(modifiableValueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
-        when(modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("dam:scene7ID");
+        when(resource.adaptTo(ValueMap.class)).thenReturn(valueMap);
+        when(valueMap.containsKey(Mockito.anyString())).thenReturn(Boolean.TRUE);
+        when(valueMap.get(Mockito.anyString(), Mockito.any())).thenReturn("dam:scene7ID");
 
         // when(modifiableValueMap.put(any(String.class),eq("dam:scene7ID"))).thenReturn("dam:scene7ID");
 
@@ -101,9 +104,9 @@ public class AssetDeactivateWorkflowProcessTest {
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
 
         when(resource.getChild(any())).thenReturn(resource);
-        when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
-        when(modifiableValueMap.containsKey("bnpp-internal-broadcast-url")).thenReturn(Boolean.TRUE);
-        when(modifiableValueMap.get("bnpp-internal-broadcast-url", StringUtils.EMPTY))
+        when(resource.adaptTo(ValueMap.class)).thenReturn(valueMap);
+        when(valueMap.containsKey("bnpp-internal-broadcast-url")).thenReturn(Boolean.TRUE);
+        when(valueMap.get("bnpp-internal-broadcast-url", StringUtils.EMPTY))
                 .thenReturn("bnpp-internal-broadcast-url");
 
         workflowProcess.execute(workItem, workflowSession, metadataMap);

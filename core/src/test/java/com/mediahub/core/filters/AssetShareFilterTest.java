@@ -4,6 +4,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,56 +33,64 @@ import javax.servlet.http.HttpServletResponse;
 @ExtendWith(AemContextExtension.class)
 class AssetShareFilterTest {
 
-	@InjectMocks
-	private AssetShareFilter fixture;
+    @InjectMocks
+    private AssetShareFilter fixture;
 
-	private final AemContext context = new AemContext();
+    private final AemContext context = new AemContext();
 
-	@Mock
-	ResourceResolverFactory resolverFactory;
+    @Mock
+    ResourceResolverFactory resolverFactory;
 
-	@Mock
-	ResourceResolver resolver;
+    @Mock
+    ResourceResolver resolver;
 
-	@Mock
-	HttpServletRequest req;
+    @Mock
+    HttpServletRequest req;
 
-	@Mock
-	HttpServletResponse resp;
+    @Mock
+    HttpServletResponse resp;
 
-	Resource res;
+    Resource res;
 
-	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-			BnpConstants.WRITE_SERVICE);
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
+            BnpConstants.WRITE_SERVICE);
 
-	@BeforeEach
-	void setup() throws LoginException {
-		MockitoAnnotations.initMocks(this);
-		context.registerService(ResourceResolverFactory.class, resolverFactory);
-		when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-		Map<String, String[]> mapOfParams = new HashMap<>();
-		mapOfParams.put("sh", new String[] { "test.text" });
+    @BeforeEach
+    void setup() throws LoginException {
+        MockitoAnnotations.initMocks(this);
+        context.registerService(ResourceResolverFactory.class, resolverFactory);
+        
+        Map<String, String[]> mapOfParams = new HashMap<>();
+        mapOfParams.put("sh", new String[] { "test.text" });
 
-		when(req.getParameterMap()).thenReturn(mapOfParams);
+        when(req.getParameterMap()).thenReturn(mapOfParams);
 
-		res = context.create().resource("/var/dam/share/test", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured",
-				"secured", true);
-		when(resolver.getResource(Mockito.any(String.class))).thenReturn(res);
-	}
+        res = context.create().resource("/var/dam/share/test", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured",
+                "secured", true);
+        when(resolver.getResource(Mockito.any(String.class))).thenReturn(res);
+    }
 
-	@Test
-	void extractCredentialsTest(AemContext context) {
-		Cookie c = new Cookie("login-token", "123");
-		Cookie[] cookies = new Cookie[1];
-		cookies[0] = c;
-		when(req.getCookies()).thenReturn(cookies);
-		assertAll(() -> fixture.extractCredentials(req, resp));
-	}
+    @Test
+    void extractCredentialsTest(AemContext context) throws LoginException {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        Cookie c = new Cookie("login-token", "123");
+        Cookie[] cookies = new Cookie[1];
+        cookies[0] = c;
+        when(req.getCookies()).thenReturn(cookies);
+        assertAll(() -> fixture.extractCredentials(req, resp));
+    }
 
-	@Test
-	void extractCredentialsTest1(AemContext context) {
-		Cookie[] cookies = new Cookie[0];
-		when(req.getCookies()).thenReturn(cookies);
-		assertAll(() -> fixture.extractCredentials(req, resp));
-	}
+    @Test
+    void extractCredentialsTest1(AemContext context) throws LoginException {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        Cookie[] cookies = new Cookie[0];
+        when(req.getCookies()).thenReturn(cookies);
+        assertAll(() -> fixture.extractCredentials(req, resp));
+    }
+
+    @Test
+    public void errorTest() throws Exception {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenThrow(new LoginException());
+        assertAll(() -> fixture.extractCredentials(req, resp));
+    }
 }

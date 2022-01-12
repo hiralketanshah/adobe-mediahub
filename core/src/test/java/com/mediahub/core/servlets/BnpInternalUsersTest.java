@@ -77,6 +77,9 @@ public class BnpInternalUsersTest {
 
 	@Mock
 	SearchResult result;
+	
+	@Mock
+	Resource res;
 
 	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 			BnpConstants.WRITE_SERVICE);
@@ -89,10 +92,11 @@ public class BnpInternalUsersTest {
 	@Test
 	public void testDoGet() throws Exception {
 		List<Resource> resources = new ArrayList<>();
+		resources.add(res);
 		Iterator<Resource> iterator = resources.iterator();
 
 		Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
-		Mockito.when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+		Mockito.when(res.adaptTo(User.class)).thenReturn(user);
 		Mockito.when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
 		/*when(session.getUserID()).thenReturn("admin");
 		when(userManager.getAuthorizable("admin")).thenReturn(user);
@@ -105,7 +109,7 @@ public class BnpInternalUsersTest {
 		when(result.getResources()).thenReturn(iterator);
 
 		when(resp.getWriter()).thenReturn(printWriter);
-		assertAll(() -> bnpInternalUsers.doGet(req, resp));
+		bnpInternalUsers.doGet(req, resp);
 	}
 
 }

@@ -69,7 +69,7 @@ class InvalidateScene7CacheTest {
         Resource res = context.create().resource("/content/test1", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset");
         context.create().resource("/content/test1/jcr:content", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured");
         context.create().resource("/content/test1/jcr:content/metadata", JcrConstants.JCR_PRIMARYTYPE,
-                "nt:unstructured", "bnpp-external-file-master-url", "scene7");
+                "nt:unstructured", "bnpp-external-file-master-url", "scene7", BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, "abc");
 
         context.registerService(SlingRequestProcessor.class, requestProcessor);
         context.registerService(Scene7DeactivationService.class, scene7DeactivationService);
