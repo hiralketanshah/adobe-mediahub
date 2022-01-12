@@ -1,5 +1,6 @@
 package com.mediahub.core.filters;
 
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.spi.resource.provider.ResolveContext;
@@ -43,6 +44,9 @@ class AssetTrackingProviderTest {
     @InjectMocks
     private AssetTrackingProvider fixture;
 
+    @Mock
+    SlingHttpServletRequest slingRequest;
+
     private final AemContext context = new AemContext();
 
     Resource res;
@@ -64,7 +68,7 @@ class AssetTrackingProviderTest {
 
     @Mock
     Asset asset;
-    
+
     @Mock
     InternalResource resource;
 
@@ -77,9 +81,13 @@ class AssetTrackingProviderTest {
     void setup() throws IOException, ServletException {
         MockitoAnnotations.initMocks(this);
         context.registerInjectActivateService(trackingService);
+        when(slingRequest.getHeader(Mockito.anyString())).thenReturn("test,test");
+        when(slingRequest.getParameter(Mockito.anyString())).thenReturn("test");
+
         String[] status = { "external", "internal" };
         context.create().resource("/content/abc", JcrConstants.JCR_PRIMARYTYPE, BnpConstants.DAM_SLING_FOLDER);
-        res = context.create().resource("/content/abc/test1.mpv", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset");
+        res = context.create().resource("/content/abc/test1.mpv", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset",
+                JcrConstants.JCR_UUID, "1234");
         context.create().resource("/content/abc/jcr:content", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured");
         context.create().resource("/content/abc/jcr:content/metadata", JcrConstants.JCR_PRIMARYTYPE, "nt:unstructured",
                 BnpConstants.BNPP_MEDIA_TYPE, status, BnpConstants.BNPP_MEDIA_CATEGORY, "1", BnpConstants.BNPP_LANGUAGE,
@@ -129,15 +137,16 @@ class AssetTrackingProviderTest {
 
         context.registerInjectActivateService(fixture);
     }
-    
+
     @Test
-    void listChildrenTest(AemContext context) {
+    void listChildrenTest(AemContext context) throws IOException, ServletException {
+
         Resource intResource = fixture.getResource(resolveContext, "/content/internal/player/uui", null, null);
         fixture.listChildren(resolveContext, intResource);
         when(resource.getResource()).thenReturn(resource);
         when(resource.getResourceResolver()).thenReturn(resolver);
         fixture.listChildren(resolveContext, resource);
-        
+
     }
 
     @Test

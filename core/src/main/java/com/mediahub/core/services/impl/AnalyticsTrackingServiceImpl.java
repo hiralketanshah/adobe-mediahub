@@ -179,33 +179,35 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 con.setDoOutput(true);
                 con.setConnectTimeout(5000);
                 con.setReadTimeout(5000);
-
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.IP_ADDRESS_PROPERTY))) {
-                    con.setRequestProperty("X-Forwarded-For", properties.get(GlobalFilter.IP_ADDRESS_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.LANGUAGE_PROPERTY))) {
-                    con.setRequestProperty("Accept-Language", properties.get(GlobalFilter.LANGUAGE_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.USER_AGENT_PROPERTY))) {
-                    con.setRequestProperty("User-Agent", properties.get(GlobalFilter.USER_AGENT_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
-                    parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_SOURCE_PROPERTY))) {
-                    parameters.put("prop16", properties.get(GlobalFilter.UTM_SOURCE_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY))) {
-                    parameters.put("prop17", properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY))) {
-                    parameters.put("prop18", properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_TERM_PROPERTY))) {
-                    parameters.put("prop19", properties.get(GlobalFilter.UTM_TERM_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CONTENT_PROPERTY))) {
-                    parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
+                
+                if(null!=properties) {
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.IP_ADDRESS_PROPERTY))) {
+                        con.setRequestProperty("X-Forwarded-For", properties.get(GlobalFilter.IP_ADDRESS_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.LANGUAGE_PROPERTY))) {
+                        con.setRequestProperty("Accept-Language", properties.get(GlobalFilter.LANGUAGE_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.USER_AGENT_PROPERTY))) {
+                        con.setRequestProperty("User-Agent", properties.get(GlobalFilter.USER_AGENT_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
+                        parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_SOURCE_PROPERTY))) {
+                        parameters.put("prop16", properties.get(GlobalFilter.UTM_SOURCE_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY))) {
+                        parameters.put("prop17", properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY))) {
+                        parameters.put("prop18", properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_TERM_PROPERTY))) {
+                        parameters.put("prop19", properties.get(GlobalFilter.UTM_TERM_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CONTENT_PROPERTY))) {
+                        parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
+                    }
                 }
 
                 //Setting parameters
@@ -230,14 +232,13 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
     private String getParamsString(Map<String, String> params)
             throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
-
         for (Map.Entry<String, String> entry : params.entrySet()) {
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
             result.append("&");
         }
-
+       
         String resultString = result.toString();
         return resultString.length() > 0
                 ? resultString.substring(0, resultString.length() - 1)
