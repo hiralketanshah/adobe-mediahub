@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 @ExtendWith({ AemContextExtension.class })
@@ -90,6 +91,7 @@ public class PublishScene7VideoAssetTest {
         when(payload.toString()).thenReturn("/content/dam/projects/");
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
         when(resource.adaptTo(Asset.class)).thenReturn(asset);
+        when(asset.getMetadataValue(Mockito.anyString())).thenReturn("PublishComplete");
         when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
@@ -99,6 +101,13 @@ public class PublishScene7VideoAssetTest {
                 .thenReturn(BnpConstants.BNPP_INTERNAL_BROADCAST_URL);
         when(modifiableValueMap.put(any(String.class), eq(BnpConstants.BNPP_INTERNAL_FILE_URL)))
                 .thenReturn(BnpConstants.BNPP_INTERNAL_FILE_URL);
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
+    }
+    
+    @Test
+    public void executeError() throws Exception {
+        when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
+        
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
