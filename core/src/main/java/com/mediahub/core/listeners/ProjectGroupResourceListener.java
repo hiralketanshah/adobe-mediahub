@@ -51,6 +51,7 @@ public class ProjectGroupResourceListener implements EventListener {
     @Reference
     JobManager jobManager;
 
+    @SuppressWarnings("AEM Rules:AEM-3")
     private Session session;
 
     private ObservationManager observationManager;

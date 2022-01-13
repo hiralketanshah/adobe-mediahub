@@ -10,6 +10,7 @@ import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -68,7 +69,7 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             } else {
                 log.info("Either payload or destination path is empty");
             }
-        } catch (Exception e) {
+        } catch (LoginException | IOException e) {
             throw new WorkflowException("Error while moving rich media asset", e);
         }
     }
@@ -103,12 +104,12 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         }
     }
 
-    private static ArchiveEntry getEntry(ZipArchiveInputStream zipArchiveInputStream) {
+    private static ArchiveEntry getEntry(ZipArchiveInputStream zipArchiveInputStream) throws IOException {
         try {
             return zipArchiveInputStream.getNextEntry();
         } catch (IOException e) {
             log.error("Exception while extracting zip file, {}", e);
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 

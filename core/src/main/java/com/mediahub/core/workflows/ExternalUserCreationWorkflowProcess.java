@@ -20,6 +20,7 @@ import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -30,9 +31,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
+
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -215,11 +219,9 @@ public class ExternalUserCreationWorkflowProcess implements WorkflowProcess {
                         js.save();
                     }
                 }
-
-
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | RepositoryException | ParseException | NoSuchAlgorithmException e) {
             logger.error("Exception in ExternalUserCreationWorkflowProcess", e);
         }
         logger.info("ExternalUserCreationWorkflowProcess :: exceute method end");

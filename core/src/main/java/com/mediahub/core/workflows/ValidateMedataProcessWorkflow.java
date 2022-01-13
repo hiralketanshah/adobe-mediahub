@@ -96,7 +96,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
                 throw new WorkflowException(String.format("Missing Metadata Fields : %s", sb.toString()));
 
             }
-        } catch (Exception e) {
+        } catch (LoginException e) {
             throw new WorkflowException("Error while validating asset metadata", e);
         }
 

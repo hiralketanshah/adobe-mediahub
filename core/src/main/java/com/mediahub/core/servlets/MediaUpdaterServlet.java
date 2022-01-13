@@ -58,6 +58,7 @@ import com.mediahub.core.constants.BnpConstants;
 /**
  * Servlet to fix media after running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/updatemedia"})
 public class MediaUpdaterServlet extends SlingAllMethodsServlet {
 
@@ -82,7 +83,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
         for (String resourcePath : mediasAndFolders.keySet()) {
             try {
                 updateMediaFolder(request, resourcePath, mediasAndFolders.get(resourcePath));
-            } catch (Exception e) {
+            } catch (ConstraintViolationException | ParseException e) {
                 LOGGER.error("Could not update media: " + resourcePath, e);
                 failuresList.add(new String[] {resourcePath, e.getMessage()});
             }
