@@ -131,7 +131,7 @@ public class UnpublishDynamicMediaProcessTest {
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("failure");
         when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
-        Assertions.assertThrows(exception.class, () -> {
+        Assertions.assertThrows(Exception.class, () -> {
             workflowProcess.execute(workItem, workflowSession, metadataMap);
         });
     }

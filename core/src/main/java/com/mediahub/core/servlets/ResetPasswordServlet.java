@@ -94,9 +94,7 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
                 while (userResources.hasNext()) {
                     Resource user = userResources.next();
                     User userByToken = user.adaptTo(User.class);
-                    System.out.println(userByToken);
                     Value[] expiryDates = userByToken.getProperty(BnpConstants.TOKEN_EXPIRY_DATE);
-                    System.out.println(Calendar.getInstance().before(expiryDates[0].getDate()));
                     if (null != expiryDates && expiryDates.length > 0 && Calendar.getInstance().before(expiryDates[0].getDate())) {
                         user.adaptTo(User.class).changePassword(password);
                         ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
