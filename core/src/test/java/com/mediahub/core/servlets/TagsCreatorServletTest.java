@@ -75,10 +75,14 @@ public class TagsCreatorServletTest {
     RequestParameter mediaRequestParameter;
 
     @Mock
+    RequestParameter entitiesRequestParameter;
+
+    @Mock
     TagManager tagManager;
 
     InputStream assetFile;
     InputStream mediaFile;
+    InputStream entitiesFile;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -89,6 +93,7 @@ public class TagsCreatorServletTest {
 
         when(req.getRequestParameter("assets-file")).thenReturn(assetRequestParameter);
         when(req.getRequestParameter("medias-file")).thenReturn(mediaRequestParameter);
+        when(req.getRequestParameter("entities-file")).thenReturn(entitiesRequestParameter);
     }
 
     @Test
@@ -96,8 +101,10 @@ public class TagsCreatorServletTest {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         assetFile = classloader.getResourceAsStream("media-updater.csv");
         mediaFile = classloader.getResourceAsStream("media-updater.csv");
+        entitiesFile = classloader.getResourceAsStream("media-updater.csv");
         when(assetRequestParameter.getInputStream()).thenReturn(assetFile);
         when(mediaRequestParameter.getInputStream()).thenReturn(mediaFile);
+        when(entitiesRequestParameter.getInputStream()).thenReturn(entitiesFile);
         Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
         Mockito.when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
 
