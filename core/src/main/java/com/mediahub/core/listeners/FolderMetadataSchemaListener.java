@@ -67,7 +67,8 @@ public class FolderMetadataSchemaListener implements EventHandler {
         } catch (PersistenceException e) {
             logger.error("Error while Saving resource resolver", e);
         } catch (RepositoryException e) {
-            logger.error("Error while ordering tab resource", e);
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         logger.debug("Resource event: {} at: {}", event.getTopic(), event.getProperty(SlingConstants.PROPERTY_PATH));
     }

@@ -73,6 +73,7 @@ public class AnalyticsCallData {
         this.rsId = rsId;
         this.dimension = dimension;
         this.metrics = new ArrayList<>(metrics);
+        System.out.println(metricFilters);
         this.metricFilters = new ArrayList<>(metricFilters);
         this.globalFilters = new ArrayList<>(globalFilters);
         this.search = search;

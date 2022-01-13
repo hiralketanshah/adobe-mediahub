@@ -114,7 +114,6 @@ public class AnalyticsGetterServletTest {
 
     }
 
-    
     public void testDoGet() throws ValueFormatException, IllegalStateException, RepositoryException {
         when(req.getParameter("dimension")).thenReturn("dimension");
 

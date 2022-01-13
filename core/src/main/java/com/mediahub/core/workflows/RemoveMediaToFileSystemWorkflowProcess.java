@@ -36,14 +36,11 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     }
 
     @Override
-    public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) throws WorkflowException {
-        try {
-            String payloadPath = workItem.getWorkflowData().getPayload().toString();
-            String assetName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.lastIndexOf('.'));
-            removeFile(assetName);
-        } catch (Exception e) {
-            throw new WorkflowException("Error while removing media from filesystem", e);
-        }
+    public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
+            throws WorkflowException {
+        String payloadPath = workItem.getWorkflowData().getPayload().toString();
+        String assetName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.lastIndexOf('.'));
+        removeFile(assetName);
     }
 
     private static void removeFile(String assetName) {

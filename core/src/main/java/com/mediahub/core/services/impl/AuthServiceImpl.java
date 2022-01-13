@@ -253,7 +253,7 @@ public class AuthServiceImpl implements AuthService {
 
         String jwtToken = getJWTToken();
 
-        if (jwtToken != null && jwtToken != EMPTY) {
+        if (jwtToken != null && jwtToken.equals(EMPTY)) {
             log.debug("JWT Token: " + jwtToken);
             int timeout = 5;
             RequestConfig config = RequestConfig.custom()

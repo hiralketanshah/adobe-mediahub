@@ -11,6 +11,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.AssetUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -91,7 +92,7 @@ public class ActivateWorkflowProcess implements WorkflowProcess {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (LoginException e) {
             throw new WorkflowException("Error while publishing asset", e);
         }
 

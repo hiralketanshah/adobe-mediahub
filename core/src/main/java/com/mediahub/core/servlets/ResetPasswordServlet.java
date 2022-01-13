@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -39,6 +40,7 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.servlet.Servlet;
@@ -92,7 +94,9 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
                 while (userResources.hasNext()) {
                     Resource user = userResources.next();
                     User userByToken = user.adaptTo(User.class);
+                    System.out.println(userByToken);
                     Value[] expiryDates = userByToken.getProperty(BnpConstants.TOKEN_EXPIRY_DATE);
+                    System.out.println(Calendar.getInstance().before(expiryDates[0].getDate()));
                     if (null != expiryDates && expiryDates.length > 0 && Calendar.getInstance().before(expiryDates[0].getDate())) {
                         user.adaptTo(User.class).changePassword(password);
                         ModifiableValueMap modifiableValueMap = user.adaptTo(ModifiableValueMap.class);
@@ -102,7 +106,7 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
                 }
                 resolver.commit();
             }
-        } catch (Exception e) {
+        } catch (RepositoryException | LoginException e) {
             LOGGER.error("Error while changing password", e);
             setErrorResponse(response, "not_able_reset");
         }

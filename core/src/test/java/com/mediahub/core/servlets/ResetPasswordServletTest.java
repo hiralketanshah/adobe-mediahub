@@ -13,12 +13,14 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -89,6 +91,9 @@ class ResetPasswordServletTest {
     
     @Mock
     User user;
+    
+    @Mock
+    Value val;
 
     Map<String, String[]> parameterMap = new HashMap<>();
 
@@ -96,9 +101,9 @@ class ResetPasswordServletTest {
             BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
-    public void setupMock() throws LoginException, IOException {
+    public void setupMock() throws LoginException, IOException, RepositoryException {
         MockitoAnnotations.initMocks(this);
-
+        Value[] values = new Value[] {val};
         when(request.getRequestParameterMap()).thenReturn(reqParamMap);
         when(reqParamMap.getValue(Mockito.anyString())).thenReturn(reqParam);
         when(reqParam.getString()).thenReturn("123");
@@ -113,7 +118,8 @@ class ResetPasswordServletTest {
         when(valueMap.containsKey(Mockito.anyString())).thenReturn(true);
         */
         when(resource.adaptTo(User.class)).thenReturn(user);
-        
+        when(user.getProperty(BnpConstants.TOKEN_EXPIRY_DATE)).thenReturn(values);
+        when(val.getDate()).thenReturn(Calendar.getInstance());
         when(resourceResolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
 
         
@@ -132,6 +138,13 @@ class ResetPasswordServletTest {
 
         when(request.getParameterMap()).thenReturn(parameterMap);
         when(valueMap.get("bnpp-title-en", StringUtils.EMPTY)).thenReturn("testValueMap");
+        resetPasswordServlet.doPost(request, response);
+    }
+    
+    @Test
+    void doPostError() throws ServletException, IOException, LoginException, RepositoryException {
+
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(LoginException.class);
         resetPasswordServlet.doPost(request, response);
     }
 
