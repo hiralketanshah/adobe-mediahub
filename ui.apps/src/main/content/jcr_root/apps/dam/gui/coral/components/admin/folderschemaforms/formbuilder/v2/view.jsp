@@ -223,6 +223,9 @@
         <% } else if (type.equals("youtubeurllist")) { %>
         <sling:include resource="<%= col1Item %>"
                        resourceType="dam/gui/coral/components/admin/folderschemaforms/formbuilder/formfields/v2/youtubeurllist" />
+        <% } else if (type.equals("userpicker")) { %>
+        <sling:include resource="<%= col1Item %>"
+                       resourceType="dam/gui/coral/components/admin/folderschemaforms/formbuilder/formfields/v2/userpickerfield" />
         <% } else { %>
         <sling:include resource="<%= col1Item %>"
                        resourceType="<%= formFieldsPath + "/" + type + "field" %>" />

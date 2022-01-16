@@ -13,7 +13,7 @@
             <clientlibs
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status,internal.render.condition]"/>
+                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status,metadataeditor.userpicker.multifield,internal.render.condition]"/>
         </head>
         <title
             jcr:primaryType="nt:unstructured"
