@@ -118,15 +118,15 @@ public class SaveMetadataProcess implements WorkflowProcess {
         for (Scene7Asset asset : subAssets) {
             if (asset != null && asset.getHeight() != null) {
                 if (asset.getHeight() == 540L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/md/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 720L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/hd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 1080L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/superhd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
             }
