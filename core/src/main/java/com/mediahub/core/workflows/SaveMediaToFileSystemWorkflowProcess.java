@@ -74,6 +74,7 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         }
     }
 
+    @SuppressWarnings("squid:S899")
     private static void crunchifyWriteToFile(Resource payload) throws IOException {
 
         InputStream userInputStream = payload.adaptTo(Rendition.class).getStream();

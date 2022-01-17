@@ -316,7 +316,7 @@ public class SystemNotificationsImpl extends AbstractHtmlRequestInjector impleme
         }
 
         public List<Resource> getNotifications() {
-            return notifications;
+            return new ArrayList<>(notifications);
         }
 
         @Override

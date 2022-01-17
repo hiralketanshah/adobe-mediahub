@@ -88,7 +88,7 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
             Query query = builder.createQuery(PredicateGroup.create(predicates), resolver.adaptTo(Session.class));
 
             SearchResult result = query.getResult();
-            LOGGER.info("Query {}", result.getQueryStatement());
+            LOGGER.debug("Query {}", result.getQueryStatement());
 
             Iterator<Resource> resources = result.getResources();
             StringBuilder sb = new StringBuilder();
