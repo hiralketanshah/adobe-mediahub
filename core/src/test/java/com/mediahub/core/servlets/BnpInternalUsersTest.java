@@ -11,6 +11,8 @@ import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.QueryUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.jcr.Session;
+import javax.servlet.ServletException;
+
+import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -80,13 +85,21 @@ public class BnpInternalUsersTest {
 	
 	@Mock
 	Resource res;
+	
+	@Mock
+	UserManager um;
+	
+	@Mock
+	Authorizable authorizable;
 
 	final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
 			BnpConstants.WRITE_SERVICE);
+	List<Authorizable> listOfAuths = new ArrayList<>();
 
 	@BeforeEach
 	public void setupMock() {
 		MockitoAnnotations.initMocks(this);
+		listOfAuths.add(authorizable);
 	}
 
 	@Test
@@ -98,6 +111,8 @@ public class BnpInternalUsersTest {
 		Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
 		Mockito.when(res.adaptTo(User.class)).thenReturn(user);
 		Mockito.when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+		Mockito.when(resourceResolver.adaptTo(UserManager.class)).thenReturn(um);
+		Mockito.when(um.findAuthorizables(Mockito.any())).thenReturn(listOfAuths.iterator());
 		/*when(session.getUserID()).thenReturn("admin");
 		when(userManager.getAuthorizable("admin")).thenReturn(user);
 		when(user.memberOf()).thenReturn(iterator);
@@ -110,6 +125,12 @@ public class BnpInternalUsersTest {
 
 		when(resp.getWriter()).thenReturn(printWriter);
 		bnpInternalUsers.doGet(req, resp);
+	}
+	
+	@Test
+	public void testDoGetError() throws LoginException, ServletException, IOException {
+	    Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(LoginException.class);
+	    bnpInternalUsers.doGet(req, resp);
 	}
 
 }
