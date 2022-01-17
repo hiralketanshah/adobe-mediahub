@@ -133,6 +133,14 @@
                     </script>
 	                </li>
 
+	                <li class="field" data-fieldtype="text" tabindex="-1" role="menuitem">
+                      <div class="formbuilder-template-title"><coral-icon icon="tag" alt="" size="M"></coral-icon><span><%= i18n.get("User Picker") %></span></div>
+                      <script class="field-properties" type="text/x-handlebars-template">
+                        <sling:include resource="<%= fieldTemplateResource %>"
+                                       resourceType="dam/gui/coral/components/admin/folderschemaforms/formbuilder/formfields/v2/userpickerfield" />
+                    </script>
+                  </li>
+
 	                <% Resource hiddenFieldResource = formResourceManager.getHiddenFieldResource(resource); %>
 	                <li class="field" data-fieldtype="text" tabindex="-1" role="menuitem">
 	                    <div class="formbuilder-template-title"><coral-icon icon="viewSingle" alt="" size="M"></coral-icon><span><%= i18n.get("Hidden Field") %></span>
