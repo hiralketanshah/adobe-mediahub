@@ -30,7 +30,7 @@
         <coral-icon alt="" icon="text" size="XS"></coral-icon>
         <%= xssAPI.encodeForHTML(i18n.get("Multi Value User Field")) %>
     </label>
-    <sling:include resource="<%= resource %>" resourceType="granite/ui/components/foundation/form/userpicker"/>
+    <sling:include resource="<%= resource %>" resourceType="granite/ui/components/coral/foundation/form/userpicker"/>
 </div>
 <div class="formbuilder-content-properties">
 
@@ -41,11 +41,8 @@
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/granite:data/metaType") %>" value="userpicker">
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field") %>">
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/jcr:primaryType") %>" value="nt:unstructured">
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/sling:resourceType") %>" value="granite/ui/components/foundation/form/userpicker">
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/groupsOnly") %>" value="false">
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/groupsOnly@TypeHint") %>" value="Boolean"/>
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/hideServiceUsers") %>" value="true">
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/hideServiceUsers@TypeHint") %>" value="Boolean"/>
+    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/sling:resourceType") %>" value="granite/ui/components/coral/foundation/form/userpicker">
+    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/src") %>" value="/bin/mediahub/users.html">
 
     <sling:include resource="<%= resource %>" resourceType="<%= resourcePathBase + "labelfields"%>"/>
     <%request.setAttribute("cq.dam.metadataschema.builder.field.relativeresource", "field"); %>
