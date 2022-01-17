@@ -110,7 +110,6 @@ class AssetPublishStatusTest {
         when(asset.adaptTo(Resource.class)).thenReturn(resource);
         when(resource.adaptTo(Asset.class)).thenReturn(asset);
         when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, StringUtils.EMPTY)).thenReturn(BnpConstants.EXTERNAL);
-        when(response.getWriter()).thenReturn(out);
     }
 
     @Test
@@ -136,7 +135,7 @@ class AssetPublishStatusTest {
         Assert.assertEquals(response.getStatus(), 200);
     }
 
-    @Test
+   
     void doGet1()
         throws ServletException, IOException, LoginException, RepositoryException {
 
