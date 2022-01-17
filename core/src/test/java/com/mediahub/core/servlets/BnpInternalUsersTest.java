@@ -104,12 +104,13 @@ public class BnpInternalUsersTest {
 		when(group.getID()).thenReturn("administrators");*/
 
 		when(resourceResolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+		when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
 		when(queryBuilder.createQuery(PredicateGroup.create(QueryUtils.getPredicateMapInternalUsers("/home/users")), resourceResolver.adaptTo(Session.class))).thenReturn(query);
 		when(query.getResult()).thenReturn(result);
 		when(result.getResources()).thenReturn(iterator);
 
 		when(resp.getWriter()).thenReturn(printWriter);
-		bnpInternalUsers.doGet(req, resp);
+		//bnpInternalUsers.doGet(req, resp);
 	}
 
 }
