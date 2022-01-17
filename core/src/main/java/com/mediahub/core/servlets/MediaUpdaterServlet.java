@@ -178,6 +178,9 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     resourceMetadataProperties.put("bnpp-identified-persons", inlineAsListAndNormalized(resourceProperties[54]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-theme", inlineAsListAndNormalized(resourceProperties[55]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-keywords", inlineAsListAndNormalized(resourceProperties[56]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-geographicalarea", inlineAsListAndNormalized(resourceProperties[57]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-report", inlineAsListAndNormalized(resourceProperties[58]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-comments-production", inlineAsListAndNormalized(resourceProperties[59]).toArray(new String[0]));
                     
                     willThrowConstraintValidationException = isAnyFieldEmpty(resourceMetadataProperties, MEDIA_REQUIRED_FIELDS);
                 }
@@ -217,7 +220,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
             
             while ((values = csvParser.getLine()) != null) {
                 //ensure we have all the data
-                if (values.length >= 57) {
+                if (values.length >= 60) {
                     //only want to update medias
                     if (values[42] != null && values[42].equals(MEDIA)) {
                         assets.put(values[0], values);                        

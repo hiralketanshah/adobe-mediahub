@@ -338,24 +338,48 @@
         }
 
     $(document).on("click", "#shell-propertiespage-save-publish", function(e) {
-        if(saveMediaMetadataChanges(e)){
-          var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
-          if (isValidated && isValidated === 'true') {
-                var ui = $(window).adaptTo("foundation-ui");
-                var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
-                ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
-                    text: Granite.I18n.get("OK"),
-                    primary: true,
-                    handler: function () {
-                      internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-                      location.href = $(".foundation-backanchor").attr("href");
-                    }
-                }]);
+        var folderPath = $(".cq-damadmin-admin-folder-settings-form").attr("action");
+        $.ajax({
+           async: false,
+           url: Granite.HTTP.externalize("/bin/mediahub/asset/processed"),
+           type: "GET",
+           data: {
+               "paths": folderPath
+           },
+           success: function(resp) {
+               if(resp.isInRunningWorkflow === false){
+                  if(saveMediaMetadataChanges(e)){
+                     var isValidated = document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated");
+                     if (isValidated && isValidated === 'true') {
+                           var ui = $(window).adaptTo("foundation-ui");
+                           var successMessage = Granite.I18n.get("Properties are saved and The Asset has been triggered to Publish");
+                           ui.prompt(Granite.I18n.get("The Asset has been triggered to Publish"), successMessage, "success", [{
+                               text: Granite.I18n.get("OK"),
+                               primary: true,
+                               handler: function () {
+                                 internalPublish(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                                 location.href = $(".foundation-backanchor").attr("href");
+                               }
+                           }]);
 
-          } else {
-              internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
-          }
-        }
+                     } else {
+                         internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e , document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                     }
+                 }
+               } else {
+                  var ui = $(window).adaptTo("foundation-ui");
+                  ui.prompt(Granite.I18n.get("Error"), Granite.I18n.get("This asset cannot be published now"), "warning", [{
+                      text: Granite.I18n.get("Close"),
+                      primary: true,
+                      handler: function() {
+                          // do nothing in case of error
+                      }
+                  }]);
+               }
+           }
+        });
+
+
         return false;
     });
 

@@ -9,6 +9,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -253,7 +254,7 @@ public class AuthServiceImpl implements AuthService {
 
         String jwtToken = getJWTToken();
 
-        if (jwtToken != null && jwtToken.equals(EMPTY)) {
+        if (!StringUtils.isEmpty(jwtToken)) {
             log.debug("JWT Token: " + jwtToken);
             int timeout = 5;
             RequestConfig config = RequestConfig.custom()
