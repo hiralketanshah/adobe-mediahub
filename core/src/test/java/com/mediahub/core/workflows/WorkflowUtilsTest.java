@@ -4,7 +4,9 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -57,6 +59,8 @@ public class WorkflowUtilsTest {
     
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
+    
+    Set<String> setOfKeys = new HashSet<>();
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -65,9 +69,12 @@ public class WorkflowUtilsTest {
 
     @Test
     public void updateWrkflowPayloadTest() throws Exception {
+        setOfKeys.add("test");
         when(workflowSession.newWorkflowData(Mockito.any(String.class), Mockito.any())).thenReturn(workflowData);
         when(workItem.getWorkflowData()).thenReturn(workflowData);
+        when(workItem.getWorkflow()).thenReturn(workflow);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
+        when(metadataMap.keySet()).thenReturn(setOfKeys);
         when(workItem.getWorkflow()).thenReturn(workflow);
         Assertions.assertThrows(WorkflowException.class, () -> {
             workflowUtil.updateWorkflowPayload(workItem, workflowSession, "Test-content-path");

@@ -38,6 +38,7 @@
 		# - only unauthorized pages are cached unless allowUnauthorized is set to 1
 		/rules {
 			$include "/etc/httpd/conf.dispatcher.d/cache/ams_author_cache.any"
+			$include "/etc/httpd/conf.dispatcher.d/cache/bnp_author_cache.any"
 		}
 		# the invalidate section defines those pages which are 'invalidated' after
 		# any activation. please note that, the activated page itself and all 

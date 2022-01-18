@@ -58,6 +58,7 @@ import com.mediahub.core.constants.BnpConstants;
 /**
  * Servlet to fix media after running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/updatemedia"})
 public class MediaUpdaterServlet extends SlingAllMethodsServlet {
 
@@ -82,7 +83,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
         for (String resourcePath : mediasAndFolders.keySet()) {
             try {
                 updateMediaFolder(request, resourcePath, mediasAndFolders.get(resourcePath));
-            } catch (Exception e) {
+            } catch (ConstraintViolationException | ParseException e) {
                 LOGGER.error("Could not update media: " + resourcePath, e);
                 failuresList.add(new String[] {resourcePath, e.getMessage()});
             }
@@ -175,6 +176,9 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     resourceMetadataProperties.put("bnpp-identified-persons", inlineAsListAndNormalized(resourceProperties[54]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-theme", inlineAsListAndNormalized(resourceProperties[55]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-keywords", inlineAsListAndNormalized(resourceProperties[56]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-geographicalarea", inlineAsListAndNormalized(resourceProperties[57]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-report", inlineAsListAndNormalized(resourceProperties[58]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-comments-production", inlineAsListAndNormalized(resourceProperties[59]).toArray(new String[0]));
                     
                     willThrowConstraintValidationException = isAnyFieldEmpty(resourceMetadataProperties, MEDIA_REQUIRED_FIELDS);
                 }
@@ -214,7 +218,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
             
             while ((values = csvParser.getLine()) != null) {
                 //ensure we have all the data
-                if (values.length >= 57) {
+                if (values.length >= 60) {
                     //only want to update medias
                     if (values[42] != null && values[42].equals(MEDIA)) {
                         assets.put(values[0], values);                        

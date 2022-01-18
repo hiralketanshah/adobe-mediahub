@@ -9,11 +9,7 @@ import com.day.cq.workflow.exec.WorkflowData;
 import com.day.cq.workflow.model.WorkflowModel;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.framework.Constants;
@@ -65,12 +61,15 @@ public class UnpublishMediaFolder implements JobConsumer {
 
             if (DamUtil.isAsset(payloadResource)) {
                 ModifiableValueMap valueMap = payloadResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
-                String scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
-                if(StringUtils.isBlank(scene7Path)){
-                    scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
+                String scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+                if (StringUtils.isBlank(scene7Path)) {
+                    scene7Path = valueMap.getOrDefault(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
                 }
 
                 String publishPath = valueMap.getOrDefault(BnpConstants.BNPP_INTERNAL_FILE_URL, StringUtils.EMPTY).toString();
+                if (StringUtils.isBlank(publishPath)) {
+                    publishPath = valueMap.getOrDefault(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, StringUtils.EMPTY).toString();
+                }
 
                 WorkflowSession workflowSession = workflowService.getWorkflowSession(resourceResolver.adaptTo(
                         Session.class));

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
@@ -108,6 +109,9 @@ public class CdnInvalidateCacheWorkflowProcessTest {
         when(workflowData.getPayload()).thenReturn(payload);
         when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
+        when(metadataMap.containsKey(Mockito.any())).thenReturn(true);
+        when(metadataMap.get(Mockito.anyString(), Mockito.any())).thenReturn("test");
+        when(metadataMap.getOrDefault(Mockito.any(), Mockito.any())).thenReturn("test");
         when(payload.toString()).thenReturn("/content/dam/projects/");
 
         when(resource.getChild(any())).thenReturn(resource);
@@ -116,8 +120,8 @@ public class CdnInvalidateCacheWorkflowProcessTest {
         when(modifiableValueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("dam:scene7ID");
 
         Map<String, Object> params = new HashMap<>();
-        when(scene7DeactivationService.getCdnCacheInvalidationPath()).thenReturn("");
-        when(requestResponseFactory.createRequest("POST", "", params)).thenReturn(request);
+        when(scene7DeactivationService.getCdnCacheInvalidationPath()).thenReturn("test");
+        when(requestResponseFactory.createRequest(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(request);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         when(requestResponseFactory.createResponse(out)).thenReturn(response);
         doNothing().when(requestProcessor).processRequest(request, response, resolver);

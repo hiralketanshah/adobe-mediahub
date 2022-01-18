@@ -13,7 +13,6 @@ import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
-import com.mediahub.core.utils.AssetUtils;
 import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +23,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 
 import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED;
 import static com.mediahub.core.constants.BnpConstants.S7_FILE_STATUS_PROPERTY;
@@ -58,11 +58,8 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
 
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource damResource = resourceResolver.getResource(payloadPath);
             if (null != damResource) {
@@ -73,9 +70,9 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
                 ValueMap metadata = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
 
 
-                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_EXTERNAL_BROADCAST_URL, String.class))) ) {
+                if (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL, String.class)) || (!StringUtils.isEmpty(metadata.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)))) {
 
-                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, resourceResolver, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
+                    boolean jobSuccess = SlingJobUtils.startS7ActivationJob(damResource, jobManager, SlingJobUtils.S7_DEACTIVATE_VALUE);
                     if (jobSuccess) {
                         ModifiableValueMap properties = damResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).adaptTo(ModifiableValueMap.class);
                         workItem.getWorkflow().getWorkflowData().getMetaDataMap().put(BnpConstants.BNPP_EXTERNAL_FILE_URL, properties.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
@@ -104,10 +101,6 @@ public class UnpublishDynamicMediaProcess implements WorkflowProcess {
 
         } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while deactivating asset from S7", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }

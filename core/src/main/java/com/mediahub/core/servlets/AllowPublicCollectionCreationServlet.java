@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.osgi.framework.Constants;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Check if the current user is an external user",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/allowPublicCollection" })

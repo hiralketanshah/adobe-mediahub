@@ -10,7 +10,11 @@ import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.*;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -48,11 +52,9 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+
+        final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             Resource payload = resourceResolver.getResource(payloadPath);
             if (null != payload && StringUtils.isNotBlank(destinationPath)) {
@@ -69,10 +71,6 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             }
         } catch (LoginException | IOException e) {
             throw new WorkflowException("Error while moving rich media asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
     }
 
@@ -106,18 +104,18 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         }
     }
 
-    private static ArchiveEntry getEntry(ZipArchiveInputStream zipArchiveInputStream) {
+    private static ArchiveEntry getEntry(ZipArchiveInputStream zipArchiveInputStream) throws IOException {
         try {
             return zipArchiveInputStream.getNextEntry();
         } catch (IOException e) {
             log.error("Exception while extracting zip file, {}", e);
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 
     @ObjectClassDefinition(name = "Mediahub Save Media To File System", description = "Configuration for sending rich media to file system")
     public static @interface Config {
         @AttributeDefinition(name = "Destination path", description = "Destination path for storing the media")
-        String destinationPath() default "";
+        String destinationPath() default "/";
     }
 }

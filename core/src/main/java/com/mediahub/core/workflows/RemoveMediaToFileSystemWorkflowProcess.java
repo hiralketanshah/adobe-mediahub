@@ -5,9 +5,6 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.mediahub.core.constants.BnpConstants;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -19,9 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
 
 @SuppressWarnings("findsecbugs:PATH_TRAVERSAL_IN")
 @Component(service = WorkflowProcess.class, immediate = true, property = {
@@ -44,24 +38,12 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @Override
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
             throws WorkflowException {
-        ResourceResolver resourceResolver = null;
-        try {
-            final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-                    BnpConstants.WRITE_SERVICE);
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
-            String payloadPath = workItem.getWorkflowData().getPayload().toString();
-            String assetName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.lastIndexOf('.'));
-            removeFile(assetName);
-        } catch (LoginException | IOException e) {
-            throw new WorkflowException("Error while removing asset", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
-        }
+        String payloadPath = workItem.getWorkflowData().getPayload().toString();
+        String assetName = payloadPath.substring(payloadPath.lastIndexOf("/") + 1, payloadPath.lastIndexOf('.'));
+        removeFile(assetName);
     }
 
-    private static void removeFile(String assetName) throws IOException {
+    private static void removeFile(String assetName) {
 
         File folderFile = new File(destinationPath);
         File entry = new File(folderFile.getAbsolutePath(), assetName);
@@ -78,6 +60,6 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     @ObjectClassDefinition(name = "Mediahub Remove Media To File System", description = "Configuration for removing rich media to file system")
     public static @interface Config {
         @AttributeDefinition(name = "Destination path", description = "Destination path for removing the media")
-        String destinationPath() default "";
+        String destinationPath() default "/";
     }
 }

@@ -35,7 +35,6 @@ public class FolderNestingCheck implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        try {
             SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
             SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
 
@@ -63,9 +62,6 @@ public class FolderNestingCheck implements Filter {
             }
 
             chain.doFilter(request, response);
-        } catch (Exception e) {
-            log.error("Error checking folder nesting", e);
-        }
     }
 
     @Override

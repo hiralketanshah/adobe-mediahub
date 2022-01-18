@@ -60,16 +60,15 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
         if (!workItem.getWorkflowData().getPayloadType().equals("JCR_PATH")) {
             throw new WorkflowException("Unable to get the payload");
         }
+
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-        ResourceResolver resourceResolver = null;
-        try {
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
             log.debug("payloadPath : {}", payloadPath);
 
             Map<String, Object> params = new HashMap<>();
             MetaDataMap dataMap = workItem.getWorkflow().getWorkflowData().getMetaDataMap();
-            if (dataMap.containsKey(BnpConstants.BNPP_EXTERNAL_FILE_URL)) {
+            if (dataMap.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_FILE_URL) || dataMap.containsKey(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL)) {
                 log.debug("Cdn invalidation url : " + dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
                 List<String> urlList = new ArrayList<>();
                 urlList.add(dataMap.get(BnpConstants.BNPP_EXTERNAL_FILE_URL, StringUtils.EMPTY));
@@ -93,10 +92,6 @@ public class CdnInvalidateCacheWorkflowProcess implements WorkflowProcess {
 
         } catch (LoginException | ServletException | IOException e) {
             throw new WorkflowException("Error while invalidating S7 CDN", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }

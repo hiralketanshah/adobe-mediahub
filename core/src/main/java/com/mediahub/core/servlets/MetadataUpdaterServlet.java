@@ -54,6 +54,7 @@ import com.mediahub.core.constants.BnpConstants;
 /**
  * Servlet to fix metadata after running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/updateasset"})
 public class MetadataUpdaterServlet extends SlingAllMethodsServlet {
 
@@ -75,7 +76,7 @@ public class MetadataUpdaterServlet extends SlingAllMethodsServlet {
         for (String assetPath : assets) {
             try {
                 updateImportedMetadata(request, assetPath);
-            } catch (Exception e) {
+            } catch (RepositoryException e) {
                 LOGGER.error("Could not update asset metadata: " + assetPath, e);
                 failuresList.add(new String[] {assetPath, e.getMessage()});
             }

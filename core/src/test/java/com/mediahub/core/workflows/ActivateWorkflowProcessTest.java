@@ -106,8 +106,9 @@ public class ActivateWorkflowProcessTest {
         when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[] {}))
                 .thenReturn(new String[] { "not-broadcast" });
         when(valueMap.containsKey(BnpConstants.BNPP_INTERNAL_BROADCAST_URL)).thenReturn(Boolean.TRUE);
-        when(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, StringUtils.EMPTY))
+        when(valueMap.get(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, String.class))
                 .thenReturn("/content/dam/medialibrary/table.pdf");
+        when(valueMap.get(BnpConstants.BNPP_TRACKING_EXTERNAL_BROADCAST_URL, String.class)).thenReturn("external");
         workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
@@ -115,7 +116,7 @@ public class ActivateWorkflowProcessTest {
     public void execute3() throws Exception {
         when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
         when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
-        when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[] {})).thenReturn(new String[] { "external" });
+        when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(new String[] { "external" });
         when(valueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
         when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
         workflowProcess.execute(workItem, workflowSession, metadataMap);
@@ -126,6 +127,7 @@ public class ActivateWorkflowProcessTest {
         when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
         when(valueMap.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(Boolean.TRUE);
         when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, new String[] {})).thenReturn(new String[] { "internal" });
+        when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS)).thenReturn(new String[] { "internal" });
         when(valueMap.containsKey("dam:scene7ID")).thenReturn(Boolean.TRUE);
         when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
         when(resource.getParent()).thenReturn(resource);

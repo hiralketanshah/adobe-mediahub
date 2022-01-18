@@ -50,9 +50,7 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
             throw new WorkflowException("Unable to get the payload");
         }
         final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
-        ResourceResolver resourceResolver = null;
-        try {
-            resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
+        try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
             List<String> missedAssetMetaData = new ArrayList<>();
             List<String> missedFolderMetaData = new ArrayList<>();
             String payloadPath = workItem.getWorkflowData().getPayload().toString();
@@ -100,10 +98,6 @@ public class ValidateMedataProcessWorkflow implements WorkflowProcess {
             }
         } catch (LoginException e) {
             throw new WorkflowException("Error while validating asset metadata", e);
-        } finally {
-            if (resourceResolver != null && resourceResolver.isLive()) {
-                resourceResolver.close();
-            }
         }
 
     }

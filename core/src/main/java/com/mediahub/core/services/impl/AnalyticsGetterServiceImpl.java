@@ -79,7 +79,7 @@ public class AnalyticsGetterServiceImpl implements AnalyticsGetterService {
             name = "Mediahub Analytics Getter",
             description = "Configuration for getting assets metrics from Adobe Analytics"
     )
-    @interface Config {
+    public @interface Config {
     	@AttributeDefinition(
                 name = "API Key",
                 description = "Analytics API key parameter"

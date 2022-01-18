@@ -99,7 +99,7 @@ public class UserDeactivationScheduledTask implements Runnable {
                     Date userExpiryDate = new SimpleDateFormat("dd/MM/yyyy").parse(expiry);
                     expiryDate.setTime(userExpiryDate);
                 } else {
-                    expiryDate = userProfile != null ? userProfile.getValueMap().get(BnpConstants.EXPIRY, Calendar.class) : null;
+                    expiryDate = userProfile.getValueMap().get(BnpConstants.EXPIRY, Calendar.class);
                 }
                 if (expiryDate != null) {
                     deactivateExpiredUsers(userManager, user, expiryDate, builder, resolver);

@@ -84,7 +84,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
                 Map<String, UserStatus> userStatusMap = new LinkedHashMap<>();
                 if ((null != csvResource && DamUtil.isAsset(csvResource)) || (csvUserInfoFile.isFile())) {
-                    InputStream userInputStream = (csvUserInfo.startsWith("/content/dam")
+                    InputStream userInputStream = ((csvUserInfo.startsWith(BnpConstants.DAM_PATH) && null != csvResource)
                             ? csvResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
                             .getStream()
                             : getFileInputStream(csvUserInfoFile));
@@ -94,7 +94,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 }
                 if ((null != userInfoResource && DamUtil.isAsset(userInfoResource))
                         || (csvAdditionalInfoFile.isFile())) {
-                    InputStream userInfoInputStream = (csvAdditionalInfo.startsWith("/content/dam")
+                    InputStream userInfoInputStream = ((csvAdditionalInfo.startsWith(BnpConstants.DAM_PATH) && null != userInfoResource)
                             ? userInfoResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
                             .getStream()
                             : getFileInputStream(csvAdditionalInfoFile));
@@ -104,7 +104,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 }
                 if ((null != userStatusResource && DamUtil.isAsset(userStatusResource))
                         || (csvStatusInfoFile.isFile())) {
-                    InputStream userStatusInputStream = (csvStatusInfo.startsWith("/content/dam")
+                    InputStream userStatusInputStream = ((csvStatusInfo.startsWith(BnpConstants.DAM_PATH) && null != userStatusResource)
                             ? userStatusResource.adaptTo(Asset.class)
                             .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
                             : getFileInputStream(csvStatusInfoFile));
