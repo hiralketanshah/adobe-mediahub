@@ -42,7 +42,7 @@
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field") %>">
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/jcr:primaryType") %>" value="nt:unstructured">
     <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/sling:resourceType") %>" value="granite/ui/components/coral/foundation/form/userpicker">
-    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/src") %>" value="/bin/mediahub/users.html">
+    <input type="hidden" name="<%= xssAPI.encodeForHTMLAttr("./items/" + key + "/field/src") %>" value="/bin/mediahub/internalusers.html">
 
     <sling:include resource="<%= resource %>" resourceType="<%= resourcePathBase + "labelfields"%>"/>
     <%request.setAttribute("cq.dam.metadataschema.builder.field.relativeresource", "field"); %>

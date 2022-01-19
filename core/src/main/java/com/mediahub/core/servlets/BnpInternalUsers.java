@@ -54,7 +54,7 @@ import java.util.Map;
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-                ServletResolverConstants.SLING_SERVLET_PATHS + "=" + "/bin/project/internalusers"
+                ServletResolverConstants.SLING_SERVLET_PATHS + "=" + "/bin/mediahub/internalusers"
         })
 public class BnpInternalUsers extends SlingAllMethodsServlet {
 
