@@ -114,6 +114,8 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
                 }
                 sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + auth.getID() + "'>" + name + "</li>");
             }
+            response.setContentType("text/html");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(sb.toString());
         } catch (LoginException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
