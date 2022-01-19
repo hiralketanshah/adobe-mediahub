@@ -75,7 +75,7 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
             ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo);
             Session session = resolver.adaptTo(Session.class);
 
-            String queryString = request.getParameter("query");
+            String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9]", "");
             Query query = new Query() {
                 @Override
                 public <T> void build(QueryBuilder<T> builder) {
