@@ -4,7 +4,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.DamConstants;
 import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 
-@SuppressWarnings("CQRules:AMSCORE-553")
+@SuppressWarnings({"CQRules:AMSCORE-553", "squid:S2068"})
 public class BnpConstants {
 
     public static final String DOWNLOAD_DETAILS = "downloadDetails";
