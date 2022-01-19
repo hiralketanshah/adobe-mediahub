@@ -76,8 +76,8 @@ public class AssetPublishStatus extends SlingAllMethodsServlet {
         ValueMap properties = ResourceUtil.getValueMap(metadataResource);
         String broadcastStatus = properties.get(BnpConstants.BNPP_BROADCAST_STATUS, StringUtils.EMPTY);
         String scene7FileStatus = subAsset.getMetadataValueFromJcr(BnpConstants.S7_FILE_STATUS_PROPERTY);
-        if (StringUtils.equals(broadcastStatus, BnpConstants.EXTERNAL)
-                && !(StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_COMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_INCOMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED))) {
+
+        if (!(StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_COMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_INCOMPLETE) || StringUtils.equals(scene7FileStatus, BnpConstants.S7_FILE_STATUS_NOT_SUPPORTED))) {
             responseMap.put(IS_IN_RUNNING_WORKFLOW, Boolean.TRUE);
         }
     }
