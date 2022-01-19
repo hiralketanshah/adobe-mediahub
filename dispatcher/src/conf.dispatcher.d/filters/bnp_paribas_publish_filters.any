@@ -12,6 +12,7 @@
 /005 { /type "allow" /url "/bin/mediahub/*"    }
 /006 { /type "allow" /url "/mh/*"    }
 /007 { /type "allow" /url "/is/*"    }
+/008 { /type "allow" /url "/etc/dam/viewers/s7viewers/*"    }
 
 # This rule allows content to be access
 /0010 { /type "allow" /extension '(css|eot|gif|ico|jpeg|jpg|js|gif|pdf|png|svg|swf|ttf|woff|woff2|html|mp4|mp3|flac|wav|ogg|acc|vorbis|wma|aiff|mkv|avi|mov|srt|vtt|sbv|scc|flv|txt|doc|docx|xls|xlsx|ppt|pptx|pdf|zip|rar|rarx|pps|aac|adt|adts|aif|aifc|aiff|cda|csv|docm|dot|pot|pps|ppsx|pub|sldx|vob|ot|off|eot|ttf|webvtt|avid.txt|text|xml|sjson)' /path "/content/*" }  # disable this rule to allow mapped content only
