@@ -110,7 +110,7 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
                 Value[] familyName = auth.getProperty("./profile/familyName");
                 Value[] firstname = auth.getProperty("./profile/givenName");
                 if (familyName != null && firstname != null && !StringUtils.isEmpty(familyName[0].toString()) && !StringUtils.isEmpty(firstname[0].toString())) {
-                    name = firstname[0].toString() + " " + familyName[0].toString();
+                    name = firstname[0].toString() + " " + familyName[0].toString() + " [" + auth.getID() + "]";
                 }
                 sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + auth.getID() + "'>" + name + "</li>");
             }
