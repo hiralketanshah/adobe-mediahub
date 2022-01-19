@@ -43,6 +43,7 @@ public class RemoveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
         removeFile(assetName);
     }
 
+    @SuppressWarnings("squid:S899")
     private static void removeFile(String assetName) {
 
         File folderFile = new File(destinationPath);

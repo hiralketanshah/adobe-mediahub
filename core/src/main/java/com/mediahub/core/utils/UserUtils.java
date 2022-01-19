@@ -35,15 +35,14 @@ public class UserUtils {
   
   @SuppressWarnings("squid:S2070")
   public static String encryptThisString(String input) throws NoSuchAlgorithmException {
-      String hashtext = input;
       MessageDigest md = MessageDigest.getInstance("SHA-1");
       byte[] messageDigest = md.digest(input.getBytes());
       BigInteger no = new BigInteger(1, messageDigest);
-      hashtext = no.toString(16);
-      while (hashtext.length() < 32) {
-          hashtext = "0" + hashtext;
+      input = no.toString(16);
+      while (input.length() < 32) {
+          input = "0" + input;
       }
-      return hashtext;
+      return input;
   }
   
   public static String getProjectOwnerName(String initiator, UserManager userManager) throws RepositoryException {

@@ -53,4 +53,11 @@ public class UpdateInternalUsersTest {
 		when(resp.getWriter()).thenReturn(printWriter);
 		assertAll(() -> updateInternalUsers.doGet(req, resp));
 	}
+	
+	@Test
+    public void testDoGetFalse() throws Exception {
+        when(req.getParameter("remove")).thenReturn("false");
+        when(resp.getWriter()).thenReturn(printWriter);
+        assertAll(() -> updateInternalUsers.doGet(req, resp));
+    }
 }

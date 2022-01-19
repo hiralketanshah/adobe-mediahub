@@ -33,6 +33,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.*;
 
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Component(service = JobConsumer.class, immediate = true,
         property = {Constants.SERVICE_DESCRIPTION + "=Job to send project access email to user",
                 JobConsumer.PROPERTY_TOPICS + "=" + "user/project/access/email"})
@@ -53,7 +54,6 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
     @Reference
     private Externalizer externalizer;
 
-    @SuppressWarnings("CQRules:AMSCORE-553")
     @Reference
     private SlingSettingsService slingSettingsService;
 

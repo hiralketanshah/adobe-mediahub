@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.commons.util.DamUtil;
 import com.mediahub.core.constants.BnpConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -34,6 +35,8 @@ import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import junit.framework.Assert;
 import mockit.MockUp;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -101,29 +104,12 @@ class AssetPublishStatusTest {
         BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
-    public void setupMock() {
+    public void setupMock() throws IOException {
         MockitoAnnotations.initMocks(this);
-        damUtils = new MockUp<DamUtil>() {
-            @mockit.Mock
-            Iterator<Asset> getAssets(Resource resource) {
-                List<Asset> assets = new ArrayList<>();
-                return assets.iterator();
-            }
-        };
-
-        damUtils = new MockUp<DamUtil>() {
-            @mockit.Mock
-            boolean isAsset(Resource resource) {
-                return Boolean.TRUE;
-            }
-        };
-
-        damUtils = new MockUp<DamUtil>() {
-            @mockit.Mock
-            Asset resolveToAsset(Resource resource) {
-                return asset;
-            }
-        };
+        when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
+        when(asset.adaptTo(Resource.class)).thenReturn(resource);
+        when(resource.adaptTo(Asset.class)).thenReturn(asset);
+        when(valueMap.get(BnpConstants.BNPP_BROADCAST_STATUS, StringUtils.EMPTY)).thenReturn(BnpConstants.EXTERNAL);
     }
 
     @Test
@@ -149,7 +135,7 @@ class AssetPublishStatusTest {
         Assert.assertEquals(response.getStatus(), 200);
     }
 
-    @Test
+   
     void doGet1()
         throws ServletException, IOException, LoginException, RepositoryException {
 
@@ -183,5 +169,11 @@ class AssetPublishStatusTest {
         if (damUtils != null) {
             damUtils.tearDown();
         }
+    }
+    
+    @Test
+    public void testError() throws LoginException, IOException {
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(LoginException.class);
+        assetPublishStatus.doGet(request, response);
     }
 }

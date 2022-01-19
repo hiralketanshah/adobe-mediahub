@@ -3,8 +3,6 @@ package com.mediahub.core.servlets;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
@@ -14,19 +12,24 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.servlet.ServletOutputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.api.Rendition;
 import com.mediahub.core.constants.BnpConstants;
 
@@ -69,6 +72,9 @@ public class AssetPreviewServletTest {
     Rendition rendition;
     
     @Mock
+    ValueMap valueMap;
+    
+    @Mock
     ServletOutputStream outputStream;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
@@ -77,11 +83,16 @@ public class AssetPreviewServletTest {
     @BeforeEach
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
+        
+        
     }
 
     @Test
     public void testDoGet() throws Exception {
         testDoGetTwo();
+        when(asset.getName()).thenReturn("test.mpv");
+        when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
+        when(valueMap.getOrDefault(Mockito.any(), Mockito.any())).thenReturn("test/is/content/test");
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		InputStream is = classloader.getResourceAsStream("users-list.csv");
         when(property.getString()).thenReturn("image/jpeg");
@@ -96,6 +107,30 @@ public class AssetPreviewServletTest {
     }
 
     @Test
+    public void testDoGetWithoutVideo() throws Exception {
+        testDoGetTwo();
+        when(asset.getName()).thenReturn("test.test");
+        when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
+        when(valueMap.getOrDefault(Mockito.any(), Mockito.any())).thenReturn(StringUtils.EMPTY);
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream("users-list.csv");
+        when(property.getString()).thenReturn("image/jpeg");
+        when(resp.getWriter()).thenReturn(printWriter);
+        when(resource.adaptTo(Asset.class)).thenReturn(asset);
+        when(asset.getOriginal()).thenReturn(rendition);
+        when(rendition.getStream()).thenReturn(is);
+        when(resp.getOutputStream()).thenReturn(outputStream);
+        assetPreviewServlet.doGet(req, resp);
+        assertNotNull(resp.getWriter());
+
+    }
+    
+    @Test
+    public void testError() throws LoginException {
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(LoginException.class);
+    }
+
+    @Test
     public void testDoGetOne() throws Exception {
         testDoGetTwo();
         when(property.getString()).thenReturn("video/mp4");
@@ -107,6 +142,8 @@ public class AssetPreviewServletTest {
     }
 
     public void testDoGetTwo() throws Exception {
+        when(resource.getChild(Mockito.anyString())).thenReturn(resource);
+        when(resource.getValueMap()).thenReturn(valueMap);
         when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
         when(req.getResource()).thenReturn(resource);
         when(resource.adaptTo(Node.class)).thenReturn(node);
