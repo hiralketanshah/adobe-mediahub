@@ -3,6 +3,8 @@ package com.mediahub.core.servlets;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import com.day.cq.dam.api.Asset;
+import com.day.cq.dam.api.DamConstants;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
@@ -21,8 +23,6 @@ import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -58,6 +58,9 @@ class MediaBulkEditValidationServletTest {
 
     @Mock
     Resource resource;
+    
+    @Mock
+    Asset asset;
 
     @Mock
     ValueMap valueMap;
@@ -88,6 +91,7 @@ class MediaBulkEditValidationServletTest {
         String[] pathStrings = new String[] { "/content%2cdam/abc.jpg" };
         parameterMap.put("path", pathStrings);
         when(request.getParameterMap()).thenReturn(parameterMap);
+        when(resource.getResourceType()).thenReturn(DamConstants.NT_DAM_ASSET);
 
         when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resourceResolver);
         when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -98,6 +102,7 @@ class MediaBulkEditValidationServletTest {
         when(resource.hasChildren()).thenReturn(true);
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.containsKey(Mockito.anyString())).thenReturn(true);
+        when(valueMap.containsKey("/dam/projects/")).thenReturn(false);
         when(queryBuilder.createQuery(Mockito.any(), Mockito.any())).thenReturn(query);
         when(query.getResult()).thenReturn(result);
         List<Resource> resourceList = new ArrayList<>();

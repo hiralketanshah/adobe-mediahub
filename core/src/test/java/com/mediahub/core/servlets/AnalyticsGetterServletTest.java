@@ -108,7 +108,7 @@ public class AnalyticsGetterServletTest {
         when(req.getParameter("endDate")).thenReturn("06-01-2022");
         when(req.getParameter("path")).thenReturn("/content/dam/test.jpg");
         when(resp.getWriter()).thenReturn(printWriter);
-      //  context.registerInjectActivateService(authService, parameters);
+        //context.registerInjectActivateService(authService, parameters);
         context.registerInjectActivateService(analyticsService);
         context.registerInjectActivateService(analyticsGetterServlet);
 

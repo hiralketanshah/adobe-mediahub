@@ -122,15 +122,15 @@ public class AnalyticsCallData {
     }
 
     public List<AnalyticsCallFilter> getGlobalFilters() {
-        return globalFilters;
+        return new ArrayList<>(globalFilters);
     }
 
     public List<AnalyticsCallMetric> getMetrics() {
-        return metrics;
+        return new ArrayList<>(metrics);
     }
 
     public List<AnalyticsCallFilter> getMetricsFilters() {
-        return metricFilters;
+        return new ArrayList<>(metricFilters);
     }
 
     public String getDimension() {
@@ -247,7 +247,7 @@ public class AnalyticsCallData {
         }
 
         public String[] getFieldTerms() {
-            return fieldTerms;
+            return fieldTerms.clone();
         }
 
         public JsonObject toJson() {
@@ -343,7 +343,7 @@ public class AnalyticsCallData {
             this.id = id;
             this.columnId = columnId;
             this.sort = sort;
-            this.filterIds = filterIds;
+            this.filterIds = new ArrayList<>(filterIds);
         }
 
         public AnalyticsCallMetric(String id, String columnId, Sort sort) {
@@ -371,7 +371,7 @@ public class AnalyticsCallData {
         }
 
         public List<String> getFilterIds() {
-            return filterIds;
+            return new ArrayList<>(filterIds);
         }
 
         public JsonObject toJson() {

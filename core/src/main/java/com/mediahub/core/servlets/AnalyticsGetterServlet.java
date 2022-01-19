@@ -64,7 +64,7 @@ public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
     
     @Override
     protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
-    	logger.info("Starting Analytics getter servlet");
+    	logger.debug("Starting Analytics getter servlet");
     	
     	Date startDate = null, endDate = null;
     	String dimension = request.getParameter(ACTION_PARAM);
