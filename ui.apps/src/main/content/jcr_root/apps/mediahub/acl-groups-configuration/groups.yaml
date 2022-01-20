@@ -472,6 +472,10 @@
           privileges:
           repGlob:
 
+        - path: /var/dam/jobs/download
+          permission: allow
+          actions: read
+
         - path: /libs/granite/security/content/v2/usereditor
           permission: allow
           actions: read
