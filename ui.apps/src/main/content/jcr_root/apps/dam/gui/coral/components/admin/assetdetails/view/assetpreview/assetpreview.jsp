@@ -313,7 +313,7 @@ else {
             iframeUrl = "/etc/dam/viewers/s7viewers/html5/VideoViewer.html?asset=/" + assetMediumRendition + "&amp;videoserverurl=/is/content/&amp;serverUrl=/is/image/&amp;aemmode=0&amp;contentUrl=/is/content/&amp;playback=progressive&amp;posterimage=/" + assetMediumRendition;
           }
     %>
-    <iframe src="<%= iframeUrl %>" frameborder="0" allowfullscreen="" width="1670" height="843" style="max-width:100%; max-height:100%"></iframe>
+    <iframe src="<%= iframeUrl %>" frameborder="0" allowfullscreen="" style="width:100%; height:800px"></iframe>
     <% } else if (!isSlingResourceType) { %>
     <sling:include path="<%= renditionPicker.getPath() %>" resourceType="<%= renditionPicker.getResourceType()%>" />
     <sling:include path="<%= asset.getPath() %>" resourceType="dam/gui/components/admin/assetview/zoomviewer" />
