@@ -230,7 +230,7 @@
             if (isValidated && isValidated === 'true') {
                 assetBulkActivation(e);
             } else {
-                internalPublishErrorMessage(document.getElementById("shell-propertiespage-save-publish").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-save-publish").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-save-publish").getAttribute("isMediaValidated"));
+                internalPublishErrorMessage(document.getElementById("shell-propertiespage-activate-bulk-asset").getAttribute("isValidated"), e, document.getElementById("shell-propertiespage-activate-bulk-asset").getAttribute("isFolderMetadataMissing"), document.getElementById("shell-propertiespage-activate-bulk-asset").getAttribute("isMediaValidated"));
             }
         } else {
             deactivateBulkAsset(e);

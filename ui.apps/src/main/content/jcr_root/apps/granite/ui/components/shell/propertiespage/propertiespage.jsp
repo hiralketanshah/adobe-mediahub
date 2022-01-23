@@ -649,7 +649,7 @@ PropertiesPage
 
 
                     <%
-                        if ((isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                        if ((isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary") && (request.getParameterMap().containsKey("item") && (request.getParameterMap().get("item").length == 1)) ) {
                             Resource assetResource = resourceResolver.getResource(assetId);
                             if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                                 Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
@@ -687,7 +687,7 @@ PropertiesPage
                     %>
 
                     <%
-                        if ( request.getParameterMap().containsKey("item") && (request.getParameterMap().get("item").length > 1) ) {
+                        if (StringUtils.contains(assetId, "/content/dam/medialibrary") && request.getParameterMap().containsKey("item") && (request.getParameterMap().get("item").length > 1) ) {
                     %>
                     <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
                         <%
