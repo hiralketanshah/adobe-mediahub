@@ -151,17 +151,20 @@ public class UserDeactivationScheduledTask implements Runnable {
             String[] emailRecipients = {email};
 
             if (differenceInDays == 10) {
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 10 days // Votre accès sera desactivé dans 10 jours", Locale.ENGLISH);
-                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", subject);
-                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", subject);
+                String emailSubjectForUser = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 10 days // Votre accès sera desactivé dans 10 jours", Locale.ENGLISH);
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationmailtemplate.html", emailSubjectForUser);
+                String emailSubjectForManager = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("External provider account deactivated within 10 days // L'accès d'un prestataire externe sera desactivé dans 10 jours", Locale.ENGLISH);
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationmanagernotificationmailtemplate.html", emailSubjectForManager);
             } else if (differenceInDays == 3) {
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 3 days // Votre accès sera desactivé dans 3 jours", Locale.ENGLISH);
-                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationthreedaysmailtemplate.html", subject);
-                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationthreedaysmanagernotificationmailtemplate.html", subject);
+                String emailSubjectForUser = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 3 days // Votre accès sera desactivé dans 3 jours", Locale.ENGLISH);
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationthreedaysmailtemplate.html", emailSubjectForUser);
+                String emailSubjectForManager = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("External provider account deactivated within 3 days // L'accès d'un prestataire externe sera desactivé dans 3 jours", Locale.ENGLISH);
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationthreedaysmanagernotificationmailtemplate.html", emailSubjectForManager);
             } else if (differenceInDays == 1) {
-                String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 1 day // Votre accès sera desactivé dans 1 jour", Locale.ENGLISH);
-                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationonedaymailtemplate.html", subject);
-                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationonedaymanagernotificationmailtemplate.html", subject);
+                String emailSubjectForUser = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated within 1 day // Votre accès sera desactivé dans 1 jour", Locale.ENGLISH);
+                sendMail(user, emailRecipients, "/etc/mediahub/mailtemplates/userexpirationonedaymailtemplate.html", emailSubjectForUser);
+                String emailSubjectForManager = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("External provider account deactivated within 1 days // L'accès d'un prestataire externe sera desactivé dans 1 jours", Locale.ENGLISH);
+                sendManagerNoficationMail(managers, "/etc/mediahub/mailtemplates/userexpirationonedaymanagernotificationmailtemplate.html", emailSubjectForManager);
             } else if (differenceInDays <= 0) {
                 ((User) authorizable).disable(BnpConstants.USER_HAS_EXPIRED);
                 String subject = ProjectExpireNotificationUtil.getRunmodeText(slingSettingsService) + " - " + provider.translate("Account deactivated // Votre accès est desactivé", Locale.ENGLISH);
