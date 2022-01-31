@@ -877,7 +877,7 @@
                     "An asset named {0} already exists in this location.",
                     firstDuplicate);
                 description = canOverwrite ? Granite.I18n
-                        .get("Click 'Create Version' to create the version of the asset or 'Replace' to replace the asset or 'Keep Both' to keep both assets.")// eslint-disable-line max-len
+                        .get("Click 'Update' to replace the asset or 'Keep Both' to keep both assets.")// eslint-disable-line max-len
                     : Granite.I18n.get("Click 'Keep Both' to keep both assets or 'Cancel' to cancel the upload.");
             } else if (self.contentType === "asset") {
                 assetExistsMessage = Granite.I18n.get(
