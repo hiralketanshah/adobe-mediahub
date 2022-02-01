@@ -1,6 +1,7 @@
 package com.mediahub.core.utils;
 
 import com.day.cq.commons.jcr.JcrConstants;
+import com.day.cq.dam.api.DamConstants;
 import com.mediahub.core.constants.BnpConstants;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -77,6 +78,17 @@ public class QueryUtils {
     map.put("type", JcrConstants.NT_UNSTRUCTURED);
     map.put("1_property", "requiredCascading");
     map.put("1_property.value", "always");
+
+    return map;
+  }
+
+  public static Map<String, String> getPredicateMapNodeByUUID(String path, String uuid) {
+    Map<String, String> map = new HashMap<>();
+    map.put(BnpConstants.PATH, "/content/dam");
+    map.put("type", DamConstants.NT_DAM_ASSET);
+    map.put(BnpConstants.FIRST_PROPERTY, JcrConstants.JCR_UUID);
+    map.put(BnpConstants.FIRST_PROPERTY_VALUE, uuid);
+    map.put(BnpConstants.P_LIMIT, "-1");
 
     return map;
   }
