@@ -204,7 +204,8 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     public void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
                                    Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
             throws RepositoryException {
-        int count = 0;
+        long count = 0L;
+        long batchCount = 1L;
         Group mediahubBasicGroup = (Group) (userManager.getAuthorizable(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY));
         for (Map.Entry<String, User> entry : inputUserMap.entrySet()) {
             Principal principal = new Principal() {
@@ -216,6 +217,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             if (count >= 10000) {
                 count = 0;
                 session.save();
+                LOGGER.info("{} records processed", 1000L * batchCount++);
             }
 
             User userObject = entry.getValue();
