@@ -79,7 +79,7 @@ public class SystemNotificationsImpl extends AbstractHtmlRequestInjector impleme
                     + "}"
                     + "</script>";
 
-    private static final String SERVICE_NAME = "system-notifications";
+    private static final String SERVICE_NAME = "writeService";
     private static final Map<String, Object> AUTH_INFO;
 
     static {
@@ -119,7 +119,7 @@ public class SystemNotificationsImpl extends AbstractHtmlRequestInjector impleme
 
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) servletRequest;
 
-        if (StringUtils.startsWith(slingRequest.getResource().getPath(), PATH_NOTIFICATIONS) || ((SlingHttpServletRequest) servletRequest).getRequestURI().startsWith("/linkshare.html")) {
+        if (StringUtils.startsWith(slingRequest.getResource().getPath(), PATH_NOTIFICATIONS) || ((SlingHttpServletRequest) servletRequest).getRequestURI().startsWith("/linkshare.html") || ((SlingHttpServletRequest) servletRequest).getRequestURI().startsWith("/linksharepreview.html")) {
             // Do NOT inject on the notifications Authoring pages
             return false;
         }
