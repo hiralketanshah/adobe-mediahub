@@ -866,9 +866,16 @@
 
 
                         folderMetadataSchemas.forEach(function(child) {
-                            select.items.add(
-                                { content: { innerHTML: child.title }, value: child.path, disabled: false }
+                            if(child.title == "mediahub-medias-schema"){
+                                select.items.add(
+                                    { content: { innerHTML: child.title }, value: child.path, disabled: false, selected: true }
                             );
+							}
+                            else{ 
+                                select.items.add(
+                                    { content: { innerHTML: child.title }, value: child.path, disabled: false }
+                                );
+                            }
                         });
 
                         var infoIcon = new Coral.Icon().set({
