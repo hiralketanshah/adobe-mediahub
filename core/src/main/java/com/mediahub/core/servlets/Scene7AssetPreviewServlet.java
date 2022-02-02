@@ -33,6 +33,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -94,6 +95,10 @@ public class Scene7AssetPreviewServlet extends SlingSafeMethodsServlet {
                 String scene7File = asset.getMetadataValue("dam:scene7File");
                 String scene7ID = asset.getMetadataValue("dam:scene7ID");
                 String scene7MediumDefinition = AssetUtils.getVideoShareLinkId(s7Config, scene7Service, scene7ID);
+
+                Resource metadataResource = assetResource.getChild("jcr:content/metadata");
+                ValueMap properties = ResourceUtil.getValueMap(metadataResource);
+
                 String fileName = getScene7FileName(asset, scene7File, scene7MediumDefinition);
 
                 PrintWriter out = resp.getWriter();
@@ -101,7 +106,18 @@ public class Scene7AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("<head> <link href=\"https://vjs.zencdn.net/7.17.0/video-js.css\" rel=\"stylesheet\" /> </head>");
                 out.println("<body>");
                 out.println("<video id=\"my-video\" width=\"640\" height=\"264\" class=\"video-js\" controls preload=\"auto\" poster=\"" + "/is/image/"+  fileName + "\" data-setup=\"{}\">");
-                out.println("<source src=\"" + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
+
+                if (properties.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
+                    String[] status = AssetUtils.getBroadcastStatus(properties, BnpConstants.BNPP_BROADCAST_STATUS);
+                    if (Arrays.asList(status).contains(BnpConstants.EXTERNAL)) {
+                        String domain = properties.get(BnpConstants.S7_DOMAIN_PROPERTY, String.class);
+                        out.println("<source src=\"" + domain + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
+                    } else {
+                        out.println("<source src=\"" + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
+                    }
+                } else {
+                    out.println("<source src=\"" + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
+                }
                 setSubtitleHtmlTags(assetResource, out);
                 out.println("<p class=\"vjs-no-js\"> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href=\"https://videojs.com/html5-video-support/\" target=\"_blank\">supports HTML5 video</a></p>");
                 out.println("</video>");
