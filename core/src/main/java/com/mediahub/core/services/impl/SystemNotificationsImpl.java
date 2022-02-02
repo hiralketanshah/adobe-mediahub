@@ -25,6 +25,7 @@ import com.adobe.acs.commons.util.CookieUtil;
 import com.adobe.acs.commons.wcm.notifications.SystemNotifications;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -79,11 +80,10 @@ public class SystemNotificationsImpl extends AbstractHtmlRequestInjector impleme
                     + "}"
                     + "</script>";
 
-    private static final String SERVICE_NAME = "writeService";
     private static final Map<String, Object> AUTH_INFO;
 
     static {
-        AUTH_INFO = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, (Object) SERVICE_NAME);
+        AUTH_INFO = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
     }
 
     private AtomicBoolean isFilter = new AtomicBoolean(false);
