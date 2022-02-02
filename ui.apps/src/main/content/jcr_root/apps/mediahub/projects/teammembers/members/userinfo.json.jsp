@@ -17,6 +17,7 @@
 %><%@include file="/libs/granite/ui/global.jsp"%><%
 %><%@page import="
         javax.jcr.Session,
+		org.apache.jackrabbit.api.security.user.Group,
         javax.jcr.RepositoryException,
         com.adobe.granite.security.user.UserProperties,
         com.adobe.granite.security.user.UserPropertiesManager,
@@ -55,6 +56,7 @@
         w.key("userId").value(userId);
         w.key("name").value(getFullName(authorizable,  up));
         w.key("type").value(up.getProperty("type"));
+
         if (up != null) {
             w.key("email").value(up.getProperty(UserProperties.EMAIL));
             avatarPath = up.getResourcePath(UserProperties.PHOTOS, "/primary/image", "");
@@ -75,6 +77,18 @@
             avatarPath = avatar;
             w.key("avatar").value(avatarPath);
         }
+		boolean isAdmin=false;
+        Group group = (Group)um.getAuthorizable("administrators");
+        if(group != null){
+            isAdmin = group.isMember(authorizable) || "admin".equals(authorizable.getID());
+        }
+        if( (!isAdmin) && (um.getAuthorizable("mediahub-administrators") != null) ){
+            isAdmin = ((Group)um.getAuthorizable("mediahub-administrators")).isMember(authorizable);
+        }
+        if( (!isAdmin) && (um.getAuthorizable("mediahub-super-administrators") != null) ){
+            isAdmin = ((Group)um.getAuthorizable("mediahub-super-administrators")).isMember(authorizable);
+        }
+        w.key("isAdmin").value(isAdmin);
 
         w.endObject();
     }
