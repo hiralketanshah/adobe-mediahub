@@ -91,6 +91,7 @@ public class SaveMediaToFileSystemWorkflowProcessTest {
         when(resource.getParent()).thenReturn(resource);
         when(resource.getChild(Mockito.anyString())).thenReturn(resource);
         when(resource.adaptTo(ValueMap.class)).thenReturn(valueMap);
+        when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.containsKey(Mockito.any())).thenReturn(true);
         when(valueMap.get(Mockito.anyString(), Mockito.any())).thenReturn("true");
         workflowProcess.resolverFactory = resourceResolverFactory;

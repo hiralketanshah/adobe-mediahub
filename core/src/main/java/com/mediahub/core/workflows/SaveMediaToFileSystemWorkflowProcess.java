@@ -59,13 +59,13 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             Resource payload = resourceResolver.getResource(payloadPath);
             if (null != payload && StringUtils.isNotBlank(destinationPath)) {
                 Resource resourceAsset = payload.getParent().getParent();
+                ValueMap properties = resourceAsset.getParent().getValueMap();
                 Resource metadata = resourceAsset.getChild(BnpConstants.METADATA);
                 ValueMap metadataProperties = metadata.adaptTo(ValueMap.class);
                 if (metadataProperties.containsKey("bnpp-rich-media")
                         && metadataProperties.get("bnpp-rich-media", String.class).equalsIgnoreCase("true")) {
-                    crunchifyWriteToFile(payload);
+                    crunchifyWriteToFile(payload, properties);
                 }
-
             } else {
                 log.info("Either payload or destination path is empty");
             }
@@ -75,14 +75,16 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
     }
 
     @SuppressWarnings("squid:S899")
-    private static void crunchifyWriteToFile(Resource payload) throws IOException {
+    private static void crunchifyWriteToFile(Resource payload, ValueMap properties) throws IOException {
 
         InputStream userInputStream = payload.adaptTo(Rendition.class).getStream();
         ZipArchiveInputStream zipArchiveInputStream = new ZipArchiveInputStream(userInputStream);
         File folderFile = new File(destinationPath);
         ArchiveEntry archiveEntry = getEntry(zipArchiveInputStream);
         while (archiveEntry != null) {
-            File entry = new File(folderFile.getAbsolutePath(), archiveEntry.getName());
+            String archiveEntryName = getName(archiveEntry.getName(), properties);
+            
+            File entry = new File(folderFile.getAbsolutePath(), archiveEntryName);
             if (entry.exists()) {
                 File parent = new File(entry.getParent());
                 log.info(parent.getAbsolutePath());
@@ -103,6 +105,16 @@ public class SaveMediaToFileSystemWorkflowProcess implements WorkflowProcess {
             }
             archiveEntry = getEntry(zipArchiveInputStream);
         }
+    }
+
+    private static String getName(String archiveEntryName, ValueMap properties) {
+        System.out.println(properties);
+        if(-1 != archiveEntryName.indexOf("/") && properties.containsKey("jcr:uuid")) {
+            String uuid = properties.get("jcr:uuid", String.class);
+            archiveEntryName = archiveEntryName.substring(archiveEntryName.indexOf("/"), archiveEntryName.length());
+            return uuid.concat(archiveEntryName);
+        }
+        return archiveEntryName;
     }
 
     private static ArchiveEntry getEntry(ZipArchiveInputStream zipArchiveInputStream) throws IOException {
