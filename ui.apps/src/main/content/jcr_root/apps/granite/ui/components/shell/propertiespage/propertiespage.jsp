@@ -611,7 +611,6 @@ PropertiesPage
                     }
                 %>
 
-
                 <%
                     if (StringUtils.contains(assetId, "/content/dam") && showEdit) {
                 %>
@@ -650,7 +649,7 @@ PropertiesPage
 
 
                     <%
-                        if ((isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary")) {
+                        if ((isAsset || isMedia) && StringUtils.contains(assetId, "/content/dam/medialibrary") && (request.getParameterMap().containsKey("item") && (request.getParameterMap().get("item").length == 1)) ) {
                             Resource assetResource = resourceResolver.getResource(assetId);
                             if (assetResource != null && assetResource.getChild("jcr:content") != null && assetResource.getChild("jcr:content").getChild("metadata") != null) {
                                 Map<String, Object> assetMetadata = assetResource.getChild("jcr:content").getChild("metadata").getValueMap();
@@ -686,6 +685,53 @@ PropertiesPage
                             }
                         }
                     %>
+
+                    <%
+                        if (StringUtils.contains(assetId, "/content/dam/medialibrary") && request.getParameterMap().containsKey("item") && (request.getParameterMap().get("item").length > 1) ) {
+                    %>
+                    <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                        <%
+                            AttrBuilder bulkPublishAttributes = new AttrBuilder(request, xssAPI);
+                            bulkPublishAttributes.add("id", "shell-propertiespage-activate-bulk-asset");
+                            bulkPublishAttributes.add("type", "submit");
+                            bulkPublishAttributes.add("form", formId);
+                            bulkPublishAttributes.add("is", "coral-button");
+                            bulkPublishAttributes.add("variant", "primary");
+                            bulkPublishAttributes.addClass("granite-form-saveactivator");
+                            bulkPublishAttributes.addHref("data-granite-form-saveactivator-href", backHref);
+                            bulkPublishAttributes.addClass("foundation-fixedanchor");
+                            bulkPublishAttributes.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+                            bulkPublishAttributes.add("isValidated", isValidated);
+                            bulkPublishAttributes.add("isFolderMetadataMissing", isFolderMetadataMissing);
+                            bulkPublishAttributes.add("isMediaValidated", isMediaValidated);
+                        %>
+                        <button <%= bulkPublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Save & Publish")) %>
+                        </button>
+                    </coral-buttongroup>
+
+                    <coral-buttongroup class="betty-ActionBar-item granite-ActionGroup">
+                        <%
+                            AttrBuilder bulkUnpublishAttributes = new AttrBuilder(request, xssAPI);
+                            bulkUnpublishAttributes.add("id", "shell-propertiespage-deactivate-bulk-asset");
+                            bulkUnpublishAttributes.add("type", "submit");
+                            bulkUnpublishAttributes.add("form", formId);
+                            bulkUnpublishAttributes.add("is", "coral-button");
+                            bulkUnpublishAttributes.add("variant", "primary");
+                            bulkUnpublishAttributes.addClass("granite-form-saveactivator");
+                            bulkUnpublishAttributes.addHref("data-granite-form-saveactivator-href", backHref);
+                            bulkUnpublishAttributes.addClass("foundation-fixedanchor");
+                            bulkUnpublishAttributes.add("data-foundation-fixedanchor-attr", "data-granite-form-saveactivator-href");
+                            bulkUnpublishAttributes.add("isValidated", isValidated);
+                            bulkUnpublishAttributes.add("isFolderMetadataMissing", isFolderMetadataMissing);
+                            bulkUnpublishAttributes.add("isMediaValidated", isMediaValidated);
+                        %>
+                        <button <%= bulkUnpublishAttributes %> ><%= xssAPI.encodeForHTML(i18n.get("Unpublish")) %>
+                        </button>
+                    </coral-buttongroup>
+                    <%
+                        }
+                    %>
+
                 </coral-actionbar-item>
                 <% } %>
 
