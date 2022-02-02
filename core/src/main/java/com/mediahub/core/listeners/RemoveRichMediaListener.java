@@ -1,7 +1,6 @@
 package com.mediahub.core.listeners;
 
 import com.mediahub.core.constants.BnpConstants;
-import javax.jcr.observation.ObservationManager;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.jcr.api.SlingRepository;
 import org.apache.sling.settings.SlingSettingsService;
@@ -20,7 +19,7 @@ import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
-
+import javax.jcr.observation.ObservationManager;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +58,7 @@ public class RemoveRichMediaListener implements EventListener {
                 observationManager = session.getWorkspace().getObservationManager();
                 log.info("Session created");
                 observationManager.addEventListener(this, Event.NODE_REMOVED, "/content/dam/medialibrary", true, null,
-                        new String[] { "dam:Asset", "nt:unstructured", "nt:folder", "sling:Folder" }, false);
+                        new String[]{"dam:Asset", "nt:unstructured", "nt:folder", "sling:Folder"}, false);
             }
         } catch (RepositoryException e) {
             log.error("Error while accessing repository : {}", e);
@@ -92,7 +91,7 @@ public class RemoveRichMediaListener implements EventListener {
         try {
             while (events.hasNext()) {
                 Event event = events.nextEvent();
-                if(event.getPath().contains(".zip")) {
+                if (event.getPath().contains(".zip")) {
                     removeFile(event.getIdentifier());
                 }
             }
@@ -101,9 +100,8 @@ public class RemoveRichMediaListener implements EventListener {
         }
     }
 
-    @SuppressWarnings("squid:S899")
+    @SuppressWarnings({"squid:S899", "findsecbugs:PATH_TRAVERSAL_IN"})
     private static void removeFile(String assetName) {
-
         File folderFile = new File(destinationPath);
         File entry = new File(folderFile.getAbsolutePath(), assetName);
         if (entry.exists()) {
