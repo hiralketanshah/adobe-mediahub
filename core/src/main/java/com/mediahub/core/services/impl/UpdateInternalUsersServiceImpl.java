@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateInternalUsersServiceImpl.class);
+    private static final String LOG_DATE_PATTERN = "yyyy.MM.dd HH:mm:ss";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -54,7 +55,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo, String csvStatusInfo) {
         StringBuilder returnValue = new StringBuilder();
         StringBuilder summary = new StringBuilder();
-        LOGGER.info("Start time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
+        LOGGER.info("Start time: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
         UpdateUserResult updateUserResult = null;
         long countOfDeletedUser = 0L;
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo)) {
@@ -104,31 +105,34 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 }
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
                 Session session = resourceResolver.adaptTo(Session.class);
+                LOGGER.info("Start creation/update process: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
                 updateUserResult = createAndSaveUsers(inputUserMap, userInfoMap, userStatusMap, userManager, session);
+                LOGGER.info("End creation/update process: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
+                LOGGER.info("Start deletion process: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
                 countOfDeletedUser = deletedUnwantedUsers(resourceResolver, inputUserMap);
+                LOGGER.info("End deletion process: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
                 if (resourceResolver.hasChanges()) {
                     resourceResolver.commit();
                 }
-                returnValue.append(
-                        "Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
+                returnValue.append("Internal Users are successfully created/updated or deleted as per the records present in the latest CSV file");
             } else {
                 returnValue.append("Kindly add CSV file path for User Info and try again!");
             }
         } catch (LoginException e) {
-            LOGGER.error("Error while Logging into the repository : {0}", e);
+            LOGGER.error("Error while Logging into the repository", e);
         } catch (IOException e) {
-            LOGGER.error("Error while accessing the files : {0}", e);
+            LOGGER.error("Error while accessing the files", e);
         } catch (RepositoryException e) {
-            LOGGER.error("Error while accessing repository : {0}", e);
+            LOGGER.error("Error while accessing repository", e);
         }
 
-        LOGGER.info("End time : {}", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").format(new Date()));
+        LOGGER.info("End time: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
         summary.append('\n');
-        summary.append("Count of users created : " + updateUserResult.getCountOfCreatedUser());
+        summary.append("Count of users created: " + updateUserResult.getCountOfCreatedUser());
         summary.append('\n');
-        summary.append("Count of users updated : " + updateUserResult.getCountOfUpdatedUser());
+        summary.append("Count of users updated: " + updateUserResult.getCountOfUpdatedUser());
         summary.append('\n');
-        summary.append("Count of users deleted : " + countOfDeletedUser);
+        summary.append("Count of users deleted: " + countOfDeletedUser);
         LOGGER.info(summary.toString());
 
         return returnValue.toString();
@@ -156,6 +160,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         boolean hasUsers = true;
         final AtomicLong offset = new AtomicLong(0L);
         long countOfDeletedUser = 0l;
+        long batchCount = 1L;
         while (hasUsers && !inputUserMap.isEmpty()) {
             Query query = new Query() {
                 @Override
@@ -181,6 +186,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
 
             if (authorizablesIt.hasNext()) {
+                LOGGER.info("{} records processed", 1000L * batchCount++);
                 while (authorizablesIt.hasNext()) {
                     Authorizable auth = authorizablesIt.next();
                     String name = auth.getID();
@@ -193,7 +199,6 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             } else {
                 hasUsers = false;
             }
-            LOGGER.debug("Completed checking {} users : ", offset);
         }
         return countOfDeletedUser;
     }
@@ -258,7 +263,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             LOGGER.debug("User is created successfully with userId : {}", userId);
             return true;
         } catch (RepositoryException e) {
-            LOGGER.error("Error while accessing repository : {0}", e);
+            LOGGER.error("Error while accessing repository", e);
         }
         return false;
     }
@@ -269,7 +274,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             Authorizable user = userManager.getAuthorizable(userId);
             return updateUserInfo(user, userInfo, session);
         } catch (RepositoryException e) {
-            LOGGER.error("Error while accessing repository : {0}", e);
+            LOGGER.error("Error while accessing repository", e);
         }
         return false;
     }
@@ -286,7 +291,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 hashtext = "0" + hashtext;
             }
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Error while encrypting userID : {0}", e);
+            LOGGER.error("Error while encrypting userID", e);
         }
         return hashtext;
     }
@@ -380,7 +385,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         try {
             fis = new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            LOGGER.error("Exception while reading FILE DROP location : {}", e.getMessage());
+            LOGGER.error("Exception while reading FILE DROP location", e);
         }
         return fis;
     }
