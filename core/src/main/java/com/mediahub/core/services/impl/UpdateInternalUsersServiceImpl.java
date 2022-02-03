@@ -2,13 +2,8 @@ package com.mediahub.core.services.impl;
 
 import com.adobe.granite.asset.api.Asset;
 import com.adobe.granite.jmx.annotation.AnnotatedStandardMBean;
-import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.commons.util.DamUtil;
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.Hit;
-import com.day.cq.search.result.SearchResult;
+import com.google.common.collect.Iterators;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.data.User;
 import com.mediahub.core.data.UserInfo;
@@ -17,6 +12,8 @@ import com.mediahub.core.services.UpdateInternalUsersService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
+import org.apache.jackrabbit.api.security.user.Query;
+import org.apache.jackrabbit.api.security.user.QueryBuilder;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.*;
@@ -39,8 +36,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("findsecbugs:PATH_TRAVERSAL_IN")
-@Component(service = {DynamicMBean.class, UpdateInternalUsersService.class}, property = {
-        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users"})
+@Component(service = { DynamicMBean.class, UpdateInternalUsersService.class }, property = {
+        "jmx.objectname = com.mediahub.core.services.impl:type=Update Internal Users" })
 public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean implements UpdateInternalUsersService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateInternalUsersServiceImpl.class);
@@ -48,12 +45,11 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    @Reference
-    private QueryBuilder builder;
-
     int countOfCreatedUser;
     int countOfUpdatedUser;
     int countOfDeletedUser;
+    int offset;
+    
 
     public UpdateInternalUsersServiceImpl() throws NotCompliantMBeanException {
         super(UpdateInternalUsersService.class);
@@ -84,30 +80,33 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
                 Map<String, UserInfo> userInfoMap = new LinkedHashMap<>();
                 Map<String, UserStatus> userStatusMap = new LinkedHashMap<>();
                 if ((null != csvResource && DamUtil.isAsset(csvResource)) || (csvUserInfoFile.isFile())) {
-                    InputStream userInputStream = ((csvUserInfo.startsWith(BnpConstants.DAM_PATH) && null != csvResource)
-                            ? csvResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
-                            .getStream()
-                            : getFileInputStream(csvUserInfoFile));
+                    InputStream userInputStream = ((csvUserInfo.startsWith(BnpConstants.DAM_PATH)
+                            && null != csvResource)
+                                    ? csvResource.adaptTo(Asset.class)
+                                            .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
+                                    : getFileInputStream(csvUserInfoFile));
                     BufferedReader brUser = new BufferedReader(new InputStreamReader(userInputStream));
                     inputUserMap = convertStreamToHashMap(brUser, false);
                     brUser.close();
                 }
                 if ((null != userInfoResource && DamUtil.isAsset(userInfoResource))
                         || (csvAdditionalInfoFile.isFile())) {
-                    InputStream userInfoInputStream = ((csvAdditionalInfo.startsWith(BnpConstants.DAM_PATH) && null != userInfoResource)
-                            ? userInfoResource.adaptTo(Asset.class).getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL)
-                            .getStream()
-                            : getFileInputStream(csvAdditionalInfoFile));
+                    InputStream userInfoInputStream = ((csvAdditionalInfo.startsWith(BnpConstants.DAM_PATH)
+                            && null != userInfoResource)
+                                    ? userInfoResource.adaptTo(Asset.class)
+                                            .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
+                                    : getFileInputStream(csvAdditionalInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userInfoInputStream));
                     userInfoMap = convertStreamToHashMapUserInfo(brUserInfo, false);
                     brUserInfo.close();
                 }
                 if ((null != userStatusResource && DamUtil.isAsset(userStatusResource))
                         || (csvStatusInfoFile.isFile())) {
-                    InputStream userStatusInputStream = ((csvStatusInfo.startsWith(BnpConstants.DAM_PATH) && null != userStatusResource)
-                            ? userStatusResource.adaptTo(Asset.class)
-                            .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
-                            : getFileInputStream(csvStatusInfoFile));
+                    InputStream userStatusInputStream = ((csvStatusInfo.startsWith(BnpConstants.DAM_PATH)
+                            && null != userStatusResource)
+                                    ? userStatusResource.adaptTo(Asset.class)
+                                            .getRendition(BnpConstants.ASSET_RENDITION_ORIGINAL).getStream()
+                                    : getFileInputStream(csvStatusInfoFile));
                     BufferedReader brUserInfo = new BufferedReader(new InputStreamReader(userStatusInputStream));
                     userStatusMap = convertStreamToHashMapUserStatus(brUserInfo, false);
                     brUserInfo.close();
@@ -163,46 +162,58 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     public void deletedUnwantedUsers(ResourceResolver resourceResolver, Map<String, User> inputUserMap)
-            throws PersistenceException, RepositoryException {
+            throws RepositoryException {
         boolean hasUsers = true;
-        int offset = 0;
+         offset = 0;
         while (hasUsers && !inputUserMap.isEmpty()) {
-            Map<String, String> parameters = new HashMap<>();
-            parameters.put("path", BnpConstants.INTERNAL_USER_PATH);
-            parameters.put("1_property", JcrConstants.JCR_PRIMARYTYPE);
-            parameters.put("1_property.value", "rep:User");
-            parameters.put("2_property", "profile/type");
-            parameters.put("2_property.value", "internal");
-            parameters.put("p.limit", "10000");
-            parameters.put("p.offset", String.valueOf(offset));
 
-            Query query = builder.createQuery(PredicateGroup.create(parameters),
-                    resourceResolver.adaptTo(Session.class));
-            SearchResult result = query.getResult();
+            Query query = new Query() {
 
-            for (Hit hit : result.getHits()) {
-                Resource res = resourceResolver.getResource(hit.getPath());
-                ValueMap properties = res.adaptTo(ValueMap.class);
-                String userID = properties.get(BnpConstants.PN_PRINCIPAL_NAME, String.class);
-                if (!inputUserMap.containsKey(userID)) {
-                    LOGGER.debug("Removing unwanted user : {}", userID);
-                    resourceResolver.delete(res);
+                @Override
+                public <T> void build(QueryBuilder<T> builder) {
+                    T condition = null;
+
+                    T internalCondition = null;
+                    try {
+                        internalCondition = builder.eq("profile/@type",
+                                resourceResolver.adaptTo(Session.class).getValueFactory().createValue("internal"));
+                    } catch (RepositoryException e) {
+                    }
+                    condition = (condition == null) ? internalCondition : builder.and(internalCondition, condition);
+
+                    if (condition != null) {
+                        builder.setCondition(condition);
+                    }
+                    builder.setLimit(offset, 10000);
+
+                }
+            };
+
+            UserManager um = resourceResolver.adaptTo(UserManager.class);
+            Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
+
+            while (authorizablesIt.hasNext()) {
+                Authorizable auth = authorizablesIt.next();
+                String name = auth.getID();
+                if (!inputUserMap.containsKey(name)) {
+                    LOGGER.debug("Removing unwanted user : {}", name);
+                    auth.remove();
                     countOfDeletedUser++;
                 }
-
             }
             offset += 10000;
-            if (offset > result.getTotalMatches()) {
+            if (offset > Iterators.size(authorizablesIt)) {
                 LOGGER.debug("Completed checking all the internal users!");
                 hasUsers = false;
             }
             LOGGER.debug("Completed checking {} users : ", offset);
+
         }
 
     }
 
     public void createAndSaveUsers(Map<String, User> inputUserMap, Map<String, UserInfo> userInfoMap,
-                                   Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
+            Map<String, UserStatus> userStatusMap, UserManager userManager, Session session)
             throws RepositoryException {
         int count = 0;
         Group mediahubBasicGroup = (Group) (userManager.getAuthorizable(BnpConstants.MEDIAHUB_READER_MEDIALIBRARY));
@@ -237,7 +248,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     }
 
     private void createAEMUser(UserManager userManager, Session session, Principal principal, String userId,
-                               User userInfo, Group mediahubBasicGroup) {
+            User userInfo, Group mediahubBasicGroup) {
         if (null != userManager) {
             try {
                 if (null != userManager.getAuthorizable(userId)) {
