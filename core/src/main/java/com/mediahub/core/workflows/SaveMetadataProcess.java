@@ -66,7 +66,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
                     setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
-                    String broadcastUrl = "player.jsp?content=" + payloadPath;
+                    String broadcastUrl = "bin/mediahub/videoviewer.html?uuid=" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, StringUtils.EMPTY);
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, externalizer.externalLink(resourceResolver, "internal", "/") + broadcastUrl);
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
