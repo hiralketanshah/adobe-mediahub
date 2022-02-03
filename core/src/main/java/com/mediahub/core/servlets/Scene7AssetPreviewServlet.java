@@ -111,7 +111,7 @@ public class Scene7AssetPreviewServlet extends SlingSafeMethodsServlet {
                     String[] status = AssetUtils.getBroadcastStatus(properties, BnpConstants.BNPP_BROADCAST_STATUS);
                     if (Arrays.asList(status).contains(BnpConstants.EXTERNAL)) {
                         String domain = properties.get(BnpConstants.S7_DOMAIN_PROPERTY, String.class);
-                        out.println("<source src=\"" + domain + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
+                        out.println("<source src=\"" + domain +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
                     } else {
                         out.println("<source src=\"" + "/" +BnpConstants.IS_CONTENT + fileName + "\" type=\"video/mp4\" />");
                     }
