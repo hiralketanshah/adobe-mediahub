@@ -393,7 +393,7 @@
                             <condition2
                               jcr:primaryType="nt:unstructured"
                               sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                              groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                              groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
                         </granite:rendercondition>
                         <items jcr:primaryType="nt:unstructured">
                             <columns
@@ -493,7 +493,7 @@
                             <condition2
                               jcr:primaryType="nt:unstructured"
                               sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                              groups="[administrators,mediahub-super-administrators]"/>
+                              groups="[administrators,mediahub-super-administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
                         </granite:rendercondition>
                         <items jcr:primaryType="nt:unstructured">
                             <columns

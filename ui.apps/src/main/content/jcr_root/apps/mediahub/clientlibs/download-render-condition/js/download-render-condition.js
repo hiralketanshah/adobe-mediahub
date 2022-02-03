@@ -37,4 +37,23 @@
             return isAsset;
       }
     });
+	
+	$(document).on("assets-download-modal-ready", function(e){
+        var res = $.ajax({
+			url: "/bin/mediahub/checkInternal",
+			type: "get",
+			success: function (data) {},
+			async: false,
+			error: function (err) {
+				console.log(err);
+			}
+		}).responseText;
+
+      if(res == "true"){
+          var email = $("div.email.row");
+          if(email != undefined){
+            email.hide();
+          }
+      }
+  });
 })($(window));
