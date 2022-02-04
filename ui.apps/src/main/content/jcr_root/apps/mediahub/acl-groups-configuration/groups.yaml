@@ -484,6 +484,10 @@
           permission: allow
           actions: read
 
+        - path: /libs/granite/security/clientlibs/v2/usereditor
+          permission: allow
+          actions: read
+
         - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
           permission: deny
           actions: read
