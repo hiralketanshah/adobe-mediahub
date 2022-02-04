@@ -184,5 +184,11 @@
                   href.uritemplate="${granite:concat('/assets.html', granite:relativeParent(param.item, 1))}"/>
             </mediaaccess>
         </actions>
+        <head jcr:primaryType="nt:unstructured">
+            <clientlibs
+              jcr:primaryType="nt:unstructured"
+              sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
+              categories="[dam.gui.coral.metadataeditor,dam.gui.coral.assetinsights.embedcode,dam.gui.coral.assetinsights.metadata,dam.gui.actions.coral,dam.gui.admin.coral,dam.gui.components.admin.adhocassetshare.coral,cq.common.wcm,dam.gui.coral.backhref,dam.gui.admin.publishasset.coral,dam.gui.admin.unpublishasset.coral,dam.gui.coral.customthumb,dam.gui.coral.relateasset, dam.gui.coral.stock.actions, dam.gui.msm.properties,dam.gui.s7dam.admin.dmpublish,asset.metadata.status]"/>
+        </head>
     </jcr:content>
 </jcr:root>

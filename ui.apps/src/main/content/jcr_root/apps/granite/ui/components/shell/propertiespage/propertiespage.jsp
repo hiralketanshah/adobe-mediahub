@@ -239,7 +239,7 @@ PropertiesPage
     boolean savedRailTargetFound = false;
     boolean hasActiveRail = rails != null && cmp.getExpressionHelper().getBoolean(rails.getValueMap().get("active", "false"));
 
-
+    boolean isTechnicalAdmin = false;
 %><!DOCTYPE html>
 <html <%= htmlAttrs %>>
 <head>
@@ -418,6 +418,15 @@ PropertiesPage
                                 Group group = projectGroups.next();
                                 if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
                                     canSavePublishForProjects = true;
+                                    isTechnicalAdmin = true;
+                                }
+                            }
+                        } else {
+                            Iterator<Group> projectGroups = auth.memberOf();
+                            while (projectGroups.hasNext()) {
+                                Group group = projectGroups.next();
+                                if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                                    isTechnicalAdmin = true;
                                 }
                             }
                         }
@@ -828,6 +837,7 @@ PropertiesPage
         %><sling:include resource="<%= header %>"/><%
         }
     %></div>
+    <input type="hidden" id="user.technical.admin" value="<%=isTechnicalAdmin%>">
     <div class="foundation-layout-panel-bodywrapper">
         <div class="foundation-layout-panel-body"><%
             if (rails != null) {
