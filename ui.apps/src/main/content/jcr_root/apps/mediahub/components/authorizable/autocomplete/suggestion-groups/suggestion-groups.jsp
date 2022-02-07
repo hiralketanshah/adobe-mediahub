@@ -108,7 +108,7 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
         if (auth instanceof User && ((User) auth).isDisabled()) {
             continue;
         }
-    if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-super-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-projects-users") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-project-administrator"))) {
+    if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-super-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-projects-users") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-basic-entity-manager") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-project-administrator"))) {
 			continue;
 		}
 
