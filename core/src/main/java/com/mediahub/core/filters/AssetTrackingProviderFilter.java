@@ -32,7 +32,7 @@ public class AssetTrackingProviderFilter implements Filter {
 			final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
 			final SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
 			// Changes as per MED-513 to avoid file download
-			//slingResponse.setHeader("Content-disposition", "attachment; filename=" + threadLocal.get());
+			slingResponse.setHeader("Content-disposition", "inline; filename=" + threadLocal.get());
 			filterChain.doFilter(slingRequest, slingResponse);
 		} finally {
 			remove();
