@@ -149,8 +149,8 @@ public class Scene7AssetPreviewServlet extends SlingSafeMethodsServlet {
                assetResource.getParent().listChildren().forEachRemaining(resource -> {
                    String child = resource.getName();
                    Arrays.asList(subtitleLanguages).forEach(language -> {
-                       if( assetResource.getName().contains(".") && StringUtils.contains(child, assetResource.getName().substring(0,assetResource.getName().lastIndexOf('.')) + "-" + language) ){
-                           out.println("<track label=\"" + LanguageUtil.getLocale(language).getDisplayLanguage(new Locale("fr")) + "\" kind=\"subtitles\" srclang=\"" + language + "\" src=\"" + resource.getName() +"\">");
+                       if( assetResource.getName().contains(".") && StringUtils.contains(child, assetResource.getName().substring(0,assetResource.getName().lastIndexOf('.')) + "_" + language.toLowerCase()) ){
+                           out.println("<track label=\"" + LanguageUtil.getLocale(language).getDisplayLanguage(new Locale("fr")) + "\" kind=\"subtitles\" srclang=\"" + language.toLowerCase() + "\" src=\"" + resource.getPath() +"\">");
                        }
                    });
                });
