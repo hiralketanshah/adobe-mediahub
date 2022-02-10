@@ -108,6 +108,7 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
         if (auth instanceof User && ((User) auth).isDisabled()) {
             continue;
         }
+
     Group adminAuth = (Group) userManager.getAuthorizable("administrators");
     Group currentAuthGroup = (Group) auth;
 

@@ -1097,6 +1097,7 @@
                                             sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
                                             hideServiceUsers="{Boolean}true"
                                             multiple="{Boolean}true"
+											selector="user"
                                             showAllAuthorizables="{Boolean}true"
                                             useHomeAsValue="{Boolean}true"/>
                                 </items>
@@ -1647,23 +1648,4 @@
             </download>
         </footer>
     </bnpdownloadasset>
-	<downloadasset jcr:primaryType="nt:unstructured">
-        <items jcr:primaryType="nt:unstructured">
-            <container jcr:primaryType="nt:unstructured">
-                <items jcr:primaryType="nt:unstructured">
-                    <emaillist jcr:primaryType="nt:unstructured">
-                        <items jcr:primaryType="nt:unstructured">
-                            <emaillist jcr:primaryType="nt:unstructured">
-                                <items jcr:primaryType="nt:unstructured">
-                                    <userlist
-                                        jcr:primaryType="nt:unstructured"
-                                        selector="user"/>
-                                </items>
-                            </emaillist>
-                        </items>
-                    </emaillist>
-                </items>
-            </container>
-        </items>
-    </downloadasset>
 </jcr:root>

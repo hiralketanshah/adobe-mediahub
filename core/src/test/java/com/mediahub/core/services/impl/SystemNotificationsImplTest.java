@@ -1,26 +1,13 @@
 package com.mediahub.core.services.impl;
 
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.Cookie;
-
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.mediahub.core.constants.BnpConstants;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.apache.sling.settings.SlingSettingsService;
@@ -35,13 +22,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
+import javax.servlet.http.Cookie;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
 
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import static org.mockito.Mockito.when;
 
-@ExtendWith({ AemContextExtension.class })
+@ExtendWith({AemContextExtension.class})
 public class SystemNotificationsImplTest {
 
     private final AemContext context = new AemContext();
@@ -91,13 +79,12 @@ public class SystemNotificationsImplTest {
     @Mock
     ServiceRegistration<ResourceChangeListener> serviceRegistration;
 
-    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
-            (Object) "system-notifications");
+    final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE, BnpConstants.WRITE_SERVICE);
 
     @BeforeEach
     public void setupMock() throws IOException, LoginException {
         MockitoAnnotations.initMocks(this);
-        Cookie[] cookies = new Cookie[] { cookie };
+        Cookie[] cookies = new Cookie[]{cookie};
         context.registerService(SlingSettingsService.class, settingsService);
         Mockito.when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
         Set<String> runModes = new HashSet<>();

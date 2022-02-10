@@ -15,6 +15,9 @@ PassEnv DISP_ID
 	ServerAlias portal.mediahub.bnpparibas
 	ServerAlias portal-dev.mediahub.bnpparibas
 	ServerAlias portal-staging.mediahub.bnpparibas
+
+	Alias /richmedia /mnt/richmedia
+
 	# Use a doc root that matches what's in the /etc/httpd/conf/publish-farm.any
 	DocumentRoot	${PUBLISH_DOCROOT}
 	# Add header breadcrumbs for help in troubleshooting
@@ -35,7 +38,7 @@ PassEnv DISP_ID
         Header always set Access-Control-Allow-Origin %{origin_is}e env=origin_is
 
 	</IfModule>
-	<Directory />
+	<Directory "${PUBLISH_DOCROOT}">
 		# Update /etc/sysconfig/httpd with setting the PUBLISH_WHITELIST_ENABLED from 0 or 1 to enable or disable ip restriction rules
 		<If "${PUBLISH_WHITELIST_ENABLED} == 1">
 			Include /etc/httpd/conf.d/whitelists/*_whitelist.rules
@@ -53,13 +56,14 @@ PassEnv DISP_ID
 		</IfModule>
 		Options FollowSymLinks
 		AllowOverride None
+		Require all granted
 		# Insert filter
 		SetOutputFilter DEFLATE
 		# Don't compress images
 		SetEnvIfNoCase Request_URI \
 		\.(?:gif|jpe?g|png)$ no-gzip dont-vary
 	</Directory>
-	<Directory "${PUBLISH_DOCROOT}">
+	<Directory "/mnt/richmedia">
 		AllowOverride None
 		Require all granted
 	</Directory>
