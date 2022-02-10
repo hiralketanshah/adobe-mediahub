@@ -108,9 +108,13 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
         if (auth instanceof User && ((User) auth).isDisabled()) {
             continue;
         }
-    if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-super-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-projects-users") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-basic-entity-manager") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-project-administrator"))) {
+    Group adminAuth = (Group) userManager.getAuthorizable("administrators");
+    Group currentAuthGroup = (Group) auth;
+
+    if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-super-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-projects-users") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-basic-entity-manager") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-project-administrator") || auth.getPrincipal().getName().equalsIgnoreCase("administrators") || adminAuth.isMember(currentAuthGroup))) {
 			continue;
 		}
+
 
         UserProperties up = upm.getUserProperties(auth, "profile");
 
@@ -125,7 +129,6 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
 
         AttrBuilder attrs = new AttrBuilder(request, xssAPI);
         attrs.add("type", "button");
-    attrs.add("test","test");
         attrs.add("is", "coral-buttonlist-item");
         attrs.add("value", value);
         attrs.add("foundation-picker-buttonlist-text", name);
@@ -139,7 +142,7 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
         attrs.addOther(FOUNDATION_PICKER_BUTTONLIST_PREFIX + "group", Boolean.toString(auth.isGroup()));
 
         %><button <%= attrs %>>
-            <div class="foundation-layout-flexmedia abc foundation-layout-flexmedia-middle">
+            <div class="foundation-layout-flexmedia foundation-layout-flexmedia-middle">
                 <img class="foundation-layout-flexmedia-img" width="32" height="32" src="<%= escapedImagePath %>" alt="">
                 <div class="foundation-layout-flexmedia-bd">
                     <div class="foundation-layout-flexmedia-bd-singleline"><%= mark(name, queryPattern, xssAPI) %></div><%
