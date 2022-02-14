@@ -8,12 +8,12 @@
 
             - ${level0.name}-contributor:
                 - name: ${level0.title} - Contributor
-                  isMemberOf: mediahub-basic-reader
+                  isMemberOf: mediahub-basic-contributor
                   path: /home/groups/mediahub
 
             - ${level0.name}-reader:
                 - name: ${level0.title} - Reader
-                  isMemberOf: mediahub-basic-contributor
+                  isMemberOf: mediahub-basic-reader
                   path: /home/groups/mediahub
 
             - FOR level1 IN CHILDREN OF /content/dam/medialibrary/${level0.name}:
@@ -25,12 +25,12 @@
 
                     - ${level0.name}-${level1.name}-contributor:
                         - name: ${level0.title} - ${level1.title} - Contributor
-                          isMemberOf: mediahub-basic-reader
+                          isMemberOf: mediahub-basic-contributor
                           path: /home/groups/mediahub
 
                     - ${level0.name}-${level1.name}-reader:
                         - name: ${level0.title} - ${level1.title} - Reader
-                          isMemberOf: mediahub-basic-contributor
+                          isMemberOf: mediahub-basic-reader
                           path: /home/groups/mediahub
 
                     - FOR level2 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}:
@@ -42,12 +42,12 @@
 
                             - ${level1.name}-${level2.name}-contributor:
                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - Contributor
-                                  isMemberOf: mediahub-basic-reader
+                                  isMemberOf: mediahub-basic-contributor
                                   path: /home/groups/mediahub
 
                             - ${level1.name}-${level2.name}-reader:
                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - Reader
-                                  isMemberOf: mediahub-basic-contributor
+                                  isMemberOf: mediahub-basic-reader
                                   path: /home/groups/mediahub
 
                             - FOR level3 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}:
@@ -59,12 +59,12 @@
 
                                     - ${level2.name}-${level3.name}-contributor:
                                         - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Contributor
-                                          isMemberOf: mediahub-basic-reader
+                                          isMemberOf: mediahub-basic-contributor
                                           path: /home/groups/mediahub
 
                                     - ${level2.name}-${level3.name}-reader:
                                         - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - Reader
-                                          isMemberOf: mediahub-basic-contributor
+                                          isMemberOf: mediahub-basic-reader
                                           path: /home/groups/mediahub
 
                                     - FOR level4 IN CHILDREN OF /content/dam/medialibrary/${level0.name}/${level1.name}/${level2.name}/${level3.name}:
@@ -76,12 +76,12 @@
 
                                             - ${level3.name}-${level4.name}-contributor:
                                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Contributor
-                                                  isMemberOf: mediahub-basic-reader
+                                                  isMemberOf: mediahub-basic-contributor
                                                   path: /home/groups/mediahub
 
                                             - ${level3.name}-${level4.name}-reader:
                                                 - name: ${level0.title} - ${level1.title} - ${level2.title} - ${level3.title} - ${level4.title} - Reader
-                                                  isMemberOf: mediahub-basic-contributor
+                                                  isMemberOf: mediahub-basic-reader
                                                   path: /home/groups/mediahub
 
 

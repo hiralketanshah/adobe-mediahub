@@ -42,6 +42,7 @@ import com.mediahub.core.services.AnalyticsGetterService;
 /**
  * Servlet to test analytics getter service
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/getanalytics"})
 public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
 	
@@ -59,11 +60,11 @@ public class AnalyticsGetterServlet extends SlingAllMethodsServlet {
     private static final String DATE_INPUT_FORMAT = "dd-MM-yyyy";
     
     @Reference
-    private AnalyticsGetterService analyticsService;
+    private transient AnalyticsGetterService analyticsService;
     
     @Override
     protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
-    	logger.info("Starting Analytics getter servlet");
+    	logger.debug("Starting Analytics getter servlet");
     	
     	Date startDate = null, endDate = null;
     	String dimension = request.getParameter(ACTION_PARAM);

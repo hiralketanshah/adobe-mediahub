@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -39,6 +40,7 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.servlet.Servlet;
@@ -102,7 +104,7 @@ public class ResetPasswordServlet extends SlingAllMethodsServlet {
                 }
                 resolver.commit();
             }
-        } catch (Exception e) {
+        } catch (RepositoryException | LoginException e) {
             LOGGER.error("Error while changing password", e);
             setErrorResponse(response, "not_able_reset");
         }

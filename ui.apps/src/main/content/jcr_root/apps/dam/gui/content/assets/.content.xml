@@ -1097,6 +1097,7 @@
                                             sling:resourceType="granite/ui/components/coral/foundation/authorizable/autocomplete"
                                             hideServiceUsers="{Boolean}true"
                                             multiple="{Boolean}true"
+											selector="user"
                                             showAllAuthorizables="{Boolean}true"
                                             useHomeAsValue="{Boolean}true"/>
                                 </items>
@@ -1540,7 +1541,7 @@
                                             granite:id="internalUserContact"
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/userpicker"
-                                            src="/bin/project/internalusers.html"
+                                            src="/bin/mediahub/internalusers.html"
                                             required="{Boolean}true"
                                             multiple="{Boolean}false"
                                             name="user"

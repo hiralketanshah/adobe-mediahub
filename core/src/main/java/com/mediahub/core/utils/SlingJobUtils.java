@@ -2,7 +2,6 @@ package com.mediahub.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class SlingJobUtils {
                     Thread.sleep(1000);
                     job = jobManager.getJobById(jobId);
                 }
-                if (job.getFinishedDate() != null) {
+                if (null != job && null != job.getFinishedDate()) {
                     if (job.getJobState() == Job.JobState.SUCCEEDED) {
                         return true;
                     } else {
@@ -42,7 +41,7 @@ public class SlingJobUtils {
                 }
             }
             return false;
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             logger.error("Exception when activating asset in DM", e);
             return false;
         }

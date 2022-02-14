@@ -11,6 +11,7 @@ import com.mediahub.core.utils.SlingJobUtils;
 import java.util.Collections;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.JobManager;
@@ -47,7 +48,7 @@ public class PublishScene7VideoAsset implements WorkflowProcess {
                     SlingJobUtils.startS7ActivationJob(resourceResolver.getResource(scene7Video.getPath()), jobManager, SlingJobUtils.S7_ACTIVATE_VALUE);
                 }
             }
-        } catch (Exception e) {
+        } catch (LoginException e) {
             log.error("Error while Activating Video Asset {0}",e);
         }
 

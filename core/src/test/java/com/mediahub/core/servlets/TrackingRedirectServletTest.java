@@ -34,6 +34,7 @@ public class TrackingRedirectServletTest {
     ResourceResolver resourceResolver;
 
     Resource res;
+    Resource resWithoutHttp;
     Resource resWithoutRedirect;
     MockSlingHttpServletResponse response;
 
@@ -41,7 +42,10 @@ public class TrackingRedirectServletTest {
     public void setupMock() {
         MockitoAnnotations.initMocks(this);
         res = context.create().resource("/content/test1", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset", "redirectTarget",
-                "testTarget");
+                "http://content/dam/testTarget?test=test");
+        
+        resWithoutHttp = context.create().resource("/content/test", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset", "redirectTarget",
+                "/content/dam/testTarget?test=test");
         resWithoutRedirect = context.create().resource("/content/test2", JcrConstants.JCR_PRIMARYTYPE, "dam:Asset");
         response = context.response();
     }
@@ -49,6 +53,13 @@ public class TrackingRedirectServletTest {
     @Test
     void doGetWithRedirect(AemContext context) throws IOException {
         when(request.getResource()).thenReturn(res);
+        fixture.doGet(request, response);
+        assertEquals(302, response.getStatus());
+    }
+    
+    @Test
+    void doGetWithRedirectWithoutHttp(AemContext context) throws IOException {
+        when(request.getResource()).thenReturn(resWithoutHttp);
         fixture.doGet(request, response);
         assertEquals(302, response.getStatus());
     }

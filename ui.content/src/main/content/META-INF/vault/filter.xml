@@ -24,6 +24,9 @@
     <filter root="/var/workflow/models/mediahub/mediahub---scene-7-deactivation"/>
     <filter root="/conf/global/settings/workflow/models/mediahub/mediahub---validation" mode="update"/>
     <filter root="/var/workflow/models/mediahub/mediahub---external-publish"/>
+	<filter root="/var/workflow/models/mediahub/remove-rich-media"/>
+    <filter root="/var/workflow/models/mediahub/store-rich-media"/>
+
     <filter root="/conf/global/settings/workflow/launcher"/>
     <filter root="/oak:index" mode="update"/>
     <filter root="/etc/languages"/>

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.jcr.Session;
 
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.adobe.granite.security.user.UserProperties;
@@ -28,6 +30,7 @@ import com.adobe.granite.security.user.UserPropertiesService;
 import com.adobe.granite.security.user.util.AuthorizableUtil;
 import com.day.cq.i18n.I18n;
 import com.day.cq.replication.ReplicationStatus;
+import com.day.crx.JcrConstants;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import mockit.MockUp;
@@ -71,15 +74,21 @@ public class AuthorizableModelImplTest {
     Session Session;
 
     @Mock
-    UserPropertiesManager UserPropertiesManager;
+    UserPropertiesManager userPropertiesManager;
 
-    Calendar calendar;
+    
+    Calendar calendar = Calendar.getInstance();
+    
+    @Mock
+    Date date;
 
     private MockUp<AuthorizableUtil> authorizableUtilMockup;
 
     @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        when(valueMap.get(JcrConstants.JCR_LASTMODIFIED, Calendar.class)).thenReturn(calendar);
+        when(valueMap.get(JcrConstants.JCR_CREATED, Calendar.class)).thenReturn(null);
     }
 
     @Test
@@ -87,18 +96,15 @@ public class AuthorizableModelImplTest {
         when(slingHttpServletRequest.getResourceResolver()).thenReturn(resourceResolver);
         when(slingHttpServletRequest.getResource()).thenReturn(resource);
         when(resource.adaptTo(Authorizable.class)).thenReturn(authorizable);
+        when(authorizable.getID()).thenReturn("123");
         when(resource.adaptTo(ValueMap.class)).thenReturn(valueMap);
         when(resource.adaptTo(ReplicationStatus.class)).thenReturn(replicationStatus);
         when(resourceResolver.adaptTo(Session.class)).thenReturn(Session);
         when(userPropertiesService.createUserPropertiesManager(Session, resourceResolver))
-                .thenReturn(UserPropertiesManager);
-        authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
-            @mockit.Mock
-            UserProperties getProfile(UserPropertiesManager arg0, String arg1) {
+                .thenReturn(userPropertiesManager);
+        when(userPropertiesManager.getUserProperties(Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(userProperties);
 
-                return userProperties;
-            }
-        };
         authorizableModelImpl.postConstruct();
         assertEquals(Session, resourceResolver.adaptTo(Session.class));
 
@@ -136,13 +142,13 @@ public class AuthorizableModelImplTest {
 
         when(i18n.get("{0} {1}", "name display order: {0} is the given (first) name, {1} the family (last)" + " name",
                 "givenName middleName", "familyName")).thenReturn("Test TEXT");
-        authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
+        /*authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
             @mockit.Mock
             String getFormattedName(ResourceResolver resolver, Authorizable authorizable, String nameDisplayOrder) {
 
                 return "Success";
             }
-        };
+        };*/
         authorizableModelImpl.getName();
         assertEquals("Test TEXT",
                 i18n.get("{0} {1}",
@@ -169,13 +175,13 @@ public class AuthorizableModelImplTest {
     @Test
     public void testGetLastModifiedBy() throws Exception {
         when(valueMap.get("jcr:lastModifiedBy", String.class)).thenReturn("user");
-        authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
+       /* authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
             @mockit.Mock
             String getFormattedName(ResourceResolver resolver, String userId) {
 
                 return "UserName";
             }
-        };
+        };*/
         authorizableModelImpl.getLastModifiedBy();
         assertEquals("user", valueMap.get("jcr:lastModifiedBy", String.class));
     }
@@ -190,13 +196,13 @@ public class AuthorizableModelImplTest {
     @Test
     public void testGetLastPublishedBy() throws Exception {
         when(replicationStatus.getLastPublishedBy()).thenReturn("User");
-        authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
+       /* authorizableUtilMockup = new MockUp<AuthorizableUtil>() {
             @mockit.Mock
             String getFormattedName(ResourceResolver resolver, String userId) {
 
                 return "UserName";
             }
-        };
+        };*/
         authorizableModelImpl.getLastPublishedBy();
         assertEquals("User", replicationStatus.getLastPublishedBy());
     }

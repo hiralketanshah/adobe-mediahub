@@ -2,14 +2,12 @@ package com.mediahub.core.services.impl;
 
 import com.adobe.granite.asset.api.Asset;
 import com.adobe.granite.asset.api.Rendition;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.Hit;
-import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.data.UserInfo;
 import com.mediahub.core.data.UserStatus;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+
+import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.AuthorizableExistsException;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -32,7 +30,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -92,23 +93,18 @@ public class UpdateInternalUsersServiceImplTest {
     @Mock
     Rendition renditionStatus;
 
-    @Mock
-    Query query;
-
-    @Mock
-    QueryBuilder builder;
-
-    @Mock
-    SearchResult result;
-
-    @Mock
-    Hit hit;
 
     @Mock
     Group group;
 
     @Mock
     Node node;
+    
+    
+    List<Authorizable> listOfUsers;
+    
+    @Mock
+    Authorizable auth;
 
     InputStream isList;
     InputStream isInfo;
@@ -122,7 +118,8 @@ public class UpdateInternalUsersServiceImplTest {
     public void setup() throws NotCompliantMBeanException, org.apache.sling.api.resource.LoginException {
         MockitoAnnotations.initMocks(this);
         when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-
+       listOfUsers= new ArrayList<>();
+        listOfUsers.add(auth);
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         isList = classloader.getResourceAsStream("users-list.csv");
         isInfo = classloader.getResourceAsStream("users-info.csv");
@@ -158,7 +155,10 @@ public class UpdateInternalUsersServiceImplTest {
         when(resource.adaptTo(Asset.class)).thenReturn(asset);
         when(asset.getRendition(Mockito.anyString())).thenReturn(rendition);
         when(rendition.getStream()).thenReturn(isList);
-
+        Iterator<Authorizable> iterator = listOfUsers.iterator();
+        when(userManager.findAuthorizables(Mockito.any())).thenReturn(iterator);
+        
+        when(auth.getID()).thenReturn("114804");
         when(resourceInfo.adaptTo(Asset.class)).thenReturn(assetInfo);
         when(assetInfo.getRendition(Mockito.anyString())).thenReturn(renditionInfo);
         when(renditionInfo.getStream()).thenReturn(isInfo);
@@ -167,8 +167,7 @@ public class UpdateInternalUsersServiceImplTest {
         when(assetStatus.getRendition(Mockito.anyString())).thenReturn(renditionStatus);
         when(renditionStatus.getStream()).thenReturn(isStatus);
 
-        when(builder.createQuery(Mockito.any(), Mockito.any())).thenReturn(query);
-        when(query.getResult()).thenReturn(result);
+       
         assertAll(() -> fetchPrice.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO,
                 BnpConstants.CSV_USER_STATUS));
         assertAll(() -> fetchPrice.createAndSaveUsers(inputMap, infoMap, statusMap,

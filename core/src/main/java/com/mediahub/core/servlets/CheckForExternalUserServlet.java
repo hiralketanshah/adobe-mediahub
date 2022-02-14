@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mediahub.core.constants.BnpConstants;
 
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Check if the current user is an external user",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/checkInternal" })

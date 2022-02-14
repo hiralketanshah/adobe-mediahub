@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Listener class to Comments and Assets added in content/dam/projects and notify the users.
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Component(service = {
     ResourceChangeListener.class},
     immediate = true,
@@ -61,7 +62,6 @@ public class ProjectDamResourceListener implements ResourceChangeListener {
   @Reference
   ResourceResolverFactory resolverFactory;
 
-  @SuppressWarnings("CQRules:AMSCORE-553")
   @Reference
   private SlingSettingsService slingSettingsService;
 

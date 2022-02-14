@@ -40,15 +40,14 @@ public class UserUtils {
   
   @SuppressWarnings("squid:S2070")
   public static String encryptThisString(String input) throws NoSuchAlgorithmException {
-      String hashtext = input;
       MessageDigest md = MessageDigest.getInstance("SHA-1");
       byte[] messageDigest = md.digest(input.getBytes());
       BigInteger no = new BigInteger(1, messageDigest);
-      hashtext = no.toString(16);
-      while (hashtext.length() < 32) {
-          hashtext = "0" + hashtext;
+      input = no.toString(16);
+      while (input.length() < 32) {
+          input = "0" + input;
       }
-      return hashtext;
+      return input;
   }
   
   public static String getProjectOwnerName(String initiator, UserManager userManager) throws RepositoryException {
@@ -65,6 +64,7 @@ public class UserUtils {
       }
       return fullName;
   }
+
 
   /**
    * MED-493 Create user group while creating folders
@@ -91,4 +91,15 @@ public class UserUtils {
         logger.error("Exception while creating groups for folders", e);
       }
   }
+
+  public static String getUserType(Resource user) {
+    if(null != user.getChild(BnpConstants.PROFILE)){
+      Resource preferences = user.getChild(BnpConstants.PROFILE);
+      return preferences.getValueMap().get(BnpConstants.TYPE, "");
+    } else{
+      return "";
+    }
+  }
+
+
 }

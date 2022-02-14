@@ -20,6 +20,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -123,7 +124,7 @@ public class ExternalLinksProjectListener implements EventHandler {
             externalLink.setProperty("name", "External");
             externalLink.setProperty("target", "_blank");
             externalLink.setProperty("class", "card-article");
-            externalLink.setProperty("sling:resourceType", "cq/gui/components/projects/admin/card/linkcard");
+            externalLink.setProperty(JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY, "cq/gui/components/projects/admin/card/linkcard");
             session.save();
 
         } catch (RepositoryException e) {

@@ -7,6 +7,7 @@ import org.apache.sling.api.resource.Resource;
 /**
  * On Deploy Script class for MED-303 for adding render condition in Permission Tab
  */
+@SuppressWarnings("CQRules:CQBP-71")
 public class PermissionTabRenderCondition extends OnDeployScriptBase implements OnDeployScript {
 
   @Override

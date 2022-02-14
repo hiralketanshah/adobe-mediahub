@@ -50,6 +50,7 @@ import com.day.cq.tagging.TagManager;
 /**
  * Servlet to create tags before running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/createtags"})
 public class TagsCreatorServlet extends SlingAllMethodsServlet {
     
@@ -67,6 +68,12 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
     protected void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
         List<String[]> failuresList = new ArrayList<>();
         failuresList.add(FAILURES_HEADER);
+        
+        LOGGER.debug("Executing Tag Creator Servlet for Entities...");
+        List<String> entities = getEntitiesData(request);
+        for (String tag : entities) {
+            createEntityTag(request, tag, failuresList);
+        }
         
         LOGGER.debug("Executing Tag Creator Servlet for Assets...");
         Map<String, String[]> assets = getAssetsData(request);
@@ -140,14 +147,6 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
             }
         }
         
-        if (resourceProperties.length >= 54) {
-            String identifiedEntities = resourceProperties[53];
-            
-            if (StringUtils.isNoneEmpty(identifiedEntities)) {
-                createTags(tagManager, identifiedEntities, tagsFailuresList);
-            }
-        }
-        
         if (resourceProperties.length >= 55) {
             String identifiedPersons = resourceProperties[54];
             
@@ -171,6 +170,22 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
                 createTags(tagManager, keywords, tagsFailuresList);
             }
         }
+        
+        if (resourceProperties.length >= 58) {
+            String geographicalArea = resourceProperties[57];
+            
+            if (StringUtils.isNoneEmpty(geographicalArea)) {
+                createTags(tagManager, geographicalArea, tagsFailuresList);
+            }
+        }
+        
+        if (resourceProperties.length >= 59) {
+            String reportCampaign = resourceProperties[58];
+            
+            if (StringUtils.isNoneEmpty(reportCampaign)) {
+                createTags(tagManager, reportCampaign, tagsFailuresList);
+            }
+        }
 
         LOGGER.debug("Tags created for media " + resourcePath);
         return  "Tags created for media " + resourcePath;
@@ -189,6 +204,19 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
         
         LOGGER.debug("Tags created for asset " + resourcePath);
         return  "Tags created for asset " + resourcePath;
+    }
+    
+    public String createEntityTag(SlingHttpServletRequest request, String tag, List<String[]> tagsFailuresList) {
+        // req is the SlingHttpServletRequest
+        ResourceResolver resourceResolver = request.getResourceResolver();
+        TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
+        
+        if (StringUtils.isNoneEmpty(tag)) {
+            createTags(tagManager, tag, tagsFailuresList);
+        }
+        
+        LOGGER.debug("Entity tag created " + tag);
+        return  "Entity tag created " + tag;
     }
     
     protected void createTags(TagManager tagManager, String tags, List<String[]> tagsFailuresList) {
@@ -273,5 +301,26 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
             }
         }
         return assets;
+    }
+    
+    /**
+     * To get the media data from excel
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    private List<String> getEntitiesData(SlingHttpServletRequest request) throws IOException {
+        List<String> entities = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(request.getRequestParameter("entities-file").getInputStream(), StandardCharsets.UTF_8))) {
+            
+            String value;
+            
+            while ((value = br.readLine()) != null) {
+            	if (StringUtils.isNotBlank(value))
+            	entities.add(value.trim());
+            }
+        }
+        return entities;
     }
 }

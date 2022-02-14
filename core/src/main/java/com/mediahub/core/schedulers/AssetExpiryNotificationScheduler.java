@@ -36,6 +36,7 @@ import java.util.*;
  * <p>
  * Scheduler runs every day 2am.
  */
+@SuppressWarnings("CQRules:AMSCORE-553")
 @Designate(ocd = AssetExpiryNotificationScheduler.Config.class)
 @Component(service = Runnable.class)
 public class AssetExpiryNotificationScheduler implements Runnable {
@@ -48,7 +49,6 @@ public class AssetExpiryNotificationScheduler implements Runnable {
     @Reference
     private GenericEmailNotification genericEmailNotification;
 
-    @SuppressWarnings("CQRules:AMSCORE-553")
     @Reference
     private SlingSettingsService slingSettingsService;
 

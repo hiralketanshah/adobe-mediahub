@@ -16,7 +16,9 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.ReplicationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -64,7 +66,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 ModifiableValueMap modifiableValueMap = metadata.adaptTo(ModifiableValueMap.class);
                 if (DamUtil.isAsset(movedAsset) && DamUtil.isVideo(DamUtil.resolveToAsset(movedAsset))) {
                     setVideoAssetMetadata(resourceResolver, movedAsset, modifiableValueMap);
-                    String broadcastUrl = "player.jsp?content=" + payloadPath;
+                    String broadcastUrl = "bin/mediahub/videoviewer.html?uuid=" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, StringUtils.EMPTY);
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_PLAYER, externalizer.externalLink(resourceResolver, "internal", "/") + broadcastUrl);
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_BROADCAST_URL, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/player/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
@@ -75,7 +77,7 @@ public class SaveMetadataProcess implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while adding attributes for internal asset", e);
         }
 
@@ -116,15 +118,15 @@ public class SaveMetadataProcess implements WorkflowProcess {
         for (Scene7Asset asset : subAssets) {
             if (asset != null && asset.getHeight() != null) {
                 if (asset.getHeight() == 540L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_MD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/md/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 720L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/hd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
                 if (asset.getHeight() == 1080L) {
-                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getFolder() + asset.getFileName());
+                    modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + BnpConstants.IS_CONTENT + asset.getRootFolder() + asset.getName());
                     modifiableValueMap.put(BnpConstants.BNPP_INTERNAL_FILE_URL_SUPER_HD, externalizer.externalLink(resourceResolver, "internal", "/") + "mh/internal/superhd/" + masterAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                 }
             }

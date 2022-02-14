@@ -45,6 +45,7 @@ class InternalResourceTest {
 		assertEquals(res, fixture.getResource());
 		assertEquals(res.getResourceSuperType(), fixture.getResourceSuperType());
 		assertEquals(res.getResourceResolver(), fixture.getResourceResolver());
+		fixture.toString();
 	}
 
 }

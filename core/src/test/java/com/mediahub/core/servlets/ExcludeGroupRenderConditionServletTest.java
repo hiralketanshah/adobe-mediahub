@@ -104,5 +104,11 @@ public class ExcludeGroupRenderConditionServletTest {
         fixture.doGet(request, response);
         assertEquals(show, request.getAttribute(RenderCondition.class.getName()));
     }
+    
+    @Test
+    void doGetError() throws LoginException {
+        when(resourceResolverFactory.getServiceResourceResolver(authInfo)).thenThrow(LoginException.class);
+        fixture.doGet(request, response);
+    }
 
 }

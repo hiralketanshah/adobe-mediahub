@@ -95,7 +95,7 @@ public class MoveAssetsProcessWorkflow implements WorkflowProcess {
                     resourceResolver.commit();
                 }
             }
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException | RepositoryException e) {
             throw new WorkflowException("Error while moving asset from Projects", e);
         }
     }

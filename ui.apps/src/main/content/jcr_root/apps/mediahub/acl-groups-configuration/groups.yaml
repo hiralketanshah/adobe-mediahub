@@ -37,7 +37,7 @@
 
     - mediahub-basic-contributor:
         - name:
-          isMemberOf: mediahub-basic,workflow-users
+          isMemberOf: mediahub-basic,workflow-users,tag-administrators
           path: /home/groups/mediahub
 
     - mediahub-projects-users:
@@ -47,7 +47,7 @@
 
     - mediahub-basic-project-manager:
         - name:
-          isMemberOf: projects-administrators,user-administrators
+          isMemberOf: projects-administrators,user-administrators,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -59,7 +59,7 @@
 
     - mediahub-basic-project-publisher:
         - name:
-          isMemberOf: mediahub-projects-users
+          isMemberOf: mediahub-projects-users,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -71,7 +71,7 @@
 
     - mediahub-basic-project-internal-contributor:
         - name:
-          isMemberOf: mediahub-projects-users
+          isMemberOf: mediahub-projects-users,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -471,6 +471,22 @@
           actions: read
           privileges:
           repGlob:
+
+        - path: /var/dam/jobs/download
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/content/v2/usereditor
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/clientlibs/v2/commons
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/clientlibs/v2/usereditor
+          permission: allow
+          actions: read
 
         - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
           permission: deny

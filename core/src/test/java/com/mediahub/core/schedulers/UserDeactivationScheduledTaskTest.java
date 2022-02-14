@@ -22,12 +22,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.Value;
+
+import java.security.Principal;
 import java.text.ParseException;
 import java.util.*;
 
@@ -70,6 +74,12 @@ public class UserDeactivationScheduledTaskTest {
     User user;
 
     @Mock
+    Group group;
+    
+    @Mock
+    Principal principal;
+    
+    @Mock
     UserManager userManager;
 
     @Mock
@@ -77,12 +87,18 @@ public class UserDeactivationScheduledTaskTest {
 
     @Mock
     Authorizable authorizable;
-
+    
     @Mock
     SlingSettingsService slingSettingsService;
 
     @Mock
     I18nProvider provider;
+    
+    @Mock
+    Value val;
+    
+    
+    Value[] values;
 
     Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -90,10 +106,18 @@ public class UserDeactivationScheduledTaskTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
+        values = new Value[] { val };
         Set<String> runModes = new HashSet<>();
         runModes.add("stage");
         when(slingSettingsService.getRunModes()).thenReturn(runModes);
         TestLoggerFactory.clear();
+        
+        when(resolver.adaptTo(QueryBuilder.class)).thenReturn(builder);
+        when(builder.createQuery(Mockito.any(), Mockito.any())).thenReturn(query);
+        when(query.getResult()).thenReturn(searchResult);
+        List<Resource> userList = new ArrayList<>();
+        userList.add(resource);
+        when(searchResult.getResources()).thenReturn(userList.iterator());
     }
 
     @Test
@@ -105,17 +129,14 @@ public class UserDeactivationScheduledTaskTest {
             when(config.getUserType()).thenReturn(BnpConstants.EXTERNAL);
             when(config.scheduler_expression()).thenReturn("0 1 0 1/1 * ? *");
             when(config.scheduler_concurrent()).thenReturn(Boolean.FALSE);
-            QueryBuilder queryBuilder = mock(QueryBuilder.class);
             when(resolverFactory.getServiceResourceResolver(any())).thenReturn(resolver);
             when(resolver.adaptTo(Session.class)).thenReturn(session);
-            when(resolver.adaptTo(QueryBuilder.class)).thenReturn(queryBuilder);
+            
             when(resolver.adaptTo(Session.class)).thenReturn(session);
-            when(queryBuilder.createQuery(any(PredicateGroup.class), any(Session.class))).thenReturn(query);
-            when(query.getResult()).thenReturn(searchResult);
+            
+            
             when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-            List<Resource> userList = new ArrayList<>();
-            userList.add(resource);
-            when(searchResult.getResources()).thenReturn(userList.iterator());
+            
             when(resource.getChild(BnpConstants.PROFILE)).thenReturn(resource);
             when(resource.getValueMap()).thenReturn(valueMap);
             when(valueMap.get(BnpConstants.EXPIRY, String.class)).thenReturn("2019/06/09");
@@ -189,9 +210,33 @@ public class UserDeactivationScheduledTaskTest {
 
     @Test
     void fetchUserMailFromGroup() throws ParseException, RepositoryException {
-        List<Group> userList = new ArrayList<>();
-        when(authorizable.memberOf()).thenReturn(userList.listIterator());
-        fixture.deactivateExpiredUsers(userManager, resource, Calendar.getInstance(), builder, resolver);
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
+        
+        List<Authorizable> userList = new ArrayList<>();
+        userList.add(user);
+        when(user.isGroup()).thenReturn(false);
+        when(user.getProperty(Mockito.anyString())).thenReturn(values);
+        when(user.memberOf()).thenReturn(groupList.listIterator());
+        when(group.getPrincipal()).thenReturn(principal);
+        when(principal.getName()).thenReturn("test-external-contributor");
+        when(userManager.getAuthorizableByPath(Mockito.any())).thenReturn(user);
+        when(userManager.getAuthorizable(Mockito.anyString())).thenReturn(group);
+        when(group.isGroup()).thenReturn(true);
+        when(group.getMembers()).thenReturn(userList.listIterator());
+        when(resource.getChild(Mockito.anyString())).thenReturn(resource);
+        when(resource.getValueMap()).thenReturn(valueMap);
+        when(valueMap.get(Mockito.anyString())).thenReturn("test");
+        when(valueMap.get(Mockito.anyString(), Mockito.anyString())).thenReturn("cq/gui/components/projects/admin/card/projectcard");
+        
+        Calendar calendar = Calendar.getInstance();
+        fixture.deactivateExpiredUsers(userManager, resource, calendar, builder, resolver);
+        calendar.add(Calendar.DATE, -1);
+        fixture.deactivateExpiredUsers(userManager, resource, calendar, builder, resolver);
+        calendar.add(Calendar.DATE, -2);
+        fixture.deactivateExpiredUsers(userManager, resource, calendar, builder, resolver);
+        calendar.add(Calendar.DATE, -7);
+        fixture.deactivateExpiredUsers(userManager, resource, calendar, builder, resolver);
     }
-
+    
 }
