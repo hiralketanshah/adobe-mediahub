@@ -6,12 +6,10 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.JackrabbitAccessControlList;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.jackrabbit.commons.jackrabbit.authorization.AccessControlUtils;
 import org.apache.sling.api.resource.*;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -29,9 +27,8 @@ import javax.jcr.ValueFactory;
 import javax.jcr.security.Privilege;
 import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+import static com.mediahub.core.constants.BnpConstants.MEDIALIBRARY_PATH;
 
 /**
  * @author Shipra Arora
@@ -90,17 +87,18 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                     principalNameList = new LinkedList<>();
                     Node projectNode = adminResource.adaptTo(Node.class);
 
+                    Principal groupEditorPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
+                    Principal groupObserverPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
+                    Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
+                    Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
+                    Principal groupExternalContribPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+                    principalNameList.add(groupEditorPrincipal);
+                    principalNameList.add(groupObserverPrincipal);
+                    principalNameList.add(groupOwnerPrincipal);
+                    principalNameList.add(groupOwnerProjectPublisher);
+                    principalNameList.add(groupExternalContribPrincipal);
+
                     if (projectNode.hasProperty(BnpConstants.ROLE_EDITOR) && (!projectNode.hasProperty("initialized") || (projectNode.hasProperty("initialized") && !projectNode.getProperty("initialized").getBoolean()))) {
-                        Principal groupEditorPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
-                        Principal groupObserverPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
-                        Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
-                        Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
-                        Principal groupExternalContribPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
-                        principalNameList.add(groupEditorPrincipal);
-                        principalNameList.add(groupObserverPrincipal);
-                        principalNameList.add(groupOwnerPrincipal);
-                        principalNameList.add(groupOwnerProjectPublisher);
-                        principalNameList.add(groupExternalContribPrincipal);
 
                         Group projectInternalGroup = (Group) userManager.getAuthorizable(BnpConstants.PROJECT_INTERNAL_CONTRIBUTOR_GROUP);
                         projectInternalGroup.addMember(userManager.getAuthorizable(groupEditorPrincipal));
@@ -130,19 +128,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                                 createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
                             }
                             CreatePolicyNodeUtil.createRepPolicyNodes(adminSession, parentFolderPath, principalNameList, ImmutableMap.of("rep:glob", vf.createValue("")));
-
                         }
-
-                        String damPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", String.class);
-                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damPath, groupOwnerPrincipal, Privilege.JCR_ALL);
-                        CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damPath, groupOwnerProjectPublisher, Privilege.JCR_ALL);
-                        adminResource = adminResolver.getResource(damPath);
-                        while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PATH)) {
-                            adminResource = adminResource.getParent();
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                        }
-
 
                         String damFolderPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("damFolderPath", String.class);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectInternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
@@ -159,53 +145,46 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                             CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupExternalContribPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
                         }
 
-                        adminResource = adminResolver.getResource(projectPath);
-                        List<String> entityGroups = StreamSupport.stream(Spliterators.spliteratorUnknownSize(((Group) userManager.getAuthorizable("mediahub-basic-entity-manager")).getMembers(), Spliterator.ORDERED), false).filter(a -> a.isGroup()).map(g -> {
-                            try {
-                                return g.getID();
-                            } catch (RepositoryException e) {
-                                log.error("Error while fetching authorizable ID : {}",e );
-                            }
-                            return null;
-                        }).filter(i -> i != null).collect(Collectors.toList());
-                        AtomicBoolean matched = new AtomicBoolean(false);
-                        while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH) && !matched.get()) {
-                            adminResource = adminResource.getParent();
-                            JackrabbitAccessControlList acl = AccessControlUtils.getAccessControlList(adminSession, adminResource.getPath());
-                            List<String> listOfGroups = Arrays.stream(acl.getAccessControlEntries()).map(a -> a.getPrincipal().getName()).collect(Collectors.toList());
-                            if (!Collections.disjoint(entityGroups, listOfGroups)) {
-                                for (String nodeGroup : listOfGroups) {
-                                    for (String entityGroup : entityGroups) {
-                                        if (nodeGroup.equals(entityGroup)) {
-                                            List<Authorizable> entityUsers = StreamSupport.stream(Spliterators.spliteratorUnknownSize(((Group) userManager.getAuthorizable(entityGroup)).getMembers(), Spliterator.ORDERED), false).filter(a -> !a.isGroup()).collect(Collectors.toList());
-                                            final Session currentSession = adminSession;
-                                            entityUsers.forEach(e -> {
-                                                try {
-                                                    Principal projectAdmin = principalMgr.getPrincipal("mediahub-project-administrator");
-                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, projectPath, projectAdmin, Privilege.JCR_ALL);
-                                                    CreatePolicyNodeUtil.createRepPolicyNode(currentSession, damFolderPath, projectAdmin, Privilege.JCR_ALL);
-                                                    matched.set(true);
-                                                    if (!userManager.isAutoSave()) {
-                                                        js.save();
-                                                    }
-                                                } catch (RepositoryException ex) {
-                                                    log.error("Error when adding entity user to project owner group", e);
-                                                }
-
-                                            });
-
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
                         Resource projectResource = adminResolver.getResource(projectPath);
                         ModifiableValueMap map = projectResource.adaptTo(ModifiableValueMap.class);
                         map.put("initialized", true);
                         adminResolver.commit();
                     }
 
+                    if (projectNode.hasProperty(BnpConstants.ROLE_EDITOR)) {
+                        String damPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", String.class);
+                        String[] damPathFolders = damPath.substring(1).split("/");
+                        StringBuilder pathBuilder = new StringBuilder(MEDIALIBRARY_PATH);
+                        if (damPathFolders.length > 3) {
+                            for (int i = 3; i < damPathFolders.length && i <= 6; i++) {
+                                pathBuilder.append("/").append(damPathFolders[i]);
+                            }
+                        }
+                        Resource damPathSelectedFolderMetadata = adminResolver.getResource(pathBuilder.toString()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+                        if (damPathSelectedFolderMetadata != null) {
+                            String damPathSelectedFolderUUID = damPathSelectedFolderMetadata.getValueMap().get("uuid", String.class);
+                            if (!StringUtils.isEmpty(damPathSelectedFolderUUID)) {
+                                Group uuidGroup = (Group) userManager.getAuthorizable(damPathSelectedFolderUUID + "-contributor");
+                                if (uuidGroup != null) {
+                                    //Add managers to contributor
+                                    Iterator<Authorizable> managerMembers = ((Group) userManager.getAuthorizable(groupOwnerPrincipal)).getDeclaredMembers();
+                                    while (managerMembers.hasNext()) {
+                                        Authorizable uuidGroupMember = managerMembers.next();
+                                        uuidGroup.addMember(uuidGroupMember);
+                                    }
+                                    //Add publishers to contributor
+                                    Iterator<Authorizable> publishersMembers = ((Group) userManager.getAuthorizable(groupOwnerProjectPublisher)).getDeclaredMembers();
+                                    while (publishersMembers.hasNext()) {
+                                        Authorizable uuidGroupMember = publishersMembers.next();
+                                        uuidGroup.addMember(uuidGroupMember);
+                                    }
+                                    if (!userManager.isAutoSave()) {
+                                        js.save();
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
             }
