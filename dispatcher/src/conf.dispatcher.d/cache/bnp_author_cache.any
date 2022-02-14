@@ -2,3 +2,7 @@
 	/glob "/libs/granite/security/currentuser.json"
 	/type "deny"
 }
+/0008 {
+	/glob "/libs/cq/security/userinfo.json"
+	/type "deny"
+}
