@@ -61,4 +61,32 @@ public class AssetUtils {
     }
     return StringUtils.EMPTY;
   }
+
+
+  /**
+   *
+   * This is used in assetpreview.jsp Kindly check reference before deleting the method.
+   *
+   * @param s7Config
+   * @param scene7Service
+   * @param scene7ID
+   * @return
+   */
+  public static String getExternalAssetRenditionUrl(S7Config s7Config, Scene7Service scene7Service, String scene7ID) {
+    List<Scene7Asset> scene7Assets = scene7Service.getAssets(new String[]{scene7ID}, null, null, s7Config);
+    if (scene7Assets != null && !scene7Assets.isEmpty()) {
+      Scene7Asset associatedAsset = scene7Service.getAssociatedAssets(scene7Assets.get(0), s7Config);
+      if (null != associatedAsset) {
+        List<Scene7Asset> subAssets = associatedAsset.getSubAssets();
+        for (Scene7Asset asset : subAssets) {
+          if (asset != null && asset.getHeight() != null) {
+            if (asset.getHeight() == 720L) {
+              return asset.getRootFolder() + asset.getName();
+            }
+          }
+        }
+      }
+    }
+    return StringUtils.EMPTY;
+  }
 }

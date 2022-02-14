@@ -34,6 +34,7 @@
                  com.day.cq.search.result.SearchResult,
                  com.mediahub.core.constants.BnpConstants,
                  com.mediahub.core.utils.ProjectPermissionsUtil,
+                 com.mediahub.core.utils.UserUtils,
                  org.apache.commons.lang3.StringUtils,
                  org.apache.jackrabbit.api.security.user.Authorizable,
                  org.apache.jackrabbit.api.security.user.Group,
@@ -837,7 +838,17 @@ PropertiesPage
         %><sling:include resource="<%= header %>"/><%
         }
     %></div>
+
     <input type="hidden" id="user.technical.admin" value="<%=isTechnicalAdmin%>">
+
+
+    <% if(StringUtils.endsWith(slingRequest.getRequestPathInfo().getResourcePath(),"content/v2/usereditor")){
+        String userType = UserUtils.getUserType(resourceResolver.getResource(assetId));
+    %>
+        <input type="hidden" id="user.type" value="<%=userType%>">
+    <% } %>
+
+
     <div class="foundation-layout-panel-bodywrapper">
         <div class="foundation-layout-panel-body"><%
             if (rails != null) {

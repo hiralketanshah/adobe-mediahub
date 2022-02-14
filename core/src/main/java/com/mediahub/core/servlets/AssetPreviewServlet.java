@@ -72,7 +72,7 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
                         out.println("<head><title>" + title
                                 + "</title></head>");
                         out.println("<body>");
-                        out.println("<iframe src=\"/etc/dam/viewers/s7viewers/html5/VideoViewer.html?asset=" + videoPath + "&amp;videoserverurl=/is/content/&amp;serverUrl=/is/image/&amp;aemmode=0&amp;contentUrl=/is/content/\" frameborder=\"0\" allowfullscreen=\"\" style=\"width:100%;height:100%\"></iframe>");
+                        out.println("<iframe src=\"/bin/mediahub/videoviewer.html?uuid=" + assetResource.getValueMap().get(JcrConstants.JCR_UUID, String.class)  + "\" frameborder=\"0\" allowfullscreen=\"\" style=\"width:100%;height:100%\"></iframe>");
                         out.println("</body></html>");
                         resp.setContentType("text/html");
                         resp.setCharacterEncoding("UTF-8");

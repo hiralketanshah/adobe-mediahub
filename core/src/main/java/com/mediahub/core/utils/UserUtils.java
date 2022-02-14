@@ -59,4 +59,14 @@ public class UserUtils {
       }
       return fullName;
   }
+
+  public static String getUserType(Resource user) {
+    if(null != user.getChild(BnpConstants.PROFILE)){
+      Resource preferences = user.getChild(BnpConstants.PROFILE);
+      return preferences.getValueMap().get(BnpConstants.TYPE, "");
+    } else{
+      return "";
+    }
+  }
+
 }
