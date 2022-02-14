@@ -8,6 +8,6 @@
         <groups
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                groups="[administrators,mediahub-administrators]"/>
+                groups="[administrators,mediahub-super-administrators]"/>
     </granite:rendercondition>
 </jcr:root>
