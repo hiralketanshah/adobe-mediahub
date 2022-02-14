@@ -2,9 +2,11 @@ package com.mediahub.core.listeners;
 
 import com.day.cq.commons.jcr.JcrConstants;
 import com.mediahub.core.constants.BnpConstants;
+import com.mediahub.core.utils.UserUtils;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.api.resource.LoginException;
@@ -120,7 +122,16 @@ public class FolderResourceListener implements EventHandler {
           adpatableResource
               .put(JcrConstants.JCR_CREATED_BY, event.getProperty(BnpConstants.USER_ID).toString());
         }
+
+        // MED-491 Assign UUID to folder not Media
+        if(!StringUtils.equals(adpatableResource.get(BnpConstants.BNPP_MEDIA, StringUtils.EMPTY), Boolean.TRUE.toString())){
+          String uuid = UUID.randomUUID().toString();
+          adpatableResource.put("uuid", uuid);
+          // MED-493 Create user group while creating folders
+          UserUtils.createFolderGroups(resolver, uuid, contentResourse.getParent());
+        }
       }
     }
   }
+
 }

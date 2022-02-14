@@ -103,6 +103,7 @@ public class BnpConstants {
     public static final String BNPP_LANGUAGE = "bnpp-language";
     public static final String BNPP_SUBTITLES = "bnpp-subtitles";
     public static final String BNPP_SUBTITLE_LANGUAGES = "bnpp-subtitlelanguage";
+    public static final String BNPP_MEDIA = "bnpp-media";
     public static final String BNPP_MEDIA_TYPE = "bnpp-media-type";
     public static final String BNPP_MEDIA_CATEGORY = "bnpp-category";
     public static final String BNPP_MEDIA_THEME = "bnpp-theme";
