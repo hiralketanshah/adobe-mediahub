@@ -89,7 +89,7 @@
 
     - mediahub-super-administrators:
         - name: Technical administrator
-          isMemberOf: mediahub-administrators
+          isMemberOf: administrators
           members:
           path: /home/groups/mediahub
 
@@ -693,6 +693,10 @@
           permission: allow
           privileges: jcr:all
 
+        - path: /etc/acs-commons/lists
+          permission: allow
+          privileges: jcr:all
+
         - path: /libs/cq/security/content/admin
           permission: allow
           actions: read
@@ -758,6 +762,10 @@
           actions: read
           privileges:
           repGlob:
+
+        - path: /etc/acs-commons/lists
+          permission: allow
+          privileges: jcr:all
 
         - path: /content/dam/collections
           permission: allow
