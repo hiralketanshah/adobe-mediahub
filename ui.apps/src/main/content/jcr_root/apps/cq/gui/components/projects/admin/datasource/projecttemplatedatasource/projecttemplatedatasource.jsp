@@ -105,7 +105,7 @@
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 			      User currentUser = (User)userManager.getAuthorizable(resourceResolver.getUserID());
             // Changes as per MED-263 entity manager create project type
-            if(userManager.getAuthorizable("mediahub-basic-entity-manager") != null && ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser)){
+            if(userManager.getAuthorizable("mediahub-project-administrator") != null && ((Group)userManager.getAuthorizable("mediahub-project-administrator")).isMember(currentUser)){
                 Template template = pageManager.getTemplate("/apps/mediahub/projects/templates/mediahub-projects");
                 templateList = new ArrayList<Template>();
                 templateList.add(template);

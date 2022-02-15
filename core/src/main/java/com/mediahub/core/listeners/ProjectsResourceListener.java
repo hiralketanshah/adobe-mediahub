@@ -4,6 +4,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.google.common.collect.ImmutableMap;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
+import com.mediahub.core.utils.UserUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
@@ -76,7 +77,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
             for (ResourceChange my : arg0) {
 
                 String projectPath = my.getPath();
-                if ("cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
+                if (adminResolver.getResource(projectPath) != null && "cq/gui/components/projects/admin/card/projectcard".equals(adminResolver.getResource(projectPath).getResourceType())) {
 
                     JackrabbitSession js = (JackrabbitSession) adminSession;
                     PrincipalManager principalMgr = js.getPrincipalManager();
@@ -128,6 +129,11 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                                 createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
                             }
                             CreatePolicyNodeUtil.createRepPolicyNodes(adminSession, parentFolderPath, principalNameList, ImmutableMap.of("rep:glob", vf.createValue("")));
+                            String groupName = UserUtils.deriveProjectGroupNameFromPath(adminResource.getPath());
+                            if (userManager.getAuthorizable(groupName) != null) {
+                                CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectPath, userManager.getAuthorizable(groupName).getPrincipal(), Privilege.JCR_ALL);
+                                //CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectPath, userManager.getAuthorizable(BnpConstants.MEDIAHUB_ADMINISTRATOR).getPrincipal(), Privilege.JCR_ALL);
+                            }
                         }
 
                         String damFolderPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("damFolderPath", String.class);
@@ -197,4 +203,6 @@ public class ProjectsResourceListener implements ResourceChangeListener {
         }
 
     }
+
+
 }

@@ -92,7 +92,7 @@ public class BnpConstants {
     public static final String FIRST_NAME = "givenName";
     public static final String REP_PRINCIPAL_NAME = "rep:principalName";
     public static final String MEDIAHUB_BASIC_CONTRIBUTOR = "mediahub-basic-contributor";
-    public static final String MEDIAHUB_ADMINISTRATOR = "mediahub-administrator";
+    public static final String MEDIAHUB_ADMINISTRATOR = "mediahub-administrators";
     public static final String MEDIAHUB_BASIC_READER = "mediahub-basic-reader";
     public static final String MEDIAHUB_BASIC_ENTITY_MANAGER = "mediahub-basic-entity-manager";
     public static final String MEDIAHUB_READER_MEDIALIBRARY = "mediahub-reader-medialibrary";

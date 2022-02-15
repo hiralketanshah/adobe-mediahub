@@ -349,7 +349,7 @@
                                     <groups
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                            groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                                 </or>
                             </projects>
                         </or>
@@ -386,7 +386,7 @@
                             <groups
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-reader,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
+                                    groups="[administrators,mediahub-administrators,mediahub-project-administrator,mediahub-basic-project-manager,mediahub-basic-project-publisher,mediahub-basic-project-reader,mediahub-basic-project-internal-contributor,mediahub-basic-project-external-contributor]"/>
                         </condition2>
                     </granite:rendercondition>
                 </download>
@@ -497,7 +497,7 @@
                                 <groups
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                        groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                             </or>
                         </projects>
                     </granite:rendercondition>
@@ -535,7 +535,7 @@
                                 <groups
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                        groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                             </or>
                         </projects>
                     </granite:rendercondition>
@@ -593,7 +593,7 @@
                                     <groups
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                            groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                                 </or>
                             </projects>
                         </or>
@@ -639,7 +639,7 @@
                                     <groups
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                            groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                            groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                                 </or>
                             </projects>
                         </or>
@@ -818,7 +818,7 @@
                                 <groups
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                        groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                        groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                             </or>
                         </projects>
                     </granite:rendercondition>
@@ -845,7 +845,7 @@
                             <groups
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                    groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                    groups="[administrators,mediahub-administrators,mediahub-project-administrator]"/>
                             <isprojects
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"

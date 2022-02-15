@@ -94,7 +94,7 @@ public class FolderResourceListener implements EventHandler {
     }
 
     protected void captureProjectFolderChanges(Event event, ResourceResolver resolver, Resource contentResourse) throws PersistenceException {
-        if (StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED) && contentResourse.getPath().startsWith(BnpConstants.AEM_PROJECTS_PATH)) {
+        if (StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED) && contentResourse.getPath().startsWith(BnpConstants.AEM_PROJECTS_PATH) && !StringUtils.contains(contentResourse.getPath(), JcrConstants.JCR_CONTENT)) {
             String parentFolderPath = contentResourse.getParent().getPath();
             String[] folderSegments = parentFolderPath.substring(1).split("/");
             //We limit user creation to level 5 max (after /content/projects)

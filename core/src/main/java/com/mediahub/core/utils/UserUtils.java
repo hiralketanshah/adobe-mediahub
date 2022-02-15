@@ -1,6 +1,8 @@
 package com.mediahub.core.utils;
 
+import com.google.common.collect.ImmutableMap;
 import com.mediahub.core.constants.BnpConstants;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.ValueFactory;
 import javax.jcr.security.Privilege;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -94,21 +97,33 @@ public class UserUtils {
         }
     }
 
+    public static String deriveProjectGroupNameFromPath(String path) {
+        String[] folderSegments = path.substring(1).split("/");
+        StringJoiner joiner = new StringJoiner("-");
+        if (folderSegments.length > 2) {
+            for (int i = 2; i < folderSegments.length && i <= 6; i++) {
+                joiner.add(folderSegments[i]);
+            }
+        }
+        return joiner.toString() + "-entity-project";
+    }
+
     public static void createProjectFolderGroups(ResourceResolver resolver, Resource resource) {
         final UserManager userManager = resolver.adaptTo(UserManager.class);
         try {
-            String[] folderSegments = resource.getPath().substring(1).split("/");
-            StringJoiner joiner = new StringJoiner("-");
-            if (folderSegments.length > 2) {
-                for (int i = 2; i < folderSegments.length && i <= 6; i++) {
-                    joiner.add(folderSegments[i]);
-                }
-            }
-            Group folderContributor = userManager.createGroup(joiner.toString() + "-entity-project");
+            Group folderContributor = userManager.createGroup(deriveProjectGroupNameFromPath(resource.getPath()));
             Session session = resolver.adaptTo(Session.class);
             if (userManager.getAuthorizable(BnpConstants.MEDIAHUB_PROJECT_ADMINISTRATOR) != null) {
                 ((Group) userManager.getAuthorizable(BnpConstants.MEDIAHUB_PROJECT_ADMINISTRATOR)).addMember(folderContributor);
                 CreatePolicyNodeUtil.createRepPolicyNode(session, resource.getPath(), Boolean.TRUE, folderContributor.getPrincipal(), Privilege.JCR_ALL);
+                ValueFactory vf = session.getValueFactory();
+                String damFolderPath = resource.getParent().getPath().replace(BnpConstants.AEM_PROJECTS_PATH, BnpConstants.MEDIALIBRARY_PROJECTS_PATH);
+                Resource damFolderResource = resolver.getResource(damFolderPath);
+                CreatePolicyNodeUtil.createRepPolicyNode(session, damFolderResource.getPath(), Boolean.TRUE, folderContributor.getPrincipal(), Privilege.JCR_ALL);
+                while (damFolderResource.getParent() != null && !StringUtils.equals(damFolderResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
+                    damFolderResource = damFolderResource.getParent();
+                    CreatePolicyNodeUtil.createRepPolicyNode(session, damFolderResource.getPath(), folderContributor.getPrincipal(), ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Exception while creating groups for folders", e);
