@@ -97,8 +97,8 @@ public class FolderResourceListener implements EventHandler {
         if (StringUtils.equals(event.getTopic(), BnpConstants.TOPIC_RESOURCE_ADDED) && contentResourse.getPath().startsWith(BnpConstants.AEM_PROJECTS_PATH)) {
             String parentFolderPath = contentResourse.getParent().getPath();
             String[] folderSegments = parentFolderPath.substring(1).split("/");
-            //We limit user creation to level 5 max (after /content/dam/medialibrary && /content/projects)
-            if (folderSegments.length <= 7) {
+            //We limit user creation to level 5 max (after /content/projects)
+            if (folderSegments.length <= 6) {
                 UserUtils.createProjectFolderGroups(resolver, contentResourse);
             }
         }

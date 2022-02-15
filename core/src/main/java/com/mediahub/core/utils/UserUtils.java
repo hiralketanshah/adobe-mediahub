@@ -99,8 +99,8 @@ public class UserUtils {
         try {
             String[] folderSegments = resource.getPath().substring(1).split("/");
             StringJoiner joiner = new StringJoiner("-");
-            if (folderSegments.length > 3) {
-                for (int i = 3; i < folderSegments.length && i <= 7; i++) {
+            if (folderSegments.length > 2) {
+                for (int i = 2; i < folderSegments.length && i <= 6; i++) {
                     joiner.add(folderSegments[i]);
                 }
             }
