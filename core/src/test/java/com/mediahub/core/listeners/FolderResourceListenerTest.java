@@ -141,6 +141,7 @@ class FolderResourceListenerTest {
         ModifiableValueMap adpatableResource = mock(ModifiableValueMap.class);
         when(resource.getParent()).thenReturn(resource);
         when(resource.getParent().getValueMap()).thenReturn(map);
+        when(resource.getParent().getPath()).thenReturn("/content/dam/mediahub");
         when(map.get(JcrConstants.JCR_PRIMARYTYPE, String.class)).thenReturn(BnpConstants.SLING_FOLDER);
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(adpatableResource);
