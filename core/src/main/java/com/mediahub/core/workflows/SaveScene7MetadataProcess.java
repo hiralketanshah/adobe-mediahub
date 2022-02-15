@@ -18,12 +18,7 @@ import com.mediahub.core.services.Scene7DeactivationService;
 import com.mediahub.core.utils.ReplicationUtils;
 import com.mediahub.core.utils.SlingJobUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.PersistenceException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.*;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -114,6 +109,10 @@ public class SaveScene7MetadataProcess implements WorkflowProcess {
                             }
                             if (StringUtils.contains(payloadPath, BnpConstants.MEDIALIBRARY_PATH) && DamUtil.isAsset(movedAsset)) {
                                 ReplicationUtils.replicateParentMetadata(resourceResolver, movedAsset, replicator);
+                            }
+                            if (modifiableValueMap.containsKey("bnpp-rich-media") && modifiableValueMap.get("bnpp-rich-media", String.class).equalsIgnoreCase("true")) {
+                                modifiableValueMap.put(BnpConstants.BNPP_EXTERNAL_RICH_MEDIA_URL, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "richmedia/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
+                                modifiableValueMap.put(BnpConstants.BNPP_TRACKING_EXTERNAL_RICH_MEDIA, externalizer.externalLink(resourceResolver, BnpConstants.EXTERNAL, "/") + "mh/external/richmedia/" + movedAsset.getValueMap().get(JcrConstants.JCR_UUID, String.class));
                             }
                             resourceResolver.commit();
                         }

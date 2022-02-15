@@ -96,7 +96,7 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
                             if (Arrays.asList(broadcastStatus).contains(BnpConstants.BROADCAST_VALUE_EXTERNAL)) {
                                 trackingService.trackExternal(asset, format, globalProperties);
                                 log.debug("S7 status is {}", metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class));
-                                if (S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
+                                if (!"richmedia".equals(format) && S7_FILE_STATUS_NOT_SUPPORTED.equals(metadata.getValueMap().get(S7_FILE_STATUS_PROPERTY, String.class))) {
                                     return processInternalUrl(asset, path, format);
                                 } else {
                                     return processExternalUrl(asset, path, format);
@@ -153,6 +153,9 @@ public class AssetTrackingProvider extends ResourceProvider<Object> {
         switch (format) {
             case "player":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_BROADCAST_URL, String.class);
+                break;
+            case "richmedia":
+                externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_RICH_MEDIA_URL, String.class);
                 break;
             case "master":
                 externalUrl = metadata.getValueMap().get(BNPP_EXTERNAL_FILE_URL, String.class);
