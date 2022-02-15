@@ -156,7 +156,7 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         String[] damPathFolders = damPath.substring(1).split("/");
                         StringBuilder pathBuilder = new StringBuilder(MEDIALIBRARY_PATH);
                         if (damPathFolders.length > 3) {
-                            for (int i = 3; i < damPathFolders.length && i <= 6; i++) {
+                            for (int i = 3; i < damPathFolders.length && i <= 7; i++) {
                                 pathBuilder.append("/").append(damPathFolders[i]);
                             }
                         }
