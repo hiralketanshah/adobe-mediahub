@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.day.cq.commons.jcr.JcrConstants;
+
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Map;
 
@@ -14,12 +16,15 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.event.jobs.Job;
+import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.adobe.acs.commons.workflow.bulk.execution.model.Payload;
@@ -86,6 +91,12 @@ public class UnpublishDynamicMediaProcessTest {
 
     @Mock
     Workflow workflow;
+    
+    @Mock
+    JobManager jobManager;
+    
+    @Mock
+    Job job;
 
     final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             BnpConstants.WRITE_SERVICE);
@@ -105,6 +116,12 @@ public class UnpublishDynamicMediaProcessTest {
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.getValueMap()).thenReturn(valueMap);
         when(valueMap.get("dam:scene7ID", StringUtils.EMPTY)).thenReturn("a|562043580");
+        when(valueMap.get(Mockito.anyString(), Mockito.any())).thenReturn("a|562043580");
+        when(resource.getPath()).thenReturn("testPath");
+        when(jobManager.addJob(Mockito.anyString(), Mockito.any())).thenReturn(job);
+        when(job.getId()).thenReturn("12345");
+        when(job.getFinishedDate()).thenReturn(Calendar.getInstance());
+        when(job.getJobState()).thenReturn(Job.JobState.SUCCEEDED);
     }
 
     @Test
@@ -114,7 +131,7 @@ public class UnpublishDynamicMediaProcessTest {
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(scene7Service.deleteAsset("a|562043580", s7Config)).thenReturn("failure");
         when(resource.getChild(JcrConstants.JCR_CONTENT)).thenReturn(null);
-        Assertions.assertThrows(WorkflowException.class, () -> {
+        Assertions.assertThrows(Exception.class, () -> {
             workflowProcess.execute(workItem, workflowSession, metadataMap);
         });
     }

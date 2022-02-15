@@ -30,30 +30,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-@Component(
-        service = {AnalyticsTrackingService.class},
-        configurationPolicy = ConfigurationPolicy.REQUIRE
-)
+@Component(service = { AnalyticsTrackingService.class }, configurationPolicy = ConfigurationPolicy.REQUIRE)
 
 @Designate(ocd = AnalyticsTrackingServiceImpl.Config.class)
 public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
     private static final Logger log = LoggerFactory.getLogger(AnalyticsTrackingServiceImpl.class);
 
-    @ObjectClassDefinition(
-            name = "Mediahub Asset Tracking",
-            description = "Configuration for sending assets tracking to Adobe Analytics"
-    )
+    @ObjectClassDefinition(name = "Mediahub Asset Tracking", description = "Configuration for sending assets tracking to Adobe Analytics")
     @interface Config {
-        @AttributeDefinition(
-                name = "Namespace",
-                description = "Namespace of the Analytics account"
-        )
+        @AttributeDefinition(name = "Namespace", description = "Namespace of the Analytics account")
         String namespace() default "";
 
-        @AttributeDefinition(
-                name = "Report Suite ID",
-                description = "ID of the Report Suite which will receive tracking"
-        )
+        @AttributeDefinition(name = "Report Suite ID", description = "ID of the Report Suite which will receive tracking")
         String report_suite() default "";
     }
 
@@ -73,22 +61,14 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
 
     @Override
     public void trackExternal(Resource asset, String format, Map<String, String> properties) {
-        try {
-            Map<String, String> parameters = initParameters(asset);
-            sendRequest(parameters, properties);
-        } catch (Exception e) {
-            log.error("An error occurred when sending tracking to Analytics", e);
-        }
+        Map<String, String> parameters = initParameters(asset);
+        sendRequest(parameters, properties);
     }
 
     @Override
     public void trackInternal(Resource asset, String format, Map<String, String> properties) {
-        try {
-            Map<String, String> parameters = initParameters(asset);
-            sendRequest(parameters, properties);
-        } catch (Exception e) {
-            log.error("An error occurred when sending tracking to Analytics", e);
-        }
+        Map<String, String> parameters = initParameters(asset);
+        sendRequest(parameters, properties);
     }
 
     private Map<String, String> initParameters(Resource asset) {
@@ -100,7 +80,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         parameters.put("pev2", "Asset Insight Event");
         parameters.put("events", "event1");
 
-        //Fill in assets properties
+        // Fill in assets properties
         if (metadata.containsKey(BnpConstants.BNPP_CONFIDENTIALITY)) {
             parameters.put("prop1", formatMetadata(metadata.get(BnpConstants.BNPP_CONFIDENTIALITY)));
         }
@@ -124,10 +104,11 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
             parameters.put("prop15", formatMetadata(metadata.get(BnpConstants.DAM_FILE_TITLE)));
         }
 
-        //Fill in media properties
+        // Fill in media properties
         Resource media = asset.getParent();
         if (media.isResourceType(BnpConstants.DAM_SLING_FOLDER)) {
-            ValueMap mediaMetadata = media.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
+            ValueMap mediaMetadata = media.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA)
+                    .getValueMap();
             if (mediaMetadata.containsKey(BnpConstants.BNPP_MEDIA_TYPE)) {
                 parameters.put("prop6", formatMetadata(mediaMetadata.get(BnpConstants.BNPP_MEDIA_TYPE)));
             }
@@ -171,7 +152,8 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         this.executorService.execute(() -> {
             try {
 
-                String baseUrl = "http://" + this.config.namespace() + ".sc.omtrdc.net/b/ss/" + this.config.report_suite() + "/0";
+                String baseUrl = "http://" + this.config.namespace() + ".sc.omtrdc.net/b/ss/"
+                        + this.config.report_suite() + "/0";
 
                 URL url = new URL(baseUrl);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -180,44 +162,49 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
                 con.setConnectTimeout(5000);
                 con.setReadTimeout(5000);
 
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.IP_ADDRESS_PROPERTY))) {
-                    con.setRequestProperty("X-Forwarded-For", properties.get(GlobalFilter.IP_ADDRESS_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.LANGUAGE_PROPERTY))) {
-                    con.setRequestProperty("Accept-Language", properties.get(GlobalFilter.LANGUAGE_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.USER_AGENT_PROPERTY))) {
-                    con.setRequestProperty("User-Agent", properties.get(GlobalFilter.USER_AGENT_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
-                    parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_SOURCE_PROPERTY))) {
-                    parameters.put("prop16", properties.get(GlobalFilter.UTM_SOURCE_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY))) {
-                    parameters.put("prop17", properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY))) {
-                    parameters.put("prop18", properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_TERM_PROPERTY))) {
-                    parameters.put("prop19", properties.get(GlobalFilter.UTM_TERM_PROPERTY));
-                }
-                if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CONTENT_PROPERTY))) {
-                    parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
+                if (null != properties) {
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.IP_ADDRESS_PROPERTY))) {
+                        con.setRequestProperty("X-Forwarded-For", properties.get(GlobalFilter.IP_ADDRESS_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.LANGUAGE_PROPERTY))) {
+                        con.setRequestProperty("Accept-Language", properties.get(GlobalFilter.LANGUAGE_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.USER_AGENT_PROPERTY))) {
+                        con.setRequestProperty("User-Agent", properties.get(GlobalFilter.USER_AGENT_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.REFERER_PROPERTY))) {
+                        parameters.put("r", properties.get(GlobalFilter.REFERER_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_SOURCE_PROPERTY))) {
+                        parameters.put("prop16", properties.get(GlobalFilter.UTM_SOURCE_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY))) {
+                        parameters.put("prop17", properties.get(GlobalFilter.UTM_MEDIUM_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY))) {
+                        parameters.put("prop18", properties.get(GlobalFilter.UTM_CAMPAIGN_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_TERM_PROPERTY))) {
+                        parameters.put("prop19", properties.get(GlobalFilter.UTM_TERM_PROPERTY));
+                    }
+                    if (!StringUtils.isEmpty(properties.get(GlobalFilter.UTM_CONTENT_PROPERTY))) {
+                        parameters.put("prop20", properties.get(GlobalFilter.UTM_CONTENT_PROPERTY));
+                    }
                 }
 
-                //Setting parameters
+                // Setting parameters
                 try (DataOutputStream out = new DataOutputStream(con.getOutputStream())) {
                     out.writeBytes(getParamsString(parameters));
                     if (log.isDebugEnabled()) {
                         log.debug("Sending hit to {} with parameters {}", url, getParamsString(parameters));
-                        con.getHeaderFields().entrySet().stream().forEach(e -> log.debug("Header {} contains {}", e.getKey(), e.getValue().stream().collect(Collectors.joining(","))));
+                        con.getHeaderFields().entrySet().stream().forEach(e -> log.debug("Header {} contains {}",
+                                e.getKey(), e.getValue().stream().collect(Collectors.joining(","))));
                     }
                     int status = con.getResponseCode();
                     if (status != HttpURLConnection.HTTP_OK) {
-                        log.error("Error when sending tracking to Analytics, response status was {} with url {} and parameters {}", status, url, getParamsString(parameters));
+                        log.error(
+                                "Error when sending tracking to Analytics, response status was {} with url {} and parameters {}",
+                                status, url, getParamsString(parameters));
                     }
                 }
 
@@ -227,10 +214,8 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         });
     }
 
-    private String getParamsString(Map<String, String> params)
-            throws UnsupportedEncodingException {
+    private String getParamsString(Map<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
-
         for (Map.Entry<String, String> entry : params.entrySet()) {
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
@@ -239,9 +224,7 @@ public class AnalyticsTrackingServiceImpl implements AnalyticsTrackingService {
         }
 
         String resultString = result.toString();
-        return resultString.length() > 0
-                ? resultString.substring(0, resultString.length() - 1)
-                : resultString;
+        return resultString.length() > 0 ? resultString.substring(0, resultString.length() - 1) : resultString;
     }
 
 }

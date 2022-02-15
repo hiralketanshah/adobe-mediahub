@@ -351,8 +351,8 @@ CollectionPage
               if((!isAdmin) && (userManager.getAuthorizable("mediahub-super-administrators") != null) ){
                 isAdmin = ((Group)userManager.getAuthorizable("mediahub-super-administrators")).isMember(currentUser);
               }
-              if((!isAdmin) && (userManager.getAuthorizable("mediahub-basic-entity-manager") != null) ){
-                isAdmin = ((Group)userManager.getAuthorizable("mediahub-basic-entity-manager")).isMember(currentUser);
+              if((!isAdmin) && (userManager.getAuthorizable("mediahub-project-administrator") != null) ){
+                isAdmin = ((Group)userManager.getAuthorizable("mediahub-project-administrator")).isMember(currentUser);
               }
           }
       }

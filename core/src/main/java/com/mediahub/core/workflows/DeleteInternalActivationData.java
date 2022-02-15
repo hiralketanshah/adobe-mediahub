@@ -52,7 +52,7 @@ public class DeleteInternalActivationData implements WorkflowProcess {
                 resourceResolver.commit();
             }
 
-        } catch (Exception e) {
+        } catch (LoginException | PersistenceException e) {
             throw new WorkflowException("Error while removing attributes for internal asset", e);
         }
 

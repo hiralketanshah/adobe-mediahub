@@ -136,6 +136,7 @@ public class ValidateMetadataProcessWorkflowTest {
         });
     }
 
+    @Test
     public void execute2() {
         when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
         when(workflowData.getPayload()).thenReturn(payload);

@@ -185,6 +185,19 @@
                     PROCESS="com.day.cq.dam.s7dam.common.process.DMEncodeVideoWorkflowCompletedProcess"
                     PROCESS_AUTO_ADVANCE="true"/>
             </dmencodevideoworkflo>
+            <process_1916220613
+              jcr:created="{Date}2022-01-04T16:59:39.210+05:30"
+              jcr:createdBy="admin"
+              jcr:lastModified="{Date}2022-01-04T17:00:05.454+05:30"
+              jcr:lastModifiedBy="admin"
+              jcr:primaryType="nt:unstructured"
+              jcr:title="Activate Scene 7 Assets"
+              sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                  jcr:primaryType="nt:unstructured"
+                  PROCESS="com.mediahub.core.workflows.PublishScene7VideoAsset"
+                  PROCESS_AUTO_ADVANCE="true"/>
+            </process_1916220613>
             <genericjobprocess_co
                 jcr:created="{Date}2021-07-03T14:56:33.389+05:30"
                 jcr:createdBy="admin"

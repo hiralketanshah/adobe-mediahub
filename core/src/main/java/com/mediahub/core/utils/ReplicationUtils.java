@@ -2,6 +2,7 @@ package com.mediahub.core.utils;
 
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.replication.ReplicationActionType;
+import com.day.cq.replication.ReplicationException;
 import com.day.cq.replication.ReplicationOptions;
 import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
@@ -42,7 +43,7 @@ public class ReplicationUtils {
             //Rep the content   replicate(Session session, ReplicationActionType type, String path)
             replicator.replicate(resourceResolver.adaptTo(Session.class), action, path);
             log.debug("**** REPLICATED : {} ", path);
-        } catch (Exception e) {
+        } catch (ReplicationException e) {
             log.error("**** Error while replicating Node : {} ", e.getMessage());
         }
     }

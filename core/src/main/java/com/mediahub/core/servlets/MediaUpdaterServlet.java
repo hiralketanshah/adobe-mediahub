@@ -53,11 +53,14 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.commons.jcr.JcrUtil;
+import com.day.cq.dam.api.DamConstants;
+import com.day.cq.tagging.TagConstants;
 import com.mediahub.core.constants.BnpConstants;
 
 /**
  * Servlet to fix media after running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/updatemedia"})
 public class MediaUpdaterServlet extends SlingAllMethodsServlet {
 
@@ -69,7 +72,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
     private static final String MEDIAHUB_TAG_BASE = "mediahub:";
     private static final String DATE_OUTPUT_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private static final String[] FAILURES_HEADER = { "Path", "Message" };
-    private static final String[] MEDIA_REQUIRED_FIELDS = { "bnpp-media-type", "bnpp-title-en", "dc:description", "bnpp-date-production", "bnpp-sponsor-entities", "bnpp-contact", "bnpp-contact-country" };
+    private static final String[] MEDIA_REQUIRED_FIELDS = { "bnpp-media-type", "bnpp-title-en", DamConstants.DC_DESCRIPTION, "bnpp-date-production", "bnpp-sponsor-entities", "bnpp-contact", "bnpp-contact-country" };
     private static final String MEDIAS_FAILURE_FILE = "C:\\bnp\\mediaUpdaterFailures.csv";
     
     @Override
@@ -82,7 +85,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
         for (String resourcePath : mediasAndFolders.keySet()) {
             try {
                 updateMediaFolder(request, resourcePath, mediasAndFolders.get(resourcePath));
-            } catch (Exception e) {
+            } catch (ConstraintViolationException | ParseException e) {
                 LOGGER.error("Could not update media: " + resourcePath, e);
                 failuresList.add(new String[] {resourcePath, e.getMessage()});
             }
@@ -134,7 +137,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     ModifiableValueMap  resourceMetadataProperties = resourceMetadata.adaptTo(ModifiableValueMap.class);
                     resourceMetadataProperties.put("bnpp-media", "true");
                     resourceMetadataProperties.put("bnpp-title-en", resourceProperties[2]);
-                    resourceMetadataProperties.put("dc:description", resourceProperties[3]);
+                    resourceMetadataProperties.put(DamConstants.DC_DESCRIPTION, resourceProperties[3]);
                     
                     resourceMetadataProperties.put(JcrConstants.JCR_CREATED_BY, resourceProperties[7]);
                     if (StringUtils.isNotEmpty(resourceProperties[8])) {
@@ -167,8 +170,10 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     }
                     
                     resourceMetadataProperties.put("bnpp-sponsor-entities", inlineAsListAndNormalized(resourceProperties[48]).toArray(new String[0]));
-                    resourceMetadataProperties.put("cq:tags", inlineAsListAndNormalized(resourceProperties[49]).toArray(new String[0]));
+
+                    resourceMetadataProperties.put(TagConstants.PN_TAGS, inlineAsListAndNormalized(resourceProperties[49]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-category-tags", resourceProperties[50] != null ? resourceProperties[50].toLowerCase() : "");
+
                     resourceMetadataProperties.put("bnpp-type-production", inlineAsListAndNormalized(resourceProperties[51]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-country-prod", inlineAsListAndNormalized(resourceProperties[52]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-identified-entities", inlineAsListAndNormalized(resourceProperties[53]).toArray(new String[0]));

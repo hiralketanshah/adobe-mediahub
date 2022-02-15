@@ -65,8 +65,7 @@ import uk.org.lidalia.slf4jtest.LoggingEvent;
 import uk.org.lidalia.slf4jtest.TestLogger;
 import uk.org.lidalia.slf4jtest.TestLoggerFactory;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
-@MockitoSettings(strictness = Strictness.LENIENT)
+@ExtendWith(AemContextExtension.class)
 class AdhocAssetShareTest {
 
     @InjectMocks

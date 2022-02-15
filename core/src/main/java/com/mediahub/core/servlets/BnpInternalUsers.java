@@ -15,33 +15,15 @@
  */
 package com.mediahub.core.servlets;
 
-import com.adobe.acs.commons.httpcache.util.UserUtils;
-import com.day.cq.dam.commons.util.DamUtil;
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.result.SearchResult;
 import com.mediahub.core.constants.BnpConstants;
-import com.mediahub.core.utils.QueryUtils;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import javax.annotation.Resources;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.Query;
+import org.apache.jackrabbit.api.security.user.QueryBuilder;
 import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.jackrabbit.oak.spi.security.user.util.UserUtil;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -53,17 +35,26 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Servlet that writes some sample content into the response. It is mounted for
  * all resources of a specific Sling resource type. The
  * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
- *
  */
 @Component(
         service = Servlet.class,
         property = {"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-            ServletResolverConstants.SLING_SERVLET_PATHS + "=" + "/bin/project/internalusers"
+                ServletResolverConstants.SLING_SERVLET_PATHS + "=" + "/bin/mediahub/internalusers"
         })
 public class BnpInternalUsers extends SlingAllMethodsServlet {
 
@@ -79,24 +70,52 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
 
     @Override
     protected void doGet(final SlingHttpServletRequest request,
-                          final SlingHttpServletResponse response) throws ServletException, IOException {
+                         final SlingHttpServletResponse response) throws ServletException, IOException {
         try {
             ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo);
+            Session session = resolver.adaptTo(Session.class);
 
-            QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
-            Map<String, String> predicates = QueryUtils.getPredicateMapInternalUsers("/home/users");
-            Query query = builder.createQuery(PredicateGroup.create(predicates), resolver.adaptTo(Session.class));
+            String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9]", "");
+            Query query = new Query() {
+                @Override
+                public <T> void build(QueryBuilder<T> builder) {
+                    T condition = null;
 
-            SearchResult result = query.getResult();
-            LOGGER.info("Query {}", result.getQueryStatement());
+                    if (queryString != null && queryString.length() > 0) {
+                        condition = builder.or(builder.contains(".", queryString), builder.contains(".", queryString + "*"));
+                    }
 
-            Iterator<Resource> resources = result.getResources();
+                    T internalCondition = null;
+                    try {
+                        internalCondition = builder.eq("profile/@type", session.getValueFactory().createValue("internal"));
+                    } catch (RepositoryException e) {
+                    }
+                    condition = (condition == null) ? internalCondition : builder.and(internalCondition, condition);
+
+                    if (condition != null) {
+                        builder.setCondition(condition);
+                    }
+
+                    builder.setLimit(0, 25);
+                }
+            };
+
+            UserManager um = resolver.adaptTo(UserManager.class);
+            Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
+
             StringBuilder sb = new StringBuilder();
-            while(resources.hasNext()){
-                Resource userResource = resources.next();
-                User user = userResource.adaptTo(User.class);
-                sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + user.getID() +"'>" + user.getID() + "</li>");
+            while (authorizablesIt.hasNext()) {
+                Authorizable auth = authorizablesIt.next();
+                String name = auth.getID();
+                Value[] familyName = auth.getProperty("./profile/familyName");
+                Value[] firstname = auth.getProperty("./profile/givenName");
+                if (familyName != null && firstname != null && !StringUtils.isEmpty(familyName[0].toString()) && !StringUtils.isEmpty(firstname[0].toString())) {
+                    name = familyName[0].toString() + " " + firstname[0].toString() + " [" + auth.getID() + "]";
+                }
+                sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + auth.getID() + "'>" + name + "</li>");
             }
+            response.setContentType("text/html");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(sb.toString());
         } catch (LoginException e) {
             LOGGER.error("Error while fecthing system user : {0}", e);
@@ -105,4 +124,6 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
         }
 
     }
+
+
 }

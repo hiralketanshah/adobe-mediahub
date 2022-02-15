@@ -27,7 +27,7 @@
 
     - mediahub-basic-entity-manager:
         - name:
-          isMemberOf: user-administrators,mediahub-project-administrator,tag-administrators
+          isMemberOf: user-administrators,tag-administrators
           path: /home/groups/mediahub
 
     - mediahub-basic-reader:
@@ -37,7 +37,7 @@
 
     - mediahub-basic-contributor:
         - name:
-          isMemberOf: mediahub-basic,workflow-users
+          isMemberOf: mediahub-basic,workflow-users,tag-administrators
           path: /home/groups/mediahub
 
     - mediahub-projects-users:
@@ -47,7 +47,7 @@
 
     - mediahub-basic-project-manager:
         - name:
-          isMemberOf: projects-administrators,user-administrators
+          isMemberOf: projects-administrators,user-administrators,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -59,7 +59,7 @@
 
     - mediahub-basic-project-publisher:
         - name:
-          isMemberOf: mediahub-projects-users
+          isMemberOf: mediahub-projects-users,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -71,7 +71,7 @@
 
     - mediahub-basic-project-internal-contributor:
         - name:
-          isMemberOf: mediahub-projects-users
+          isMemberOf: mediahub-projects-users,tag-administrators
           members:
           path: /home/groups/mediahub
 
@@ -83,13 +83,13 @@
 
     - mediahub-administrators:
         - name: Functional administrator
-          isMemberOf: user-administrators,mediahub-project-administrator,workflow-administrators,tag-administrators
+          isMemberOf: user-administrators,workflow-administrators,tag-administrators
           members:
           path: /home/groups/mediahub
 
     - mediahub-super-administrators:
         - name: Technical administrator
-          isMemberOf: mediahub-administrators
+          isMemberOf: administrators
           members:
           path: /home/groups/mediahub
 
@@ -472,6 +472,22 @@
           privileges:
           repGlob:
 
+        - path: /var/dam/jobs/download
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/content/v2/usereditor
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/clientlibs/v2/commons
+          permission: allow
+          actions: read
+
+        - path: /libs/granite/security/clientlibs/v2/usereditor
+          permission: allow
+          actions: read
+
         - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
           permission: deny
           actions: read
@@ -677,6 +693,10 @@
           permission: allow
           privileges: jcr:all
 
+        - path: /etc/acs-commons/lists
+          permission: allow
+          privileges: jcr:all
+
         - path: /libs/cq/security/content/admin
           permission: allow
           actions: read
@@ -743,6 +763,10 @@
           privileges:
           repGlob:
 
+        - path: /etc/acs-commons/lists
+          permission: allow
+          privileges: jcr:all
+
         - path: /content/dam/collections
           permission: allow
           privileges: jcr:all
@@ -778,6 +802,11 @@
         - path: /content/dam/collections
           permission: allow
           privileges: jcr:all
+
+    - mediahub-project-administrator:
+      - path: /content/dam/projects
+        permission: allow
+        privileges: jcr:all
 
     - mediahub-projects-users:
         - path: /etc/cloudservices

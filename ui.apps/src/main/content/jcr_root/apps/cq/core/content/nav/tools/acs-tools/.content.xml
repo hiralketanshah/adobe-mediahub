@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
+    jcr:primaryType="sling:OrderedFolder">
+    <granite:rendercondition
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+        <groups
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                groups="[administrators]"/>
+    </granite:rendercondition>
+    <csv-resource-type-updater/>
+    <vlt-rcp/>
+    <dumplibs/>
+    <aem-fiddle/>
+    <clientlibs-optimizer/>
+    <csv-asset-importer/>
+    <explain-query/>
+    <jsp-code-display/>
+    <query-editor/>
+    <tag-maker/>
+    <test-page-generator/>
+</jcr:root>

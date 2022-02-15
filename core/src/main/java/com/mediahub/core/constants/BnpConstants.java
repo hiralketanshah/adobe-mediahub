@@ -4,7 +4,7 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.DamConstants;
 import org.apache.sling.jcr.resource.api.JcrResourceConstants;
 
-@SuppressWarnings({"CQRules:CQBP-71", "CQRules:AMSCORE-553", "squid:S2068"})
+@SuppressWarnings({"CQRules:AMSCORE-553", "squid:S2068"})
 public class BnpConstants {
 
     public static final String DOWNLOAD_DETAILS = "downloadDetails";
@@ -92,10 +92,11 @@ public class BnpConstants {
     public static final String FIRST_NAME = "givenName";
     public static final String REP_PRINCIPAL_NAME = "rep:principalName";
     public static final String MEDIAHUB_BASIC_CONTRIBUTOR = "mediahub-basic-contributor";
-    public static final String MEDIAHUB_ADMINISTRATOR = "mediahub-administrator";
+    public static final String MEDIAHUB_ADMINISTRATOR = "mediahub-administrators";
     public static final String MEDIAHUB_BASIC_READER = "mediahub-basic-reader";
     public static final String MEDIAHUB_BASIC_ENTITY_MANAGER = "mediahub-basic-entity-manager";
     public static final String MEDIAHUB_READER_MEDIALIBRARY = "mediahub-reader-medialibrary";
+    public static final String MEDIAHUB_PROJECT_ADMINISTRATOR = "mediahub-project-administrator";
     public static final String USER_DEACTIVATION_SERVICE = "userDeactivationService";
     public static final String BNPP_BROADCAST_STATUS = "bnpp-broadcast-status";
     public static final String FIRSTNAME = "firstname";
@@ -103,6 +104,7 @@ public class BnpConstants {
     public static final String BNPP_LANGUAGE = "bnpp-language";
     public static final String BNPP_SUBTITLES = "bnpp-subtitles";
     public static final String BNPP_SUBTITLE_LANGUAGES = "bnpp-subtitlelanguage";
+    public static final String BNPP_MEDIA = "bnpp-media";
     public static final String BNPP_MEDIA_TYPE = "bnpp-media-type";
     public static final String BNPP_MEDIA_CATEGORY = "bnpp-category";
     public static final String BNPP_MEDIA_THEME = "bnpp-theme";
@@ -130,6 +132,8 @@ public class BnpConstants {
     public static final String BNPP_EXTERNAL_FILE_URL_HD = "bnpp-external-file-master-url-hd";
     public static final String BNPP_EXTERNAL_FILE_URL_SUPER_HD = "bnpp-external-file-master-url-super-hd";
     public static final String BNPP_EXTERNAL_FILE_URL_MD = "bnpp-external-file-master-url-md";
+    public static final String BNPP_EXTERNAL_RICH_MEDIA_URL = "bnpp-external-rich-media-url";
+    public static final String BNPP_EXTERNAL_FILE_LAST_PUBLISHED = "externalLastPublished";
 
     public static final String BNPP_INTERNAL_FILE_URL = "bnpp-internal-file-url";
     public static final String BNPP_INTERNAL_BROADCAST_URL = "bnpp-internal-broadcast-url";
@@ -149,6 +153,7 @@ public class BnpConstants {
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_HD = "bnpp-external-file-url-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_SUPER_HD = "bnpp-external-file-url-super-hd";
     public static final String BNPP_TRACKING_EXTERNAL_FILE_URL_MD = "bnpp-external-file-url-md";
+    public static final String BNPP_TRACKING_EXTERNAL_RICH_MEDIA = "bnpp-external-rm-url";
 
     public static final String S7_DOMAIN_PROPERTY = "dam:scene7Domain";
     public static final String S7_FILE_STATUS_PROPERTY = "dam:scene7FileStatus";

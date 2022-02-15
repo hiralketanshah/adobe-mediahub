@@ -62,6 +62,7 @@ class GlobalFilterTest {
         MockSlingHttpServletResponse response = context.response();
 
        when(slingRequest.getHeader(Mockito.anyString())).thenReturn("test,test");
+       when(slingRequest.getParameter(Mockito.anyString())).thenReturn("test");
        assertAll(() -> fixture.doFilter(slingRequest, response, mock(FilterChain.class)));
     }
 }

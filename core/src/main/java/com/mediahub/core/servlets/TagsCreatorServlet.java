@@ -50,6 +50,7 @@ import com.day.cq.tagging.TagManager;
 /**
  * Servlet to create tags before running the importation process
  */
+@SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = {"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/mediahub/createtags"})
 public class TagsCreatorServlet extends SlingAllMethodsServlet {
     

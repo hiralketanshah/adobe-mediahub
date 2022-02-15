@@ -13,7 +13,7 @@
             <clientlibs
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/includeclientlibs"
-                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status,internal.render.condition]"/>
+                categories="[coralui3,granite.ui.coral.foundation,cq.gui.damadmin.v2.foldershare.coral,dam.gui.coral.backhref,metadataeditor.status,metadataeditor.userpicker.multifield,internal.render.condition]"/>
         </head>
         <title
             jcr:primaryType="nt:unstructured"
@@ -443,6 +443,23 @@
                                                                   groups="[mediahub-basic-project-external-contributor]"/>
                                                             </granite:rendercondition>
                                                         </InternalUsers>
+                                                        <mediahubUUID
+                                                          granite:id="metadata-schema-name"
+                                                          jcr:primaryType="nt:unstructured"
+                                                          sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                          fieldLabel="UUID"
+                                                          name="./jcr:content/metadata/uuid"
+                                                          disabled="{Boolean}true"
+                                                          renderReadOnly="{Boolean}true">
+                                                            <granite:rendercondition
+                                                              jcr:primaryType="nt:unstructured"
+                                                              sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                                                                <isMedia
+                                                                  jcr:primaryType="nt:unstructured"
+                                                                  sling:resourceType="utils/granite/rendercondition/simple/media"
+                                                                  expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '')}"/>
+                                                            </granite:rendercondition>
+                                                        </mediahubUUID>
                                                         <assetcontribution
                                                             granite:id="asset-contribution-checkbox"
                                                             jcr:primaryType="nt:unstructured"
@@ -876,7 +893,7 @@
                                                                         <groups
                                                                           jcr:primaryType="nt:unstructured"
                                                                           sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                                                          groups="[administrators,mediahub-super-administrators]"/>
+                                                                          groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager]"/>
                                                                         <isMedia
                                                                           jcr:primaryType="nt:unstructured"
                                                                           sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"

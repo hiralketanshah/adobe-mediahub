@@ -12,6 +12,7 @@ import com.day.cq.dam.commons.util.DamUtil;
 import com.day.cq.dam.scene7.api.S7Config;
 import com.day.cq.dam.scene7.api.Scene7Service;
 import com.day.cq.dam.scene7.api.constants.Scene7AssetType;
+import com.day.cq.replication.Replicator;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.services.Scene7DeactivationService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -99,6 +100,9 @@ public class SaveScene7MetadataProcessTest {
     
     @Mock
     Calendar cal;
+    
+    @Mock
+    Replicator replicator;
 
     private MockUp<DamUtil> damUtil;
 
@@ -112,7 +116,9 @@ public class SaveScene7MetadataProcessTest {
         when(workItem.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getPayload()).thenReturn(payload);
         when(payload.toString()).thenReturn("/content/dam/projects/");
+        when(resource.getResourceResolver()).thenReturn(resolver);
         when(resolver.getResource("/content/dam/projects/")).thenReturn(resource);
+        when(resolver.getResource(Mockito.anyString())).thenReturn(resource);
         when(resource.getChild(any())).thenReturn(resource);
         when(resource.adaptTo(ModifiableValueMap.class)).thenReturn(modifiableValueMap);
         when(resource.getValueMap()).thenReturn(modifiableValueMap);
@@ -140,7 +146,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.VIDEO.getValue());
-        //workflowProcess.execute(workItem, workflowSession, metadataMap);
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -150,7 +156,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY))
                 .thenReturn(Scene7AssetType.MASTER_VIDEO.getValue());
-        //workflowProcess.execute(workItem, workflowSession, metadataMap);
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -159,7 +165,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(Scene7AssetType.IMAGE.getValue());
-        //workflowProcess.execute(workItem, workflowSession, metadataMap);
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
     @Test
@@ -168,7 +174,7 @@ public class SaveScene7MetadataProcessTest {
         when(workflow.getWorkflowData()).thenReturn(workflowData);
         when(workflowData.getMetaDataMap()).thenReturn(metadataMap);
         when(modifiableValueMap.get(BnpConstants.S7_TYPE, StringUtils.EMPTY)).thenReturn(StringUtils.EMPTY);
-        //workflowProcess.execute(workItem, workflowSession, metadataMap);
+        workflowProcess.execute(workItem, workflowSession, metadataMap);
     }
 
 }

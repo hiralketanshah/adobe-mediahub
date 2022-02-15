@@ -3,8 +3,11 @@ package com.mediahub.core.servlets;
 import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.DamConstants;
+import com.day.cq.dam.commons.util.DamUtil;
+import com.day.cq.dam.scene7.api.Scene7Service;
 import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -19,8 +22,6 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -28,6 +29,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Map;
+
+import static com.mediahub.core.constants.BnpConstants.IS_CONTENT;
 
 @SuppressWarnings("CQRules:CQBP-75")
 @Component(
@@ -50,61 +53,43 @@ public class AssetPreviewServlet extends SlingSafeMethodsServlet {
         try {
             final Map<String, Object> authInfo = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
                     BnpConstants.WRITE_SERVICE);
-            ResourceResolver adminResolver = resolverFactory.getServiceResourceResolver(authInfo);
+            ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(authInfo);
 
             String contentPath = req.getParameter("content");
 
             String title = contentPath.split("/")[contentPath.split("/").length - 1];
 
-            Resource metaDataResource = adminResolver.getResource(contentPath);
-            if (metaDataResource != null) {
-                Node jcrContentNode = getJcrContentNode(metaDataResource);
-                Node metaDataNode = jcrContentNode.getNode("metadata");
-
-                String mimeType = metaDataNode.getProperty(DamConstants.DC_FORMAT).getString();
-                int index = mimeType.lastIndexOf("/");
-                String imageVideo = null;
-                imageVideo = mimeType.substring(0, index);
-
-                if (imageVideo != null && "video".equals(imageVideo)) {
-                    PrintWriter out = resp.getWriter();
-                    out.println("<html lang=\"en\">");
-                    out.println("<head><title>" + title
-                            + "</title></head>");
-                    out.println("<body>");
-                    out.println("<video  style=\"width:100%; height:100%;\" >");
-                    out.println("<source src=\"" + contentPath + "\">");
-                    out.println("</video>");
-                    out.println("</body></html>");
-                    resp.setContentType("text/html");
-                    resp.setCharacterEncoding("UTF-8");
-                    out.flush();
+            Resource assetResource = resourceResolver.getResource(contentPath);
+            Asset asset = DamUtil.resolveToAsset(assetResource);
+            if (asset != null) {
+                if (DamUtil.isVideo(asset)) {
+                    Map<String, Object> metadata = assetResource.getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA).getValueMap();
+                    String videoUrl = metadata.getOrDefault(BnpConstants.BNPP_INTERNAL_FILE_MASTER_URL_HD, "").toString();
+                    if (!StringUtils.isEmpty(videoUrl)) {
+                        String videoPath = videoUrl.substring(videoUrl.indexOf(IS_CONTENT) + IS_CONTENT.length());
+                        PrintWriter out = resp.getWriter();
+                        out.println("<html lang=\"en\">");
+                        out.println("<head><title>" + title
+                                + "</title></head>");
+                        out.println("<body>");
+                        out.println("<iframe src=\"/bin/mediahub/videoviewer.html?uuid=" + assetResource.getValueMap().get(JcrConstants.JCR_UUID, String.class)  + "\" frameborder=\"0\" allowfullscreen=\"\" style=\"width:100%;height:100%\"></iframe>");
+                        out.println("</body></html>");
+                        resp.setContentType("text/html");
+                        resp.setCharacterEncoding("UTF-8");
+                        out.flush();
+                    }
                 } else {
+                    String mimeType = asset.getMetadataValue(DamConstants.DC_FORMAT);
                     resp.setContentType(mimeType);
-                    Asset asset = metaDataResource.adaptTo(Asset.class);
                     InputStream data = asset.getOriginal().getStream();
                     byte[] bytes = IOUtils.toByteArray(data);
                     resp.getOutputStream().write(bytes);
                 }
             }
-        } catch (LoginException | RepositoryException e) {
+        } catch (LoginException e) {
             logger.error("Error when getting resource", e);
         }
 
-    }
-
-    public Node getJcrContentNode(Resource resource) {
-        Node titleNode = null;
-        try {
-
-            Node node = resource.adaptTo(Node.class);
-            titleNode = node.getNode(JcrConstants.JCR_CONTENT);
-
-        } catch (RepositoryException e) {
-            logger.error("Error when getting jcr content", e);
-        }
-
-        return titleNode;
     }
 
 }
