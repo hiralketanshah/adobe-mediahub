@@ -124,9 +124,9 @@ public class MetadataUpdaterServlet extends SlingAllMethodsServlet {
                 contentNode.setProperty(JcrConstants.JCR_LASTMODIFIED, lastMod);
                 
                 ModifiableValueMap mediaValueMap = parentMedia.adaptTo(ModifiableValueMap.class);
-                contentNode.setProperty("bnpp-usage-rights", (String) mediaValueMap.get("bnpp-usage-rights"));
+                //contentNode.setProperty("bnpp-usage-rights", (String) mediaValueMap.get("bnpp-usage-rights"));
                 contentNode.setProperty("bnpp-usage-end-date", (GregorianCalendar) mediaValueMap.get("bnpp-usage-end-date"));
-                contentNode.setProperty("bnpp-usages-territories", (String) mediaValueMap.get("bnpp-usages-territories"));
+                //contentNode.setProperty("bnpp-usages-territories", (String) mediaValueMap.get("bnpp-usages-territories"));
                 
                 resourceResolver.commit();
                 

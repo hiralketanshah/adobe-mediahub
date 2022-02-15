@@ -62,6 +62,7 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
     private static final String QUOTES = "\"";
     private static final String TAGS_FAILURE_FILE = "C:\\bnp\\tagFailures.csv";
     private static final String[] FAILURES_HEADER = {"Path", "Message"};
+    private static final String SPONSOR_PREFIX = "mediahub:sponsors";
     
     @Override
     protected void doPost(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
@@ -71,6 +72,9 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
         LOGGER.debug("Executing Tag Creator Servlet for Entities...");
         List<String> entities = getEntitiesData(request);
         for (String tag : entities) {
+        	if(!tag.startsWith(SPONSOR_PREFIX)) {
+        		tag = SPONSOR_PREFIX + tag;
+        	}
             createEntityTag(request, tag, failuresList);
         }
         
@@ -130,13 +134,21 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
             }
         }
         
-        if (resourceProperties.length >= 52) {
-            String productionType = resourceProperties[51];
+        if (resourceProperties.length >= 51) {
+            String categorytags = resourceProperties[50];
             
-            if (StringUtils.isNoneEmpty(productionType)) {
-                createTags(tagManager, productionType, tagsFailuresList);
+            if (StringUtils.isNoneEmpty(categorytags)) {
+                createTags(tagManager, categorytags, tagsFailuresList);
             }
         }
+        
+//        if (resourceProperties.length >= 52) {
+//            String productionType = resourceProperties[51];
+//            
+//            if (StringUtils.isNoneEmpty(productionType)) {
+//                createTags(tagManager, productionType, tagsFailuresList);
+//            }
+//        }
         
         if (resourceProperties.length >= 53) {
             String productionCountry = resourceProperties[52];
@@ -146,13 +158,13 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
             }
         }
         
-        if (resourceProperties.length >= 55) {
-            String identifiedPersons = resourceProperties[54];
-            
-            if (StringUtils.isNoneEmpty(identifiedPersons)) {
-                createTags(tagManager, identifiedPersons, tagsFailuresList);
-            }
-        }
+//        if (resourceProperties.length >= 55) {
+//            String identifiedPersons = resourceProperties[54];
+//            
+//            if (StringUtils.isNoneEmpty(identifiedPersons)) {
+//                createTags(tagManager, identifiedPersons, tagsFailuresList);
+//            }
+//        }
         
         if (resourceProperties.length >= 56) {
             String themes = resourceProperties[55];
@@ -178,13 +190,39 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
             }
         }
         
-        if (resourceProperties.length >= 59) {
-            String reportCampaign = resourceProperties[58];
+        if (resourceProperties.length >= 61) {
+            String external_identified_persons  = resourceProperties[60];
             
-            if (StringUtils.isNoneEmpty(reportCampaign)) {
-                createTags(tagManager, reportCampaign, tagsFailuresList);
+            if (StringUtils.isNoneEmpty(external_identified_persons )) {
+                createTags(tagManager, external_identified_persons , tagsFailuresList);
             }
         }
+        
+        if (resourceProperties.length >= 62) {
+            String external_type_production   = resourceProperties[61];
+            
+            if (StringUtils.isNoneEmpty(external_type_production )) {
+                createTags(tagManager, external_type_production , tagsFailuresList);
+            }
+        }
+        
+        if (resourceProperties.length >= 63) {
+            String internal_type_production   = resourceProperties[62];
+            
+            if (StringUtils.isNoneEmpty(internal_type_production )) {
+                createTags(tagManager, internal_type_production , tagsFailuresList);
+            }
+        }
+        
+        if (resourceProperties.length >= 64) {
+            String notBNPProduction   = resourceProperties[63];
+            
+            if (StringUtils.isNoneEmpty(notBNPProduction )) {
+                createTags(tagManager, notBNPProduction , tagsFailuresList);
+            }
+        }
+        
+        
 
         LOGGER.debug("Tags created for media " + resourcePath);
         return  "Tags created for media " + resourcePath;
@@ -196,6 +234,18 @@ public class TagsCreatorServlet extends SlingAllMethodsServlet {
         TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
 
         String tags = resourceProperties[42];
+        
+        if (StringUtils.isNoneEmpty(tags)) {
+            createTags(tagManager, tags, tagsFailuresList);
+        }
+        
+        tags = resourceProperties[21];
+        
+        if (StringUtils.isNoneEmpty(tags)) {
+            createTags(tagManager, tags, tagsFailuresList);
+        }
+        
+        tags = resourceProperties[23];
         
         if (StringUtils.isNoneEmpty(tags)) {
             createTags(tagManager, tags, tagsFailuresList);

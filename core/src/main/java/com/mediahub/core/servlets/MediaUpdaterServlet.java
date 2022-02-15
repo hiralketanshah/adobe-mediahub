@@ -157,7 +157,7 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     resourceMetadataProperties.put("bnpp-media-type", resourceProperties[43]);
                     resourceMetadataProperties.put("bnpp-status", resourceProperties[44]);
                     
-                    resourceMetadataProperties.put("bnpp-contact", inlineAsListAndNormalized(resourceProperties[45]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-refog-contact", inlineAsListAndNormalized(resourceProperties[45]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-contact-country", inlineAsListAndNormalized(resourceProperties[46]).toArray(new String[0]));
                     
                     if (StringUtils.isNotEmpty(resourceProperties[47])) {
@@ -168,16 +168,20 @@ public class MediaUpdaterServlet extends SlingAllMethodsServlet {
                     
                     resourceMetadataProperties.put("bnpp-sponsor-entities", inlineAsListAndNormalized(resourceProperties[48]).toArray(new String[0]));
                     resourceMetadataProperties.put("cq:tags", inlineAsListAndNormalized(resourceProperties[49]).toArray(new String[0]));
-                    resourceMetadataProperties.put("bnpp-category", resourceProperties[50] != null ? resourceProperties[50].toLowerCase() : "");
+                    resourceMetadataProperties.put("bnpp-category-tags", resourceProperties[50] != null ? resourceProperties[50].toLowerCase() : "");
                     resourceMetadataProperties.put("bnpp-type-production", inlineAsListAndNormalized(resourceProperties[51]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-country-prod", inlineAsListAndNormalized(resourceProperties[52]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-identified-entities", inlineAsListAndNormalized(resourceProperties[53]).toArray(new String[0]));
-                    resourceMetadataProperties.put("bnpp-identified-persons", inlineAsListAndNormalized(resourceProperties[54]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-refog-identifiedperson", resourceProperties[54]);
+                    resourceMetadataProperties.put("bnpp-external_identified-persons", inlineAsListAndNormalized(resourceProperties[60]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-theme", inlineAsListAndNormalized(resourceProperties[55]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-keywords", inlineAsListAndNormalized(resourceProperties[56]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-geographicalarea", inlineAsListAndNormalized(resourceProperties[57]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-report", inlineAsListAndNormalized(resourceProperties[58]).toArray(new String[0]));
                     resourceMetadataProperties.put("bnpp-comments-production", inlineAsListAndNormalized(resourceProperties[59]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-external-type-production", inlineAsListAndNormalized(resourceProperties[61]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-internal-type-production", inlineAsListAndNormalized(resourceProperties[62]).toArray(new String[0]));
+                    resourceMetadataProperties.put("bnpp-notBNPP-production", inlineAsListAndNormalized(resourceProperties[63]).toArray(new String[0]));
                     
                     willThrowConstraintValidationException = isAnyFieldEmpty(resourceMetadataProperties, MEDIA_REQUIRED_FIELDS);
                 }
