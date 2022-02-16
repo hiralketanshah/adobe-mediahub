@@ -235,13 +235,6 @@ Import-Package: javax.annotation;version=0.0.0,com.day.cq.dam.scene7.api;version
         </dependency>
         
         <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.commons-csv</artifactId>
-            <version>1.0-r706900_3</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
