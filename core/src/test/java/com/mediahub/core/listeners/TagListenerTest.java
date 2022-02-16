@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 public class TagListenerTest {
 
 	@InjectMocks
-	private TagListener projectsResourceListener = new TagListener();
+	private DefaultTagListener projectsResourceListener = new DefaultTagListener();
 
 	private AemContext context;
 
