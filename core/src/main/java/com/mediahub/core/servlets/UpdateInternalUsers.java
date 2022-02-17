@@ -24,7 +24,7 @@ import com.mediahub.core.services.UpdateInternalUsersService;
 
 @SuppressWarnings("CQRules:CQBP-75")
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Create/Update Internal Users",
-		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/mediahub/updateinternalusers" })
+		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/tools/updateinternalusers" })
 @ServiceDescription("Create/Update Internal Users")
 @Designate(ocd = UpdateInternalUsers.SchedulerConfig.class)
 public class UpdateInternalUsers extends SlingAllMethodsServlet {
