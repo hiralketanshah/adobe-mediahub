@@ -488,26 +488,6 @@
           permission: allow
           actions: read
 
-        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab2
-          permission: deny
-          actions: read
-
-        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab3
-          permission: deny
-          actions: read
-
-        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab4
-          permission: deny
-
-          actions: read
-        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/tab5
-          permission: deny
-          actions: read
-
-        - path: /apps/dam/gui/content/assets/v2/foldersharewizard/jcr:content/content/items/form/items/wizard/items/settingStep/items/fixedColumns/items/fixedColumn2/items/tabs/items/permissions-tab
-          permission: deny
-          actions: read
-
         - path: /libs/granite/ui/content/shell/globalnav/cq/items/tabs/items/tools
           permission: deny
           actions: read
