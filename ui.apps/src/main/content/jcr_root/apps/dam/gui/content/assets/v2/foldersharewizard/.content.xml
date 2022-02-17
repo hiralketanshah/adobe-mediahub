@@ -1046,7 +1046,7 @@
                                                                         <granite:rendercondition2
                                                                             jcr:primaryType="nt:unstructured"
                                                                             sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                            <isMedia
+                                                                            <isProject
                                                                                 jcr:primaryType="nt:unstructured"
                                                                                 sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
                                                                                 expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/projects')}"/>
