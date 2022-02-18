@@ -98,7 +98,7 @@ public class FolderResourceListener implements EventHandler {
             String parentFolderPath = contentResourse.getParent().getPath();
             String[] folderSegments = parentFolderPath.substring(1).split("/");
             //We limit user creation to level 5 max (after /content/projects)
-            if (folderSegments.length <= 6) {
+            if (folderSegments.length <= 7) {
                 UserUtils.createProjectFolderGroups(resolver, contentResourse);
             }
         }
@@ -132,7 +132,7 @@ public class FolderResourceListener implements EventHandler {
                     String parentFolderPath = contentResourse.getParent().getPath();
                     String[] folderSegments = parentFolderPath.substring(1).split("/");
                     //We limit user creation to level 5 max (after /content/dam/medialibrary)
-                    if (folderSegments.length <= 7 && contentResourse.getPath().startsWith(MEDIALIBRARY_PATH)) {
+                    if (folderSegments.length <= 8 && contentResourse.getPath().startsWith(MEDIALIBRARY_PATH)) {
                         String uuid = UUID.randomUUID().toString();
                         adpatableResource.put("uuid", uuid);
                         // MED-493 Create user group while creating folders
