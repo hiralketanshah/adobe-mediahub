@@ -241,6 +241,7 @@ PropertiesPage
     boolean hasActiveRail = rails != null && cmp.getExpressionHelper().getBoolean(rails.getValueMap().get("active", "false"));
 
     boolean isTechnicalAdmin = false;
+    boolean isBasicProjectOrEntityManager = false;
 %><!DOCTYPE html>
 <html <%= htmlAttrs %>>
 <head>
@@ -413,24 +414,19 @@ PropertiesPage
                     try {
 
                         canSavePublishForProjects = ProjectPermissionsUtil.isAuthorizedForProject(resourceResolver, assetId, new String[]{"mediahub-basic-project-manager", "mediahub-basic-project-publisher"}, resourceResolver.getUserID());
-                        if (!canSavePublishForProjects) {
-                            Iterator<Group> projectGroups = auth.memberOf();
-                            while (projectGroups.hasNext()) {
-                                Group group = projectGroups.next();
-                                if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
-                                    canSavePublishForProjects = true;
-                                    isTechnicalAdmin = true;
-                                }
+
+                        Iterator<Group> projectGroups = auth.memberOf();
+                        while (projectGroups.hasNext()) {
+                            Group group = projectGroups.next();
+                            if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                                canSavePublishForProjects = true;
+                                isTechnicalAdmin = true;
                             }
-                        } else {
-                            Iterator<Group> projectGroups = auth.memberOf();
-                            while (projectGroups.hasNext()) {
-                                Group group = projectGroups.next();
-                                if (StringUtils.equals(resourceResolver.getUserID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
-                                    isTechnicalAdmin = true;
-                                }
+                            if(StringUtils.equals(group.getID(), "mediahub-basic-entity-manager") || StringUtils.equals(group.getID(), "mediahub-basic-project-manager")){
+                                isBasicProjectOrEntityManager = true;
                             }
                         }
+
 
                         if (StringUtils.isNotEmpty(assetId)) {
                             Resource assetResource = resourceResolver.getResource(assetId);
@@ -840,8 +836,7 @@ PropertiesPage
     %></div>
 
     <input type="hidden" id="user.technical.admin" value="<%=isTechnicalAdmin%>">
-
-
+    <input type="hidden" id="user.entity.project.manager" value="<%=isBasicProjectOrEntityManager%>">
     <% if(StringUtils.endsWith(slingRequest.getRequestPathInfo().getResourcePath(),"content/v2/usereditor")){
         String userType = UserUtils.getUserType(resourceResolver.getResource(assetId));
     %>
