@@ -20,6 +20,7 @@ import javax.jcr.security.Privilege;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.util.StringJoiner;
 
 public class UserUtils {
@@ -81,8 +82,8 @@ public class UserUtils {
         final UserManager userManager = resolver.adaptTo(UserManager.class);
         try {
 
-            Group folderContributor = userManager.createGroup(uuid + "-contributor");
-            Group folderEntityManager = userManager.createGroup(uuid + "-entity-manager");
+            Group folderContributor = userManager.createGroup(uuid + "-contributor", new SimplePrincipal(uuid + "-contributor"), BnpConstants.HOME_MEDIAHUB_GROUPS);
+            Group folderEntityManager = userManager.createGroup(uuid + "-entity-manager", new SimplePrincipal(uuid + "-entity-manager"), BnpConstants.HOME_MEDIAHUB_GROUPS);
             Session session = resolver.adaptTo(Session.class);
             if (userManager.getAuthorizable(BnpConstants.MEDIAHUB_BASIC_CONTRIBUTOR) != null) {
                 ((Group) userManager.getAuthorizable(BnpConstants.MEDIAHUB_BASIC_CONTRIBUTOR)).addMember(folderContributor);
@@ -111,7 +112,8 @@ public class UserUtils {
     public static void createProjectFolderGroups(ResourceResolver resolver, Resource resource) {
         final UserManager userManager = resolver.adaptTo(UserManager.class);
         try {
-            Group folderContributor = userManager.createGroup(deriveProjectGroupNameFromPath(resource.getPath()));
+            String groupName = deriveProjectGroupNameFromPath(resource.getPath());
+            Group folderContributor = userManager.createGroup(groupName, new SimplePrincipal(groupName), BnpConstants.HOME_MEDIAHUB_GROUPS);
             Session session = resolver.adaptTo(Session.class);
             if (userManager.getAuthorizable(BnpConstants.MEDIAHUB_PROJECT_ADMINISTRATOR) != null) {
                 ((Group) userManager.getAuthorizable(BnpConstants.MEDIAHUB_PROJECT_ADMINISTRATOR)).addMember(folderContributor);
@@ -136,6 +138,34 @@ public class UserUtils {
             return preferences.getValueMap().get(BnpConstants.TYPE, "");
         } else {
             return "";
+        }
+    }
+
+    private static class SimplePrincipal implements Principal {
+        protected final String name;
+
+        public SimplePrincipal(String name) {
+            if (StringUtils.isBlank(name)) {
+                throw new IllegalArgumentException("Principal name cannot be blank.");
+            }
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Principal) {
+                return name.equals(((Principal) obj).getName());
+            }
+            return false;
         }
     }
 
