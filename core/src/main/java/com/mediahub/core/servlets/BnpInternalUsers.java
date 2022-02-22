@@ -76,7 +76,7 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
             Session session = resolver.adaptTo(Session.class);
             StringBuilder sb = new StringBuilder();
             if(!isExternalUser(resolver, request.getRemoteUser())){
-                String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9]", "");
+                String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9 ]", "");
                 Query query = new Query() {
                     @Override
                     public <T> void build(QueryBuilder<T> builder) {
