@@ -5,6 +5,7 @@ import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
+import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.QueryUtils;
 import com.mediahub.core.utils.UserUtils;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class ProjectPathPredicate extends AbstractNodePredicate implements Predi
       String userID = node.getSession().getUserID();
       Authorizable user = userManager.getAuthorizable(userID);
 
-      if(!node.getPrimaryNodeType().isNodeType("sling:Folder")){
+      if(!node.getPrimaryNodeType().isNodeType(BnpConstants.SLING_FOLDER)){
         return false;
       }
 
@@ -101,18 +102,20 @@ public class ProjectPathPredicate extends AbstractNodePredicate implements Predi
         String groupID = group.getID();
         if(StringUtils.contains(groupID, "-entity-manager")){
           String uuid = StringUtils.replace(groupID, "-entity-manager", StringUtils.EMPTY);
-          QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
-          Map<String, String> predicateMap = QueryUtils
-              .getMetadataByUUID("/content/dam", uuid);
-          Query query = builder.createQuery(
-              PredicateGroup.create(predicateMap), resolver.adaptTo(Session.class));
-          SearchResult result = query.getResult();
-          logger.info("Query {}", result.getQueryStatement());
+          if(!StringUtils.equals("mediahub-basic", uuid)){
+            QueryBuilder builder = resolver.adaptTo(QueryBuilder.class);
+            Map<String, String> predicateMap = QueryUtils
+                .getMetadataByUUID("/content/dam/medialibrary", uuid);
+            Query query = builder.createQuery(
+                PredicateGroup.create(predicateMap), resolver.adaptTo(Session.class));
+            SearchResult result = query.getResult();
+            logger.info("Query {}", result.getQueryStatement());
 
-          Iterator<Resource> resources = result.getResources();
-          while(resources.hasNext()){
-            Resource resource = resources.next();
-            allowedPaths.add(resource.getParent().getParent().getParent().getPath());
+            Iterator<Resource> resources = result.getResources();
+            while(resources.hasNext()){
+              Resource resource = resources.next();
+              allowedPaths.add(resource.getParent().getParent().getParent().getPath());
+            }
           }
         }
       }
