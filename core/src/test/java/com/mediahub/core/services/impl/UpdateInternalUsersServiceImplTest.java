@@ -6,12 +6,7 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.data.UserInfo;
 import com.mediahub.core.data.UserStatus;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.AuthorizableExistsException;
-import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.api.security.user.*;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -30,11 +25,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -99,10 +90,10 @@ public class UpdateInternalUsersServiceImplTest {
 
     @Mock
     Node node;
-    
-    
+
+
     List<Authorizable> listOfUsers;
-    
+
     @Mock
     Authorizable auth;
 
@@ -118,7 +109,7 @@ public class UpdateInternalUsersServiceImplTest {
     public void setup() throws NotCompliantMBeanException, org.apache.sling.api.resource.LoginException {
         MockitoAnnotations.initMocks(this);
         when(resolverFactory.getServiceResourceResolver(authInfo)).thenReturn(resolver);
-       listOfUsers= new ArrayList<>();
+        listOfUsers = new ArrayList<>();
         listOfUsers.add(auth);
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         isList = classloader.getResourceAsStream("users-list.csv");
@@ -157,7 +148,7 @@ public class UpdateInternalUsersServiceImplTest {
         when(rendition.getStream()).thenReturn(isList);
         Iterator<Authorizable> iterator = listOfUsers.iterator();
         when(userManager.findAuthorizables(Mockito.any())).thenReturn(iterator);
-        
+
         when(auth.getID()).thenReturn("114804");
         when(resourceInfo.adaptTo(Asset.class)).thenReturn(assetInfo);
         when(assetInfo.getRendition(Mockito.anyString())).thenReturn(renditionInfo);
@@ -167,9 +158,9 @@ public class UpdateInternalUsersServiceImplTest {
         when(assetStatus.getRendition(Mockito.anyString())).thenReturn(renditionStatus);
         when(renditionStatus.getStream()).thenReturn(isStatus);
 
-       
+
         assertAll(() -> fetchPrice.createAndUpdateUsers(BnpConstants.CSV_FILE_PATH, BnpConstants.CSV_USER_INFO,
-                BnpConstants.CSV_USER_STATUS));
+                BnpConstants.CSV_USER_STATUS, ""));
         assertAll(() -> fetchPrice.createAndSaveUsers(inputMap, infoMap, statusMap,
                 userManager, session));
         assertAll(() -> fetchPrice.deletedUnwantedUsers(resolver, inputMap));

@@ -74,46 +74,49 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
         try {
             ResourceResolver resolver = resolverFactory.getServiceResourceResolver(authInfo);
             Session session = resolver.adaptTo(Session.class);
-
-            String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9]", "");
-            Query query = new Query() {
-                @Override
-                public <T> void build(QueryBuilder<T> builder) {
-                    T condition = null;
-
-                    if (queryString != null && queryString.length() > 0) {
-                        condition = builder.or(builder.contains(".", queryString), builder.contains(".", queryString + "*"));
-                    }
-
-                    T internalCondition = null;
-                    try {
-                        internalCondition = builder.eq("profile/@type", session.getValueFactory().createValue("internal"));
-                    } catch (RepositoryException e) {
-                    }
-                    condition = (condition == null) ? internalCondition : builder.and(internalCondition, condition);
-
-                    if (condition != null) {
-                        builder.setCondition(condition);
-                    }
-
-                    builder.setLimit(0, 25);
-                }
-            };
-
-            UserManager um = resolver.adaptTo(UserManager.class);
-            Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
-
             StringBuilder sb = new StringBuilder();
-            while (authorizablesIt.hasNext()) {
-                Authorizable auth = authorizablesIt.next();
-                String name = auth.getID();
-                Value[] familyName = auth.getProperty("./profile/familyName");
-                Value[] firstname = auth.getProperty("./profile/givenName");
-                if (familyName != null && firstname != null && !StringUtils.isEmpty(familyName[0].toString()) && !StringUtils.isEmpty(firstname[0].toString())) {
-                    name = familyName[0].toString() + " " + firstname[0].toString() + " [" + auth.getID() + "]";
+            if(!isExternalUser(resolver, request.getRemoteUser())){
+                String queryString = request.getParameter("query").replaceAll("[^a-zA-Z0-9]", "");
+                Query query = new Query() {
+                    @Override
+                    public <T> void build(QueryBuilder<T> builder) {
+                        T condition = null;
+
+                        if (queryString != null && queryString.length() > 0) {
+                            condition = builder.or(builder.contains(".", queryString), builder.contains(".", queryString + "*"));
+                        }
+
+                        T internalCondition = null;
+                        try {
+                            internalCondition = builder.eq("profile/@type", session.getValueFactory().createValue("internal"));
+                        } catch (RepositoryException e) {
+                        }
+                        condition = (condition == null) ? internalCondition : builder.and(internalCondition, condition);
+
+                        if (condition != null) {
+                            builder.setCondition(condition);
+                        }
+
+                        builder.setLimit(0, 25);
+                    }
+                };
+
+                UserManager um = resolver.adaptTo(UserManager.class);
+                Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
+
+                
+                while (authorizablesIt.hasNext()) {
+                    Authorizable auth = authorizablesIt.next();
+                    String name = auth.getID();
+                    Value[] familyName = auth.getProperty("./profile/familyName");
+                    Value[] firstname = auth.getProperty("./profile/givenName");
+                    if (familyName != null && firstname != null && !StringUtils.isEmpty(familyName[0].toString()) && !StringUtils.isEmpty(firstname[0].toString())) {
+                        name = familyName[0].toString() + " " + firstname[0].toString() + " [" + auth.getID() + "]";
+                    }
+                    sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + auth.getID() + "'>" + name + "</li>");
                 }
-                sb.append("<li class='coral-SelectList-item coral-SelectList-item--option' data-value='" + auth.getID() + "'>" + name + "</li>");
             }
+
             response.setContentType("text/html");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write(sb.toString());
@@ -125,5 +128,13 @@ public class BnpInternalUsers extends SlingAllMethodsServlet {
 
     }
 
-
+    private boolean isExternalUser(ResourceResolver resolver, String currentUser) throws RepositoryException {
+        UserManager userManager = resolver.adaptTo(UserManager.class);
+        Authorizable user = userManager.getAuthorizable(currentUser);
+        Value[] propertyValue = user.getProperty(BnpConstants.USER_PROFILE + BnpConstants.PN_USER_PROFILE_TYPE);
+        if (null != propertyValue) {
+            return BnpConstants.EXTERNAL.equalsIgnoreCase(propertyValue[0].getString());
+        }
+        return false;
+    }
 }

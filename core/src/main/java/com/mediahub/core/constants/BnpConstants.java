@@ -46,6 +46,7 @@ public class BnpConstants {
     public static final String YYYY_MM_DD = "yyyy/MM/dd";
     public static final String DD_MM_YYYY = "dd/MM/yyyy";
     public static final String HOME_USERS = "/home/users";
+    public static final String HOME_MEDIAHUB_GROUPS = "/home/groups/mediahub";
     public static final String REP_USERS = "rep:User";
     public static final String PROFILE_TYPE = "profile/@type";
     public static final String EXTERNAL = "external";

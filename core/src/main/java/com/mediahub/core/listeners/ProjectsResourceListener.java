@@ -4,11 +4,11 @@ import com.day.cq.commons.jcr.JcrConstants;
 import com.google.common.collect.ImmutableMap;
 import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.utils.CreatePolicyNodeUtil;
+import com.mediahub.core.utils.ProjectPermissionsUtil;
 import com.mediahub.core.utils.UserUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.principal.PrincipalManager;
-import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.*;
@@ -22,14 +22,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.ValueFactory;
 import javax.jcr.security.Privilege;
 import java.security.Principal;
-import java.util.*;
-
-import static com.mediahub.core.constants.BnpConstants.MEDIALIBRARY_PATH;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shipra Arora
@@ -62,7 +62,6 @@ public class ProjectsResourceListener implements ResourceChangeListener {
     org.apache.sling.jcr.api.SlingRepository repository;
     @Reference
     private ConfigurationAdmin configAdmin;
-    List<Principal> principalNameList;
 
 
     @Override
@@ -84,22 +83,22 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                     UserManager userManager = js.getUserManager();
                     ValueFactory vf = adminSession.getValueFactory();
 
-                    Resource adminResource = adminResolver.getResource(projectPath);
-                    principalNameList = new LinkedList<>();
-                    Node projectNode = adminResource.adaptTo(Node.class);
+                    Resource projectResource = adminResolver.getResource(projectPath);
+                    ValueMap projectValueMap = projectResource.getValueMap();
+                    List<Principal> principalNameList = new LinkedList<>();
 
-                    Principal groupEditorPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EDITOR).getString());
-                    Principal groupObserverPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OBSERVER).getString());
-                    Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_OWNER).getString());
-                    Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_PROJECTPUBLISHER).getString());
-                    Principal groupExternalContribPrincipal = principalMgr.getPrincipal(projectNode.getProperty(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR).getString());
+                    Principal groupEditorPrincipal = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_EDITOR, String.class));
+                    Principal groupObserverPrincipal = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_OBSERVER, String.class));
+                    Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_OWNER, String.class));
+                    Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_PROJECTPUBLISHER, String.class));
+                    Principal groupExternalContribPrincipal = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_EXTERNALCONTRIBUTEUR, String.class));
                     principalNameList.add(groupEditorPrincipal);
                     principalNameList.add(groupObserverPrincipal);
                     principalNameList.add(groupOwnerPrincipal);
                     principalNameList.add(groupOwnerProjectPublisher);
                     principalNameList.add(groupExternalContribPrincipal);
 
-                    if (projectNode.hasProperty(BnpConstants.ROLE_EDITOR) && (!projectNode.hasProperty("initialized") || (projectNode.hasProperty("initialized") && !projectNode.getProperty("initialized").getBoolean()))) {
+                    if (projectValueMap.containsKey(BnpConstants.ROLE_EDITOR) && (!projectValueMap.containsKey("initialized") || projectValueMap.get("initialized", Boolean.class))) {
 
                         Group projectInternalGroup = (Group) userManager.getAuthorizable(BnpConstants.PROJECT_INTERNAL_CONTRIBUTOR_GROUP);
                         projectInternalGroup.addMember(userManager.getAuthorizable(groupEditorPrincipal));
@@ -116,23 +115,22 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                             js.save();
                         }
 
-                        while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH)) {
-                            adminResource = adminResource.getParent();
-                            String parentFolderPath = adminResource.getPath();
-                            Node parentFldrNode = adminResource.adaptTo(Node.class);
+                        while (projectResource.getParent() != null && !StringUtils.equals(projectResource.getParent().getPath(), BnpConstants.AEM_PROJECTS_PATH)) {
+                            projectResource = projectResource.getParent();
+                            String parentFolderPath = projectResource.getPath();
+                            Node parentFldrNode = projectResource.adaptTo(Node.class);
                             if (!parentFldrNode.hasNode(BnpConstants.REP_POLICY)) {
-                                ModifiableValueMap mvp = adminResource.adaptTo(ModifiableValueMap.class);
+                                ModifiableValueMap mvp = projectResource.adaptTo(ModifiableValueMap.class);
                                 mvp.put(BnpConstants.JCR_MIXINTYPES, BnpConstants.REP_ACCESSCONTROLLABLE);
-                                String parentProjectPath = adminResource.getPath();
+                                String parentProjectPath = projectResource.getPath();
                                 Resource reResource = adminResolver.getResource(parentProjectPath);
                                 Node createPolicyNode = reResource.adaptTo(Node.class);
                                 createPolicyNode.addNode(BnpConstants.REP_POLICY, BnpConstants.REP_ACL);
                             }
                             CreatePolicyNodeUtil.createRepPolicyNodes(adminSession, parentFolderPath, principalNameList, ImmutableMap.of("rep:glob", vf.createValue("")));
-                            String groupName = UserUtils.deriveProjectGroupNameFromPath(adminResource.getPath());
+                            String groupName = UserUtils.deriveProjectGroupNameFromPath(projectResource.getPath());
                             if (userManager.getAuthorizable(groupName) != null) {
                                 CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectPath, userManager.getAuthorizable(groupName).getPrincipal(), Privilege.JCR_ALL);
-                                //CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectPath, userManager.getAuthorizable(BnpConstants.MEDIAHUB_ADMINISTRATOR).getPrincipal(), Privilege.JCR_ALL);
                             }
                         }
 
@@ -141,60 +139,28 @@ public class ProjectsResourceListener implements ResourceChangeListener {
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectExternalGroup.getPrincipal(), false, null, Privilege.JCR_REMOVE_NODE, Privilege.JCR_REMOVE_CHILD_NODES);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectExternalGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
                         CreatePolicyNodeUtil.createRepPolicyNode(adminSession, damFolderPath, projectPublisherGroup.getPrincipal(), Privilege.JCR_MODIFY_ACCESS_CONTROL);
-                        adminResource = adminResolver.getResource(damFolderPath);
-                        while (adminResource.getParent() != null && !StringUtils.equals(adminResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
-                            adminResource = adminResource.getParent();
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupOwnerProjectPublisher, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupEditorPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupObserverPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
-                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, adminResource.getPath(), groupExternalContribPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                        projectResource = adminResolver.getResource(damFolderPath);
+                        while (projectResource.getParent() != null && !StringUtils.equals(projectResource.getParent().getPath(), BnpConstants.MEDIALIBRARY_PROJECTS_PATH)) {
+                            projectResource = projectResource.getParent();
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectResource.getPath(), groupOwnerPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectResource.getPath(), groupOwnerProjectPublisher, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectResource.getPath(), groupEditorPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectResource.getPath(), groupObserverPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
+                            CreatePolicyNodeUtil.createRepPolicyNode(adminSession, projectResource.getPath(), groupExternalContribPrincipal, ImmutableMap.of("rep:glob", vf.createValue("")), Privilege.JCR_READ, Privilege.JCR_READ_ACCESS_CONTROL);
                         }
 
-                        Resource projectResource = adminResolver.getResource(projectPath);
                         ModifiableValueMap map = projectResource.adaptTo(ModifiableValueMap.class);
                         map.put("initialized", true);
                         adminResolver.commit();
                     }
 
-                    if (projectNode.hasProperty(BnpConstants.ROLE_EDITOR)) {
-                        String damPath = adminResolver.getResource(projectPath).getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", String.class);
-                        String[] damPathFolders = damPath.substring(1).split("/");
-                        StringBuilder pathBuilder = new StringBuilder(MEDIALIBRARY_PATH);
-                        if (damPathFolders.length > 3) {
-                            for (int i = 3; i < damPathFolders.length && i <= 7; i++) {
-                                pathBuilder.append("/").append(damPathFolders[i]);
-                            }
-                        }
-                        Resource damPathSelectedFolderMetadata = adminResolver.getResource(pathBuilder.toString()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
-                        if (damPathSelectedFolderMetadata != null) {
-                            String damPathSelectedFolderUUID = damPathSelectedFolderMetadata.getValueMap().get("uuid", String.class);
-                            if (!StringUtils.isEmpty(damPathSelectedFolderUUID)) {
-                                Group uuidGroup = (Group) userManager.getAuthorizable(damPathSelectedFolderUUID + "-contributor");
-                                if (uuidGroup != null) {
-                                    //Add managers to contributor
-                                    Iterator<Authorizable> managerMembers = ((Group) userManager.getAuthorizable(groupOwnerPrincipal)).getDeclaredMembers();
-                                    while (managerMembers.hasNext()) {
-                                        Authorizable uuidGroupMember = managerMembers.next();
-                                        uuidGroup.addMember(uuidGroupMember);
-                                    }
-                                    //Add publishers to contributor
-                                    Iterator<Authorizable> publishersMembers = ((Group) userManager.getAuthorizable(groupOwnerProjectPublisher)).getDeclaredMembers();
-                                    while (publishersMembers.hasNext()) {
-                                        Authorizable uuidGroupMember = publishersMembers.next();
-                                        uuidGroup.addMember(uuidGroupMember);
-                                    }
-                                    if (!userManager.isAutoSave()) {
-                                        js.save();
-                                    }
-                                }
-                            }
-                        }
+                    if (projectValueMap.containsKey(BnpConstants.ROLE_EDITOR)) {
+                        ProjectPermissionsUtil.assignMembersToMedialibrary(adminResolver, projectPath);
                     }
                 }
 
             }
-        } catch (LoginException | RepositoryException | PersistenceException e) {
+        } catch (Exception e) {
             log.error("RepositoryException while Executing events", e);
         } finally {
             if (adminSession != null) {
@@ -203,6 +169,5 @@ public class ProjectsResourceListener implements ResourceChangeListener {
         }
 
     }
-
 
 }

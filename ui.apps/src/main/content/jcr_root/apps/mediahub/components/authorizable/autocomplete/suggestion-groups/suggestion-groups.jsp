@@ -109,10 +109,15 @@ Collections.sort(authorizables, new Comparator<Authorizable>() {
             continue;
         }
 
-    Group adminAuth = (Group) userManager.getAuthorizable("administrators");
-    Group currentAuthGroup = (Group) auth;
+        Group administrators = (Group) userManager.getAuthorizable("administrators");
+        Group mediahubAdministrators = (Group) userManager.getAuthorizable("mediahub-administrators");
+        Group mediahubProjectsUser = (Group) userManager.getAuthorizable("mediahub-projects-users");
+        Group mediahubEntityManager = (Group) userManager.getAuthorizable("mediahub-basic-entity-manager");
+        Group mediahubProjectAdministrators = (Group) userManager.getAuthorizable("mediahub-project-administrator");
 
-    if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-super-administrators") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-projects-users") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-basic-entity-manager") || auth.getPrincipal().getName().equalsIgnoreCase("mediahub-project-administrator") || auth.getPrincipal().getName().equalsIgnoreCase("administrators") || adminAuth.isMember(currentAuthGroup))) {
+        Group currentGroup = (Group) auth;
+
+        if(isEntityManager && (!auth.getPath().startsWith("/home/groups/mediahub") || administrators.isMember(currentGroup) || administrators.equals(currentGroup) || mediahubAdministrators.isMember(currentGroup) || mediahubAdministrators.equals(currentGroup) || mediahubProjectsUser.isMember(currentGroup) || mediahubProjectsUser.equals(currentGroup) || mediahubEntityManager.isMember(currentGroup) || mediahubEntityManager.equals(currentGroup) || mediahubProjectAdministrators.isMember(currentGroup) || mediahubProjectAdministrators.equals(currentGroup))) {
 			continue;
 		}
 
