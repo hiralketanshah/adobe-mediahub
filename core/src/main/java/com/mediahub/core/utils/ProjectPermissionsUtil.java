@@ -1,6 +1,11 @@
 package com.mediahub.core.utils;
 
+import com.day.cq.commons.jcr.JcrConstants;
+import com.mediahub.core.constants.BnpConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.api.JackrabbitSession;
+import org.apache.jackrabbit.api.security.principal.PrincipalManager;
+import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
@@ -10,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.mediahub.core.constants.BnpConstants.*;
@@ -68,4 +76,65 @@ public class ProjectPermissionsUtil {
         }
         return false;
     }
+
+    public static void assignMembersToMedialibrary(ResourceResolver resourceResolver, String projectPath) {
+        try {
+            Session session = resourceResolver.adaptTo(Session.class);
+            JackrabbitSession js = (JackrabbitSession) session;
+            PrincipalManager principalMgr = js.getPrincipalManager();
+
+            Resource projectResource = resourceResolver.getResource(projectPath);
+            ValueMap projectValueMap = projectResource.getValueMap();
+            Principal groupOwnerPrincipal = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_OWNER, String.class));
+            Principal groupOwnerProjectPublisher = principalMgr.getPrincipal(projectValueMap.get(BnpConstants.ROLE_PROJECTPUBLISHER, String.class));
+
+            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+            String damPath = projectResource.getChild(JcrConstants.JCR_CONTENT).getValueMap().get("project.path", String.class);
+            String[] damPathFolders = damPath.substring(1).split("/");
+            StringBuilder pathBuilder = new StringBuilder(MEDIALIBRARY_PATH);
+            if (damPathFolders.length > 3) {
+                for (int i = 3; i < damPathFolders.length && i <= 7; i++) {
+                    pathBuilder.append("/").append(damPathFolders[i]);
+                }
+            }
+            Resource damPathSelectedFolderMetadata = resourceResolver.getResource(pathBuilder.toString()).getChild(JcrConstants.JCR_CONTENT).getChild(BnpConstants.METADATA);
+            if (damPathSelectedFolderMetadata != null) {
+                String damPathSelectedFolderUUID = damPathSelectedFolderMetadata.getValueMap().get("uuid", String.class);
+                if (!StringUtils.isEmpty(damPathSelectedFolderUUID)) {
+                    Group uuidGroup = (Group) userManager.getAuthorizable(damPathSelectedFolderUUID + "-contributor");
+                    if (uuidGroup != null) {
+                        //Add managers to contributor
+                        Iterator<Authorizable> managerMembers = ((Group) userManager.getAuthorizable(groupOwnerPrincipal)).getDeclaredMembers();
+                        while (managerMembers.hasNext()) {
+                            Authorizable uuidGroupMember = managerMembers.next();
+                            uuidGroup.addMember(uuidGroupMember);
+                        }
+                        //Add publishers to contributor
+                        Iterator<Authorizable> publishersMembers = ((Group) userManager.getAuthorizable(groupOwnerProjectPublisher)).getDeclaredMembers();
+                        while (publishersMembers.hasNext()) {
+                            Authorizable uuidGroupMember = publishersMembers.next();
+                            uuidGroup.addMember(uuidGroupMember);
+                        }
+                        if (!userManager.isAutoSave()) {
+                            resourceResolver.commit();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Unable to assign project members to the medialibrary");
+        }
+    }
+
+
+    public static Map<String, String> getPredicateMapProjectSearch(String role, String group) {
+        Map<String, String> map = new HashMap<>();
+        map.put(BnpConstants.PATH, BnpConstants.AEM_PROJECTS_PATH);
+        map.put(BnpConstants.TYPE, org.apache.jackrabbit.JcrConstants.NT_UNSTRUCTURED);
+        map.put(BnpConstants.FIRST_PROPERTY, role);
+        map.put(BnpConstants.FIRST_PROPERTY_VALUE, group);
+        map.put("p.limit", "-1");
+        return map;
+    }
+
 }
