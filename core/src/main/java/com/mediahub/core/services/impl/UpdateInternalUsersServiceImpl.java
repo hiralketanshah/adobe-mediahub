@@ -7,6 +7,7 @@ import com.mediahub.core.constants.BnpConstants;
 import com.mediahub.core.data.User;
 import com.mediahub.core.data.UserInfo;
 import com.mediahub.core.data.UserStatus;
+import com.mediahub.core.services.GenericEmailNotification;
 import com.mediahub.core.services.UpdateInternalUsersService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.*;
@@ -44,6 +45,9 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
     @Reference
     private ResourceResolverFactory resolverFactory;
 
+    @Reference
+    GenericEmailNotification genericEmailNotification;
+
     public UpdateInternalUsersServiceImpl() throws NotCompliantMBeanException {
         super(UpdateInternalUsersService.class);
     }
@@ -52,9 +56,10 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             BnpConstants.WRITE_SERVICE);
 
     @Override
-    public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo, String csvStatusInfo) {
+    public String createAndUpdateUsers(String csvUserInfo, String csvAdditionalInfo, String csvStatusInfo, String emailTo) {
         StringBuilder returnValue = new StringBuilder();
         StringBuilder summary = new StringBuilder();
+        summary.append("Start time: " + new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date())).append("\n");
         LOGGER.info("Start time: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
         UpdateUserResult updateUserResult = null;
         long countOfDeletedUser = 0L;
@@ -127,13 +132,19 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
         }
 
         LOGGER.info("End time: {}", new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date()));
-        summary.append('\n');
-        summary.append("Count of users created: " + updateUserResult.getCountOfCreatedUser());
-        summary.append('\n');
-        summary.append("Count of users updated: " + updateUserResult.getCountOfUpdatedUser());
-        summary.append('\n');
+        summary.append("End time: " + new SimpleDateFormat(LOG_DATE_PATTERN).format(new Date())).append("\n");
+        summary.append("Count of users created: " + updateUserResult.getCountOfCreatedUser()).append("\n");
+        summary.append("Count of users updated: " + updateUserResult.getCountOfUpdatedUser()).append("\n");
         summary.append("Count of users deleted: " + countOfDeletedUser);
         LOGGER.info(summary.toString());
+
+        if (!StringUtils.isEmpty(emailTo)) {
+            String[] emailRecipients = emailTo.split(",");
+            Map<String, String> emailParams = new HashMap<>();
+            emailParams.put(BnpConstants.SUBJECT, "Mediahub - User import results");
+            emailParams.put("message", summary.toString().replaceAll("\n", "<br/>"));
+            genericEmailNotification.sendEmail("/etc/mediahub/mailtemplates/userimportresults.html", emailRecipients, emailParams);
+        }
 
         return returnValue.toString();
     }
@@ -186,7 +197,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             Iterator<Authorizable> authorizablesIt = um.findAuthorizables(query);
 
             if (authorizablesIt.hasNext()) {
-                LOGGER.info("{} records processed", 1000L * batchCount++);
+                LOGGER.info("{} records processed", 10000L * batchCount++);
                 while (authorizablesIt.hasNext()) {
                     Authorizable auth = authorizablesIt.next();
                     String name = auth.getID();
@@ -219,7 +230,7 @@ public class UpdateInternalUsersServiceImpl extends AnnotatedStandardMBean imple
             if (count >= 10000) {
                 count = 0;
                 session.save();
-                LOGGER.info("{} records processed", 1000L * batchCount++);
+                LOGGER.info("{} records processed", 10000L * batchCount++);
             }
 
             User userObject = entry.getValue();
