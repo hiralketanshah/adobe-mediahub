@@ -45,9 +45,13 @@ public class ProjectPathPredicate extends AbstractNodePredicate implements Predi
   @Reference
   ResourceResolverFactory resolverFactory;
 
-  List<String> allowedPaths = new ArrayList<>();
+  List<String> allowedPaths;
 
   Session session;
+
+  public ProjectPathPredicate(){
+    allowedPaths = new ArrayList<>();
+  }
 
   @Override
   public boolean evaluate(Node node) throws RepositoryException {
@@ -67,15 +71,9 @@ public class ProjectPathPredicate extends AbstractNodePredicate implements Predi
         return Boolean.TRUE;
       }
 
-      // to avoid query execution for same session
-      if( session != node.getSession()){
-        session = node.getSession();
-        allowedPaths.clear();
-      }
       getAllowedPath(resolver, user);
-
       for(String path : allowedPaths){
-        if(StringUtils.contains(node.getPath(),path)){
+        if(StringUtils.contains(path,node.getPath()) || StringUtils.equals(node.getPath(),path) ){
           return Boolean.TRUE;
         }
       }
@@ -114,7 +112,7 @@ public class ProjectPathPredicate extends AbstractNodePredicate implements Predi
             Iterator<Resource> resources = result.getResources();
             while(resources.hasNext()){
               Resource resource = resources.next();
-              allowedPaths.add(resource.getParent().getParent().getParent().getPath());
+              allowedPaths.add(resource.getParent().getParent().getPath());
             }
           }
         }
