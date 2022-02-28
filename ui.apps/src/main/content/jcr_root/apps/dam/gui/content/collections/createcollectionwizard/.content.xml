@@ -21,7 +21,7 @@
                                                                 <groups
                                                                   jcr:primaryType="nt:unstructured"
                                                                   sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                                                  groups="[administrators,mediahub-administrators,mediahub-basic-entity-manager]"/>
+                                                                  groups="[administrators,mediahub-administrators]"/>
                                                             </granite:rendercondition>
                                                         </publicfield>
                                                     </items>
