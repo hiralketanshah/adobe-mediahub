@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @SuppressWarnings("CQRules:AMSCORE-553")
@@ -89,7 +92,7 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
                         String[] emailRecipients = {email};
 
                         emailParams.put(BnpConstants.FIRSTNAME, profileProperties.get(BnpConstants.FIRST_NAME, StringUtils.EMPTY));
-                        emailParams.put(BnpConstants.EXPIRY, profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY));
+                        emailParams.put(BnpConstants.EXPIRY, getDate(profileProperties.get(BnpConstants.EXPIRY, StringUtils.EMPTY)));
 
                         if(StringUtils.equals(emailParams.getOrDefault("role", StringUtils.EMPTY), "Observers")){
                             sendObserverEmail(uuid, emailParams, group, profileProperties,
@@ -110,6 +113,18 @@ public class ExistingUserProjectAccessEmail implements JobConsumer {
         }
 
         return JobResult.OK;
+    }
+
+    private String getDate(String expiry) {
+        try {SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            Date currentdate;
+            currentdate = sdf.parse(expiry);
+            SimpleDateFormat sdf2=new SimpleDateFormat("dd/MM/yyyy");
+            expiry = sdf2.format(currentdate);
+        } catch (ParseException e) {
+            log.error("Error while parsing the expiry date", e);
+        }
+        return expiry;
     }
 
     private String fetchEmail(ResourceResolver resourceResolver, Node userNode,
