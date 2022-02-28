@@ -105,7 +105,7 @@ public class Scene7AssetPreviewServlet extends SlingSafeMethodsServlet {
                 out.println("<html lang=\"en\">");
                 out.println("<head> <link href=\"https://vjs.zencdn.net/7.17.0/video-js.css\" rel=\"stylesheet\" /> </head>");
                 out.println("<body>");
-                out.println("<video id=\"my-video\" width=\"640\" height=\"264\" class=\"video-js\" controls preload=\"auto\" poster=\"" + "/is/image/"+  fileName + "\" data-setup=\"{}\">");
+                out.println("<video id=\"my-video\" class=\"video-js vjs-16-9 vjs-fluid vjs-big-play-centered\" controls preload=\"auto\" poster=\"" + "/is/image/"+  fileName + "\" data-setup=\"{}\">");
 
                 if (properties.containsKey(BnpConstants.BNPP_BROADCAST_STATUS)) {
                     String[] status = AssetUtils.getBroadcastStatus(properties, BnpConstants.BNPP_BROADCAST_STATUS);
