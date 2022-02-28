@@ -393,7 +393,7 @@
                                                                         <groups
                                                                             jcr:primaryType="nt:unstructured"
                                                                             sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                                                            groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager]"/>
+                                                                            groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager,mediahub-administrators]"/>
                                                                         <not
                                                                             jcr:primaryType="nt:unstructured"
                                                                             sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
@@ -958,7 +958,7 @@
                                                                                         <userpicker
                                                                                             granite:id="foldershare-settings-userpicker"
                                                                                             jcr:primaryType="nt:unstructured"
-                                                                                            sling:resourceType="dam/gui/coral/components/commons/userpicker"
+                                                                                            sling:resourceType="mediahub/components/userpicker"
                                                                                             name="assignee"
                                                                                             showDeclaraedGroupMembersOnly="{Boolean}false"
                                                                                             sortOn="profile/@givenName"
@@ -1048,6 +1048,18 @@
                                                                                     jcr:primaryType="nt:unstructured"
                                                                                     sling:resourceType="dam/gui/coral/components/admin/foldershare/foldercug"/>
                                                                             </items>
+                                                                            <granite:rendercondition
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                                <groups
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                                    groups="[administrators,mediahub-super-administrators,mediahub-administrators]"/>
+                                                                                <isMedia
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                                                            </granite:rendercondition>
                                                                         </cug>
                                                                         <authrization
                                                                             granite:class="permission-section"
@@ -1073,9 +1085,17 @@
                                                                             </items>
                                                                             <granite:rendercondition
                                                                                 jcr:primaryType="nt:unstructured"
-                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
-                                                                                path="${requestPathInfo.suffix}"
-                                                                                privileges="[jcr:modifyAccessControl]"/>
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                                <privilege
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                                    path="${requestPathInfo.suffix}"
+                                                                                    privileges="[jcr:modifyAccessControl]"/>
+                                                                                <groups
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                                    groups="[administrators,mediahub-super-administrators]"/>
+                                                                            </granite:rendercondition>
                                                                         </authrization>
                                                                     </items>
                                                                     <granite:rendercondition
@@ -1103,7 +1123,7 @@
                                                                                 <groups
                                                                                     jcr:primaryType="nt:unstructured"
                                                                                     sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                                                                    groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager]"/>
+                                                                                    groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager,mediahub-administrators]"/>
                                                                                 <not
                                                                                     jcr:primaryType="nt:unstructured"
                                                                                     sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
@@ -1549,18 +1569,6 @@
                                                                     jcr:primaryType="nt:unstructured"
                                                                     jcr:title="Permissions"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                                    <granite:rendercondition
-                                                                        jcr:primaryType="nt:unstructured"
-                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
-                                                                        <groups
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="/apps/mediahub/components/renderconditions/groups"
-                                                                            groups="[administrators,mediahub-super-administrators]"/>
-                                                                        <isMedia
-                                                                            jcr:primaryType="nt:unstructured"
-                                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
-                                                                            expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
-                                                                    </granite:rendercondition>
                                                                     <items jcr:primaryType="nt:unstructured">
                                                                         <members
                                                                             granite:class="permission-section"
@@ -1723,6 +1731,42 @@
                                                                             </items>
                                                                         </authrization>
                                                                     </items>
+                                                                    <granite:rendercondition
+                                                                        jcr:primaryType="nt:unstructured"
+                                                                        sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                        <privilege
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/privilege"
+                                                                            path="${requestPathInfo.suffix}"
+                                                                            privileges="[jcr:modifyAccessControl]"/>
+                                                                        <or
+                                                                            jcr:primaryType="nt:unstructured"
+                                                                            sling:resourceType="granite/ui/components/coral/foundation/renderconditions/or">
+                                                                            <groups
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                                groups="[administrators,mediahub-super-administrators]"/>
+                                                                            <condition1
+                                                                                jcr:primaryType="nt:unstructured"
+                                                                                sling:resourceType="granite/ui/components/coral/foundation/renderconditions/and">
+                                                                                <isMedia
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/simple"
+                                                                                    expression="${granite:containsIgnoreCase(requestPathInfo.suffix, '/content/dam/medialibrary')}"/>
+                                                                                <groups
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="/apps/mediahub/components/renderconditions/groups"
+                                                                                    groups="[administrators,mediahub-super-administrators,mediahub-basic-entity-manager,mediahub-administrators]"/>
+                                                                                <not
+                                                                                    jcr:primaryType="nt:unstructured"
+                                                                                    sling:resourceType="granite/ui/components/coral/foundation/renderconditions/not">
+                                                                                    <mediaFolder
+                                                                                        jcr:primaryType="nt:unstructured"
+                                                                                        sling:resourceType="utils/granite/rendercondition/simple/media"/>
+                                                                                </not>
+                                                                            </condition1>
+                                                                        </or>
+                                                                    </granite:rendercondition>
                                                                 </permissions-tab>
                                                                 <livecopytab
                                                                     granite:class="aem-assets-foldershare-msm-tab"
