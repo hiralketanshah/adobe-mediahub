@@ -84,9 +84,20 @@ public class QueryUtils {
 
   public static Map<String, String> getPredicateMapNodeByUUID(String path, String uuid) {
     Map<String, String> map = new HashMap<>();
-    map.put(BnpConstants.PATH, "/content/dam");
+    map.put(BnpConstants.PATH, path);
     map.put("type", DamConstants.NT_DAM_ASSET);
     map.put(BnpConstants.FIRST_PROPERTY, JcrConstants.JCR_UUID);
+    map.put(BnpConstants.FIRST_PROPERTY_VALUE, uuid);
+    map.put(BnpConstants.P_LIMIT, "-1");
+
+    return map;
+  }
+
+  public static Map<String, String> getMetadataByUUID(String path, String uuid) {
+    Map<String, String> map = new HashMap<>();
+    map.put(BnpConstants.PATH, path);
+    map.put("type", "nt:unstructured");
+    map.put(BnpConstants.FIRST_PROPERTY, "uuid");
     map.put(BnpConstants.FIRST_PROPERTY_VALUE, uuid);
     map.put(BnpConstants.P_LIMIT, "-1");
 

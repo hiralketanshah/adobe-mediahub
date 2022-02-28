@@ -2,6 +2,7 @@ package com.mediahub.core.utils;
 
 import com.google.common.collect.ImmutableMap;
 import com.mediahub.core.constants.BnpConstants;
+import java.util.Iterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
@@ -139,6 +140,19 @@ public class UserUtils {
         } else {
             return "";
         }
+    }
+    
+    public static boolean isTechnicalAdmin(Authorizable auth) throws RepositoryException {
+        boolean isTechnicalAdmin = Boolean.FALSE;
+        Iterator<Group> projectGroups = auth.memberOf();
+        while (projectGroups.hasNext()) {
+            Group group = projectGroups.next();
+            if (StringUtils.equals(auth.getID(), "admin") || StringUtils.equals(group.getID(), "administrators") || StringUtils.equals(group.getID(), "mediahub-administrators")) {
+                isTechnicalAdmin = Boolean.TRUE;
+            }
+
+        }
+        return isTechnicalAdmin;
     }
 
     private static class SimplePrincipal implements Principal {
