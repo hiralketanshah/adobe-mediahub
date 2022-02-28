@@ -26,6 +26,10 @@
           } else if(isTechnicalAdmin.value === "true" && userType.value === "internal"){
               showProfileElements();
               $("coral-select[name='./profile/type']")[0].removeAttribute("disabled");
+          } else if(isTechnicalAdmin.value === "true"){
+              //MED-542 User Creation where user type is unknown
+              showProfileElements();
+              $("coral-select[name='./profile/type']")[0].removeAttribute("disabled");
           }
         }
 
