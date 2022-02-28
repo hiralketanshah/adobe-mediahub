@@ -48,7 +48,7 @@ public class MediahubTagListener implements ResourceChangeListener {
             Resource masterAsset = adminResolver.getResource("/content/dam/technique/do-not-delete.png");
             // getting session of System User
             for (ResourceChange my : arg0) {
-                String tagPath = my.getPath().substring(DEFAULT_TAGS.length());
+                String tagPath = my.getPath();
 
                 Resource contentResourse = masterAsset.getChild(JcrConstants.JCR_CONTENT);
                 if (contentResourse != null) {
