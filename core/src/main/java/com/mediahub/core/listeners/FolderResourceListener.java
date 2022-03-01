@@ -128,7 +128,7 @@ public class FolderResourceListener implements EventHandler {
                     adpatableResource.put(JcrConstants.JCR_CREATED_BY, event.getProperty(BnpConstants.USER_ID).toString());
                 }
                 // MED-491 Assign UUID to folder not Media
-                if (!StringUtils.equals(adpatableResource.get(BnpConstants.BNPP_MEDIA, StringUtils.EMPTY), Boolean.TRUE.toString())) {
+                if (!adpatableResource.containsKey("uuid") && !StringUtils.equals(adpatableResource.get(BnpConstants.BNPP_MEDIA, StringUtils.EMPTY), Boolean.TRUE.toString())) {
                     String parentFolderPath = contentResourse.getParent().getPath();
                     String[] folderSegments = parentFolderPath.substring(1).split("/");
                     //We limit user creation to level 5 max (after /content/dam/medialibrary)
